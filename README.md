@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![github read me header](https://user-images.githubusercontent.com/8016073/203381867-f7b56861-04ca-4ae4-a5e6-53e97804817a.png)
 
-## Getting Started
+# moonstream
 
-First, run the development server:
+[Website](https://moonstream.to)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+[Join our Discord](https://discord.gg/pYE65FuNSz)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What is Moonstream?
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Moonstream creates economic infrastructure for web3 projects with a focus on blockchain games. 
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+This repository contains Moonstream's complete data analysis stack. The emphasis of it is on collecting actionable data related to the blockchain. The repository contains:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. Database management tools
+2. Blockchain node management tools
+3. Blockchain data crawlers
+4. Access-controlled API which exposes collected data
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Important resources
+1. [Documentation](https://docs.moonstream.to/)
+2. [Status page](https://moonstream.to/status/)
+3. [On-chain mechanics](https://github.com/bugout-dev/engine)
+4. [How to create a dashboard to analyze a smart contract?](https://voracious-gerbil-120.notion.site/Creating-dashboard-for-a-smart-contract-288b1bfa64984b109b79895f69129fce)
 
-## Learn More
+## Who uses Moonstream?
 
-To learn more about Next.js, take a look at the following resources:
+People from different backgrounds who are interested in data, crypto and code.
+Moonstream tools are often used by game designers and economists, data scientists, smart contract developers, backend engineers, and teams managing loyalty programs for blockchain projects.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Some projects currently using Moonstream:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. [Laguna Games](https://laguna.games), makers of [Crypto Unicorns](https://cryptounicorns.fun)
+2. [Game7](https://game7.io)
+3. [Champions Ascension](https://www.champions.io/)
 
-## Deploy on Vercel
+Please read [the Game Master's Guide to Moonstream Solutions](https://docs.google.com/document/d/1mjfF8SgRrAZvtCVVxB2qNSUcbbmrH6dTEYSMfHKdEgc/view) if you want to know how Moonstream tools are applied in web3 games. 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[Moonworm tool](https://github.com/bugout-dev/moonworm) is used to build datasets of on-chain data related to market activity. The dataset with on-chain activity from the Ethereum NFT market (April 1 to September 25, 2021) is available [on Kaggle](https://www.kaggle.com/datasets/simiotic/ethereum-nfts). The full report on it is published on [GitHub](https://github.com/bugout-dev/moonstream/blob/main/datasets/nfts/papers/ethereum-nfts.pdf). 
