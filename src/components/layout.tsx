@@ -1,12 +1,11 @@
+import { Flex } from '@chakra-ui/react'
 import Head from 'next/head'
-import Image from 'next/image'
-// import styles from './layout.module.css'
-// import utilStyles from '../styles/utils.module.css'
-import Link from 'next/link'
+import Footer from './Footer'
 import Navbar from './Navbar'
 
-const name = '[Your Name]'
-export const siteTitle = 'Next.js Sample Website'
+const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
+
+export const siteTitle = 'Moonstream apps portal'
 
 export default function Layout({
   children,
@@ -21,24 +20,23 @@ export default function Layout({
         <link rel='icon' href='/favicon.png' />
         <meta
           name='description'
-          content='Learn how to build a personal website using Next.js'
-        />
-        <meta
-          property='og:image'
-          content={`https://og-image.vercel.app/${encodeURI(
-            siteTitle,
-          )}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.zeit.co%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}
+          content='Moonstream provides economic infrastructure for web3 games. Gather actionable data with our web3 data analytics. Act on it with our on-chain mechanics. Watch your economy flourish.'
         />
         <meta name='og:title' content={siteTitle} />
-        <meta name='twitter:card' content='summary_large_image' />
+        <meta
+          name='keywords'
+          content='analytics, blockchain analytics, protocol, protocols, blockchain, crypto, data, NFT gaming, smart contracts, web3, smart contract, ethereum, polygon, matic, transactions, defi, finance, decentralized, mempool, NFT, NFTs, DAO, DAOs, cryptocurrency, cryptocurrencies, bitcoin, blockchain economy, blockchain game, marketplace, blockchain security, loyalty program, Ethereum bridge, Ethereum bridges, NFT game, NFT games'
+        />
+        <meta
+          name='og:image'
+          content={`${AWS_ASSETS_PATH}/metadata-image.png`}
+        />
       </Head>
-      <Navbar />
-      <main>{children}</main>
-      {!home && (
-        <div>
-          <Link href='/'>← Back to home</Link>
-        </div>
-      )}
+      <Flex minH='100vh' flexDirection='column' justifyContent='space-between'>
+        <Navbar home={home} px='7%' />
+        {children}
+        <Footer home={home} />
+      </Flex>
     </div>
   )
 }

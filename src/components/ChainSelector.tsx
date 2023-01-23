@@ -19,7 +19,6 @@ const ChainSelector = () => {
     <Menu>
       <MenuButton
         h='36px'
-        mx={2}
         borderRadius='10px'
         as={Button}
         textDecoration='none'
