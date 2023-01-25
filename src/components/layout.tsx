@@ -1,5 +1,6 @@
 import { Flex } from '@chakra-ui/react'
 import Head from 'next/head'
+import BreadcrumbView from './BreadcrumbView'
 import Footer from './Footer'
 import Navbar from './Navbar'
 
@@ -33,7 +34,10 @@ export default function Layout({
         />
       </Head>
       <Flex minH='100vh' flexDirection='column' justifyContent='space-between'>
-        <Navbar home={home} px='7%' />
+        <Flex direction='column'>
+          <Navbar home={home} px='7%' />
+          <BreadcrumbView />
+        </Flex>
         {children}
         <Footer home={home} />
       </Flex>
