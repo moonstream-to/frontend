@@ -16,36 +16,29 @@ import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPane
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../constants";
 import Web3 from "web3";
 
+
+
 const TerminusContractView = ({address} : {address: string}) => {
   const web3ctx = useContext(Web3Context);
-  // const MULTICALL2_CONTRACT_ADDRESS = '0xc8E51042792d7405184DfCa245F2d27B94D013b6';
-  // const MULTICALL2_CONTRACT_ADDRESS = '0x6842E0412AC1c00464dc48961330156a07268d14';
   const headerMeta = ['name', 'description', 'image'];
   const [uri, setURI] = useState<string | undefined>(undefined);
   const metadata = useURI({link: uri});
-  // console.log(web3ctx);
-  // console.log(MULTICALL2_CONTRACT_ADDRESSES[String(web3ctx.chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES])
-  // const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(web3ctx.chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
-  // const chainId = '80001'
-  // const chainId = '137'
-  const web3 = new Web3(null);
-  // 0x08411ADd0b5AA8ee47563b146743C13b3556c9Cc
+
+
+
+
+
   const contractState = useQuery(
     ['contractState', address, web3ctx.chainId],
     async() => {
       const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(web3ctx.chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
       if (!address || !MULTICALL2_CONTRACT_ADDRESS) { return }
-      const terminusContract = new web3ctx.web3.eth.Contract(
+      const web3 = new Web3();
+      web3.setProvider(web3.eth.givenProvider);
+      const terminusContract = new web3.eth.Contract(
         terminusAbi,
         address,
       ) as unknown as MockTerminus
-      const multicallContract = new web3ctx.web3.eth.Contract(
-        multicallABI,
-        // '0xc8E51042792d7405184DfCa245F2d27B94D013b6',
-        // '0x6842E0412AC1c00464dc48961330156a07268d14'
-        MULTICALL2_CONTRACT_ADDRESS
-        // MULTICALL2_CONTRACT_ADDRESSES[String(web3ctx.chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES],
-      )
       const target = address;
       const callDatas = [];
       callDatas.push(terminusContract.methods.poolBasePrice().encodeABI());
@@ -59,11 +52,21 @@ const TerminusContractView = ({address} : {address: string}) => {
           callData,
         }
       })
-      return multicallContract.methods
+
+
+      const multicallContract = new web3.eth.Contract(
+        multicallABI,
+        MULTICALL2_CONTRACT_ADDRESS
+      )
+      const multicallContractCtx = new web3ctx.web3.eth.Contract(
+        multicallABI,
+        MULTICALL2_CONTRACT_ADDRESS
+      )
+
+      return multicallContractCtx.methods
         .tryAggregate(false, queries)
         .call()
         .then((results: string[]) => {
-          console.log(results);
           const parsedResults = results.map((result: string, idx: number) => {
             let parsed = web3ctx.web3.utils.hexToNumberString(result[1])
             if (idx === 4 || idx === 1) {
@@ -146,7 +149,7 @@ const TerminusContractView = ({address} : {address: string}) => {
                       })}
                     </AccordionPanel>
                   </AccordionItem>
-                  <AccordionItem border="none">
+                  {/* <AccordionItem border="none">
 
                     <AccordionButton p='0'>
                       <Spacer />
@@ -155,10 +158,10 @@ const TerminusContractView = ({address} : {address: string}) => {
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
-                    <AccordionPanel>
-                      Coming soon ...
+                    <AccordionPanel textAlign='center'>
+                      <Text fontWeight='200' fontStyle='italic'>Coming soon ... </Text>
                     </AccordionPanel>
-                  </AccordionItem>
+                  </AccordionItem> */}
                 </Accordion>
               )}
             </Flex>

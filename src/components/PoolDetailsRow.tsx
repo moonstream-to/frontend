@@ -1,12 +1,14 @@
 import { Flex, Text } from "@chakra-ui/layout";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { MAX_INT } from "../constants";
 
 const PoolDetailsRow = ({type, value}: {type: string, value: string}) => {
 
   const [valueString, setValueString] = useState('');
   const valueComponent = () => {
     if (!value) {return <Text fontStyle='italic' >{String(value)}</Text>}
+    if (value == MAX_INT) { return <Text fontStyle='italic' >MAX_INT</Text>}
     if (value.slice(0, 4) === 'http') {
       return <Link href={value}>
         <Text title={value.length > valueString.length ? value : ''} fontFamily='Jet Brains Mono, monospace' fontWeight='400' fontSize='18px'>{valueString}</Text>
@@ -14,6 +16,7 @@ const PoolDetailsRow = ({type, value}: {type: string, value: string}) => {
     } else {
       return <Text title={value.length > valueString.length ? value : ''} fontFamily='Jet Brains Mono, monospace' fontWeight='400' fontSize='18px'>{valueString}</Text>
     }
+
   }
 
   useEffect(() => {

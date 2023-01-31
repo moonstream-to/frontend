@@ -29,7 +29,6 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
       bgColor='#1A1D22'
       w='100%'
       overflow='hidden'
-      // p='10px 40px'
       justifyContent='space-between'
       {...props}
     >
@@ -49,18 +48,8 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
         <Flex alignItems='center' gap='20px'>
           {web3Provider.buttonText !== web3Provider.WALLET_STATES.CONNECTED && (
             <Button
-              // bg='linear-gradient(92.26deg, #F56646 8.41%, #FFFFFF 255.37%)'
-              // borderRadius='30px'
-              // color='white'
-              // fontSize='16px'
-              // fontWeight='700'
-              // p='8px 30px'
-              // h='36px'
               variant='orangeGradient'
               fontSize='16px'
-              // _hover={{
-              //   bg: 'linear-gradient(92.26deg, #F4532F; 8.41%, #FFFFFF 255.37%)',
-              // }}
               isDisabled={
                 web3Provider.WALLET_STATES.UNKNOWN_CHAIN ===
                 web3Provider.buttonText

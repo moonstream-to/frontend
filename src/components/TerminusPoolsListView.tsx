@@ -8,7 +8,7 @@ const TerminusPoolsListView = ({
 }: {
   contractAddress: string
   selected: number
-  onChange: (id: string, metadata: any) => void
+  onChange: (id: string, metadata: unknown) => void
 }) => {
 
   return (

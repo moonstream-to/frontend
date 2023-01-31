@@ -26,10 +26,10 @@ const ChainSelector = () => {
         _focus={{ textDecoration: 'none', backgroundColor: 'black.300' }}
         _hover={{ textDecoration: 'none', fontWeight: '700' }}
         rightIcon={<ChevronDownIcon />}
-        leftIcon={
+        leftIcon={ ['ethereum', 'mumbai', 'polygon'].includes(web3Provider?.targetChain?.name ?? '') ? (
           <Image
             display={'inline'}
-            alt='ethereum'
+            alt='chain'
             h='24px'
             mr={4}
             src={ 
@@ -39,8 +39,8 @@ const ChainSelector = () => {
                   ? ''
                   : 'https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png'
             }
-          ></Image>
-        }
+          ></Image>) : ''}
+        
         color='white'
         variant='outline'
         fontSize='16px'

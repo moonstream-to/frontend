@@ -20,7 +20,7 @@ export const SITEMAP = [
     children: [
       {
         title: 'Features',
-        path: '/features',
+        path: 'https://moonstream.to/features',
         type: PAGETYPE.CONTENT,
       },
       {
@@ -30,7 +30,7 @@ export const SITEMAP = [
       },
       {
         title: 'Whitepapers',
-        path: '/whitepapers',
+        path: 'https://moonstream.to/whitepapers',
         type: PAGETYPE.CONTENT,
       },
       {
@@ -42,7 +42,7 @@ export const SITEMAP = [
   },
   {
     title: 'Developers',
-    path: '/developers',
+    path: 'https://moonstream.to/developers',
     type: PAGETYPE.EMPTY,
 
     children: [
@@ -53,7 +53,7 @@ export const SITEMAP = [
       },
       {
         title: 'Status',
-        path: '/status',
+        path: 'https://moonstream.to/status',
         type: PAGETYPE.CONTENT,
       },
     ],
@@ -66,7 +66,7 @@ export const SITEMAP = [
     children: [
       {
         title: 'Team',
-        path: '/team',
+        path: 'https://moonstream.to/team',
         type: PAGETYPE.CONTENT,
       },
     ],
@@ -76,7 +76,7 @@ export const SITEMAP = [
 export const USER_NAV_PATHES = [
   {
     title: 'Learn how to use Moonstream',
-    path: '/welcome',
+    path: 'https://moonstream.to/welcome',
   },
 ]
 
@@ -84,3 +84,7 @@ export const MULTICALL2_CONTRACT_ADDRESSES = {
   '137': '0xc8E51042792d7405184DfCa245F2d27B94D013b6',
   '80001': '0x6842E0412AC1c00464dc48961330156a07268d14', 
 }
+
+export const MAX_INT =
+  '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+

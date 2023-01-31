@@ -48,8 +48,11 @@ const TerminusPoolsListItem = ({
         />
         <Text unselectable='on'>{metadata.data.name}</Text>
       </>)}
-      {!metadata.data && ( <>
-        <Box w='32px' h='32px' color='#4d4d4d' opacity='0.2' />
+      {!metadata.data?.image && ( <>
+        <Box w='32px' h='32px' bg='#ffffff' opacity='0.1'/>
+      </>)}
+      {!metadata.data?.name && ( <>
+        <Box h='32px' flexGrow='1' bg='#ffffff' opacity='0.1'/>
       </>)}
     </Flex>
   )

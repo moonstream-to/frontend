@@ -11,7 +11,6 @@ const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import Spinner from './Spinner/Spinner'
 import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
-// const MULTICALL2_CONTRACT_ADDRESS = '0xc8E51042792d7405184DfCa245F2d27B94D013b6'
 
 const TerminusPoolsList = ({
   contractAddress,
@@ -20,7 +19,7 @@ const TerminusPoolsList = ({
 }: {
   contractAddress: string
   selected: number
-  onChange: (id: string, metadata: any) => void
+  onChange: (id: string, metadata: unknown) => void
 }) => {
   const web3ctx = useContext(Web3Context)
 
@@ -48,7 +47,7 @@ const TerminusPoolsList = ({
       return multicallContract.methods
         .tryAggregate(false, uriQueries)
         .call()
-        .then((results: any[]) => {
+        .then((results: string[]) => {
           return results.map(
             (result) => {
               if (!web3ctx.web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
@@ -56,7 +55,7 @@ const TerminusPoolsList = ({
               web3ctx.web3.utils.hexToUtf8(result[1]).split('https://')[1]
             }
           )
-        }).then((parsedResults: any[]) => {
+        }).then((parsedResults: string[]) => {
           return parsedResults;
         })
     },

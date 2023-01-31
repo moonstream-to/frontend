@@ -1,5 +1,4 @@
 import {
-  Flex,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -7,7 +6,6 @@ import {
 } from '@chakra-ui/react'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from 'react'
-// import { useRouter } from 'next/router'
 import useRouter from '../hooks/useRouter'
 import NextLink from 'next/link'
 
@@ -16,11 +14,8 @@ const BreadcrumbView = () => {
   const router = useRouter()
   useEffect(() => {
     const newPath = router.nextRouter.pathname.split('/').slice(1)
-    if (router.query?.contractAddress) {
-      newPath.push(router.query.contractAddress)
-    }
     setPath(newPath)
-  }, [router.nextRouter.pathname])
+  }, [router.nextRouter.pathname, router.query.contractAddress])
   return (
     <Breadcrumb
       spacing='8px'
@@ -46,18 +41,15 @@ const BreadcrumbView = () => {
           linkPath === '/terminus/' && router.query.contractAddress
             ? { contractAddress: router.query.contractAddress }
             : undefined
-        // if (query) {
-        //   path.push(query.contractAddress)
-        // }
         return (
           <BreadcrumbItem key={`bcl-${element}-${idx}`}>
+
             <NextLink
               passHref
               shallow
               href={{ pathname: linkPath, query: { ...query } }}
             >
               <Text
-                // isCurrentPage={idx === path.length ? true : false}
                 fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'}
                 textTransform={'capitalize'}
               >

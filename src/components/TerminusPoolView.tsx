@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import Spinner from './Spinner/Spinner'
 import { Flex, Text } from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/image'
@@ -12,7 +12,6 @@ import Web3Context from '../contexts/Web3Context/context'
 import PoolDetailsRow from './PoolDetailsRow'
 import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
 
-// const MULTICALL2_CONTRACT_ADDRESS = '0xc8E51042792d7405184DfCa245F2d27B94D013b6'
 
 const TerminusPoolView = ({
   address,
@@ -66,8 +65,8 @@ const TerminusPoolView = ({
       return multicallContract.methods
         .tryAggregate(false, queries)
         .call()
-        .then((results: any[]) => {
-          const parsedResults = results.map((result: any, idx: number) => {
+        .then((results: string[][]) => {
+          const parsedResults = results.map((result: string[], idx: number) => {
             let parsed = web3ctx.web3.utils.hexToNumberString(result[1])
             if (idx === 0) {
               const adr = '0x' + result[1].slice(-40)

@@ -58,8 +58,8 @@ const Footer = ({ home }: { home?: boolean }) => {
             {!isMobileView && (
               <>
                 <Flex justifyContent='start'>
-                  <Link href='/privacy-policy'>Privacy policy</Link>
-                  <Link href='/tos' ml='20px'>
+                  <Link href='https://moonstream.to/privacy-policy'>Privacy policy</Link>
+                  <Link href='https://moonstream.to/tos' ml='20px'>
                     Terms of Service
                   </Link>
                 </Flex>
