@@ -38,7 +38,6 @@ export const getTerminusFacetPoolState =
         .call()
       const supply = await terminusFacet.methods.terminusPoolSupply(poolId).call()
       const uri = await terminusFacet.methods.uri(poolId).call()
-      console.log(poolId)
       const isBurnable = await terminusFacet.methods.poolIsBurnable(poolId).call()
       const isTransferable = await terminusFacet.methods
         .poolIsTransferable(poolId)

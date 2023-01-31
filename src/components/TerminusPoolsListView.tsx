@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react'
 import TerminusPoolsList from './TerminusPoolsList'
 
 const TerminusPoolsListView = ({
@@ -7,10 +7,9 @@ const TerminusPoolsListView = ({
   onChange,
 }: {
   contractAddress: string
-  selected: string
-  onChange: (id: string) => void
+  selected: number
+  onChange: (id: string, metadata: any) => void
 }) => {
-  // const { contractAddress } = router.query;
 
   return (
     <Flex
@@ -20,18 +19,18 @@ const TerminusPoolsListView = ({
       gap='30px'
       p='30px'
       w='400px'
-      h='500px'
+      maxH='700px'
       color='white'
     >
       <Text fontWeight='700' fontSize='24px'>
-        All items
+        All pools
       </Text>
       <TerminusPoolsList
         contractAddress={contractAddress}
         onChange={onChange}
         selected={selected}
       />
-      <Button
+      {/* <Button
         width='100%'
         bg='gray.0'
         fontWeight='700'
@@ -39,7 +38,7 @@ const TerminusPoolsListView = ({
         color='#2d2d2d'
       >
         + Add new
-      </Button>
+      </Button> */}
     </Flex>
   )
 }

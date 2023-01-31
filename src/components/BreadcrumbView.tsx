@@ -15,8 +15,6 @@ const BreadcrumbView = () => {
   const [path, setPath] = useState<string[]>([])
   const router = useRouter()
   useEffect(() => {
-    console.log(router.nextRouter.pathname.split('/'))
-    console.log(router.query)
     const newPath = router.nextRouter.pathname.split('/').slice(1)
     if (router.query?.contractAddress) {
       newPath.push(router.query.contractAddress)
@@ -43,8 +41,7 @@ const BreadcrumbView = () => {
         path.forEach((value, index) => {
           if (index <= idx) linkPath += value + '/'
         })
-        // console.log(linkPath)
-        // console.log(router)
+
         const query =
           linkPath === '/terminus/' && router.query.contractAddress
             ? { contractAddress: router.query.contractAddress }

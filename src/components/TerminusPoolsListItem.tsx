@@ -1,40 +1,36 @@
-import { useContext } from 'react'
-import Web3Context from '../contexts/Web3Context/context'
-import useTerminusContract from '../hooks/useTerminusContract'
+import { useEffect } from 'react'
+
 import useLink from '../hooks/useLink'
-import { Spinner } from '@chakra-ui/spinner'
-import { Flex } from '@chakra-ui/layout'
+import { Box, Flex, Text } from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/react'
 
 const TerminusPoolsListItem = ({
   poolId,
-  address,
   selected,
   onChange,
+  uri,
 }: {
   poolId: string
   address: string
   selected: boolean
-  onChange: (id: string) => void
+  onChange: (id: string, metadata: unknown) => void
+  uri: string
 }) => {
-  const web3ctx = useContext(Web3Context)
-  const { poolState } = useTerminusContract({
-    address,
-    poolId,
-    ctx: web3ctx,
-  })
-  const uri = useLink({ link: poolState.data?.uri })
+
+  const metadata = useLink({ link: uri })
 
   const handleClick = () => {
-    onChange(poolId)
+    onChange(poolId, metadata.data)
   }
-  if (!poolState.data) {
-    return <Spinner />
-  }
-  if (!uri.data) {
-    return <div>no data</div>
-  }
+
+  useEffect(() => {
+    if (selected) {
+      onChange(poolId, metadata.data)
+    }
+  }, [selected, metadata, poolId, onChange])
+
   return (
+    
     <Flex
       gap='15px'
       alignItems='center'
@@ -42,14 +38,19 @@ const TerminusPoolsListItem = ({
       onClick={handleClick}
       cursor='pointer'
     >
-      <Image
-        src={uri.data.image}
-        width='32px'
-        height='32px'
-        alt={uri.data.name}
-        borderRadius='5px'
-      />
-      <div>{uri.data.name}</div>
+      {metadata.data && ( <>
+        <Image
+          src={metadata.data.image}
+          width='32px'
+          height='32px'
+          alt={metadata.data.name}
+          borderRadius='5px'
+        />
+        <Text unselectable='on'>{metadata.data.name}</Text>
+      </>)}
+      {!metadata.data && ( <>
+        <Box w='32px' h='32px' color='#4d4d4d' opacity='0.2' />
+      </>)}
     </Flex>
   )
 }

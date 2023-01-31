@@ -79,3 +79,8 @@ export const USER_NAV_PATHES = [
     path: '/welcome',
   },
 ]
+
+export const MULTICALL2_CONTRACT_ADDRESSES = {
+  '137': '0xc8E51042792d7405184DfCa245F2d27B94D013b6',
+  '80001': '0x6842E0412AC1c00464dc48961330156a07268d14', 
+}

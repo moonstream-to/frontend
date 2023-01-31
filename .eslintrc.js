@@ -20,7 +20,7 @@ module.exports = {
   },
   plugins: ['react', 'prettier', '@typescript-eslint'],
   rules: {
-    'prettier/prettier': 'warn',
+    'prettier/prettier': 0,
     // indent: ['error', 2],
     indent: [2, 2, { SwitchCase: 1 }],
   },

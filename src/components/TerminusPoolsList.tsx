@@ -1,8 +1,17 @@
-import { Flex, Spinner } from '@chakra-ui/react'
-import { useState, useEffect, useContext } from 'react'
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { Flex } from '@chakra-ui/react'
+import { useContext } from 'react'
+import { useQuery } from 'react-query'
 import Web3Context from '../contexts/Web3Context/context'
-import useTerminusContract from '../hooks/useTerminusContract'
+import queryCacheProps from '../hooks/hookCommon'
 import TerminusPoolsListItem from './TerminusPoolsListItem'
+
+const terminusAbi = require('../web3/abi/MockTerminus.json')
+const multicallABI = require('../web3/abi/Multicall2.json')
+import { MockTerminus } from '../web3/contracts/types/MockTerminus'
+import Spinner from './Spinner/Spinner'
+import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
+// const MULTICALL2_CONTRACT_ADDRESS = '0xc8E51042792d7405184DfCa245F2d27B94D013b6'
 
 const TerminusPoolsList = ({
   contractAddress,
@@ -10,41 +19,63 @@ const TerminusPoolsList = ({
   onChange,
 }: {
   contractAddress: string
-  selected: string
-  onChange: (id: string) => void
+  selected: number
+  onChange: (id: string, metadata: any) => void
 }) => {
   const web3ctx = useContext(Web3Context)
-  const terminus = useTerminusContract({
-    address: contractAddress,
-    ctx: web3ctx,
-  })
-  const [poolIDs, setPoolIDs] = useState<string[]>([])
-  // const [selected, setSelected] = useState(1)
-  useEffect(() => {
-    if (terminus.contractState.data) {
-      const newIDs = []
-      for (
-        let i = 1;
-        i <= 20; //Number(terminus.contractState.data?.totalPools);
-        i += 1
-      ) {
-        newIDs.push(String(i))
-      }
-      setPoolIDs(newIDs)
-    }
-  }, [terminus.contractState.data])
 
-  if (terminus.contractState.isLoading || !terminus.contractState.data)
-    return <Spinner />
+  const poolsList = useQuery(
+    ['poolsList', contractAddress, web3ctx.chainId],
+    async () => {
+      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(web3ctx.chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) { return }
+      const terminusContract = new web3ctx.web3.eth.Contract(
+        terminusAbi,
+        contractAddress,
+      ) as unknown as MockTerminus
+      const multicallContract = new web3ctx.web3.eth.Contract(
+        multicallABI,
+        MULTICALL2_CONTRACT_ADDRESS,
+      )
+      const totalPools =  7 //await terminusContract.methods.totalPools().call()
+      const uriQueries = []
+      for (let i = 1; i <= Number(totalPools); i += 1) {
+        uriQueries.push({
+          target: contractAddress,
+          callData: terminusContract.methods.uri(i).encodeABI(),
+        })
+      }
+      return multicallContract.methods
+        .tryAggregate(false, uriQueries)
+        .call()
+        .then((results: any[]) => {
+          return results.map(
+            (result) => {
+              if (!web3ctx.web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
+              return 'https://' +
+              web3ctx.web3.utils.hexToUtf8(result[1]).split('https://')[1]
+            }
+          )
+        }).then((parsedResults: any[]) => {
+          return parsedResults;
+        })
+    },
+    {
+      ...queryCacheProps,
+      // onSuccess: () => {},
+    },
+  )
+  if (!poolsList.data) { return <Spinner />}
 
   return (
     <Flex direction='column' gap='15px' h='100%' overflowY='auto'>
-      {poolIDs.map((poolId) => (
+      {poolsList.data.map((uri: string, idx: number) => (
         <TerminusPoolsListItem
-          key={poolId}
+          key={idx}
           address={contractAddress}
-          poolId={poolId}
-          selected={poolId === selected}
+          poolId={String(idx + 1)}
+          selected={(idx + 1) === selected}
+          uri={uri}
           onChange={onChange}
         />
       ))}
