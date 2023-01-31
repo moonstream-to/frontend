@@ -3,11 +3,13 @@ import TerminusPoolsList from './TerminusPoolsList'
 
 const TerminusPoolsListView = ({
   contractAddress,
+  chainId,
   selected,
   onChange,
 }: {
   contractAddress: string
   selected: number
+  chainId: string
   onChange: (id: string, metadata: unknown) => void
 }) => {
 
@@ -29,6 +31,7 @@ const TerminusPoolsListView = ({
         contractAddress={contractAddress}
         onChange={onChange}
         selected={selected}
+        chainId={chainId}
       />
       {/* <Button
         width='100%'

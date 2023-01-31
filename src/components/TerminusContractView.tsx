@@ -5,8 +5,7 @@ import queryCacheProps from "../hooks/hookCommon";
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
-import Web3Context from '../contexts/Web3Context/context'
-import { useContext, useState } from "react";
+import { useState } from "react";
 import useURI from "../hooks/useLink";
 import PoolDetailsRow from "./PoolDetailsRow";
 import { Image } from "@chakra-ui/image";
@@ -18,20 +17,16 @@ import Web3 from "web3";
 
 
 
-const TerminusContractView = ({address} : {address: string}) => {
-  const web3ctx = useContext(Web3Context);
+const TerminusContractView = ({address, chainId} : {address: string, chainId: string}) => {
   const headerMeta = ['name', 'description', 'image'];
   const [uri, setURI] = useState<string | undefined>(undefined);
   const metadata = useURI({link: uri});
 
 
-
-
-
   const contractState = useQuery(
-    ['contractState', address, web3ctx.chainId],
+    ['contractState', address, chainId],
     async() => {
-      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(web3ctx.chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
+      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
       if (!address || !MULTICALL2_CONTRACT_ADDRESS) { return }
       const web3 = new Web3();
       web3.setProvider(web3.eth.givenProvider);
@@ -58,26 +53,25 @@ const TerminusContractView = ({address} : {address: string}) => {
         multicallABI,
         MULTICALL2_CONTRACT_ADDRESS
       )
-      const multicallContractCtx = new web3ctx.web3.eth.Contract(
-        multicallABI,
-        MULTICALL2_CONTRACT_ADDRESS
-      )
 
-      return multicallContractCtx.methods
+
+
+
+      return multicallContract.methods
         .tryAggregate(false, queries)
         .call()
         .then((results: string[]) => {
           const parsedResults = results.map((result: string, idx: number) => {
-            let parsed = web3ctx.web3.utils.hexToNumberString(result[1])
+            let parsed = web3.utils.hexToNumberString(result[1])
             if (idx === 4 || idx === 1) {
               const adr = '0x' + result[1].slice(-40)
-              parsed = web3ctx.web3.utils.toChecksumAddress(adr)
+              parsed = web3.utils.toChecksumAddress(adr)
             }
             if (idx === 2) {
-              if (!web3ctx.web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
+              if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
               parsed =
               'https://' +
-              web3ctx.web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              web3.utils.hexToUtf8(result[1]).split('https://')[1]
             }
             return String(parsed);
           })
