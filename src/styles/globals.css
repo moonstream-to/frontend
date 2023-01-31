@@ -105,3 +105,18 @@ a {
     color-scheme: dark;
   }
 }
+
+.markdown * a {
+  font-weight: 600;
+  color: #F56646;
+}
+.markdown * a:hover {
+  /* color: #F56646; */
+  font-weight: 600;
+}
+
+.markdown p {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+

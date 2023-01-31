@@ -3,7 +3,6 @@ import RouterLink from 'next/link'
 import {
   Button,
   Image,
-  Spacer,
   Link,
   Flex,
   Badge,
@@ -14,7 +13,7 @@ import {
 import Web3Context from '../contexts/Web3Context/context'
 import ChainSelector from './ChainSelector'
 
-const Navbar = () => {
+const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const [isMobileView] = useMediaQuery('(max-width: 767px)')
   const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
   const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`
@@ -28,46 +27,29 @@ const Navbar = () => {
       minH='56px'
       maxH='56px'
       bgColor='#1A1D22'
-      direction='row'
       w='100%'
       overflow='hidden'
+      justifyContent='space-between'
+      {...props}
     >
-      <Flex
-        pl={isMobileView ? 2 : 8}
-        justifySelf='flex-start'
-        py={1}
-        alignItems='center'
-        // flexGrow={1}
-        id='Logo Container'
-        h='100%'
-      >
-        <RouterLink href='/' passHref>
-          <Link
-            as={Image}
-            w='160px'
-            h='auto'
-            justifyContent='left'
-            src={PRIMARY_MOON_LOGO_URL}
-            alt='Logo'
-          />
-        </RouterLink>
-      </Flex>
+      <RouterLink href='/' passHref>
+        {/* {home ? ()} */}
+        <Link
+          as={Image}
+          w='160px'
+          h='auto'
+          justifyContent='left'
+          src={PRIMARY_MOON_LOGO_URL}
+          alt='Logo'
+        />
+      </RouterLink>
 
       {!isMobileView && (
-        <Flex pr={14} justifyItems='flex-end' flexGrow={1} alignItems='center'>
-          <Spacer />
+        <Flex alignItems='center' gap='20px'>
           {web3Provider.buttonText !== web3Provider.WALLET_STATES.CONNECTED && (
             <Button
-              bg='linear-gradient(92.26deg, #F56646 8.41%, #FFFFFF 255.37%)'
-              borderRadius='30px'
-              color='white'
+              variant='orangeGradient'
               fontSize='16px'
-              fontWeight='700'
-              p='8px 30px'
-              h='36px'
-              _hover={{
-                bg: 'linear-gradient(92.26deg, #F4532F; 8.41%, #FFFFFF 255.37%)',
-              }}
               isDisabled={
                 web3Provider.WALLET_STATES.UNKNOWN_CHAIN ===
                 web3Provider.buttonText

@@ -33,7 +33,7 @@ const colors = {
   },
 
   gray: {
-    0: '#FFFFFFFF',
+    0: '#FFFFFF', //buttons
     50: '#f7f8fa',
     100: '#eff1f4',
     200: '#e6eaef',
@@ -51,6 +51,7 @@ const colors = {
     1400: '#575d65',
     1500: '#454a51',
     1600: '#34373d',
+    1700: '2d2d2d', // panels background
   },
   white: {
     100: '#FFFFFF',
