@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Button, Center, Flex, Input, useToast } from '@chakra-ui/react'
+import { Box, Button, Center, Flex, Input, Select, useToast } from '@chakra-ui/react'
 import Head from 'next/head'
 import Layout from '../src/components/layout'
 import TerminusPoolsListView from '../src/components/TerminusPoolsListView'
@@ -25,6 +25,18 @@ const Terminus = () => {
   const [nextValue, setNextValue] = useState(contractAddress);
   const toast = useToast();
   const web3 = new Web3();
+
+  const chains = [
+    {
+      chainId: '137',
+      name: 'polygon',
+    },
+    {
+      chainId: '80001',
+      name: 'mumbai',
+    }
+  ]
+  const [chainId, setChainId] = useState('80001')
 
   useEffect(() => {
     if (contractAddress) {
@@ -59,6 +71,11 @@ const Terminus = () => {
     }
   });
 
+  const handleChainSelect = ((e: any) => {
+    setChainId(e.target.value);
+    handleSubmit();
+  })
+
   return (
     <Layout home={true}>
       <Head>
@@ -70,6 +87,9 @@ const Terminus = () => {
         <Flex gap='30px' direction='column' px='7%' py='30px' color='white'>
           <Flex gap='20px'>
             <Input onKeyDown={handleKeyDown} w='50ch' placeholder='terminus contract address' type='text' value={nextValue} onChange={e => setNextValue(e.target.value)}/>
+            <Select value={chainId} onChange={handleChainSelect} placeholder='' w='fit-content'>
+              {chains.map((chain: {chainId: string, name: string}) => <option value={chain.chainId} key={chain.chainId}>{chain.name}</option>)}
+            </Select>
             <Button
               bg='gray.0'
               fontWeight='400'
@@ -82,14 +102,15 @@ const Terminus = () => {
           </Flex>
           {contractAddress && (
             <>
-              <TerminusContractView address={contractAddress} />
+              <TerminusContractView address={contractAddress} chainId={chainId}/>
               <Flex gap='40px' maxH='700px'>
                 <TerminusPoolsListView
                   contractAddress={contractAddress}
                   onChange={handleClick}
                   selected={selected}
+                  chainId={chainId}
                 />
-                <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata}/>
+                <TerminusPoolView address={contractAddress} chainId={chainId} poolId={String(selected)} metadata={poolMetadata}/>
               </Flex>
             </>)}
         </Flex>
