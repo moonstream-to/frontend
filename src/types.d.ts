@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import Web3 from 'web3/types'
 import { AbiItem } from 'web3-utils'
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import moment from "moment";
 const MOCK_API = process.env.NEXT_PUBLIC_SIMIOTICS_AUTH_URL;
 var MockAdapter = require("axios-mock-adapter");
