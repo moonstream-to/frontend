@@ -80,15 +80,18 @@ const Terminus = () => {
               Show
             </Button>
           </Flex>
-          <TerminusContractView address={contractAddress} />
-          <Flex gap='40px' maxH='700px'>
-            <TerminusPoolsListView
-              contractAddress={contractAddress}
-              onChange={handleClick}
-              selected={selected}
-            />
-            <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata}/>
-          </Flex>
+          {contractAddress && (
+            <>
+              <TerminusContractView address={contractAddress} />
+              <Flex gap='40px' maxH='700px'>
+                <TerminusPoolsListView
+                  contractAddress={contractAddress}
+                  onChange={handleClick}
+                  selected={selected}
+                />
+                <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata}/>
+              </Flex>
+            </>)}
         </Flex>
       </Center>
     </Layout>
