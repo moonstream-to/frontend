@@ -36,7 +36,7 @@ const TerminusPoolsList = ({
         multicallABI,
         MULTICALL2_CONTRACT_ADDRESS,
       )
-      const totalPools =  7 //await terminusContract.methods.totalPools().call()
+      const totalPools =  await terminusContract.methods.totalPools().call()
       const uriQueries = []
       for (let i = 1; i <= Number(totalPools); i += 1) {
         uriQueries.push({
