@@ -21,7 +21,7 @@ export const SITEMAP = [
       {
         title: 'Features',
         path: 'https://moonstream.to/features',
-        type: PAGETYPE.CONTENT,
+        type: PAGETYPE.EXTERNAL,
       },
       {
         title: 'Case studies',
@@ -31,12 +31,17 @@ export const SITEMAP = [
       {
         title: 'Whitepapers',
         path: 'https://moonstream.to/whitepapers',
-        type: PAGETYPE.CONTENT,
+        type: PAGETYPE.EXTERNAL,
       },
       {
         title: 'Blog',
         path: 'https://blog.moonstream.to',
         type: PAGETYPE.EXTERNAL,
+      },
+      {
+        title: 'Terminus',
+        path: '/terminus',
+        type: PAGETYPE.CONTENT,
       },
     ],
   },
