@@ -4,11 +4,11 @@ import Head from 'next/head'
 import Layout from '../../src/components/layout'
 import TerminusPoolsListView from '../../src/components/TerminusPoolsListView'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import TerminusPoolView from '../../src/components/TerminusPoolView'
 
 import TerminusContractView from '../../src/components/TerminusContractView'
-import Web3 from 'web3'
+import Web3Context from '../../src/contexts/Web3Context/context'
 
 const Terminus = () => {
   const router = useRouter()
@@ -24,7 +24,6 @@ const Terminus = () => {
   const [poolMetadata, setPoolMetadata] = useState<unknown>({})
   const [nextValue, setNextValue] = useState(contractAddress);
   const toast = useToast();
-  const web3 = new Web3();
 
   useEffect(() => {
     if (contractAddress) {
@@ -32,6 +31,14 @@ const Terminus = () => {
       setSelected(1);
     }
   }, [contractAddress]);
+
+  const {chainId, web3} = useContext(Web3Context)
+
+  useEffect(() => {
+    handleSubmit();
+  }, [chainId])
+
+
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(nextValue)) {
