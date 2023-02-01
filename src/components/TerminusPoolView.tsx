@@ -9,29 +9,27 @@ import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import queryCacheProps from '../hooks/hookCommon'
 import PoolDetailsRow from './PoolDetailsRow'
 import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
-import Web3 from 'web3'
+import Web3Context from '../contexts/Web3Context/context'
+import { useContext } from 'react'
 
 
 const TerminusPoolView = ({
   address,
-  chainId,
   poolId,
   metadata,
 }: {
   address: string
-  chainId: string
   poolId: string
   metadata: any
 }) => {
-
+  const {chainId, web3 } = useContext(Web3Context);
   const poolState = useQuery(
     ['poolState', address, poolId, chainId],
     async () => {
-      
       const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
       if (!address || !MULTICALL2_CONTRACT_ADDRESS) { return }      
-      const web3 = new Web3();
-      web3.setProvider(web3.eth.givenProvider);
+
+
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
         address,
