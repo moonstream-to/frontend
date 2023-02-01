@@ -68,11 +68,11 @@ const Terminus = () => {
 
   return (
     <Layout home={true}>
-      <Head>
+      {/* <Head>
         <title>Moonstream portal</title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.png' />
-      </Head>
+      </Head> */}
       <Center>
         <Flex gap='30px' direction='column' px='7%' py='30px' color='white'>
           <Flex gap='20px'>
