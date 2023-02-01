@@ -11,28 +11,23 @@ const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import Spinner from './Spinner/Spinner'
 import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
-import Web3 from 'web3'
 
 const TerminusPoolsList = ({
   contractAddress,
-  chainId,
   selected,
   onChange,
 }: {
   contractAddress: string
-  chainId: string
   selected: number
   onChange: (id: string, metadata: unknown) => void
 }) => {
-  // const web3ctx = useContext(Web3Context)
+  const {chainId, web3 } = useContext(Web3Context)
 
   const poolsList = useQuery(
     ['poolsList', contractAddress, chainId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
       if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) { return }
-      const web3 = new Web3();
-      web3.setProvider(web3.eth.givenProvider);
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
         contractAddress,
@@ -41,7 +36,7 @@ const TerminusPoolsList = ({
         multicallABI,
         MULTICALL2_CONTRACT_ADDRESS,
       )
-      const totalPools =  7 //await terminusContract.methods.totalPools().call()
+      const totalPools =  await terminusContract.methods.totalPools().call()
       const uriQueries = []
       for (let i = 1; i <= Number(totalPools); i += 1) {
         uriQueries.push({

@@ -5,7 +5,7 @@ import queryCacheProps from "../hooks/hookCommon";
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useURI from "../hooks/useLink";
 import PoolDetailsRow from "./PoolDetailsRow";
 import { Image } from "@chakra-ui/image";
@@ -13,23 +13,21 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from "@chakra-ui/react";
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../constants";
-import Web3 from "web3";
+import Web3Context from "../contexts/Web3Context/context";
 
 
 
-const TerminusContractView = ({address, chainId} : {address: string, chainId: string}) => {
+const TerminusContractView = ({address} : {address: string}) => {
   const headerMeta = ['name', 'description', 'image'];
   const [uri, setURI] = useState<string | undefined>(undefined);
   const metadata = useURI({link: uri});
-
+  const {web3, chainId} = useContext(Web3Context);
 
   const contractState = useQuery(
     ['contractState', address, chainId],
     async() => {
       const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
       if (!address || !MULTICALL2_CONTRACT_ADDRESS) { return }
-      const web3 = new Web3();
-      web3.setProvider(web3.eth.givenProvider);
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
         address,
