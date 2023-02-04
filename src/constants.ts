@@ -38,11 +38,6 @@ export const SITEMAP = [
         path: 'https://blog.moonstream.to',
         type: PAGETYPE.EXTERNAL,
       },
-      {
-        title: 'Terminus',
-        path: '/terminus',
-        type: PAGETYPE.CONTENT,
-      },
     ],
   },
   {
@@ -87,9 +82,11 @@ export const USER_NAV_PATHES = [
 
 export const MULTICALL2_CONTRACT_ADDRESSES = {
   '137': '0xc8E51042792d7405184DfCa245F2d27B94D013b6',
-  '80001': '0x6842E0412AC1c00464dc48961330156a07268d14', 
+  // '80001': '0x6842E0412AC1c00464dc48961330156a07268d14', 
+  '80001': '0xcA11bde05977b3631167028862bE2a173976CA11',
 }
 
 export const MAX_INT =
   '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
+export const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
