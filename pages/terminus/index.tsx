@@ -28,7 +28,7 @@ const Terminus = () => {
   const toast = useToast();
 
   useEffect(() => {
-    setRecent(JSON.parse(localStorage.getItem('terminusContracts') ?? '{}'));
+    setRecent(JSON.parse(localStorage.getItem('terminusContracts') ?? 'null'));
 
   }, [])
 
