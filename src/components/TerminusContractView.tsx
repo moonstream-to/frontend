@@ -2,6 +2,8 @@
 import { Box, Flex, Spacer, Text } from "@chakra-ui/layout";
 import { useQuery } from "react-query";
 import queryCacheProps from "../hooks/hookCommon";
+import { queryPublic } from '../utils/http'
+
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
@@ -20,7 +22,6 @@ import Web3Context from "../contexts/Web3Context/context";
 const TerminusContractView = ({address} : {address: string}) => {
   const headerMeta = ['name', 'description', 'image'];
   const [uri, setURI] = useState<string | undefined>(undefined);
-  const metadata = useURI({link: uri});
   const {web3, chainId} = useContext(Web3Context);
 
   const contractState = useQuery(
@@ -52,24 +53,36 @@ const TerminusContractView = ({address} : {address: string}) => {
         MULTICALL2_CONTRACT_ADDRESS
       )
 
-
+      
 
 
       return multicallContract.methods
         .tryAggregate(false, queries)
         .call()
-        .then((results: string[]) => {
-          const parsedResults = results.map((result: string, idx: number) => {
-            let parsed = web3.utils.hexToNumberString(result[1])
+        .then((results: { returnData: string, success: boolean }[]) => {
+          if (results.some((res) =>  res.success)) {
+            let items
+            try {
+              items = JSON.parse(localStorage.getItem('terminusContracts') ?? '{}');
+            } catch(e) {
+              console.log(e);
+            }
+            items[address] = {...items[address], chainId}
+            localStorage.setItem('terminusContracts', JSON.stringify(items));
+          }
+
+          
+          const parsedResults = results.map((result: { returnData: string, success: boolean }, idx: number) => {
+            let parsed = web3.utils.hexToNumberString(result.returnData)
             if (idx === 4 || idx === 1) {
-              const adr = '0x' + result[1].slice(-40)
+              const adr = '0x' + result.returnData.slice(-40)
               parsed = web3.utils.toChecksumAddress(adr)
             }
             if (idx === 2) {
-              if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
+              if (!web3.utils.hexToUtf8(result.returnData).split('https://')[1]) { return undefined };
               parsed =
               'https://' +
-              web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              web3.utils.hexToUtf8(result.returnData).split('https://')[1]
             }
             return String(parsed);
           })
@@ -89,6 +102,39 @@ const TerminusContractView = ({address} : {address: string}) => {
       // onSuccess: () => {},
     },
   );
+
+
+
+  const metadata = useQuery(
+    ['link', uri],
+    (query: any) => {
+
+      return queryPublic(query.queryKey[1]).then((r: any) => {
+        
+        console.log(r);
+        let items
+        try {
+          items = JSON.parse(localStorage.getItem('terminusContracts') ?? '{}');
+        } catch(e) {
+          console.log(e);
+        }
+        if (r.data?.image) {
+          items[address] = {...items[address], image: r.data.image}
+        }
+        if (r.data?.name) {
+          items[address] = {...items[address], name: r.data.name}
+        }
+        
+        localStorage.setItem('terminusContracts', JSON.stringify(items));
+        return r.data
+      })
+    },
+    {
+      ...queryCacheProps,
+      enabled: !!uri,
+    },
+  )
+
   return (
     <>
       {contractState.data && (

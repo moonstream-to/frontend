@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Button, Center, Flex, Input, useToast } from '@chakra-ui/react'
+import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 import Head from 'next/head'
 import Layout from '../../src/components/layout'
 import TerminusPoolsListView from '../../src/components/TerminusPoolsListView'
@@ -9,6 +9,7 @@ import TerminusPoolView from '../../src/components/TerminusPoolView'
 
 import TerminusContractView from '../../src/components/TerminusContractView'
 import Web3Context from '../../src/contexts/Web3Context/context'
+import ContractRow from '../../src/components/ContractRow'
 
 const Terminus = () => {
   const router = useRouter()
@@ -23,7 +24,13 @@ const Terminus = () => {
   const [selected, setSelected] = useState(1)
   const [poolMetadata, setPoolMetadata] = useState<unknown>({})
   const [nextValue, setNextValue] = useState(contractAddress);
+  const [recent, setRecent] = useState<{address: {name: string, image: string, chainId: number}} | undefined>(undefined);
   const toast = useToast();
+
+  useEffect(() => {
+    setRecent(JSON.parse(localStorage.getItem('terminusContracts') ?? '{}'));
+
+  }, [])
 
   useEffect(() => {
     if (contractAddress) {
@@ -35,7 +42,9 @@ const Terminus = () => {
   const {chainId, web3} = useContext(Web3Context)
 
   useEffect(() => {
-    handleSubmit();
+    if (nextValue && web3.utils.isAddress(nextValue)) {
+      handleSubmit();
+    }
   }, [chainId])
 
 
@@ -68,11 +77,9 @@ const Terminus = () => {
 
   return (
     <Layout home={true}>
-      {/* <Head>
-        <title>Moonstream portal</title>
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <link rel='icon' href='/favicon.png' />
-      </Head> */}
+      <Head>
+        <title>Moonstream portal - terminus</title>
+      </Head>
       <Center>
         <Flex gap='30px' direction='column' px='7%' py='30px' color='white'>
           <Flex gap='20px'>
@@ -99,6 +106,16 @@ const Terminus = () => {
                 <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata}/>
               </Flex>
             </>)}
+          {!contractAddress && recent && (
+            <Flex direction='column' gap='20px' bg='#2d2d2d' borderRadius='10px' p='20px'>
+              <Text>Recent</Text>
+              {Object.keys(recent).map((address) => {
+                const { chainId, name, image } = recent[address as keyof typeof recent];
+                return <ContractRow key={address} address={address} chainId={chainId} name={name} image={image} />
+              })}
+            </Flex>
+          )}
+
         </Flex>
       </Center>
     </Layout>
