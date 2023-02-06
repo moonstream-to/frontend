@@ -2,7 +2,8 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 
 const ENTITY_API = process.env.NEXT_PUBLIC_ENTITY_API_URL;
-const WHITELIST_EVENT_COLLECTION_ID = '00b51f0e-a26d-49ca-ac5b-bf7d1d23dc2a';
+const WHITELIST_EVENT_COLLECTION_ID =
+  process.env.NEXT_PUBLIC_WHITELIST_EVENT_COLLECTION_ID;
 
 const fetchSearchPublicEntity = (queryKey: any) => {
   const searchingAddress = queryKey.queryKey[1];
