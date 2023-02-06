@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext } from 'react'
 import Web3 from 'web3'
-import {
-  WalletStatesInterface,
-  MoonstreamWeb3ProviderInterface,
-} from '../../types/Moonstream'
+import { WalletStatesInterface, MoonstreamWeb3ProviderInterface } from '../../types/Moonstream'
 
 export enum txStatus {
   READY = 0,
@@ -37,9 +34,7 @@ const Web3Context = createContext<MoonstreamWeb3ProviderInterface>({
   defaultTxConfig: {},
   signAccessToken: () => console.error('not intied'),
   getMethodsABI: (abi, name) => {
-    const index = abi.findIndex(
-      (item) => item.name === name && item.type == 'function',
-    )
+    const index = abi.findIndex((item) => item.name === name && item.type == 'function')
     if (index !== -1) {
       const item = abi[index]
       return item

@@ -1,15 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext } from 'react'
 
-import {
-  Menu,
-  MenuItem,
-  MenuList,
-  Image,
-  MenuButton,
-  Button,
-  Icon,
-} from '@chakra-ui/react'
+import { Menu, MenuItem, MenuList, Image, MenuButton, Button, Icon } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { MdOutlineLaptopMac } from 'react-icons/md'
 import Web3Context from '../contexts/Web3Context/context'
@@ -26,21 +18,25 @@ const ChainSelector = () => {
         _focus={{ textDecoration: 'none', backgroundColor: 'black.300' }}
         _hover={{ textDecoration: 'none', fontWeight: '700' }}
         rightIcon={<ChevronDownIcon />}
-        leftIcon={ ['ethereum', 'mumbai', 'polygon'].includes(web3Provider?.targetChain?.name ?? '') ? (
-          <Image
-            display={'inline'}
-            alt='chain'
-            h='24px'
-            mr={4}
-            src={ 
-              web3Provider.targetChain?.name === 'ethereum'
-                ? 'https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/ethereum/eth-diamond-rainbow.png'
-                : web3Provider.targetChain?.name === 'localhost'
+        leftIcon={
+          ['ethereum', 'mumbai', 'polygon'].includes(web3Provider?.targetChain?.name ?? '') ? (
+            <Image
+              display={'inline'}
+              alt='chain'
+              h='24px'
+              mr={4}
+              src={
+                web3Provider.targetChain?.name === 'ethereum'
+                  ? 'https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/ethereum/eth-diamond-rainbow.png'
+                  : web3Provider.targetChain?.name === 'localhost'
                   ? ''
                   : 'https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png'
-            }
-          ></Image>) : ''}
-        
+              }
+            ></Image>
+          ) : (
+            ''
+          )
+        }
         color='white'
         variant='outline'
         fontSize='16px'
