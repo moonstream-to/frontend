@@ -37,7 +37,14 @@ const TerminusPoolsList = ({
         MULTICALL2_CONTRACT_ADDRESS,
       )
       const LIMIT = Number(MAX_INT)
-      const totalPools = await terminusContract.methods.totalPools().call()
+      let totalPools
+      try {
+        totalPools = await terminusContract.methods.totalPools().call()
+      } catch (e) {
+        console.log(e)
+        totalPools = 0;
+      }
+
       const uriQueries = []
       for (let i = 1; i <= Math.min(LIMIT, Number(totalPools)); i += 1) {
         uriQueries.push({
