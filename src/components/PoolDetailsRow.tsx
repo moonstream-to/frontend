@@ -52,6 +52,7 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
       }
       return fullString.slice(0, atStart) + '...' + fullString.slice(-atEnd)
     }
+
     if (String(value).slice(0, 4) === 'http') {
       setValueString(shortString(String(value), 20, 10))
       return
@@ -60,7 +61,12 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
       setValueString(shortString(String(value), 6, 4))
       return
     }
-    setValueString(value)
+    if (String(value).length > 30) {
+      setValueString(shortString(String(value), 27, 3));
+      return
+    } 
+    setValueString(value);
+
   }, [value])
   return (
     <Flex justifyContent='space-between'>
@@ -68,8 +74,6 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
         {type}
       </Text>
       {valueComponent()}
-      {/* {value && <Text title={value.length > valueString.length ? value : ''} fontFamily='Jet Brains Mono, monospace' fontWeight='400' fontSize='18px'>{valueString}</Text>} */}
-      {/* {!value && <Text fontStyle='italic' >{String(value)}</Text>} */}
     </Flex>
   )
 }

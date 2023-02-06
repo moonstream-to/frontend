@@ -1,7 +1,6 @@
-import { Flex, Image, Text, Box } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { chainByChainId } from '../contexts/Web3Context'
+import { Flex, Image, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { chainByChainId } from "../contexts/Web3Context";
 
 const ContractRow = ({ address, name, image, chainId }: { address?: string; name?: string; image?: string; chainId: number }) => {
   const router = useRouter()
