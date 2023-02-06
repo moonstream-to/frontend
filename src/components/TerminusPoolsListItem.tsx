@@ -35,8 +35,11 @@ const TerminusPoolsListItem = ({
       gap='15px'
       alignItems='center'
       bg={selected ? '#4d4d4d' : 'transparent'}
+      fontWeight={selected ? '900' : '400'}
+      borderRadius='10px'
       onClick={handleClick}
       cursor='pointer'
+      p='10px'
     >
       {metadata.data && ( <>
         <Image
@@ -49,10 +52,10 @@ const TerminusPoolsListItem = ({
         <Text unselectable='on'>{metadata.data.name}</Text>
       </>)}
       {!metadata.data?.image && ( <>
-        <Box w='32px' h='32px' bg='#ffffff' opacity='0.1'/>
+        <Box border='1px solid black' borderRadius='5px' w='32px' h='32px'/>
       </>)}
       {!metadata.data?.name && ( <>
-        <Box h='32px' flexGrow='1' bg='#ffffff' opacity='0.1'/>
+        <Text borderRadius='5px' h='32px' flexGrow='1' textStyle='italic' color='gray'>no name</Text>
       </>)}
     </Flex>
   )
