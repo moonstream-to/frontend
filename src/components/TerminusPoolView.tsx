@@ -44,7 +44,9 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
         .call()
         .then((results: string[][]) => {
           const parsedResults = results.map((result: string[], idx: number) => {
-            if (result[1] === '0x') { return undefined }
+            if (result[1] === '0x') {
+              return undefined
+            }
             let parsed
             try {
               parsed = web3.utils.hexToNumberString(result[1])
@@ -52,7 +54,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                 const adr = '0x' + result[1].slice(-40)
                 parsed = web3.utils.toChecksumAddress(adr)
               }
-              if(idx === 1 || idx === 2) {
+              if (idx === 1 || idx === 2) {
                 console.log(result[1], parsed)
                 if (Number(parsed) === 1 || Number(parsed) === 0) {
                   parsed = !!Number(parsed)
@@ -61,13 +63,13 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                 }
               }
               if (idx === 5) {
-                if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
-                parsed =
-                'https://' +
-                web3.utils.hexToUtf8(result[1]).split('https://')[1]
+                if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) {
+                  return undefined
+                }
+                parsed = 'https://' + web3.utils.hexToUtf8(result[1]).split('https://')[1]
               }
             } catch (e) {
-              parsed = undefined;
+              parsed = undefined
             }
             return parsed
           })
@@ -80,8 +82,9 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
             uri: parsedResults[5],
           }
           return data
-        }).catch((e) => {
-          console.log(e);
+        })
+        .catch((e: any) => {
+          console.log(e)
         })
     },
     {
@@ -105,32 +108,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                 {metadata?.description ?? ''}
               </Text>
             </Flex>
-<<<<<<< HEAD
             <Flex direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323'>
-              <PoolDetailsRow type='controller' value={poolState.data.controller} />
-              <PoolDetailsRow type='capacity' value={poolState.data.capacity} />
-              <PoolDetailsRow type='supply' value={poolState.data.supply} />
-              <PoolDetailsRow type='burnable' value={poolState.data.isBurnable ? 'true' : 'false'} />
-              <PoolDetailsRow type='transferable' value={poolState.data.isTransferable ? 'true' : 'false'} />
-              <PoolDetailsRow type='uri' value={poolState.data.uri} />
-
-              {metadata?.attributes && (
-                <>
-                  <Text fontWeight='700' mt='20px'>
-                    Metadata:
-                  </Text>
-
-                  {metadata.attributes.map((attribute: { trait_type: string; value: string }) => (
-                    <PoolDetailsRow key={attribute.trait_type} type={attribute.trait_type} value={String(attribute.value)} />
-                  ))}
-=======
-            <Flex
-              direction='column'
-              gap='10px'
-              p={5}
-              borderRadius='10px'
-              bg='#232323'
-            >
               {poolState.data.controller && (
                 <>
                   <PoolDetailsRow type='controller' value={poolState.data.controller} />
@@ -139,20 +117,18 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                   <PoolDetailsRow type='burnable' value={poolState.data.isBurnable ? 'true' : 'false'} />
                   <PoolDetailsRow type='transferable' value={poolState.data.isTransferable ? 'true' : 'false'} />
                   <PoolDetailsRow type='uri' value={poolState.data.uri} />
-              
-                  {metadata?.attributes  && (
 
+                  {metadata?.attributes && (
                     <>
-                      <Text fontWeight='700' mt='20px'>Metadata:</Text>
-              
-                      {metadata.attributes.map(
-                        (attribute: { trait_type: string; value: string }) => (
-                          <PoolDetailsRow key={attribute.trait_type} type={attribute.trait_type} value={String(attribute.value)} />
-                        ),
-                      )}
+                      <Text fontWeight='700' mt='20px'>
+                        Metadata:
+                      </Text>
+
+                      {metadata.attributes.map((attribute: { trait_type: string; value: string }) => (
+                        <PoolDetailsRow key={attribute.trait_type} type={attribute.trait_type} value={String(attribute.value)} />
+                      ))}
                     </>
                   )}
->>>>>>> main
                 </>
               )}
             </Flex>

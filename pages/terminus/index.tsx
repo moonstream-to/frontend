@@ -30,9 +30,9 @@ const Terminus = () => {
 
   useEffect(() => {
     if (contractAddress) {
-      setNextValue(contractAddress);
-      setSelected(1);
-      setPoolMetadata({});
+      setNextValue(contractAddress)
+      setSelected(1)
+      setPoolMetadata({})
     }
   }, [contractAddress])
 

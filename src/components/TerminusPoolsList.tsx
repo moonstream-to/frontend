@@ -26,23 +26,19 @@ const TerminusPoolsList = ({
   const poolsList = useQuery(
     ['poolsList', contractAddress, chainId],
     async () => {
-      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
-      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) { return }
-      const terminusContract = new web3.eth.Contract(
-        terminusAbi,
-        contractAddress,
-      ) as unknown as MockTerminus
-      const multicallContract = new web3.eth.Contract(
-        multicallABI,
-        MULTICALL2_CONTRACT_ADDRESS,
-      )
+      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
+        return
+      }
+      const terminusContract = new web3.eth.Contract(terminusAbi, contractAddress) as unknown as MockTerminus
+      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
       const LIMIT = Number(MAX_INT)
       let totalPools
       try {
         totalPools = await terminusContract.methods.totalPools().call()
       } catch (e) {
         console.log(e)
-        totalPools = 0;
+        totalPools = 0
       }
 
       const uriQueries = []
@@ -56,26 +52,19 @@ const TerminusPoolsList = ({
         .tryAggregate(false, uriQueries)
         .call()
         .then((results: string[]) => {
-<<<<<<< HEAD
           return results.map((result) => {
-            if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) {
-              return undefined
-=======
-          return results.map(
-            (result) => {
-              let parsed;
-              try {
-                parsed = web3.utils.hexToUtf8(result[1]).split('https://')[1];
-                if (!parsed) {throw('not an address')}
-                parsed = 'https://' + parsed
-              } catch(e) {
-                console.log(e);
-                parsed = undefined;
+            let parsed
+            try {
+              parsed = web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              if (!parsed) {
+                throw 'not an address'
               }
-              return parsed;
->>>>>>> main
+              parsed = 'https://' + parsed
+            } catch (e) {
+              console.log(e)
+              parsed = undefined
             }
-            return 'https://' + web3.utils.hexToUtf8(result[1]).split('https://')[1]
+            return parsed
           })
         })
         .then((parsedResults: string[]) => {

@@ -62,11 +62,10 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
       return
     }
     if (String(value).length > 30) {
-      setValueString(shortString(String(value), 27, 3));
+      setValueString(shortString(String(value), 27, 3))
       return
-    } 
-    setValueString(value);
-
+    }
+    setValueString(value)
   }, [value])
   return (
     <Flex justifyContent='space-between'>
