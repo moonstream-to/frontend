@@ -36,6 +36,7 @@ const Terminus = () => {
     if (contractAddress) {
       setNextValue(contractAddress);
       setSelected(1);
+      setPoolMetadata({});
     }
   }, [contractAddress]);
 

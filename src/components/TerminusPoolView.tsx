@@ -68,16 +68,30 @@ const TerminusPoolView = ({
         .call()
         .then((results: string[][]) => {
           const parsedResults = results.map((result: string[], idx: number) => {
-            let parsed = web3.utils.hexToNumberString(result[1])
-            if (idx === 0) {
-              const adr = '0x' + result[1].slice(-40)
-              parsed = web3.utils.toChecksumAddress(adr)
-            }
-            if (idx === 5) {
-              if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
-              parsed =
+            if (result[1] === '0x') { return undefined }
+            let parsed
+            try {
+              parsed = web3.utils.hexToNumberString(result[1])
+              if (idx === 0) {
+                const adr = '0x' + result[1].slice(-40)
+                parsed = web3.utils.toChecksumAddress(adr)
+              }
+              if(idx === 1 || idx === 2) {
+                console.log(result[1], parsed)
+                if (Number(parsed) === 1 || Number(parsed) === 0) {
+                  parsed = !!Number(parsed)
+                } else {
+                  parsed = undefined
+                }
+              }
+              if (idx === 5) {
+                if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
+                parsed =
                 'https://' +
                 web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              }
+            } catch (e) {
+              parsed = undefined;
             }
             return parsed
           })
@@ -85,11 +99,13 @@ const TerminusPoolView = ({
             controller: parsedResults[0],
             isBurnable: parsedResults[1],
             isTransferable: parsedResults[2],
-            capacity: String(parsedResults[3]),
+            capacity: parsedResults[3],
             supply: parsedResults[4],
             uri: parsedResults[5],
           }
           return data
+        }).catch((e) => {
+          console.log(e);
         })
     },
     {
@@ -137,23 +153,26 @@ const TerminusPoolView = ({
               borderRadius='10px'
               bg='#232323'
             >
-
-              <PoolDetailsRow type='controller' value={poolState.data.controller} />
-              <PoolDetailsRow type='capacity' value={poolState.data.capacity} />
-              <PoolDetailsRow type='supply' value={poolState.data.supply} />
-              <PoolDetailsRow type='burnable' value={poolState.data.isBurnable ? 'true' : 'false'} />
-              <PoolDetailsRow type='transferable' value={poolState.data.isTransferable ? 'true' : 'false'} />
-              <PoolDetailsRow type='uri' value={poolState.data.uri} />
-              
-              {metadata?.attributes  && (
-
+              {poolState.data.controller && (
                 <>
-                  <Text fontWeight='700' mt='20px'>Metadata:</Text>
+                  <PoolDetailsRow type='controller' value={poolState.data.controller} />
+                  <PoolDetailsRow type='capacity' value={poolState.data.capacity} />
+                  <PoolDetailsRow type='supply' value={poolState.data.supply} />
+                  <PoolDetailsRow type='burnable' value={poolState.data.isBurnable ? 'true' : 'false'} />
+                  <PoolDetailsRow type='transferable' value={poolState.data.isTransferable ? 'true' : 'false'} />
+                  <PoolDetailsRow type='uri' value={poolState.data.uri} />
               
-                  {metadata.attributes.map(
-                    (attribute: { trait_type: string; value: string }) => (
-                      <PoolDetailsRow key={attribute.trait_type} type={attribute.trait_type} value={String(attribute.value)} />
-                    ),
+                  {metadata?.attributes  && (
+
+                    <>
+                      <Text fontWeight='700' mt='20px'>Metadata:</Text>
+              
+                      {metadata.attributes.map(
+                        (attribute: { trait_type: string; value: string }) => (
+                          <PoolDetailsRow key={attribute.trait_type} type={attribute.trait_type} value={String(attribute.value)} />
+                        ),
+                      )}
+                    </>
                   )}
                 </>
               )}

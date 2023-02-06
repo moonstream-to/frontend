@@ -1,6 +1,5 @@
-import { Flex, Image, Text, Box } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { chainByChainId } from "../contexts/Web3Context";
 
 
