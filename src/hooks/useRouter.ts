@@ -106,11 +106,7 @@ const useRouter = () => {
         shallow: !!shallow,
       })
     } else {
-      router.replace(
-        { pathname: router.pathname, query: newQuery },
-        undefined,
-        { shallow: !!shallow },
-      )
+      router.replace({ pathname: router.pathname, query: newQuery }, undefined, { shallow: !!shallow })
     }
   }
 
@@ -122,11 +118,7 @@ const useRouter = () => {
         shallow: !!shallow,
       })
     } else {
-      router.replace(
-        { pathname: router.pathname, query: newQuery },
-        undefined,
-        { shallow: !!shallow },
-      )
+      router.replace({ pathname: router.pathname, query: newQuery }, undefined, { shallow: !!shallow })
     }
   }
 

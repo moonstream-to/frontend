@@ -16,7 +16,6 @@ const TerminusPoolsListItem = ({
   onChange: (id: string, metadata: unknown) => void
   uri: string
 }) => {
-
   const metadata = useLink({ link: uri })
 
   const handleClick = () => {
@@ -30,7 +29,6 @@ const TerminusPoolsListItem = ({
   }, [selected, metadata, poolId, onChange])
 
   return (
-    
     <Flex
       gap='15px'
       alignItems='center'
@@ -41,22 +39,24 @@ const TerminusPoolsListItem = ({
       cursor='pointer'
       p='10px'
     >
-      {metadata.data && ( <>
-        <Image
-          src={metadata.data.image}
-          width='32px'
-          height='32px'
-          alt={metadata.data.name}
-          borderRadius='5px'
-        />
-        <Text unselectable='on'>{metadata.data.name}</Text>
-      </>)}
-      {!metadata.data?.image && ( <>
-        <Box border='1px solid black' borderRadius='5px' w='32px' h='32px'/>
-      </>)}
-      {!metadata.data?.name && ( <>
-        <Text borderRadius='5px' h='32px' flexGrow='1' textStyle='italic' color='gray'>no name</Text>
-      </>)}
+      {metadata.data && (
+        <>
+          <Image src={metadata.data.image} width='32px' height='32px' alt={metadata.data.name} borderRadius='5px' />
+          <Text unselectable='on'>{metadata.data.name}</Text>
+        </>
+      )}
+      {!metadata.data?.image && (
+        <>
+          <Box border='1px solid black' borderRadius='5px' w='32px' h='32px' />
+        </>
+      )}
+      {!metadata.data?.name && (
+        <>
+          <Text borderRadius='5px' h='32px' flexGrow='1' textStyle='italic' color='gray'>
+            no name
+          </Text>
+        </>
+      )}
     </Flex>
   )
 }

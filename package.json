@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build && next export -o build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write src/* pages/*"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.16",

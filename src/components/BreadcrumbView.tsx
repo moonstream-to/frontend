@@ -1,9 +1,4 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Text,
-} from '@chakra-ui/react'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from '@chakra-ui/react'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from 'react'
 import useRouter from '../hooks/useRouter'
@@ -17,13 +12,7 @@ const BreadcrumbView = () => {
     setPath(newPath)
   }, [router.nextRouter.pathname, router.query.contractAddress])
   return (
-    <Breadcrumb
-      spacing='8px'
-      pt={2}
-      fontSize={['sm', 'sm', 'md']}
-      separator={<ChevronRightIcon color='gray.500' />}
-      px='7%'
-    >
+    <Breadcrumb spacing='8px' pt={2} fontSize={['sm', 'sm', 'md']} separator={<ChevronRightIcon color='gray.500' />} px='7%'>
       {path.length !== 0 && (
         <BreadcrumbItem>
           <BreadcrumbLink textTransform={'capitalize'} href={`/`}>
@@ -38,21 +27,11 @@ const BreadcrumbView = () => {
         })
 
         const query =
-          linkPath === '/terminus/' && router.query.contractAddress
-            ? { contractAddress: router.query.contractAddress }
-            : undefined
+          linkPath === '/terminus/' && router.query.contractAddress ? { contractAddress: router.query.contractAddress } : undefined
         return (
           <BreadcrumbItem key={`bcl-${element}-${idx}`}>
-
-            <NextLink
-              passHref
-              shallow
-              href={{ pathname: linkPath, query: { ...query } }}
-            >
-              <Text
-                fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'}
-                textTransform={'capitalize'}
-              >
+            <NextLink passHref shallow href={{ pathname: linkPath, query: { ...query } }}>
+              <Text fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'} textTransform={'capitalize'}>
                 {element}
               </Text>
             </NextLink>

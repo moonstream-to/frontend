@@ -21,28 +21,24 @@ const TerminusPoolsList = ({
   selected: number
   onChange: (id: string, metadata: unknown) => void
 }) => {
-  const {chainId, web3 } = useContext(Web3Context)
+  const { chainId, web3 } = useContext(Web3Context)
 
   const poolsList = useQuery(
     ['poolsList', contractAddress, chainId],
     async () => {
-      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
-      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) { return }
-      const terminusContract = new web3.eth.Contract(
-        terminusAbi,
-        contractAddress,
-      ) as unknown as MockTerminus
-      const multicallContract = new web3.eth.Contract(
-        multicallABI,
-        MULTICALL2_CONTRACT_ADDRESS,
-      )
+      const MULTICALL2_CONTRACT_ADDRESS = MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
+        return
+      }
+      const terminusContract = new web3.eth.Contract(terminusAbi, contractAddress) as unknown as MockTerminus
+      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
       const LIMIT = Number(MAX_INT)
       let totalPools
       try {
         totalPools = await terminusContract.methods.totalPools().call()
       } catch (e) {
         console.log(e)
-        totalPools = 0;
+        totalPools = 0
       }
 
       const uriQueries = []
@@ -56,22 +52,23 @@ const TerminusPoolsList = ({
         .tryAggregate(false, uriQueries)
         .call()
         .then((results: string[]) => {
-          return results.map(
-            (result) => {
-              let parsed;
-              try {
-                parsed = web3.utils.hexToUtf8(result[1]).split('https://')[1];
-                if (!parsed) {throw('not an address')}
-                parsed = 'https://' + parsed
-              } catch(e) {
-                console.log(e);
-                parsed = undefined;
+          return results.map((result) => {
+            let parsed
+            try {
+              parsed = web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              if (!parsed) {
+                throw 'not an address'
               }
-              return parsed;
+              parsed = 'https://' + parsed
+            } catch (e) {
+              console.log(e)
+              parsed = undefined
             }
-          )
-        }).then((parsedResults: string[]) => {
-          return parsedResults;
+            return parsed
+          })
+        })
+        .then((parsedResults: string[]) => {
+          return parsedResults
         })
     },
     {
@@ -79,7 +76,9 @@ const TerminusPoolsList = ({
       // onSuccess: () => {},
     },
   )
-  if (!poolsList.data) { return <Spinner />}
+  if (!poolsList.data) {
+    return <Spinner />
+  }
 
   return (
     <Flex direction='column' gap='15px' h='100%' overflowY='auto'>
@@ -88,7 +87,7 @@ const TerminusPoolsList = ({
           key={idx}
           address={contractAddress}
           poolId={String(idx + 1)}
-          selected={(idx + 1) === selected}
+          selected={idx + 1 === selected}
           uri={uri}
           onChange={onChange}
         />

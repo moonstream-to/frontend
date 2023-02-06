@@ -1,14 +1,6 @@
 import React, { useContext } from 'react'
 import RouterLink from 'next/link'
-import {
-  Button,
-  Image,
-  Link,
-  Flex,
-  Badge,
-  Skeleton,
-  useMediaQuery,
-} from '@chakra-ui/react'
+import { Button, Image, Link, Flex, Badge, Skeleton, useMediaQuery } from '@chakra-ui/react'
 
 import Web3Context from '../contexts/Web3Context/context'
 import ChainSelector from './ChainSelector'
@@ -34,14 +26,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
     >
       <RouterLink href='/' passHref>
         {/* {home ? ()} */}
-        <Link
-          as={Image}
-          w='160px'
-          h='auto'
-          justifyContent='left'
-          src={PRIMARY_MOON_LOGO_URL}
-          alt='Logo'
-        />
+        <Link as={Image} w='160px' h='auto' justifyContent='left' src={PRIMARY_MOON_LOGO_URL} alt='Logo' />
       </RouterLink>
 
       {!isMobileView && (
@@ -50,10 +35,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
             <Button
               variant='orangeGradient'
               fontSize='16px'
-              isDisabled={
-                web3Provider.WALLET_STATES.UNKNOWN_CHAIN ===
-                web3Provider.buttonText
-              }
+              isDisabled={web3Provider.WALLET_STATES.UNKNOWN_CHAIN === web3Provider.buttonText}
               onClick={web3Provider.onConnectWalletClick}
             >
               {web3Provider.buttonText}
