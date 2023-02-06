@@ -68,16 +68,21 @@ const TerminusPoolView = ({
         .call()
         .then((results: string[][]) => {
           const parsedResults = results.map((result: string[], idx: number) => {
-            let parsed = web3.utils.hexToNumberString(result[1])
-            if (idx === 0) {
-              const adr = '0x' + result[1].slice(-40)
-              parsed = web3.utils.toChecksumAddress(adr)
-            }
-            if (idx === 5) {
-              if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
-              parsed =
+            let parsed;
+            try {
+              parsed = web3.utils.hexToNumberString(result[1])
+              if (idx === 0) {
+                const adr = '0x' + result[1].slice(-40)
+                parsed = web3.utils.toChecksumAddress(adr)
+              }
+              if (idx === 5) {
+                if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
+                parsed =
                 'https://' +
                 web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              }
+            } catch (e) {
+              parsed = undefined;
             }
             return parsed
           })
@@ -90,6 +95,8 @@ const TerminusPoolView = ({
             uri: parsedResults[5],
           }
           return data
+        }).catch((e) => {
+          console.log(e);
         })
     },
     {

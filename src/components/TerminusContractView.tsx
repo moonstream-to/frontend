@@ -8,7 +8,6 @@ const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import { useContext, useState } from "react";
-import useURI from "../hooks/useLink";
 import PoolDetailsRow from "./PoolDetailsRow";
 import { Image } from "@chakra-ui/image";
 import ReactMarkdown from "react-markdown";
@@ -59,30 +58,23 @@ const TerminusContractView = ({address} : {address: string}) => {
       return multicallContract.methods
         .tryAggregate(false, queries)
         .call()
-        .then((results: { returnData: string, success: boolean }[]) => {
-          if (results.some((res) =>  res.success)) {
-            let items
-            try {
-              items = JSON.parse(localStorage.getItem('terminusContracts') ?? '{}');
-            } catch(e) {
-              console.log(e);
-            }
-            items[address] = {...items[address], chainId}
-            localStorage.setItem('terminusContracts', JSON.stringify(items));
-          }
-
-          
+        .then((results: { returnData: string, success: boolean }[]) => {      
           const parsedResults = results.map((result: { returnData: string, success: boolean }, idx: number) => {
-            let parsed = web3.utils.hexToNumberString(result.returnData)
-            if (idx === 4 || idx === 1) {
-              const adr = '0x' + result.returnData.slice(-40)
-              parsed = web3.utils.toChecksumAddress(adr)
-            }
-            if (idx === 2) {
-              if (!web3.utils.hexToUtf8(result.returnData).split('https://')[1]) { return undefined };
-              parsed =
-              'https://' +
-              web3.utils.hexToUtf8(result.returnData).split('https://')[1]
+            if (result.returnData === '0x') { return undefined }
+            let parsed;
+            try {
+              parsed = web3.utils.hexToNumberString(result.returnData)
+
+              if (idx === 4 || idx === 1) {
+                const adr = '0x' + result.returnData.slice(-40)
+                parsed = web3.utils.toChecksumAddress(adr)
+              }
+              if (idx === 2) {
+                parsed = 'https://' + web3.utils.hexToUtf8(result.returnData).split('https://')[1]
+              }
+            } catch (e) {
+              console.log(e);
+              parsed = undefined;
             }
             return String(parsed);
           })
@@ -92,6 +84,16 @@ const TerminusContractView = ({address} : {address: string}) => {
             contractURI: parsedResults[2],
             totalPools: parsedResults[3],
             controller: parsedResults[4],
+          }
+          if (data.controller) {
+            let items
+            try {
+              items = JSON.parse(localStorage.getItem('terminusContracts') ?? '{}');
+            } catch(e) {
+              console.log(e);
+            }
+            items[address] = {...items[address], chainId}
+            localStorage.setItem('terminusContracts', JSON.stringify(items));
           }
           setURI(data.contractURI);
           return data
@@ -109,9 +111,7 @@ const TerminusContractView = ({address} : {address: string}) => {
     ['link', uri],
     (query: any) => {
 
-      return queryPublic(query.queryKey[1]).then((r: any) => {
-        
-        console.log(r);
+      return queryPublic(query.queryKey[1]).then((r: any) => {        
         let items
         try {
           items = JSON.parse(localStorage.getItem('terminusContracts') ?? '{}');

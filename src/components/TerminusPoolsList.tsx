@@ -10,7 +10,7 @@ const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import Spinner from './Spinner/Spinner'
-import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
+import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
 
 const TerminusPoolsList = ({
   contractAddress,
@@ -36,9 +36,10 @@ const TerminusPoolsList = ({
         multicallABI,
         MULTICALL2_CONTRACT_ADDRESS,
       )
-      const totalPools =  await terminusContract.methods.totalPools().call()
+      const LIMIT = Number(MAX_INT)
+      const totalPools = await terminusContract.methods.totalPools().call()
       const uriQueries = []
-      for (let i = 1; i <= Number(totalPools); i += 1) {
+      for (let i = 1; i <= Math.min(LIMIT, Number(totalPools)); i += 1) {
         uriQueries.push({
           target: contractAddress,
           callData: terminusContract.methods.uri(i).encodeABI(),
@@ -50,9 +51,16 @@ const TerminusPoolsList = ({
         .then((results: string[]) => {
           return results.map(
             (result) => {
-              if (!web3.utils.hexToUtf8(result[1]).split('https://')[1]) { return undefined };
-              return 'https://' +
-              web3.utils.hexToUtf8(result[1]).split('https://')[1]
+              let parsed;
+              try {
+                parsed = web3.utils.hexToUtf8(result[1]).split('https://')[1];
+                if (!parsed) {throw('not an address')}
+                parsed = 'https://' + parsed
+              } catch(e) {
+                console.log(e);
+                parsed = undefined;
+              }
+              return parsed;
             }
           )
         }).then((parsedResults: string[]) => {
