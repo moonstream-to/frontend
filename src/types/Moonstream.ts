@@ -16,10 +16,7 @@ export interface ChainInterface {
   rpcs: Array<string>
 }
 
-export declare function GetMethodsAbiType<T>(
-  abi: AbiItem[],
-  name: keyof T,
-): AbiItem
+export declare function GetMethodsAbiType<T>(abi: AbiItem[], name: keyof T): AbiItem
 
 export interface TokenInterface {
   address: string

@@ -12,13 +12,8 @@ interface TokenInterface {
  * @param duration - token deadline in seconds
  * @returns
  */
-export async function signAccessToken(
-  account: string,
-  provider: any,
-  duration: number,
-): Promise<string> {
-  if (duration <= 0 || duration == undefined)
-    throw new Error('signAccessToken: duration must be defined')
+export async function signAccessToken(account: string, provider: any, duration: number): Promise<string> {
+  if (duration <= 0 || duration == undefined) throw new Error('signAccessToken: duration must be defined')
   if (!provider) throw new Error('signAccessToken: provider must be defined')
   if (!account) throw new Error('signAccessToken: account must be defined')
 
@@ -78,9 +73,7 @@ export async function signAccessToken(
 export function parseToken(token: string) {
   const stringToken = Buffer.from(token, 'base64').toString('ascii')
   const objectToken: TokenInterface =
-    stringToken !== ''
-      ? JSON.parse(`${stringToken}`)
-      : { address: null, deadline: null, signed_message: null }
+    stringToken !== '' ? JSON.parse(`${stringToken}`) : { address: null, deadline: null, signed_message: null }
 
   return objectToken
 }

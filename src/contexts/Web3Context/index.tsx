@@ -3,12 +3,7 @@ import React from 'react'
 import Web3Context, { WALLET_STATES } from './context'
 import Web3 from 'web3'
 import { isOutdated, signAccessToken } from '../../web3/web3auth'
-import {
-  ChainInterface,
-  GetMethodsAbiType,
-  supportedChains,
-  TokenInterface,
-} from '../../types/Moonstream'
+import { ChainInterface, GetMethodsAbiType, supportedChains, TokenInterface } from '../../types/Moonstream'
 import router from 'next/router'
 const REQUEST_SIGNATURE = process.env.NEXT_PUBLIC_REQUEST_SIGNATURE
 
@@ -16,8 +11,7 @@ if (typeof REQUEST_SIGNATURE == 'undefined') {
   console.error('REQUEST_SIGNATURE env var is not set!')
 }
 
-export const MAX_INT =
-  '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+export const MAX_INT = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
 declare global {
   interface Window {
@@ -26,11 +20,7 @@ declare global {
   }
 }
 
-const _askWalletProviderToChangeChain = async (
-  targetChain: any,
-  setChainId: any,
-  web3: any,
-) => {
+const _askWalletProviderToChangeChain = async (targetChain: any, setChainId: any, web3: any) => {
   if (targetChain?.chainId) {
     try {
       await window.ethereum
@@ -66,9 +56,7 @@ const _askWalletProviderToChangeChain = async (
   }
 }
 export const getMethodsABI: typeof GetMethodsAbiType = (abi, name) => {
-  const index = abi.findIndex(
-    (item) => item.name === name && item.type == 'function',
-  )
+  const index = abi.findIndex((item) => item.name === name && item.type == 'function')
   if (index !== -1) {
     const item = abi[index]
     return item
@@ -125,9 +113,7 @@ const isKnownChain = (_chainId: number) => {
 
 const Web3Provider = ({ children }: { children: JSX.Element }) => {
   const [web3] = React.useState<Web3>(new Web3(null))
-  const [polygonClient] = React.useState<Web3>(
-    new Web3(new Web3.providers.HttpProvider('https://polygon-rpc.com')),
-  )
+  const [polygonClient] = React.useState<Web3>(new Web3(new Web3.providers.HttpProvider('https://polygon-rpc.com')))
 
   const _signAccessToken = async (account: string) => {
     if (web3.currentProvider) {
@@ -209,10 +195,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
     if (window.ethereum) {
       await setWeb3ProviderAsWindowEthereum().then((result) => {
         if (result) console.log('wallet setup was successfull')
-        else
-          console.warn(
-            'wallet setup failed, should go in fallback mode immediately',
-          )
+        else console.warn('wallet setup failed, should go in fallback mode immediately')
         setButtonText(result ? WALLET_STATES.CONNECTED : WALLET_STATES.CONNECT)
       })
     } else {
@@ -229,11 +212,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
 
   //when chainId, or web3 provider, or targetChain changed -> update current account in this state
   React.useEffect(() => {
-    if (
-      targetChain?.chainId &&
-      chainId === targetChain?.chainId &&
-      web3.currentProvider
-    ) {
+    if (targetChain?.chainId && chainId === targetChain?.chainId && web3.currentProvider) {
       web3.eth.getAccounts().then((accounts) => setAccount(accounts[0]))
     }
     // eslint-disable-next-line
@@ -262,21 +241,12 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
     }
 
     return () => {
-      window?.ethereum?.removeListener(
-        'connect',
-        setWeb3ProviderAsWindowEthereum,
-      )
-      window?.ethereum?.removeListener(
-        'chainChanged',
-        handleMetamaskChainChanged,
-      )
-      window?.ethereum?.removeListener(
-        'accountsChanged',
-        handleProviderAccountChanged,
-      )
+      window?.ethereum?.removeListener('connect', setWeb3ProviderAsWindowEthereum)
+      window?.ethereum?.removeListener('chainChanged', handleMetamaskChainChanged)
+      window?.ethereum?.removeListener('accountsChanged', handleProviderAccountChanged)
     }
     //eslint-disable-next-line
-  }, [chainId, targetChain?.chainId]);
+  }, [chainId, targetChain?.chainId])
 
   // When chainId or web3 or targetChain changes -> update button state
   React.useEffect(() => {
@@ -301,43 +271,32 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
     if (window?.ethereum?.selectedAddress) {
       setWeb3ProviderAsWindowEthereum().then((result) => {
         if (result) {
-          window?.ethereum
-            ?.request({ method: 'eth_chainId' })
-            .then((_chainId: any) => {
-              changeChainFromWalletProvider(parseInt(_chainId, 16))
-            })
-        } else
-          console.warn(
-            'provider setup failed, should go in fallback mode immediately',
-          )
+          window?.ethereum?.request({ method: 'eth_chainId' }).then((_chainId: any) => {
+            changeChainFromWalletProvider(parseInt(_chainId, 16))
+          })
+        } else console.warn('provider setup failed, should go in fallback mode immediately')
 
         setButtonText(result ? WALLET_STATES.CONNECTED : WALLET_STATES.CONNECT)
       })
       //  ÷
     }
     //eslint-disable-next-line
-  }, []);
+  }, [])
 
   React.useEffect(() => {
     if (REQUEST_SIGNATURE == 'false') return
     const token = localStorage.getItem('APP_ACCESS_TOKEN') ?? ''
     const stringToken = Buffer.from(token, 'base64').toString('ascii')
     const objectToken: TokenInterface =
-      stringToken !== ''
-        ? JSON.parse(`${stringToken}`)
-        : { address: null, deadline: null, signed_message: null }
+      stringToken !== '' ? JSON.parse(`${stringToken}`) : { address: null, deadline: null, signed_message: null }
 
     if (web3?.utils.isAddress(account)) {
-      if (
-        objectToken?.address !== account ||
-        isOutdated(objectToken?.deadline) ||
-        !objectToken.signed_message
-      ) {
+      if (objectToken?.address !== account || isOutdated(objectToken?.deadline) || !objectToken.signed_message) {
         _signAccessToken(account)
       }
     }
     //eslint-disable-next-line
-  }, [account]);
+  }, [account])
 
   const defaultTxConfig = { from: account }
 

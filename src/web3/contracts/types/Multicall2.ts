@@ -2,89 +2,69 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import BN from "bn.js";
-import { ContractOptions } from "web3-eth-contract";
-import { EventLog } from "web3-core";
-import { EventEmitter } from "events";
-import {
-  Callback,
-  PayableTransactionObject,
-  NonPayableTransactionObject,
-  BlockType,
-  ContractEventLog,
-  BaseContract,
-} from "./types";
+import BN from 'bn.js'
+import { ContractOptions } from 'web3-eth-contract'
+import { EventLog } from 'web3-core'
+import { EventEmitter } from 'events'
+import { Callback, PayableTransactionObject, NonPayableTransactionObject, BlockType, ContractEventLog, BaseContract } from './types'
 
 export interface EventOptions {
-  filter?: object;
-  fromBlock?: BlockType;
-  topics?: string[];
+  filter?: object
+  fromBlock?: BlockType
+  topics?: string[]
 }
 
 export interface Multicall2 extends BaseContract {
-  constructor(
-    jsonInterface: any[],
-    address?: string,
-    options?: ContractOptions
-  ): Multicall2;
-  clone(): Multicall2;
+  constructor(jsonInterface: any[], address?: string, options?: ContractOptions): Multicall2
+  clone(): Multicall2
   methods: {
-    aggregate(
-      calls: [string, string | number[]][]
-    ): NonPayableTransactionObject<{
-      blockNumber: string;
-      returnData: string[];
-      0: string;
-      1: string[];
-    }>;
+    aggregate(calls: [string, string | number[]][]): NonPayableTransactionObject<{
+      blockNumber: string
+      returnData: string[]
+      0: string
+      1: string[]
+    }>
 
-    blockAndAggregate(
-      calls: [string, string | number[]][]
-    ): NonPayableTransactionObject<{
-      blockNumber: string;
-      blockHash: string;
-      returnData: [boolean, string][];
-      0: string;
-      1: string;
-      2: [boolean, string][];
-    }>;
+    blockAndAggregate(calls: [string, string | number[]][]): NonPayableTransactionObject<{
+      blockNumber: string
+      blockHash: string
+      returnData: [boolean, string][]
+      0: string
+      1: string
+      2: [boolean, string][]
+    }>
 
-    getBlockHash(
-      blockNumber: number | string | BN
-    ): NonPayableTransactionObject<string>;
+    getBlockHash(blockNumber: number | string | BN): NonPayableTransactionObject<string>
 
-    getBlockNumber(): NonPayableTransactionObject<string>;
+    getBlockNumber(): NonPayableTransactionObject<string>
 
-    getCurrentBlockCoinbase(): NonPayableTransactionObject<string>;
+    getCurrentBlockCoinbase(): NonPayableTransactionObject<string>
 
-    getCurrentBlockDifficulty(): NonPayableTransactionObject<string>;
+    getCurrentBlockDifficulty(): NonPayableTransactionObject<string>
 
-    getCurrentBlockGasLimit(): NonPayableTransactionObject<string>;
+    getCurrentBlockGasLimit(): NonPayableTransactionObject<string>
 
-    getCurrentBlockTimestamp(): NonPayableTransactionObject<string>;
+    getCurrentBlockTimestamp(): NonPayableTransactionObject<string>
 
-    getEthBalance(addr: string): NonPayableTransactionObject<string>;
+    getEthBalance(addr: string): NonPayableTransactionObject<string>
 
-    getLastBlockHash(): NonPayableTransactionObject<string>;
+    getLastBlockHash(): NonPayableTransactionObject<string>
 
-    tryAggregate(
-      requireSuccess: boolean,
-      calls: [string, string | number[]][]
-    ): NonPayableTransactionObject<[boolean, string][]>;
+    tryAggregate(requireSuccess: boolean, calls: [string, string | number[]][]): NonPayableTransactionObject<[boolean, string][]>
 
     tryBlockAndAggregate(
       requireSuccess: boolean,
-      calls: [string, string | number[]][]
+      calls: [string, string | number[]][],
     ): NonPayableTransactionObject<{
-      blockNumber: string;
-      blockHash: string;
-      returnData: [boolean, string][];
-      0: string;
-      1: string;
-      2: [boolean, string][];
-    }>;
-  };
+      blockNumber: string
+      blockHash: string
+      returnData: [boolean, string][]
+      0: string
+      1: string
+      2: [boolean, string][]
+    }>
+  }
   events: {
-    allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
-  };
+    allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter
+  }
 }
