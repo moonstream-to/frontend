@@ -14,6 +14,8 @@ import { useContext } from 'react'
 
 const TerminusPoolView = ({ address, poolId, metadata }: { address: string; poolId: string; metadata: any }) => {
   const { chainId, web3 } = useContext(Web3Context)
+  const headerMeta = ['name', 'description', 'image', 'attributes']
+
   const poolState = useQuery(
     ['poolState', address, poolId, chainId],
     async () => {
@@ -111,11 +113,22 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                   <PoolDetailsRow type='burnable' value={poolState.data.isBurnable ? 'true' : 'false'} />
                   <PoolDetailsRow type='transferable' value={poolState.data.isTransferable ? 'true' : 'false'} />
                   <PoolDetailsRow type='uri' value={poolState.data.uri} />
-
-                  {metadata?.attributes && (
+                  {metadata && (
                     <>
                       <Text fontWeight='700' mt='20px'>
                         Metadata:
+                      </Text>
+                      {Object.keys(metadata)
+                        .filter((key) => !headerMeta.includes(key))
+                        .map((key) => {
+                          return <PoolDetailsRow key={key} type={key} value={String(metadata[key])} />
+                      })}
+                    </>
+                  )}
+                  {metadata?.attributes && (
+                    <>
+                      <Text fontWeight='700' mt='20px'>
+                        Attributes:
                       </Text>
 
                       {metadata.attributes.map((attribute: { trait_type: string; value: string }) => (

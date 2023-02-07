@@ -53,15 +53,15 @@ const TerminusPoolsListItem = ({
       cursor='pointer'
       p='10px'
     >
-      {metadata.data && (
-        <>
-          <Image src={metadata.data.image} width='32px' height='32px' alt={metadata.data.name} borderRadius='5px' />
-          <Text unselectable='on'>{metadata.data.name}</Text>
-        </>
-      )}
       {!metadata.data?.image && (
         <>
           <Box border='1px solid black' borderRadius='5px' w='32px' h='32px' />
+        </>
+      )}
+      {metadata.data && (
+        <>
+          {metadata.data.image && <Image src={metadata.data.image} width='32px' height='32px' alt={metadata.data.image} borderRadius='5px' />}
+          <Text unselectable='on'>{metadata.data.name}</Text>
         </>
       )}
       {!metadata.data?.name && (
