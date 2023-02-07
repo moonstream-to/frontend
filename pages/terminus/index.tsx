@@ -31,8 +31,6 @@ const Terminus = () => {
   useEffect(() => {
     if (contractAddress) {
       setNextValue(contractAddress)
-      setSelected(1)
-      setPoolMetadata({})
     }
   }, [contractAddress])
 
@@ -42,10 +40,13 @@ const Terminus = () => {
     if (nextValue && web3.utils.isAddress(nextValue)) {
       handleSubmit()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId])
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(nextValue)) {
+      setSelected(1)
+      setPoolMetadata({})
       router.push({
         pathname: '/terminus',
         query: {
