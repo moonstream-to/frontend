@@ -39,7 +39,7 @@ const BreadcrumbView = () => {
                   </NextLink>
                 </BreadcrumbItem>
                 <Text mx={2}>/</Text>
-                <BreadcrumbItem key={`bcl-${element}-${idx}`}>
+                <BreadcrumbItem key={`bcl-${element}-${idx}-c`}>
                   <Text fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'} textTransform={'capitalize'}>
                     {router.query.contractAddress}
                   </Text>
