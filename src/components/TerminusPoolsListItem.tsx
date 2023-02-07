@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import useLink from '../hooks/useLink'
 import { Box, Flex, Text } from '@chakra-ui/layout'
@@ -9,12 +9,14 @@ const TerminusPoolsListItem = ({
   selected,
   onChange,
   uri,
+  filter,
 }: {
   poolId: string
   address: string
   selected: boolean
   onChange: (id: string, metadata: unknown) => void
   uri: string
+  filter: string
 }) => {
   const metadata = useLink({ link: uri })
 
@@ -28,7 +30,19 @@ const TerminusPoolsListItem = ({
     }
   }, [selected, metadata, poolId, onChange])
 
+  const [show, setShow] = useState(true)
+  useEffect(() => {
+    if (filter === '') { setShow(true); return } 
+    const lFilter = filter.toLowerCase();
+    if (metadata.data?.name?.toLowerCase().includes(lFilter)) { setShow(true); return } 
+    if (metadata.data?.description?.toLowerCase().includes(lFilter)) { setShow(true); return } 
+    if (poolId.toString().startsWith(lFilter)) {setShow(true); return}
+    setShow(false);
+  }, [filter, metadata.data, poolId])
+
   return (
+    <>
+    {show && (
     <Flex
       gap='15px'
       alignItems='center'
@@ -58,6 +72,8 @@ const TerminusPoolsListItem = ({
         </>
       )}
     </Flex>
+    )}
+    </>
   )
 }
 

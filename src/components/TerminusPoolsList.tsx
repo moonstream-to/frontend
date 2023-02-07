@@ -16,10 +16,12 @@ const TerminusPoolsList = ({
   contractAddress,
   selected,
   onChange,
+  filter,
 }: {
   contractAddress: string
   selected: number
   onChange: (id: string, metadata: unknown) => void
+  filter: string
 }) => {
   const { chainId, web3 } = useContext(Web3Context)
 
@@ -76,6 +78,9 @@ const TerminusPoolsList = ({
       // onSuccess: () => {},
     },
   )
+
+
+
   if (!poolsList.data) {
     return <Spinner />
   }
@@ -90,6 +95,7 @@ const TerminusPoolsList = ({
           selected={idx + 1 === selected}
           uri={uri}
           onChange={onChange}
+          filter={filter}
         />
       ))}
     </Flex>
