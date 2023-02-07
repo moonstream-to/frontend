@@ -142,47 +142,52 @@ const TerminusContractView = ({ address }: { address: string }) => {
                 </ReactMarkdown>
               </Flex>
             )}
-            <Flex flex='1 1 0px' direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323'>
-              <PoolDetailsRow type={'URI'} value={contractState.data.contractURI} />
-              <PoolDetailsRow type={'Number of pools'} value={contractState.data.totalPools} />
+            {contractState.data?.controller && (
+              <Flex flex='1 1 0px' direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323' maxW='595px'>
+                <PoolDetailsRow type={'URI'} value={contractState.data.contractURI} />
+                <PoolDetailsRow type={'Number of pools'} value={contractState.data.totalPools} />
 
-              <PoolDetailsRow type={'Payment token'} value={contractState.data.paymentToken} />
-              <PoolDetailsRow type={'Pool base price'} value={Number(contractState.data.poolBasePrice).toLocaleString('en-US')} />
-              <PoolDetailsRow type={'Contract controller'} value={contractState.data.controller} />
-              {metadata.data && (
-                <Accordion allowMultiple>
-                  <AccordionItem border='none'>
-                    <AccordionButton p='0' mb='10px'>
-                      <Spacer />
-                      <Box as='span' flex='1' textAlign='right' pr='10px' fontWeight='700'>
-                        Metadata
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel>
-                      {Object.keys(metadata.data)
-                        .filter((key) => !headerMeta.includes(key))
-                        .map((key) => {
-                          return <PoolDetailsRow key={key} type={key} value={String(metadata.data[key])} />
-                        })}
-                    </AccordionPanel>
-                  </AccordionItem>
-                  {/* <AccordionItem border="none">
+                <PoolDetailsRow type={'Payment token'} value={contractState.data.paymentToken} />
+                <PoolDetailsRow type={'Pool base price'} value={Number(contractState.data.poolBasePrice).toLocaleString('en-US')} />
+                <PoolDetailsRow type={'Contract controller'} value={contractState.data.controller} />
+                {metadata.data && (
+                  <Accordion allowMultiple>
+                    <AccordionItem border='none'>
+                      <AccordionButton p='0' mb='10px'>
+                        <Spacer />
+                        <Box as='span' flex='1' textAlign='right' pr='10px' fontWeight='700'>
+                          Metadata
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel>
+                        {Object.keys(metadata.data)
+                          .filter((key) => !headerMeta.includes(key))
+                          .map((key) => {
+                            return <PoolDetailsRow key={key} type={key} value={String(metadata.data[key])} />
+                          })}
+                      </AccordionPanel>
+                    </AccordionItem>
+                    {/* <AccordionItem border="none">
 
-                    <AccordionButton p='0'>
-                      <Spacer />
-                      <Box as="span" flex='1' textAlign='right' pr='10px' fontWeight='700'>
-                        Analytics
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel textAlign='center'>
-                      <Text fontWeight='200' fontStyle='italic'>Coming soon ... </Text>
-                    </AccordionPanel>
-                  </AccordionItem> */}
-                </Accordion>
-              )}
-            </Flex>
+                      <AccordionButton p='0'>
+                        <Spacer />
+                        <Box as="span" flex='1' textAlign='right' pr='10px' fontWeight='700'>
+                          Analytics
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel textAlign='center'>
+                        <Text fontWeight='200' fontStyle='italic'>Coming soon ... </Text>
+                      </AccordionPanel>
+                    </AccordionItem> */}
+                  </Accordion>
+                )}
+              </Flex>
+            )} 
+            {!contractState.data?.controller && (
+              <Text fontStyle='italic' color='gray.900'> Are address and chain correct?</Text>
+            )}
           </Flex>
         </Flex>
       )}

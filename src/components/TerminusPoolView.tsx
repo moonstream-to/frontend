@@ -55,7 +55,6 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                 parsed = web3.utils.toChecksumAddress(adr)
               }
               if (idx === 1 || idx === 2) {
-                console.log(result[1], parsed)
                 if (Number(parsed) === 1 || Number(parsed) === 0) {
                   parsed = !!Number(parsed)
                 } else {
@@ -97,20 +96,15 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
     <Flex bg='#2d2d2d' minW='800px' borderRadius='20px' p='30px' color='white' direction='column' maxW='800px'>
       {!!poolState.data && (
         <>
-          <Text fontWeight='700' fontSize='24px' mb='20px'>
-            {metadata?.name ?? ''}
-          </Text>
+          {/* <Text fontWeight='700' fontSize='24px' mb='20px'> */}
+          {metadata?.name && <Text fontWeight='700' fontSize='24px' mb='20px'>{metadata.name}</Text>}
           <Flex direction='column' gap='20px' overflowY='auto'>
             <Flex gap='20px'>
               {metadata?.image && <Image w='140px' h='140px' borderRadius='20px' src={metadata.image} alt='image' />}
-
-              <Text fontWeight='400' fontSize='18px'>
-                {metadata?.description ?? ''}
-              </Text>
+              {metadata?.description && <Text fontWeight='400' fontSize='18px' mb='20px'>{metadata.description}</Text>}
             </Flex>
-            <Flex direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323'>
               {poolState.data.controller && (
-                <>
+                <Flex direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323'>
                   <PoolDetailsRow type='controller' value={poolState.data.controller} />
                   <PoolDetailsRow type='capacity' value={poolState.data.capacity} />
                   <PoolDetailsRow type='supply' value={poolState.data.supply} />
@@ -129,9 +123,8 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                       ))}
                     </>
                   )}
-                </>
+                </Flex>
               )}
-            </Flex>
           </Flex>
         </>
       )}
