@@ -1,5 +1,5 @@
-import { Flex, Text } from '@chakra-ui/layout'
-import Link from 'next/link'
+import { Flex, Link, Text } from '@chakra-ui/layout'
+
 import { useEffect, useState } from 'react'
 import { MAX_INT } from '../constants'
 
@@ -14,12 +14,12 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
     }
     if (value.slice(0, 4) === 'http') {
       return (
-        <Link href={value}>
+        <Link href={value} target='_blank'  _hover={{color: 'orange.1000', textDecoration: 'none'}}>
           <Text
             title={value.length > valueString.length ? value : ''}
             fontFamily='Jet Brains Mono, monospace'
             fontWeight='400'
-            fontSize='18px'
+            fontSize='18px'           
           >
             {valueString}
           </Text>
