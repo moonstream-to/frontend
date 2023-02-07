@@ -17,6 +17,15 @@ import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
 import Web3Context from '../contexts/Web3Context/context'
 
 const TerminusContractView = ({ address }: { address: string }) => {
+  const errorDialog = [
+    'Something is wrong. Is MetaMask connected properly to the right chain?',
+    'Is contract address correct?',
+    `Then I don't know. Maybe you should try later`,
+  ]
+  const [dialogStep, setDialogStep] = useState(0)
+  const nextStep = () => {
+    setDialogStep((prev) => Math.min(prev + 1, errorDialog.length - 1))
+  }
   const headerMeta = ['name', 'description', 'image']
   const [uri, setURI] = useState<string | undefined>(undefined)
   const { web3, chainId } = useContext(Web3Context)
@@ -28,6 +37,7 @@ const TerminusContractView = ({ address }: { address: string }) => {
       if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
         return
       }
+      setDialogStep(0)
       const terminusContract = new web3.eth.Contract(terminusAbi, address) as unknown as MockTerminus
       const target = address
       const callDatas = []
@@ -186,7 +196,21 @@ const TerminusContractView = ({ address }: { address: string }) => {
               </Flex>
             )} 
             {!contractState.data?.controller && (
-              <Text fontStyle='italic' color='gray.900'> Are address and chain correct?</Text>
+              <Flex alignItems='center' gap='10px' color='gray.900'>
+                <Text fontStyle='italic' color='gray.900'>{errorDialog[dialogStep]}</Text>
+                {dialogStep < errorDialog.length - 1 && 
+                  <Text 
+                    cursor='pointer'
+                    h='fit-content' 
+                    p='2px 12px' 
+                    border='1px solid gray' 
+                    borderRadius='5px' 
+                    bg='transparent' 
+                    onClick={nextStep}
+                  >
+                    Yes
+                  </Text>}
+              </Flex>
             )}
           </Flex>
         </Flex>
