@@ -1,5 +1,5 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import useRouter from '../hooks/useRouter'
 import NextLink from 'next/link'
 
@@ -28,10 +28,10 @@ const BreadcrumbView = () => {
         const query =
           linkPath === '/terminus/' && router.query.contractAddress ? { contractAddress: router.query.contractAddress } : undefined
         return (
-          <>
+          <React.Fragment key={`bcl-${element}-${idx}`}>
             {query ? (
               <>
-                <BreadcrumbItem key={`bcl-${element}-${idx}-t`}>
+                <BreadcrumbItem>
                   <NextLink passHref shallow href={ '/terminus' }>
                     <Text fontWeight={'normal'} textTransform={'capitalize'}>
                       Terminus
@@ -39,14 +39,14 @@ const BreadcrumbView = () => {
                   </NextLink>
                 </BreadcrumbItem>
                 <Text mx={2}>/</Text>
-                <BreadcrumbItem key={`bcl-${element}-${idx}-c`}>
+                <BreadcrumbItem>
                   <Text fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'} textTransform={'capitalize'}>
                     {router.query.contractAddress}
                   </Text>
                 </BreadcrumbItem>
               </>
             ) : (
-            <BreadcrumbItem key={`bcl-${element}-${idx}`}>
+            <BreadcrumbItem>
               <NextLink passHref shallow href={{ pathname: linkPath }}>
                 <Text fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'} textTransform={'capitalize'}>
                   {element}
@@ -54,7 +54,7 @@ const BreadcrumbView = () => {
               </NextLink>
             </BreadcrumbItem>
             )}
-          </>
+          </React.Fragment>
         )
       })}
     </Breadcrumb>
