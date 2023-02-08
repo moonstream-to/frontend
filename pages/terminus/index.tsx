@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useContext, useEffect, useState } from 'react'
+import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
+
 import Layout from '../../src/components/layout'
 import TerminusPoolsListView from '../../src/components/TerminusPoolsListView'
-import { useRouter } from 'next/router'
-import { useContext, useEffect, useState } from 'react'
 import TerminusPoolView from '../../src/components/TerminusPoolView'
-
 import TerminusContractView from '../../src/components/TerminusContractView'
 import Web3Context from '../../src/contexts/Web3Context/context'
 import ContractRow from '../../src/components/ContractRow'
@@ -20,6 +21,7 @@ const Terminus = () => {
   }
   const [selected, setSelected] = useState(1)
   const [poolMetadata, setPoolMetadata] = useState<unknown>({})
+  const [contractState, setContractState] = useState()
   const [nextValue, setNextValue] = useState(contractAddress)
   const [recent, setRecent] = useState<{ address: { name: string; image: string; chainId: number } } | undefined>(undefined)
   const toast = useToast()
@@ -31,9 +33,8 @@ const Terminus = () => {
   useEffect(() => {
     if (contractAddress) {
       setNextValue(contractAddress)
-      setSelected(1)
-      setPoolMetadata({})
     }
+    setPoolMetadata({})
   }, [contractAddress])
 
   const { chainId, web3 } = useContext(Web3Context)
@@ -42,10 +43,13 @@ const Terminus = () => {
     if (nextValue && web3.utils.isAddress(nextValue)) {
       handleSubmit()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId])
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(nextValue)) {
+      setSelected(1)
+      setPoolMetadata({})
       router.push({
         pathname: '/terminus',
         query: {
@@ -92,9 +96,9 @@ const Terminus = () => {
           </Flex>
           {contractAddress && (
             <>
-              <TerminusContractView address={contractAddress} />
+              <TerminusContractView onFetch={setContractState} address={contractAddress} />
               <Flex gap='40px' maxH='700px'>
-                <TerminusPoolsListView contractAddress={contractAddress} onChange={handleClick} selected={selected} />
+                <TerminusPoolsListView contractAddress={contractAddress} contractState={contractState} onChange={handleClick} selected={selected} />
                 <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata} />
               </Flex>
             </>

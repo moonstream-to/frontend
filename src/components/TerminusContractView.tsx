@@ -1,22 +1,31 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Flex, Spacer, Text } from '@chakra-ui/layout'
+import { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import queryCacheProps from '../hooks/hookCommon'
-import { queryPublic } from '../utils/http'
-
-const terminusAbi = require('../web3/abi/MockTerminus.json')
-const multicallABI = require('../web3/abi/Multicall2.json')
-import { MockTerminus } from '../web3/contracts/types/MockTerminus'
-import { useContext, useState } from 'react'
-import PoolDetailsRow from './PoolDetailsRow'
 import { Image } from '@chakra-ui/image'
+import { Box, Flex, Spacer, Text } from '@chakra-ui/layout'
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from '@chakra-ui/react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from '@chakra-ui/react'
-import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
-import Web3Context from '../contexts/Web3Context/context'
 
-const TerminusContractView = ({ address }: { address: string }) => {
+import PoolDetailsRow from './PoolDetailsRow'
+import queryCacheProps from '../hooks/hookCommon'
+import Web3Context from '../contexts/Web3Context/context'
+import { queryPublic } from '../utils/http'
+import { MockTerminus } from '../web3/contracts/types/MockTerminus'
+const terminusAbi = require('../web3/abi/MockTerminus.json')
+const multicallABI = require('../web3/abi/Multicall2.json')
+import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
+
+const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: any }) => {
+  const errorDialog = [
+    'Something is wrong. Is MetaMask connected properly to the right chain?',
+    'Is contract address correct?',
+    `Then I don't know. Maybe you should try later`,
+  ]
+  const [dialogStep, setDialogStep] = useState(0)
+  const nextStep = () => {
+    setDialogStep((prev) => Math.min(prev + 1, errorDialog.length - 1))
+  }
   const headerMeta = ['name', 'description', 'image']
   const [uri, setURI] = useState<string | undefined>(undefined)
   const { web3, chainId } = useContext(Web3Context)
@@ -28,6 +37,7 @@ const TerminusContractView = ({ address }: { address: string }) => {
       if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
         return
       }
+      setDialogStep(0)
       const terminusContract = new web3.eth.Contract(terminusAbi, address) as unknown as MockTerminus
       const target = address
       const callDatas = []
@@ -97,6 +107,14 @@ const TerminusContractView = ({ address }: { address: string }) => {
     },
   )
 
+  useEffect(() => {
+    onFetch(contractState.data)
+  }, [contractState.data])
+
+  useEffect(() => {
+    setURI(contractState.data?.contractURI)
+  }, [])
+
   const metadata = useQuery(
     ['link', uri],
     (query: any) => {
@@ -142,47 +160,53 @@ const TerminusContractView = ({ address }: { address: string }) => {
                 </ReactMarkdown>
               </Flex>
             )}
-            <Flex flex='1 1 0px' direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323'>
-              <PoolDetailsRow type={'URI'} value={contractState.data.contractURI} />
-              <PoolDetailsRow type={'Number of pools'} value={contractState.data.totalPools} />
+            {contractState.data?.controller && (
+              <Flex flex='1 1 0px' direction='column' gap='10px' p={5} borderRadius='10px' bg='#232323' maxW='595px'>
+                <PoolDetailsRow type={'URI'} value={contractState.data.contractURI} />
+                <PoolDetailsRow type={'Number of pools'} value={contractState.data.totalPools} />
 
-              <PoolDetailsRow type={'Payment token'} value={contractState.data.paymentToken} />
-              <PoolDetailsRow type={'Pool base price'} value={Number(contractState.data.poolBasePrice).toLocaleString('en-US')} />
-              <PoolDetailsRow type={'Contract controller'} value={contractState.data.controller} />
-              {metadata.data && (
-                <Accordion allowMultiple>
-                  <AccordionItem border='none'>
-                    <AccordionButton p='0' mb='10px'>
-                      <Spacer />
-                      <Box as='span' flex='1' textAlign='right' pr='10px' fontWeight='700'>
-                        Metadata
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel>
-                      {Object.keys(metadata.data)
-                        .filter((key) => !headerMeta.includes(key))
-                        .map((key) => {
-                          return <PoolDetailsRow key={key} type={key} value={String(metadata.data[key])} />
-                        })}
-                    </AccordionPanel>
-                  </AccordionItem>
-                  {/* <AccordionItem border="none">
-
-                    <AccordionButton p='0'>
-                      <Spacer />
-                      <Box as="span" flex='1' textAlign='right' pr='10px' fontWeight='700'>
-                        Analytics
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel textAlign='center'>
-                      <Text fontWeight='200' fontStyle='italic'>Coming soon ... </Text>
-                    </AccordionPanel>
-                  </AccordionItem> */}
-                </Accordion>
-              )}
-            </Flex>
+                <PoolDetailsRow type={'Payment token'} value={contractState.data.paymentToken} />
+                <PoolDetailsRow type={'Pool base price'} value={Number(contractState.data.poolBasePrice).toLocaleString('en-US')} />
+                <PoolDetailsRow type={'Contract controller'} value={contractState.data.controller} />
+                {metadata.data && (
+                  <Accordion allowMultiple>
+                    <AccordionItem border='none'>
+                      <AccordionButton p='0' mb='10px'>
+                        <Spacer />
+                        <Box as='span' flex='1' textAlign='right' pr='10px' fontWeight='700'>
+                          Metadata
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel>
+                        {Object.keys(metadata.data)
+                          .filter((key) => !headerMeta.includes(key))
+                          .map((key) => {
+                            return <PoolDetailsRow key={key} type={key} value={String(metadata.data[key])} />
+                          })}
+                      </AccordionPanel>
+                    </AccordionItem>
+                  </Accordion>
+                )}
+              </Flex>
+            )} 
+            {!contractState.data?.controller && (
+              <Flex alignItems='center' gap='10px' color='gray.900'>
+                <Text fontStyle='italic' color='gray.900'>{errorDialog[dialogStep]}</Text>
+                {dialogStep < errorDialog.length - 1 && 
+                  <Text 
+                    cursor='pointer'
+                    h='fit-content' 
+                    p='2px 12px' 
+                    border='1px solid gray' 
+                    borderRadius='5px' 
+                    bg='transparent' 
+                    onClick={nextStep}
+                  >
+                    Yes
+                  </Text>}
+              </Flex>
+            )}
           </Flex>
         </Flex>
       )}

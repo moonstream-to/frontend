@@ -1,4 +1,5 @@
 import { Image } from '@chakra-ui/react'
+
 import styles from './Spinner.module.css'
 
 const Spinner = ({ progress, ...props }: { progress?: number; [props: string]: unknown }) => {

@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import router from 'next/router'
+
 import React from 'react'
-import Web3Context, { WALLET_STATES } from './context'
 import Web3 from 'web3'
+
+import Web3Context, { WALLET_STATES } from './context'
 import { isOutdated, signAccessToken } from '../../web3/web3auth'
 import { ChainInterface, GetMethodsAbiType, supportedChains, TokenInterface } from '../../types/Moonstream'
-import router from 'next/router'
 const REQUEST_SIGNATURE = process.env.NEXT_PUBLIC_REQUEST_SIGNATURE
 
 if (typeof REQUEST_SIGNATURE == 'undefined') {

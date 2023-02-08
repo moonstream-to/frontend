@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext } from 'react'
 import Web3 from 'web3'
+
 import { WalletStatesInterface, MoonstreamWeb3ProviderInterface } from '../../types/Moonstream'
 
 export enum txStatus {
