@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Button, Checkbox, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { useContext, useState } from 'react'
+import { useMutation } from 'react-query'
+import { Button, Checkbox, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
+
 import TerminusPoolsList from './TerminusPoolsList'
 import Web3Context from '../contexts/Web3Context/context'
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
-import { useMutation } from 'react-query'
 
 
 const TerminusPoolsListView = ({

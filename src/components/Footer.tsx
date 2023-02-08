@@ -1,8 +1,10 @@
+import RouterLink from 'next/link'
+
 import React from 'react'
 import { Text, Link, Box, Container, Stack, Image as ChakraImage, Flex, Spacer, useMediaQuery } from '@chakra-ui/react'
-import RouterLink from 'next/link'
-import { SITEMAP } from '../constants'
+
 import SocialButton from './SocialButton'
+import { SITEMAP } from '../constants'
 
 const LINKS_SIZES = {
   fontWeight: '300',

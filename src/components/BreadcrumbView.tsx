@@ -1,7 +1,9 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from '@chakra-ui/react'
-import React, { useState, useEffect } from 'react'
-import useRouter from '../hooks/useRouter'
 import NextLink from 'next/link'
+
+import React, { useState, useEffect } from 'react'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from '@chakra-ui/react'
+
+import useRouter from '../hooks/useRouter'
 
 const BreadcrumbView = () => {
   const [path, setPath] = useState<string[]>([])

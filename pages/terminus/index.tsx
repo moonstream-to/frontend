@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useContext, useEffect, useState } from 'react'
+import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
+
 import Layout from '../../src/components/layout'
 import TerminusPoolsListView from '../../src/components/TerminusPoolsListView'
-import { useRouter } from 'next/router'
-import { useContext, useEffect, useState } from 'react'
 import TerminusPoolView from '../../src/components/TerminusPoolView'
-
 import TerminusContractView from '../../src/components/TerminusContractView'
 import Web3Context from '../../src/contexts/Web3Context/context'
 import ContractRow from '../../src/components/ContractRow'

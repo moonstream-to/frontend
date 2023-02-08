@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Flex, Spacer, Text } from '@chakra-ui/layout'
-import { useQuery } from 'react-query'
-import queryCacheProps from '../hooks/hookCommon'
-import { queryPublic } from '../utils/http'
-
-const terminusAbi = require('../web3/abi/MockTerminus.json')
-const multicallABI = require('../web3/abi/Multicall2.json')
-import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import { useContext, useEffect, useState } from 'react'
-import PoolDetailsRow from './PoolDetailsRow'
+import { useQuery } from 'react-query'
 import { Image } from '@chakra-ui/image'
+import { Box, Flex, Spacer, Text } from '@chakra-ui/layout'
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from '@chakra-ui/react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from '@chakra-ui/react'
-import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
+
+import PoolDetailsRow from './PoolDetailsRow'
+import queryCacheProps from '../hooks/hookCommon'
 import Web3Context from '../contexts/Web3Context/context'
+import { queryPublic } from '../utils/http'
+import { MockTerminus } from '../web3/contracts/types/MockTerminus'
+const terminusAbi = require('../web3/abi/MockTerminus.json')
+const multicallABI = require('../web3/abi/Multicall2.json')
+import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
 
 const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: any }) => {
   const errorDialog = [
@@ -186,19 +186,6 @@ const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: 
                           })}
                       </AccordionPanel>
                     </AccordionItem>
-                    {/* <AccordionItem border="none">
-
-                      <AccordionButton p='0'>
-                        <Spacer />
-                        <Box as="span" flex='1' textAlign='right' pr='10px' fontWeight='700'>
-                          Analytics
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel textAlign='center'>
-                        <Text fontWeight='200' fontStyle='italic'>Coming soon ... </Text>
-                      </AccordionPanel>
-                    </AccordionItem> */}
                   </Accordion>
                 )}
               </Flex>

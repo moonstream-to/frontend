@@ -1,5 +1,7 @@
-import { Center, Flex } from '@chakra-ui/react'
 import Head from 'next/head'
+
+import { Center, Flex } from '@chakra-ui/react'
+
 import FeatureCard from '../src/components/FeatureCard'
 import Layout from '../src/components/layout'
 import { AWS_ASSETS_PATH } from '../src/constants'

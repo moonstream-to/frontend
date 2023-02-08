@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Flex, Link, Text } from '@chakra-ui/layout'
 
-import { useEffect, useState } from 'react'
 import { MAX_INT } from '../constants'
 
 const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
