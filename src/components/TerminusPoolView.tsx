@@ -19,7 +19,6 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
 
   const headerMeta = ['name', 'description', 'image', 'attributes']
   const [newUri, setNewUri] = useState('');
-  // const web3ctx = useContext(Web3Context)
   const terminusFacet = new web3.eth.Contract(
     terminusAbi
   ) as any as MockTerminus;
@@ -33,7 +32,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
         duration: 5000,
         isClosable: true,
       })
-      // contractState.refetch();
+      // contractState.refetch(); //TODO
     },
     onError: () => {
       toast({
@@ -136,7 +135,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
     },
     {
       ...queryCacheProps,
-      // onSuccess: () => {},
+      // onSuccess: () => {}, //TODO
     },
   )
 
@@ -144,7 +143,6 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
     <Flex bg='#2d2d2d' minW='800px' borderRadius='20px' p='30px' color='white' direction='column' maxW='800px'>
       {!!poolState.data && (
         <>
-          {/* <Text fontWeight='700' fontSize='24px' mb='20px'> */}
           {metadata?.name && <Text fontWeight='700' fontSize='24px' mb='20px'>{metadata.name}</Text>}
           <Flex direction='column' gap='20px' overflowY='auto'>
             <Flex gap='20px'>

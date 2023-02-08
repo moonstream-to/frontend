@@ -39,7 +39,7 @@ const TerminusPoolsListView = ({
         duration: 5000,
         isClosable: true,
       })
-      // contractState.refetch();
+      // contractState.refetch(); //TODO
     },
     onError: () => {
       toast({
@@ -69,18 +69,14 @@ const TerminusPoolsListView = ({
 
   const createNewPool = () => {
     const capacity = Number(newPoolProps.capacity)
-    console.log(newPoolProps, capacity);
     if (!capacity || !Number.isInteger(capacity) || capacity < 1) { return }
-    console.log('to create')
     newPool.mutate(
     { capacity: String(capacity),
       isTransferable: newPoolProps.isTransferable,
       isBurnable: newPoolProps.isBurnable,
     },
     {
-      onSettled: () => {
-        console.log('settled')
-      },
+      // onSettled: () => {}, TODO
     }
   );
   }

@@ -75,7 +75,7 @@ const TerminusPoolsList = ({
     },
     {
       ...queryCacheProps,
-      // onSuccess: () => {},
+      // onSuccess: () => {}, //TODO
     },
   )
 
