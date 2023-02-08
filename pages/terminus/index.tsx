@@ -33,6 +33,7 @@ const Terminus = () => {
     if (contractAddress) {
       setNextValue(contractAddress)
     }
+    setPoolMetadata({})
   }, [contractAddress])
 
   const { chainId, web3 } = useContext(Web3Context)
