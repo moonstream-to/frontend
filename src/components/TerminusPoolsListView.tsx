@@ -12,10 +12,12 @@ const TerminusPoolsListView = ({
   contractAddress,
   selected,
   onChange,
+  contractState,
 }: {
   contractAddress: string
   selected: number
   onChange: (id: string, metadata: unknown) => void
+  contractState: any
 }) => {
 
   const toast = useToast()
@@ -93,7 +95,8 @@ const TerminusPoolsListView = ({
       <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder='search' borderRadius='10px' p='8px 15px'/>
 
       <TerminusPoolsList contractAddress={contractAddress} onChange={onChange} selected={selected} filter={filter}/>
-      <Button
+      
+      {contractState && contractState.controller === web3ctx.account && <Button
         width='100%'
         bg='gray.0'
         fontWeight='700'
@@ -102,7 +105,7 @@ const TerminusPoolsListView = ({
         onClick={onOpen}
       >
         + Add new
-      </Button>
+      </Button> }
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent bg='black' border='1px solid white'>

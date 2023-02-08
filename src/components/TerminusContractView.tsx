@@ -7,7 +7,7 @@ import { queryPublic } from '../utils/http'
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import PoolDetailsRow from './PoolDetailsRow'
 import { Image } from '@chakra-ui/image'
 import ReactMarkdown from 'react-markdown'
@@ -16,7 +16,7 @@ import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPane
 import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
 import Web3Context from '../contexts/Web3Context/context'
 
-const TerminusContractView = ({ address }: { address: string }) => {
+const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: any }) => {
   const errorDialog = [
     'Something is wrong. Is MetaMask connected properly to the right chain?',
     'Is contract address correct?',
@@ -106,6 +106,14 @@ const TerminusContractView = ({ address }: { address: string }) => {
       // onSuccess: () => {},
     },
   )
+
+  useEffect(() => {
+    onFetch(contractState.data)
+  }, [contractState.data])
+
+  useEffect(() => {
+    setURI(contractState.data?.contractURI)
+  }, [])
 
   const metadata = useQuery(
     ['link', uri],

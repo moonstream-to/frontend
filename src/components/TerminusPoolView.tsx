@@ -182,13 +182,15 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
                       ))}
                     </>
                   )}
-              <Flex gap='15px'>
-                <Input placeholder='new uri' value={newUri} onChange={(e) => setNewUri(e.target.value)}type='url'/>
-                <Button bg='gray.0' fontWeight='400' fontSize='18px' color='#2d2d2d' onClick={handleNewUri}>Save</Button>
-              </Flex>
                 </Flex>
               )}
           </Flex>
+          {poolState.data && poolState.data.controller === account && (
+              <Flex gap='15px' mt='20px'>
+                <Input placeholder='new uri' value={newUri} onChange={(e) => setNewUri(e.target.value)}type='url'/>
+                <Button bg='gray.0' fontWeight='400' fontSize='18px' color='#2d2d2d' onClick={handleNewUri}>Save</Button>
+              </Flex>
+          )}
         </>
       )}
       {!poolState.data && (

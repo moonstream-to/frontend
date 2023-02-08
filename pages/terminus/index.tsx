@@ -20,6 +20,7 @@ const Terminus = () => {
   }
   const [selected, setSelected] = useState(1)
   const [poolMetadata, setPoolMetadata] = useState<unknown>({})
+  const [contractState, setContractState] = useState()
   const [nextValue, setNextValue] = useState(contractAddress)
   const [recent, setRecent] = useState<{ address: { name: string; image: string; chainId: number } } | undefined>(undefined)
   const toast = useToast()
@@ -93,9 +94,9 @@ const Terminus = () => {
           </Flex>
           {contractAddress && (
             <>
-              <TerminusContractView address={contractAddress} />
+              <TerminusContractView onFetch={setContractState} address={contractAddress} />
               <Flex gap='40px' maxH='700px'>
-                <TerminusPoolsListView contractAddress={contractAddress} onChange={handleClick} selected={selected} />
+                <TerminusPoolsListView contractAddress={contractAddress} contractState={contractState} onChange={handleClick} selected={selected} />
                 <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata} />
               </Flex>
             </>
