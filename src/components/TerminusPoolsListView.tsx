@@ -8,6 +8,7 @@ import Web3Context from '../contexts/Web3Context/context'
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import { useRouter } from 'next/router'
+import { MAX_INT } from '../constants'
 
 
 const TerminusPoolsListView = ({
@@ -78,9 +79,19 @@ const TerminusPoolsListView = ({
 
   const createNewPool = () => {
     const capacity = Number(newPoolProps.capacity)
-    if (!capacity || !Number.isInteger(capacity) || capacity < 1) { return }
+
+    if (!newPoolProps.capacity || !Number(capacity) || !Number.isInteger(capacity) || capacity < 1) { 
+      onOpen()
+      toast({
+        title: 'Capacity must be a positive number',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      return
+     }
     newPool.mutate(
-    { capacity: String(capacity),
+    { capacity: newPoolProps.capacity,
       isTransferable: newPoolProps.isTransferable,
       isBurnable: newPoolProps.isBurnable,
     },
@@ -119,24 +130,31 @@ const TerminusPoolsListView = ({
       </Button> }
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent bg='black' border='1px solid white'>
+        <ModalContent bg='#181818' color='white' border='1px solid white'>
           <ModalHeader>New pool</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input onChange={(e) => setNewPoolProps((prev) => {
-              return {...prev, capacity: e.target.value}
-              })} 
-              placeholder='capacity' 
-              type='number' 
-              value={newPoolProps.capacity} 
-            />
-            <Checkbox 
+            <Flex gap={3}>
+              <Input onChange={(e) => setNewPoolProps((prev) => {
+                return {...prev, capacity: e.target.value}
+                })} 
+                placeholder='capacity' 
+                type='number' 
+                value={newPoolProps.capacity} 
+                mb={4}
+              />
+              <Button colorScheme='purple' onClick={() => {setNewPoolProps((prev) => {
+                return {...prev, capacity: MAX_INT}
+                })}}
+                >MAX_INT</Button>
+            </Flex>
+            <Checkbox colorScheme='white' mr={3}
               onChange={(e) => setNewPoolProps((prev) => {
                 return {...prev, isBurnable: e.target.checked}
               })} 
               isChecked={newPoolProps.isBurnable}
             >Burnable</Checkbox>
-            <Checkbox 
+            <Checkbox colorScheme='white'
               onChange={(e) => setNewPoolProps((prevState) => {
                 return {...prevState, isTransferable: e.target.checked}
               })} 
@@ -145,13 +163,17 @@ const TerminusPoolsListView = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
+            <Button colorScheme='whiteAlpha' mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button variant='ghost' onClick={() => {
+            <Button         
+              colorScheme='teal'
+              onClick={() => {
                 createNewPool()
                 onClose()
-                }}>Create</Button>
+                }}
+              >Create
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
