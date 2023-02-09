@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useState } from 'react'
 import { useQuery, useMutation } from 'react-query'
-import { Button, Input, useToast } from '@chakra-ui/react'
-import { Flex, Text } from '@chakra-ui/layout'
+import { Button, IconButton, Input, useToast } from '@chakra-ui/react'
+import { Box, Flex, Text } from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/image'
 
 import PoolDetailsRow from './PoolDetailsRow'
@@ -11,6 +11,7 @@ import Web3Context from '../contexts/Web3Context/context'
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
 import queryCacheProps from '../hooks/hookCommon'
 import { MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
+import { LinkIcon } from '@chakra-ui/icons'
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 
@@ -140,9 +141,44 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
     },
   )
 
+  
+  const copyPoolAddress = () => {
+    navigator.clipboard.writeText(`https://portal.moonstream.to/terminus/?contractAddress=${address}&poolId=${poolId}`).then(() => {
+      toast({
+        duration: 3000,
+        render: () => (
+          <Box borderRadius='10px' textAlign='center' color='black' p={3} bg='green.800'>
+            Copied to clipboard
+          </Box>
+        ),
+      })
+      }).catch((e) => {
+        toast({
+          duration: 3000,
+          render: () => (
+            <Box borderRadius='10px' textAlign='center' color='black' p={3} bg='red.800'>
+              {e}
+            </Box>
+          ),
+        })
+      })
+  }
+
   return (
     <Flex bg='#2d2d2d' minW='800px' borderRadius='20px' p='30px' color='white' direction='column' maxW='800px'>
-      <Text textAlign='start' color='#c2c2c2'  w='fit-content' py={1} pr={0} borderBottom='1px solid #c2c2c2' fontSize='20px' mb='20px'>{`pool ${poolId}`}</Text>
+      <Flex gap={2}>
+      <Text 
+        textAlign='start' 
+        color='#c2c2c2'  
+        w='fit-content' 
+        py={1} 
+        pr={0} 
+        borderBottom='1px solid #c2c2c2' 
+        fontSize='20px' 
+        mb='20px'>{`pool ${poolId}`}
+      </Text>
+      <IconButton bg='transparent' onClick={copyPoolAddress} color='#c2c2c2' _hover={{bg: 'transparent', color: 'white'}} icon={<LinkIcon />} aria-label='copy link' />
+      </Flex>
       {!!poolState.data && (
         <>
           {metadata?.name && <Text fontWeight='700' fontSize='24px' mb='20px'>{metadata.name}</Text>}
