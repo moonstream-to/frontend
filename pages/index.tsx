@@ -20,7 +20,7 @@ const features = [
   },
   {
     name: 'Airdrop',
-    description: '',
+    description: 'Claim your token',
     image: assets.airdrop,
     href: '/airdrop',
   },

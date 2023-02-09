@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+
+import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 
 import Layout from '../../src/components/layout'
 import { useSearchPublicEntity, useCreatePublicEntity } from '../../src/hooks/usePublicEntities'
@@ -8,7 +9,7 @@ import { useSearchPublicEntity, useCreatePublicEntity } from '../../src/hooks/us
 const Airdrop = () => {
   const toast = useToast()
   const [searchingAddress, setSearchingAddress] = useState('')
-  const [claimedAddress, setClaimedAddress] = useState('')
+  const [claimedStatus, setClaimedStatus] = useState('')
 
   const onSuccess = () => {
     // Handle successful request
@@ -52,13 +53,15 @@ const Airdrop = () => {
     if (dataSearch) {
       if (dataSearch.total_results === 0) {
         refetchCreate()
+      } else if (dataSearch.total_results === 1) {
+        setClaimedStatus('Already claimed for an address')
       }
     }
   }, [dataSearch])
 
   useEffect(() => {
     if (dataCreate) {
-      setClaimedAddress(dataCreate.address)
+      setClaimedStatus(`Claimed for ${dataCreate.address}`)
     }
   }, [dataCreate])
 
@@ -79,9 +82,9 @@ const Airdrop = () => {
               Claim
             </Button>
           </Flex>
-          {claimedAddress && (
+          {claimedStatus && (
             <Flex direction='column' gap='20px' bg='#2d2d2d' borderRadius='10px' p='20px'>
-              <Text>Claimed for {claimedAddress}</Text>
+              <Text>{claimedStatus}</Text>
             </Flex>
           )}
         </Flex>
