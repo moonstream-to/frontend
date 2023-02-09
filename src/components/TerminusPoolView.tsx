@@ -142,6 +142,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
 
   return (
     <Flex bg='#2d2d2d' minW='800px' borderRadius='20px' p='30px' color='white' direction='column' maxW='800px'>
+      <Text textAlign='start' color='#c2c2c2'  w='fit-content' py={1} pr={0} borderBottom='1px solid #c2c2c2' fontSize='20px' mb='20px'>{`pool ${poolId}`}</Text>
       {!!poolState.data && (
         <>
           {metadata?.name && <Text fontWeight='700' fontSize='24px' mb='20px'>{metadata.name}</Text>}
