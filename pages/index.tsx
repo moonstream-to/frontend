@@ -19,10 +19,10 @@ const features = [
     href: '/terminus',
   },
   {
-    name: 'Whitelist',
+    name: 'Airdrop',
     description: '',
     image: assets.airdrop,
-    href: '/whitelist',
+    href: '/airdrop',
   },
 ]
 

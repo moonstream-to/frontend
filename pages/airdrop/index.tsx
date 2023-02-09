@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import Layout from '../../src/components/layout'
 import { useSearchPublicEntity, useCreatePublicEntity } from '../../src/hooks/usePublicEntities'
 
-const Whitelist = () => {
+const Airdrop = () => {
   const toast = useToast()
   const [searchingAddress, setSearchingAddress] = useState('')
   const [claimedAddress, setClaimedAddress] = useState('')
@@ -90,4 +90,4 @@ const Whitelist = () => {
   )
 }
 
-export default Whitelist
+export default Airdrop
