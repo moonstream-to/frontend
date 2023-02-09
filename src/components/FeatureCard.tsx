@@ -1,5 +1,6 @@
-import { Flex, Image, Text } from '@chakra-ui/react'
 import Link from 'next/link'
+
+import { Flex, Image, Text } from '@chakra-ui/react'
 
 const FeatureCard = ({ feature }: { feature: { name: string; description: string; image: string; href: string } }) => {
   return (

@@ -1,25 +1,27 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Flex } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { useQuery } from 'react-query'
+import { Flex } from '@chakra-ui/react'
+
+import Spinner from './Spinner/Spinner'
+import TerminusPoolsListItem from './TerminusPoolsListItem'
 import Web3Context from '../contexts/Web3Context/context'
 import queryCacheProps from '../hooks/hookCommon'
-import TerminusPoolsListItem from './TerminusPoolsListItem'
-
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 const multicallABI = require('../web3/abi/Multicall2.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
-import Spinner from './Spinner/Spinner'
 import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from '../constants'
 
 const TerminusPoolsList = ({
   contractAddress,
   selected,
   onChange,
+  filter,
 }: {
   contractAddress: string
   selected: number
   onChange: (id: string, metadata: unknown) => void
+  filter: string
 }) => {
   const { chainId, web3 } = useContext(Web3Context)
 
@@ -73,9 +75,12 @@ const TerminusPoolsList = ({
     },
     {
       ...queryCacheProps,
-      // onSuccess: () => {},
+      // onSuccess: () => {}, //TODO
     },
   )
+
+
+
   if (!poolsList.data) {
     return <Spinner />
   }
@@ -90,6 +95,7 @@ const TerminusPoolsList = ({
           selected={idx + 1 === selected}
           uri={uri}
           onChange={onChange}
+          filter={filter}
         />
       ))}
     </Flex>

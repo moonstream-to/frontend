@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext } from 'react'
-
 import { Menu, MenuItem, MenuList, Image, MenuButton, Button, Icon } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { MdOutlineLaptopMac } from 'react-icons/md'
+
 import Web3Context from '../contexts/Web3Context/context'
+
 const ChainSelector = () => {
   const web3Provider = useContext(Web3Context)
   return (

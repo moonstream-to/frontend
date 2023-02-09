@@ -1,5 +1,7 @@
-import { Flex } from '@chakra-ui/react'
 import Head from 'next/head'
+
+import { Flex } from '@chakra-ui/react'
+
 import BreadcrumbView from './BreadcrumbView'
 import Footer from './Footer'
 import Navbar from './Navbar'
