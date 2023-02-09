@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useMutation } from 'react-query'
 import { Button, Checkbox, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
 
@@ -7,6 +7,7 @@ import TerminusPoolsList from './TerminusPoolsList'
 import Web3Context from '../contexts/Web3Context/context'
 const terminusAbi = require('../web3/abi/MockTerminus.json')
 import { MockTerminus } from '../web3/contracts/types/MockTerminus'
+import { useRouter } from 'next/router'
 
 
 const TerminusPoolsListView = ({
@@ -22,10 +23,17 @@ const TerminusPoolsListView = ({
 }) => {
 
   const toast = useToast()
+  const router = useRouter()
+
+  const [queryPoolId, setQueryPoolID] = useState<number | undefined>(undefined)
   const [filter, setFilter] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
   const web3ctx = useContext(Web3Context)
   const [newPoolProps, setNewPoolProps] = useState<{capacity: string | undefined, isTransferable: boolean, isBurnable: boolean}>({capacity: undefined, isTransferable: true, isBurnable: true})
+
+  useEffect(() => {
+      setQueryPoolID(typeof router.query.poolId === 'string' ? Number(router.query.poolId) : undefined)
+  }, [router.query])
 
   const terminusFacet = new web3ctx.web3.eth.Contract(
     terminusAbi
@@ -89,9 +97,15 @@ const TerminusPoolsListView = ({
       <Text fontWeight='700' fontSize='24px'>
         pools
       </Text>
-      <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder='search' borderRadius='10px' p='8px 15px'/>
+      {!queryPoolId && <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder='search' borderRadius='10px' p='8px 15px'/>}
 
-      <TerminusPoolsList contractAddress={contractAddress} onChange={onChange} selected={selected} filter={filter}/>
+      <TerminusPoolsList 
+        contractAddress={contractAddress} 
+        onChange={onChange} 
+        selected={selected} 
+        filter={filter}
+        queryPoolId={queryPoolId ?? undefined}
+      />
       
       {contractState && contractState.controller === web3ctx.account && <Button
         width='100%'

@@ -31,6 +31,12 @@ const Terminus = () => {
   }, [])
 
   useEffect(() => {
+    if (!router.query.poolId) {
+      setSelected(1)
+    }
+  }, [router.query.poolId])
+
+  useEffect(() => {
     if (contractAddress) {
       setNextValue(contractAddress)
     }
@@ -54,6 +60,7 @@ const Terminus = () => {
         pathname: '/terminus',
         query: {
           contractAddress: nextValue,
+          poolId: router.query.poolId,
         },
       })
     } else {
@@ -98,7 +105,12 @@ const Terminus = () => {
             <>
               <TerminusContractView onFetch={setContractState} address={contractAddress} />
               <Flex gap='40px' maxH='700px'>
-                <TerminusPoolsListView contractAddress={contractAddress} contractState={contractState} onChange={handleClick} selected={selected} />
+                <TerminusPoolsListView 
+                  contractAddress={contractAddress} 
+                  contractState={contractState} 
+                  onChange={handleClick} 
+                  selected={ selected }
+                   />
                 <TerminusPoolView address={contractAddress} poolId={String(selected)} metadata={poolMetadata} />
               </Flex>
             </>
