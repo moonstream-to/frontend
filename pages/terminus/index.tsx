@@ -33,6 +33,8 @@ const Terminus = () => {
   useEffect(() => {
     if (!router.query.poolId) {
       setSelected(1)
+    } else {
+      setSelected(Number(router.query.poolId))
     }
   }, [router.query.poolId])
 
@@ -54,7 +56,6 @@ const Terminus = () => {
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(nextValue)) {
-      setSelected(1)
       setPoolMetadata({})
       router.push({
         pathname: '/terminus',

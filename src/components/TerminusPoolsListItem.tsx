@@ -10,6 +10,7 @@ const TerminusPoolsListItem = ({
   onChange,
   uri,
   filter,
+  inQuery,
 }: {
   poolId: string
   address: string
@@ -17,6 +18,7 @@ const TerminusPoolsListItem = ({
   onChange: (id: string, metadata: unknown) => void
   uri: string
   filter: string
+  inQuery: boolean
 }) => {
   const metadata = useLink({ link: uri })
 
@@ -29,6 +31,15 @@ const TerminusPoolsListItem = ({
       onChange(poolId, metadata.data)
     }
   }, [selected, metadata, poolId, onChange])
+
+  useEffect(() => {
+    if (inQuery) {
+      const element = document.getElementById(`pool-${poolId}`)
+      element?.scrollIntoView({block: 'center'})
+      const poolView = document.getElementById('poolView')
+      poolView?.scrollIntoView()
+    }
+  }, [inQuery, poolId])
 
   const [show, setShow] = useState(true)
   useEffect(() => {
@@ -52,6 +63,7 @@ const TerminusPoolsListItem = ({
       onClick={handleClick}
       cursor='pointer'
       p='10px'
+      id={`pool-${String(poolId)}`}
     >
       {!metadata.data?.image && (
         <>

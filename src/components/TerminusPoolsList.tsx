@@ -38,27 +38,22 @@ const TerminusPoolsList = ({
       const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
 
       const uriQueries = []
-      if (queryPoolId) {
+
+      const LIMIT = Number(MAX_INT)
+      let totalPools
+      try {
+        totalPools = await terminusContract.methods.totalPools().call()
+      } catch (e) {
+        console.log(e)
+        totalPools = 0
+      }
+      for (let i = 1; i <= Math.min(LIMIT, Number(totalPools)); i += 1) {
         uriQueries.push({
           target: contractAddress,
-          callData: terminusContract.methods.uri(queryPoolId).encodeABI(),
+          callData: terminusContract.methods.uri(i).encodeABI(),
         })
-      } else {
-        const LIMIT = Number(MAX_INT)
-        let totalPools
-        try {
-          totalPools = await terminusContract.methods.totalPools().call()
-        } catch (e) {
-          console.log(e)
-          totalPools = 0
-        }
-        for (let i = 1; i <= Math.min(LIMIT, Number(totalPools)); i += 1) {
-          uriQueries.push({
-            target: contractAddress,
-            callData: terminusContract.methods.uri(i).encodeABI(),
-          })
-        }
       }
+      
 
 
       return multicallContract.methods
@@ -102,8 +97,9 @@ const TerminusPoolsList = ({
         <TerminusPoolsListItem
           key={idx}
           address={contractAddress}
-          poolId={queryPoolId ? String(queryPoolId) : String(idx + 1)}
-          selected={idx + 1 === selected || !!queryPoolId}
+          poolId={String(idx + 1)}
+          selected={idx + 1 === selected}
+          inQuery={idx + 1 === queryPoolId}
           uri={uri}
           onChange={onChange}
           filter={filter}
