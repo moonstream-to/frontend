@@ -28,7 +28,7 @@ const Terminus = () => {
 
   useEffect(() => {
     setRecent(JSON.parse(localStorage.getItem('terminusContracts') ?? 'null'))
-  }, [])
+  }, [router.asPath])
 
   useEffect(() => {
     if (!router.query.poolId) {
