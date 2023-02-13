@@ -133,6 +133,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
         })
         .catch((e: any) => {
           console.log(e)
+          return {}
         })
     },
     {

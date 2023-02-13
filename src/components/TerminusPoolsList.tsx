@@ -82,6 +82,9 @@ const TerminusPoolsList = ({
         })
         .then((parsedResults: string[]) => {
           return parsedResults
+        }).catch((e) => {
+          console.log(e)
+          return []
         })
     },
     {

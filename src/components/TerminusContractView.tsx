@@ -99,6 +99,8 @@ const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: 
           }
           setURI(data.contractURI)
           return data
+        }).catch((e) => {
+          return Promise.reject(new Error(e))
         })
     },
     {
@@ -113,7 +115,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: 
 
   useEffect(() => {
     setURI(contractState.data?.contractURI)
-  }, [])
+  }, [contractState.data?.contractURI])
 
   const metadata = useQuery(
     ['link', uri],
@@ -145,7 +147,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: 
   return (
     <>
       {contractState.data && (
-        <Flex bg='#2d2d2d' maxW='1240px' borderRadius='20px' p='30px' direction='column' gap='20px'>
+        <Flex bg='#2d2d2d' maxW='1240px' minW='1240px' borderRadius='20px' p='30px' direction='column' gap='20px'>
           {metadata.data && (
             <Text fontWeight='700' fontSize='24px'>
               {metadata.data.name}
@@ -191,20 +193,23 @@ const TerminusContractView = ({ address, onFetch }: { address: string, onFetch: 
               </Flex>
             )} 
             {!contractState.data?.controller && (
-              <Flex alignItems='center' gap='10px' color='gray.900'>
-                <Text fontStyle='italic' color='gray.900'>{errorDialog[dialogStep]}</Text>
-                {dialogStep < errorDialog.length - 1 && 
-                  <Text 
-                    cursor='pointer'
-                    h='fit-content' 
-                    p='2px 12px' 
-                    border='1px solid gray' 
-                    borderRadius='5px' 
-                    bg='transparent' 
-                    onClick={nextStep}
-                  >
-                    Yes
-                  </Text>}
+              <Flex direction='column' gap='20px'>
+                <Flex alignItems='center' gap='10px' color='gray.900'>
+                  <Text fontStyle='italic' color='gray.900'>{errorDialog[dialogStep]}</Text>
+                  {dialogStep < errorDialog.length - 1 && 
+                    <Text 
+                      cursor='pointer'
+                      h='fit-content' 
+                      p='2px 12px' 
+                      border='1px solid gray' 
+                      borderRadius='5px' 
+                      bg='transparent' 
+                      onClick={nextStep}
+                    >
+                      Yes
+                    </Text>}
+                </Flex>
+                {contractState.error && <Text>error code: {contractState.error}</Text>}
               </Flex>
             )}
           </Flex>
