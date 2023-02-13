@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Flex, Box, Text } from "@chakra-ui/react";
+import React, { useState } from "react"
+import { Flex, Box, Text } from "@chakra-ui/react"
+import { useDrag } from 'react-dnd'
 
 const CharacterCard = ({
   tokenId,
@@ -13,8 +14,20 @@ const CharacterCard = ({
   onSelect: (tokenId: number, selected: boolean) => void;
 }) => {
   const [selected, setSelected] = useState<boolean>(false);
+
+  const [{ isDragging }, drag] = useDrag({
+    item: { name: tokenName, id: tokenId },
+    type: "character",
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const opacity = isDragging ? 0.3 : 1;
+
   return (
     <Flex
+      ref={drag}
       flexDirection="column"
       w="80px"
       h="100px"
@@ -25,6 +38,8 @@ const CharacterCard = ({
       borderRadius="10px"
       alignItems="center"
       textAlign="center"
+      style={{opacity}}
+      cursor='pointer'
       onClick={() => {
         const newVal = !selected;
         setSelected(newVal);

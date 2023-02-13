@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useContext } from "react";
 import { useQuery, useMutation } from "react-query";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 // import { getLayout } from "moonstream-components/src/layouts/EngineLayout";
 import { Box, Heading, HStack, Spacer } from "@chakra-ui/react";
 import http from '../../src/utils/http'
@@ -395,6 +397,31 @@ const Garden = () => {
     }
   );
 
+
+  const choosePathDrop = useMutation((payload: {tokens: number[], path: number}) => {
+    console.log(payload.tokens, [payload.path])
+    if (payload.path === 4) {
+      const gardenContract: any = new web3ctx.web3.eth.Contract(
+        GardenABI
+      ) as any as GardenABIType;
+      gardenContract.options.address = gardenContractAddress;
+      return gardenContract.methods
+        .chooseCurrentStagePaths(sessionId, payload.tokens, [payload.path])
+        .send({
+          from: web3ctx.account,
+        });
+    }
+  },     {
+    onSuccess: () => {
+      toast("Path choice successful.", "success");
+    },
+    onError: (error) => {
+      toast("Path choice failed.", "error");
+      console.error(error);
+    },
+  });
+
+
   const choosePath = useMutation<unknown, unknown, number, unknown>(
     (path) => {
       console.log(
@@ -439,33 +466,36 @@ const Garden = () => {
       >
         <Heading>Garden of Forking Paths</Heading>
         {sessionMetadata.data && (
-          <HStack my="10" alignItems="top">
-            <MetadataPanel
-              sessionMetadata={sessionMetadata.data}
-              selectedStage={selectedStage}
-            />
-            <Spacer />
-            <SessionPanel
-              sessionMetadata={sessionMetadata.data}
-              currentStage={currentStage}
-              correctPaths={correctPaths}
-              generatePathId={generatePathId}
-              setSelectedStage={setSelectedStage}
-              setSelectedPath={setSelectedPath}
-            />
-            <Spacer />
-            <CharacterPanel
-              // sessionMetadata={sessionMetadata.data}
-              ownedTokens={userOwnedTokens.data || []}
-              stakedTokens={stakedTokens.data || []}
-              tokenMetadata={tokenMetadata.data}
-              path={selectedPath}
-              setApproval={setApproval}
-              stakeTokens={stakeTokens}
-              unstakeTokens={unstakeTokens}
-              choosePath={choosePath}
-            ></CharacterPanel>
-          </HStack>
+          <DndProvider backend={HTML5Backend}>
+            <HStack my="10" alignItems="top">
+              <MetadataPanel
+                sessionMetadata={sessionMetadata.data}
+                selectedStage={selectedStage}
+              />
+              <Spacer />
+              <SessionPanel
+                sessionMetadata={sessionMetadata.data}
+                currentStage={currentStage}
+                correctPaths={correctPaths}
+                generatePathId={generatePathId}
+                setSelectedStage={setSelectedStage}
+                setSelectedPath={setSelectedPath}
+                choosePathDrop={choosePathDrop}
+              />
+              <Spacer />
+              <CharacterPanel
+                // sessionMetadata={sessionMetadata.data}
+                ownedTokens={userOwnedTokens.data || []}
+                stakedTokens={stakedTokens.data || []}
+                tokenMetadata={tokenMetadata.data}
+                path={selectedPath}
+                setApproval={setApproval}
+                stakeTokens={stakeTokens}
+                unstakeTokens={unstakeTokens}
+                choosePath={choosePath}
+              ></CharacterPanel>
+            </HStack>
+          </DndProvider>
         )}
       </Box>
     </Layout>

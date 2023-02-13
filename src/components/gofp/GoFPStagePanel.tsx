@@ -11,6 +11,8 @@ const StagePanel = ({
   generatePathId,
   setSelectedStage,
   setSelectedPath,
+  isCurrent,
+  choosePathDrop,
 }: {
   stageMetadata: StageMetadata;
   stageIdx: number;
@@ -19,7 +21,13 @@ const StagePanel = ({
   generatePathId: any;
   setSelectedStage: React.Dispatch<React.SetStateAction<number>>;
   setSelectedPath: React.Dispatch<React.SetStateAction<number>>;
+  isCurrent: boolean
+  choosePathDrop: any
 }) => {
+
+
+
+
   const getPathStatus = (pathIdx: number) => {
     if (completed) {
       if (pathIdx + 1 == correctPath) {
@@ -50,6 +58,7 @@ const StagePanel = ({
           return (
             <Center key={pathIdx}>
               <PathCard
+                accept={isCurrent ? 'character' : 'none'}
                 pathMetadata={path}
                 status={getPathStatus(pathIdx)}
                 pathId={generatePathId(stageIdx, pathIdx)}
@@ -57,6 +66,7 @@ const StagePanel = ({
                   console.log("Selecting path ", pathIdx + 1);
                   setSelectedPath(pathIdx + 1);
                 }}
+                choosePathDrop={choosePathDrop}
               ></PathCard>
             </Center>
           );
