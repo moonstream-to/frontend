@@ -11,6 +11,7 @@ import TerminusPoolView from '../../src/components/TerminusPoolView'
 import TerminusContractView from '../../src/components/TerminusContractView'
 import Web3Context from '../../src/contexts/Web3Context/context'
 import ContractRow from '../../src/components/ContractRow'
+import ContractCard from '../../src/components/ContractCard'
 
 const Terminus = () => {
   const router = useRouter()
@@ -86,8 +87,7 @@ const Terminus = () => {
       <Head>
         <title>Moonstream portal - terminus</title>
       </Head>
-      <Center>
-        <Flex gap='30px' direction='column' px='7%' py='30px' color='white'>
+        <Flex alignItems='center' gap='30px' direction='column' px='7%' py='30px' color='white'>
           <Flex gap='20px'>
             <Input
               onKeyDown={handleKeyDown}
@@ -116,16 +116,14 @@ const Terminus = () => {
             </>
           )}
           {!contractAddress && recent && (
-            <Flex direction='column' gap='20px' bg='#2d2d2d' borderRadius='10px' p='20px'>
-              <Text>Recent</Text>
-              {Object.keys(recent).map((address) => {
+            <Flex gap='20px' p='20px' wrap='wrap' maxW='86%' justifyContent='start'>
+              {Object.keys(recent).map((address, idx) => {
                 const { chainId, name, image } = recent[address as keyof typeof recent]
-                return <ContractRow key={address} address={address} chainId={chainId} name={name} image={image} />
+                return <ContractRow key={idx} address={address} chainId={chainId} name={name} image={image} />
               })}
             </Flex>
           )}
         </Flex>
-      </Center>
     </Layout>
   )
 }
