@@ -22,16 +22,19 @@ export const useSearchPublicEntity = (onSuccess: any, onError: any, searchingAdd
 
 const fetchCreatePublicEntity = (queryKey: any) => {
   const address = queryKey.queryKey[1]
+  const email = queryKey.queryKey[2]
+  const discord = queryKey.queryKey[3]
   const data = {
     address: address,
     blockchain: 'polygon',
     name: 'Public claimant',
+    required_fields: [{ email: email }, { discord: discord }],
   }
   return axios.post(`${ENTITY_API}/public/collections/${WHITELIST_EVENT_COLLECTION_ID}/entities`, data)
 }
 
-export const useCreatePublicEntity = (onSuccess: any, onError: any, address: string) => {
-  return useQuery(['create-public-entity', address], fetchCreatePublicEntity, {
+export const useCreatePublicEntity = (onSuccess: any, onError: any, address: string, email: string, discord: string) => {
+  return useQuery(['create-public-entity', address, email, discord], fetchCreatePublicEntity, {
     onSuccess,
     onError,
     select: (data: any) => {

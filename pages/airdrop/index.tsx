@@ -8,7 +8,9 @@ import { useSearchPublicEntity, useCreatePublicEntity } from '../../src/hooks/us
 
 const Airdrop = () => {
   const toast = useToast()
-  const [searchingAddress, setSearchingAddress] = useState('')
+  const [claimantAddress, setClaimantAddress] = useState('')
+  const [claimantEmail, setClaimantEmail] = useState('')
+  const [claimantDiscord, setClaimantDiscord] = useState('')
   const [claimedStatus, setClaimedStatus] = useState('')
 
   const onSuccess = () => {
@@ -31,16 +33,27 @@ const Airdrop = () => {
     data: dataSearch,
     isFetching: isFetchingSearch,
     refetch: refetchSearch,
-  } = useSearchPublicEntity(onSuccess, onError, searchingAddress)
+  } = useSearchPublicEntity(onSuccess, onError, claimantAddress)
   const {
     isLoading: isLoadingCreate,
     data: dataCreate,
     isFetching: isFetchingCreate,
     refetch: refetchCreate,
-  } = useCreatePublicEntity(onSuccess, onError, searchingAddress)
+  } = useCreatePublicEntity(onSuccess, onError, claimantAddress, claimantEmail, claimantDiscord)
 
   const handleSubmit = () => {
-    refetchSearch()
+    if (claimantAddress === '' || claimantEmail === '' || claimantDiscord === '') {
+      toast({
+        render: () => (
+          <Box borderRadius='5px' textAlign='center' color='black' p={1} bg='red.600'>
+            {'Please fulfill all fields'}
+          </Box>
+        ),
+        isClosable: true,
+      })
+    } else {
+      refetchSearch()
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -51,7 +64,7 @@ const Airdrop = () => {
 
   useEffect(() => {
     if (dataSearch) {
-      if (dataSearch.total_results === 0) {
+      if (dataSearch.total_results === 0 && claimantAddress !== '') {
         refetchCreate()
       } else if (dataSearch.total_results === 1) {
         setClaimedStatus('Already claimed for an address')
@@ -69,19 +82,39 @@ const Airdrop = () => {
     <Layout home={true}>
       <Center>
         <Flex gap='30px' direction='column' px='7%' py='30px' color='white'>
-          <Flex gap='20px'>
+          <Box w='100%' px={['7%', null, '25%']} alignSelf='center'>
             <Input
               onKeyDown={handleKeyDown}
               w='50ch'
+              my='10px'
               placeholder='wallet address'
               type='text'
-              value={searchingAddress}
-              onChange={(e) => setSearchingAddress(e.target.value)}
+              value={claimantAddress}
+              onChange={(e) => setClaimantAddress(e.target.value)}
             />
-            <Button bg='gray.0' fontWeight='400' fontSize='18px' color='#2d2d2d' onClick={handleSubmit}>
+            <Input
+              onKeyDown={handleKeyDown}
+              w='50ch'
+              my='10px'
+              placeholder='email'
+              type='email'
+              value={claimantEmail}
+              onChange={(e) => setClaimantEmail(e.target.value)}
+            />
+            <Input
+              onKeyDown={handleKeyDown}
+              w='50ch'
+              my='10px'
+              placeholder='discord account'
+              type='text'
+              value={claimantDiscord}
+              onChange={(e) => setClaimantDiscord(e.target.value)}
+            />
+            <br />
+            <Button bg='gray.0' my='10px' fontWeight='400' fontSize='18px' color='#2d2d2d' onClick={handleSubmit}>
               Claim
             </Button>
-          </Flex>
+          </Box>
           {claimedStatus && (
             <Flex direction='column' gap='20px' bg='#2d2d2d' borderRadius='10px' p='20px'>
               <Text>{claimedStatus}</Text>
