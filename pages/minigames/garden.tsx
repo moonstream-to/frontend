@@ -209,7 +209,7 @@ const Garden = () => {
       ...hookCommon,
     }
   );
-
+  
   const stakedTokens = useQuery<number[]>(
     ["get_token", gardenContractAddress, sessionId, web3ctx.account],
     async () => {
@@ -400,17 +400,17 @@ const Garden = () => {
 
   const choosePathDrop = useMutation((payload: {tokens: number[], path: number}) => {
     console.log(payload.tokens, [payload.path])
-    if (payload.path === 4) {
-      const gardenContract: any = new web3ctx.web3.eth.Contract(
-        GardenABI
-      ) as any as GardenABIType;
-      gardenContract.options.address = gardenContractAddress;
-      return gardenContract.methods
-        .chooseCurrentStagePaths(sessionId, payload.tokens, [payload.path])
-        .send({
-          from: web3ctx.account,
-        });
-    }
+    
+    const gardenContract: any = new web3ctx.web3.eth.Contract(
+      GardenABI
+    ) as any as GardenABIType;
+    gardenContract.options.address = gardenContractAddress;
+    return gardenContract.methods
+      .chooseCurrentStagePaths(sessionId, payload.tokens, [payload.path])
+      .send({
+        from: web3ctx.account,
+      });
+    
   },     {
     onSuccess: () => {
       toast("Path choice successful.", "success");
