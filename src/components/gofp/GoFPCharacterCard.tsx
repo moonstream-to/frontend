@@ -1,6 +1,14 @@
-import React, { useState } from "react"
+/* eslint-disable @typescript-eslint/no-var-requires */
+import React, { useContext, useState } from "react"
 import { Flex, Box, Text } from "@chakra-ui/react"
 import { useDrag } from 'react-dnd'
+import { hookCommon, useRouter } from "../../hooks";
+import { useQuery } from "react-query";
+import Web3Context from "../../contexts/Web3Context/context";
+const GardenABI = require('../../web3/abi/GoFPABI.json');
+import { GOFPFacet as GardenABIType } from '../../web3/contracts/types/GOFPFacet';
+
+
 
 const CharacterCard = ({
   tokenId,
@@ -14,6 +22,38 @@ const CharacterCard = ({
   onSelect: (tokenId: number, selected: boolean) => void;
 }) => {
   const [selected, setSelected] = useState<boolean>(false);
+  const router = useRouter();
+
+  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const [sessionId] = useState<number>(router.query["sessionId"]);
+  const [gardenContractAddress] = useState<string>(
+    router.query["contractId"] || ZERO_ADDRESS
+  );
+
+  const web3ctx = useContext(Web3Context);
+
+
+
+  const chosenPath = useQuery(['path_for_token', tokenId], async () => {
+    if (
+      gardenContractAddress == ZERO_ADDRESS ||
+      sessionId < 1 ||
+      !web3ctx.account
+    )
+      return [];
+
+    const gardenContract: any = new web3ctx.web3.eth.Contract(
+      GardenABI
+    ) as any as GardenABIType;
+    gardenContract.options.address = gardenContractAddress;
+
+    const res = await gardenContract.methods.getPathChoice(sessionId, tokenId, 1).call()
+    return Number(res)
+    },
+    {
+      ...hookCommon,
+  }
+  )
 
   const [{ isDragging }, drag] = useDrag({
     item: { name: tokenName, id: tokenId },
@@ -27,7 +67,7 @@ const CharacterCard = ({
 
   return (
     <Flex
-      ref={drag}
+      ref={chosenPath.data ? null : drag}
       flexDirection="column"
       w="80px"
       h="100px"
@@ -39,7 +79,7 @@ const CharacterCard = ({
       alignItems="center"
       textAlign="center"
       style={{opacity}}
-      cursor='pointer'
+      cursor={chosenPath.data ? 'default' : 'pointer'}
       onClick={() => {
         const newVal = !selected;
         setSelected(newVal);
@@ -57,9 +97,10 @@ const CharacterCard = ({
         backgroundPosition="center"
         backgroundSize="contain"
       />
-      <Text fontSize="xs" px={1}>
+      <Text userSelect='none' fontSize="xs" px={1}>
         {tokenName || tokenId}
       </Text>
+      {!!chosenPath.data && <Text userSelect='none' fontSize="xs" >Path {chosenPath.data}</Text>}
     </Flex>
   );
 };
