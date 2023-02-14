@@ -66,7 +66,7 @@ const Airdrop = () => {
     if (dataSearch) {
       if (dataSearch.total_results === 0 && claimantAddress !== '') {
         refetchCreate()
-      } else if (dataSearch.total_results === 1) {
+      } else if (dataSearch.total_results >= 1) {
         setClaimedStatus('Already claimed for an address')
       }
     }
