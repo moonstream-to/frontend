@@ -1,46 +1,83 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
+import { useMutation } from 'react-query'
+import axios from 'axios'
 import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 
 import Layout from '../../src/components/layout'
-import { useSearchPublicEntity, useCreatePublicEntity } from '../../src/hooks/usePublicEntities'
+import Spinner from '../../src/components/Spinner/Spinner'
+import Web3Context from '../../src/contexts/Web3Context/context'
+import { ENTITY_API, WHITELIST_EVENT_COLLECTION_ID } from '../../src/constants'
 
 const Airdrop = () => {
   const toast = useToast()
-  const [searchingAddress, setSearchingAddress] = useState('')
-  const [claimedStatus, setClaimedStatus] = useState('')
+  const [claimantAddress, setClaimantAddress] = useState('')
+  const [claimantEmail, setClaimantEmail] = useState('')
+  const [claimantDiscord, setClaimantDiscord] = useState('')
 
-  const onSuccess = () => {
-    // Handle successful request
-  }
+  const { web3 } = useContext(Web3Context) 
+
+
+
+  const onSuccess = (data: any) => {
+    toast({
+    render: () => (
+      <Box borderRadius='15px' border='2px solid white' textAlign='center' color='white' py={3} px={5} bg='#353535'>
+        succesfully claimed for {data?.data?.address}
+      </Box>
+    ),
+    duration: 5000,
+    position: 'top',
+  })}
+
+
   const onError = (error: any) => {
-    console.log(error?.message)
     toast({
       render: () => (
-        <Box borderRadius='5px' textAlign='center' color='black' p={1} bg='red.600'>
+        <Box borderRadius='15px' border='2px solid #F56646' textAlign='center' color='#F56646' py={3} px={5} bg='#353535'>
           {error?.message}
         </Box>
       ),
       isClosable: true,
+      position: 'top',
     })
   }
 
-  const {
-    isLoading: isLoadingSearch,
-    data: dataSearch,
-    isFetching: isFetchingSearch,
-    refetch: refetchSearch,
-  } = useSearchPublicEntity(onSuccess, onError, searchingAddress)
-  const {
-    isLoading: isLoadingCreate,
-    data: dataCreate,
-    isFetching: isFetchingCreate,
-    refetch: refetchCreate,
-  } = useCreatePublicEntity(onSuccess, onError, searchingAddress)
+
+  const createPublicEntryMutation = useMutation(({address, email, discord}: {address: string; email: string; discord: string }) => {
+    return axios.get(`${ENTITY_API}/public/collections/${WHITELIST_EVENT_COLLECTION_ID}/search?required_field=address:${claimantAddress}`)
+    .then((res) => {
+      if (res.data?.total_results >= 1) {
+        return new Promise((_, reject) => {
+          reject(new Error('already claimed'))
+        })
+      }
+      const data = {
+        address,
+        blockchain: 'polygon',
+        name: 'Public claimant',
+        required_fields: [{ email }, { discord }],
+      }
+      return axios.post(`${ENTITY_API}/public/collections/${WHITELIST_EVENT_COLLECTION_ID}/entities`, data)
+    })
+  },
+  {
+    onError,
+    onSuccess,
+  },)
+
 
   const handleSubmit = () => {
-    refetchSearch()
+    if (claimantAddress === '' || claimantEmail === '' || claimantDiscord === '') {
+      onError({message: 'please fill al fields'})
+      return
+    } 
+    if (!web3.utils.isAddress(claimantAddress)) {
+      onError({message: 'address is not valid'})
+      return
+    }
+    createPublicEntryMutation.mutate({address: claimantAddress, email: claimantEmail, discord: claimantDiscord})
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -49,44 +86,47 @@ const Airdrop = () => {
     }
   }
 
-  useEffect(() => {
-    if (dataSearch) {
-      if (dataSearch.total_results === 0) {
-        refetchCreate()
-      } else if (dataSearch.total_results === 1) {
-        setClaimedStatus('Already claimed for an address')
-      }
-    }
-  }, [dataSearch])
-
-  useEffect(() => {
-    if (dataCreate) {
-      setClaimedStatus(`Claimed for ${dataCreate.address}`)
-    }
-  }, [dataCreate])
-
   return (
-    <Layout home={true}>
+    <Layout home={false}>
+      <Text pl='7%' fontSize='40px' py='40px' color='white' fontWeight='700'>Claim</Text>
       <Center>
-        <Flex gap='30px' direction='column' px='7%' py='30px' color='white'>
-          <Flex gap='20px'>
-            <Input
-              onKeyDown={handleKeyDown}
-              w='50ch'
-              placeholder='wallet address'
-              type='text'
-              value={searchingAddress}
-              onChange={(e) => setSearchingAddress(e.target.value)}
-            />
-            <Button bg='gray.0' fontWeight='400' fontSize='18px' color='#2d2d2d' onClick={handleSubmit}>
-              Claim
+        <Flex fontSize='18px' direction='column' px='7%' color='white' mb='60px'>
+          <Flex direction='column' gap='40px' borderRadius='10px' p='30px' maxW='560px' border='1px solid white'>
+            <Flex direction='column' gap='10px'>
+              <Text>Wallet address</Text>
+              <Input               
+                onKeyDown={handleKeyDown}
+                w='50ch'
+                placeholder='wallet address'
+                type='text'
+                value={claimantAddress}
+                onChange={(e) => { 
+                  setClaimantAddress(e.target.value)
+                }}
+                />
+              <Text>Email</Text>
+              <Input
+                onKeyDown={handleKeyDown}
+                w='50ch'
+                placeholder='email'
+                type='email'
+                value={claimantEmail}
+                onChange={(e) => setClaimantEmail(e.target.value)}
+              />
+              <Text>Discord</Text>
+              <Input
+                onKeyDown={handleKeyDown}
+                w='50ch'
+                placeholder='discord account'
+                type='text'
+                value={claimantDiscord}
+                onChange={(e) => setClaimantDiscord(e.target.value)}
+              />
+            </Flex>
+            <Button variant='plainOrange' borderRadius='10px' minW='100%' bg='#F56646' color='white' onClick={handleSubmit}>
+              {createPublicEntryMutation.isLoading ? <Spinner h='22px' w='22px'/> : <Text>Claim</Text>}
             </Button>
           </Flex>
-          {claimedStatus && (
-            <Flex direction='column' gap='20px' bg='#2d2d2d' borderRadius='10px' p='20px'>
-              <Text>{claimedStatus}</Text>
-            </Flex>
-          )}
         </Flex>
       </Center>
     </Layout>
