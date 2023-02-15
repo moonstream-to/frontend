@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useMutation } from 'react-query'
 import axios from 'axios'
-import Web3 from 'web3'
 import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 
 import Layout from '../../src/components/layout'
 import Spinner from '../../src/components/Spinner/Spinner'
+import Web3Context from '../../src/contexts/Web3Context/context'
+import { ENTITY_API, WHITELIST_EVENT_COLLECTION_ID } from '../../src/constants'
 
 const Airdrop = () => {
   const toast = useToast()
@@ -15,10 +16,9 @@ const Airdrop = () => {
   const [claimantEmail, setClaimantEmail] = useState('')
   const [claimantDiscord, setClaimantDiscord] = useState('')
 
-  const web3 = new Web3()
+  const { web3 } = useContext(Web3Context) 
 
-  const ENTITY_API = process.env.NEXT_PUBLIC_ENTITY_API_URL
-  const WHITELIST_EVENT_COLLECTION_ID = process.env.NEXT_PUBLIC_WHITELIST_EVENT_COLLECTION_ID
+
 
   const onSuccess = (data: any) => {
     toast({
