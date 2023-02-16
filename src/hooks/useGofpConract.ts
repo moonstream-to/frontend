@@ -60,18 +60,14 @@ export const useGofpContract = ({
   const sessionMetadata =  useQuery<SessionMetadata | undefined>(
     ["get_metadata", sessionInfo],
     async () => {
-      if (!sessionInfo || !sessionInfo.data) {
-        return;
-      }
-
       const uri = sessionInfo.data[5];
-
       return fetchMetadataUri(uri).then((res) => {
         return res.data as SessionMetadata;
       });
     },
     {
       ...hookCommon,
+      enabled: !!sessionInfo.data
     }
   );
 
@@ -79,19 +75,10 @@ export const useGofpContract = ({
   const currentStage = useQuery<number>(
     ["get_current_stage", gardenContractAddress, sessionId, sessionInfo],
     async () => {
-      if (
-        gardenContractAddress == ZERO_ADDRESS ||
-        sessionId < 1 ||
-        !sessionInfo.data
-      )
-        return 1; //TODO
-
-
       const result = await gardenContract.methods
         .getCurrentStage(sessionId)
         .call();
       const _stage = parseInt(result);
-      // console.log("Current stage is ", _stage);
       //setSelectedStage(Math.min(_stage, sessionInfo.data[6].length)); //TODO
       return _stage;
     },
@@ -99,6 +86,7 @@ export const useGofpContract = ({
       ...hookCommon,
       refetchInterval: 15 * 1000,
       notifyOnChangeProps: ["data"],
+      enabled: !!sessionInfo.data && sessionId >= 0
     }
   );
 
@@ -106,43 +94,33 @@ export const useGofpContract = ({
     ["get_correct_paths", gardenContractAddress, sessionId, currentStage.data],
     async () => {
       const answers: number[] = [];
-      console.log('correct paths query')
-      if (
-        gardenContractAddress == ZERO_ADDRESS ||
-        sessionId < 1 ||
-        !currentStage.data ||
-        currentStage.data <= 1
-      )
-        return answers;
-
-      const gardenContract: any = new web3ctx.web3.eth.Contract(
-        GardenABI
-      ) as any as GardenABIType;
-      gardenContract.options.address = gardenContractAddress;
-
-      for (let i = 1; i < currentStage.data; i++) {
+      for (let i = 1; i < (currentStage.data ?? 0); i++) {
         const ans = await gardenContract.methods
           .getCorrectPathForStage(sessionId, i)
           .call();
         answers.push(parseInt(ans));
       }
-
-      console.log("Correct paths ", answers);
       return answers;
     },
     {
       ...hookCommon,
+      enabled: !!currentStage.data && currentStage.data > 1
     }
   );
 
 
   const getPathForToken = async (tokenId: number) => {
-    const res = await gardenContract.methods.getPathChoice(sessionId, tokenId, 1).call() //TODO current stage
+    const res = await gardenContract.methods.getPathChoice(sessionId, tokenId, currentStage.data).call() //TODO current stage
     return Number(res)
   };
 
   function usePath(tokenId: number) {
-    return useQuery(['path_for_token', tokenId], () => getPathForToken(tokenId), { ...hookCommon });
+    return useQuery(['path_for_token', tokenId], () => getPathForToken(tokenId), 
+    { 
+      ...hookCommon,
+      enabled: !!currentStage.data,
+    },
+    );
   }
 
   const getTokensUri = async (tokenIds: number[]) => {
@@ -193,17 +171,6 @@ export const useGofpContract = ({
 
   const stakeTokens = useMutation(
     (tokenIds: number[]) => {
-      console.log(
-        "Attempting to stake ",
-        tokenIds,
-        " into session ",
-        sessionId,
-        "."
-      );
-      const gardenContract: any = new web3ctx.web3.eth.Contract(
-        GardenABI
-      ) as any as GardenABIType;
-      gardenContract.options.address = gardenContractAddress;
       return gardenContract.methods
         .stakeTokensIntoSession(sessionId, tokenIds)
         .send({
@@ -215,8 +182,6 @@ export const useGofpContract = ({
         toast("Staking successful.", "success");
         queryClient.invalidateQueries('owned_tokens')
         queryClient.invalidateQueries('staked_tokens')
-        // userOwnedTokens.refetch();
-        // stakedTokens.refetch();
       },
       onError: (error) => {
         toast("Staking failed.", "error");
@@ -271,7 +236,6 @@ export const useGofpContract = ({
 
   const choosePath = useMutation<unknown, unknown, ChoosePathData, unknown>(
     (vars: ChoosePathData) => {
-
       return gardenContract.methods
         .chooseCurrentStagePaths(
           sessionId,
