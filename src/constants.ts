@@ -94,3 +94,18 @@ export const MULTICALL2_CONTRACT_ADDRESSES = {
 export const MAX_INT = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
 export const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
+export const AWS_S3_DATA_PATH = 'https://s3.amazonaws.com/data.moonstream.to/dev'
+
+// ARMORY
+// Select placeholders
+export const EMPTY_PROJECT_PLACEHOLDER = 'Select your project'
+export const EMPTY_CHART_ATTR_PLACEHOLDER = 'Not selected'
+// Table settings
+export const PAGE_SIZE = 40
+// Request settings
+export const CACHE_TIME = 1800000
+export const STALE_TIME = 1800000 // How long it will not re-fetch data from server and show stale results
+// Fun placeholders
+export const FUN_EMPTY_PLACEHOLDER =
+  'I had just returned, I thought that cold beer, a hot ham, were waiting for me and here - an emptiness..'
+export const FUN_LOADING_PLACEHOLDER = 'Searching for the sword and mail in your size..'

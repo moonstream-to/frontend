@@ -8,21 +8,28 @@ import { AWS_ASSETS_PATH } from '../src/constants'
 
 const assets = {
   airdrop: `${AWS_ASSETS_PATH}/airdrop.png`,
+  armory: `${AWS_ASSETS_PATH}/airdrop.png`,
   terminus: `${AWS_ASSETS_PATH}/Terminus.png`,
 }
 
 const features = [
   {
-    name: 'Terminus',
-    description: 'Manage your access lists and more',
-    image: assets.terminus,
-    href: '/terminus',
-  },
-  {
     name: 'Airdrop',
     description: 'Claim your token',
     image: assets.airdrop,
     href: '/airdrop',
+  },
+  {
+    name: 'Armory',
+    description: 'Investigate project characters and items',
+    image: assets.armory,
+    href: '/armory',
+  },
+  {
+    name: 'Terminus',
+    description: 'Manage your access lists and more',
+    image: assets.terminus,
+    href: '/terminus',
   },
 ]
 

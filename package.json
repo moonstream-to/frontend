@@ -27,11 +27,13 @@
     "react-icons": "^4.7.1",
     "react-markdown": "^8.0.5",
     "react-query": "^3.39.2",
+    "react-table": "^7.8.0",
     "remark-gfm": "^3.0.1",
     "web3": "^1.7.4",
     "web3-utils": "^1.8.1"
   },
   "devDependencies": {
+    "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.48.1",
     "eslint": "^8.32.0",
