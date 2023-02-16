@@ -1,44 +1,38 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Flex, Center } from "@chakra-ui/react";
-import { StageMetadata, PathStatus } from "./GoFPTypes";
 import PathCard from "./GoFPPathCard";
+import useGofp from "../../contexts/GoFPContext";
+import useGofpContract from "../../hooks/useGofpConract";
+import Web3Context from "../../contexts/Web3Context/context";
 
 const StagePanel = ({
-  stageMetadata,
   stageIdx,
-  completed,
-  correctPath,
-  generatePathId,
-  setSelectedStage,
-  setSelectedPath,
-  isCurrent,
-  choosePathDrop,
 }: {
-  stageMetadata: StageMetadata;
   stageIdx: number;
-  completed: boolean;
-  correctPath: number;
-  generatePathId: any;
-  setSelectedStage: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedPath: React.Dispatch<React.SetStateAction<number>>;
-  isCurrent: boolean
-  choosePathDrop: any
 }) => {
 
 
+  const { generatePathId, selectStage, sessionId, gardenContractAddress } = useGofp()
+
+  const web3ctx = useContext(Web3Context)
+  const { sessionMetadata, currentStage } = useGofpContract({
+    sessionId,
+    gardenContractAddress,
+    web3ctx,
+  })
 
 
-  const getPathStatus = (pathIdx: number) => {
-    if (completed) {
-      if (pathIdx + 1 == correctPath) {
-        return PathStatus.correct;
-      } else {
-        return PathStatus.incorrect;
-      }
-    } else {
-      return PathStatus.undecided;
-    }
-  };
+  // const getPathStatus = (pathIdx: number) => {
+  //   if (completed) {
+  //     if (pathIdx + 1 == correctPath) {
+  //       return PathStatus.correct;
+  //     } else {
+  //       return PathStatus.incorrect;
+  //     }
+  //   } else {
+  //     return PathStatus.undecided;
+  //   }
+  // };
 
   return (
     <Flex
@@ -46,7 +40,7 @@ const StagePanel = ({
       pb={10}
       zIndex={1}
       onClick={() => {
-        setSelectedStage(stageIdx + 1);
+        selectStage(stageIdx + 1);
       }}
     >
       {/* <Text fontSize="md" fontWeight="bold" pb={5}>
@@ -54,19 +48,15 @@ const StagePanel = ({
       </Text>
       <br /> <br /> */}
       <Flex flexDirection="row" alignItems="center">
-        {stageMetadata.paths.map((path, pathIdx) => {
+        {sessionMetadata.data?.stages[stageIdx].paths.map((path, pathIdx) => {
           return (
             <Center key={pathIdx}>
               <PathCard
-                accept={isCurrent ? 'character' : 'none'}
+                accept={currentStage.data === stageIdx + 1 ? 'character' : 'none'}
                 pathMetadata={path}
-                status={getPathStatus(pathIdx)}
+                pathIdx={pathIdx}
+                stageIdx={stageIdx}
                 pathId={generatePathId(stageIdx, pathIdx)}
-                setSelectedPath={() => {
-                  console.log("Selecting path ", pathIdx + 1);
-                  setSelectedPath(pathIdx + 1);
-                }}
-                choosePathDrop={choosePathDrop}
               ></PathCard>
             </Center>
           );

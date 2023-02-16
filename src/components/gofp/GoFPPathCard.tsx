@@ -1,34 +1,52 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Flex, Image, Text, Box } from "@chakra-ui/react";
 import { useDrop } from 'react-dnd'
 
 import { PathMetadata, PathStatus } from "./GoFPTypes";
+import useGofp from "../../contexts/GoFPContext";
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofpContract from "../../hooks/useGofpConract";
 
 const PathCard = ({
+  pathIdx,
   pathMetadata,
-  status = PathStatus.undecided,
   pathId,
-  setSelectedPath,
   accept,
-  choosePathDrop,
+  stageIdx,
 }: {
-  pathMetadata: PathMetadata;
-  status: PathStatus;
-  pathId: string;
-  setSelectedPath: any;
-  accept: string;
-  choosePathDrop: any
+  pathIdx: number
+  pathMetadata: PathMetadata
+  pathId: string
+  accept: string
+  stageIdx: number
 }) => {
   const correctPathColor = "#3BB563";
   const incorrectPathColor = "#E85858";
   const undecidedPathColor = "#4C4C4C";
 
 
+  const { selectPath, sessionId, gardenContractAddress } = useGofp()
+  const web3ctx = useContext(Web3Context)
+
+  const { choosePath, correctPaths, currentStage } = useGofpContract({ sessionId, gardenContractAddress, web3ctx })
+
   const handleDrop = (item: {id: number}) => {
     const pathNumber = Number(pathId.split('_').slice(-1)[0]) + 1
-    choosePathDrop.mutate({tokens: [item.id], path: pathNumber})
+    choosePath.mutate({tokenIds: [item.id], path: pathNumber})
   }
+
+  const [status, setStatus] = useState(PathStatus.undecided)
   
+
+  useEffect(() => {
+    if (!correctPaths.data) { return }
+    if (stageIdx < correctPaths.data?.length) {
+      setStatus(correctPaths.data[stageIdx] === pathIdx + 1 ? PathStatus.correct : PathStatus.incorrect)
+    } else {
+      setStatus(PathStatus.undecided)
+    }
+  },[correctPaths.data])
+
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept,
@@ -62,7 +80,7 @@ const PathCard = ({
   }
 
   return (
-    <Box ref={drop} id={pathId} px={2} onClick={() => setSelectedPath() } fontWeight={canDrop ? '700' : '400'}>
+    <Box ref={drop} id={pathId} px={2} onClick={() => selectPath(pathIdx + 1) } fontWeight={canDrop ? '700' : '400'}>
       <Flex
         flexDirection="column"
         position="relative"

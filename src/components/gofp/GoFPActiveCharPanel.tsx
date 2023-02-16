@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+
 import {
   Flex,
   Box,
@@ -8,32 +9,25 @@ import {
   Spacer,
   Center,
 } from "@chakra-ui/react";
-import { UseMutationResult } from "react-query";
-import CharacterCard from "./GoFPCharacterCard";
 import { AiOutlinePlus } from "react-icons/ai";
 
+import CharacterCard from "./GoFPCharacterCard";
+import useGofp from "../../contexts/GoFPContext";
+import useGofpContract from "../../hooks/useGofpConract";
+import Web3Context from "../../contexts/Web3Context/context";
+
+
 const ActiveCharPanel = ({
-  activeTokens,
-  tokenMetadata,
-  path,
-  unstakeTokens,
-  choosePath,
   setShowActive,
 }: {
-  activeTokens: number[];
-  tokenMetadata: any;
-  path: number;
-  unstakeTokens: UseMutationResult<unknown, unknown, number[], unknown>;
-  choosePath: UseMutationResult<unknown, unknown, number, unknown>;
   setShowActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const tokenState: Map<number, boolean> = new Map<number, boolean>();
-  activeTokens.forEach((tokenId) => {
-    tokenState.set(tokenId, false);
-  });
-  const onSelect = (tokenId: number, selected: boolean) => {
-    tokenState.set(tokenId, selected);
-  };
+  const { selectedPath, selectedTokens, gardenContractAddress, sessionId } = useGofp()
+  const web3ctx = useContext(Web3Context)
+
+  const { unstakeTokens, useTokenUris, stakedTokens, choosePath } = useGofpContract({sessionId, gardenContractAddress, web3ctx})
+  const tokenUris = useTokenUris(stakedTokens.data ?? [])
+
   return (
     <Box py={6}>
       <Flex>
@@ -47,14 +41,12 @@ const ActiveCharPanel = ({
         </Flex>
       </Flex>
       <SimpleGrid columns={3} spacing={5} pt={4}>
-        {activeTokens.map((token) => {
+        {stakedTokens.data?.map((token) => {
           return (
             <CharacterCard
               key={token}
               tokenId={token}
-              tokenImage={tokenMetadata[token].image}
-              tokenName={tokenMetadata[token].name}
-              onSelect={onSelect}
+              uri={tokenUris.data?.get(token) ?? ''}
             />
           );
         })}
@@ -67,19 +59,20 @@ const ActiveCharPanel = ({
           borderColor="#BFBFBF"
           borderRadius="18px"
           textColor="#BFBFBF"
-          onClick={() => choosePath.mutate(path)}
+          onClick={() => choosePath.mutate({path: selectedPath, tokenIds: selectedTokens})}
         >
-          Choose Path {path}
+          Choose Path {selectedPath}
         </Button>
         <Center>
           <Text>or&nbsp;</Text>
           <Text
             color="#EE8686"
+            cursor='pointer'
             onClick={() =>
               unstakeTokens.mutate(
-                activeTokens.filter(
-                  (tokenId) => tokenState.get(tokenId) == true
-                )
+                stakedTokens.data?.filter(
+                  (tokenId) => selectedTokens.includes(tokenId)
+                ) ?? []
               )
             }
           >

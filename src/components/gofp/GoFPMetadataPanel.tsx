@@ -1,16 +1,26 @@
-import React from "react";
-import { Flex, Center, Text, Image } from "@chakra-ui/react";
-import { SessionMetadata } from "./GoFPTypes";
+import React, { useContext } from "react";
 
-const MetadataPanel = ({
-  sessionMetadata,
-  selectedStage,
-}: {
-  sessionMetadata: SessionMetadata;
-  selectedStage: number;
-}) => {
-  const stage = sessionMetadata.stages[selectedStage - 1];
+import { Flex, Center, Text, Image } from "@chakra-ui/react";
+
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofp from "../../contexts/GoFPContext";
+import useGofpContract from "../../hooks/useGofpConract";
+
+const MetadataPanel = () => {
+  const web3ctx = useContext(Web3Context);
+  const { sessionId, selectedStage, gardenContractAddress } = useGofp()
+  const { sessionMetadata } = useGofpContract({
+    sessionId, 
+    gardenContractAddress,
+    web3ctx,
+  })
+
+  const stage = sessionMetadata.data?.stages[selectedStage - 1];
+
+
   return (
+    <>
+    {stage && (
     <Flex
       backgroundColor="#353535"
       border="4px solid white"
@@ -28,16 +38,18 @@ const MetadataPanel = ({
       <Flex borderWidth="2px" borderColor="#BFBFBF" borderRadius="10px" mt={6}>
         <Text p={2}>{stage.lore}</Text>
       </Flex>
-      <Center>
-        <Image
-          alt={"Stage " + selectedStage}
-          w="300px"
-          h="300px"
-          src={stage.imageUrl}
-          pt={6}
-        />
-      </Center>
-      <Flex flexDirection="column">
+      {stage.imageUrl.length > 0 && (
+        <Center>
+          <Image
+            alt={"Stage " + selectedStage}
+            w="300px"
+            h="300px"
+            src={stage.imageUrl}
+            pt={6}
+          />
+        </Center>
+      )}
+      <Flex flexDirection="column" mb={10}>
         {stage.paths.map((path, pathIdx) => {
           return (
             <Flex
@@ -57,6 +69,8 @@ const MetadataPanel = ({
         })}
       </Flex>
     </Flex>
+    )}
+    </>
   );
 };
 

@@ -1,31 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
+
 import { Flex, Box, SimpleGrid, Text, Button } from "@chakra-ui/react";
-// import { SessionMetadata } from "./GoFPTypes";
-import { UseMutationResult } from "react-query";
-import CharacterCard from "./GoFPCharacterCard";
 import { BsArrowLeftShort } from "react-icons/bs";
 
+import CharacterCard from "./GoFPCharacterCard";
+import useGofp from "../../contexts/GoFPContext";
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofpContract from "../../hooks/useGofpConract";
+
 const AddCharPanel = ({
-  ownedTokens,
-  tokenMetadata,
-  // setApproval,
-  stakeTokens,
   setShowActive,
 }: {
-  ownedTokens: number[];
-  tokenMetadata: any;
-  setApproval: UseMutationResult<unknown, unknown, void, unknown>;
-  stakeTokens: UseMutationResult<unknown, unknown, number[], unknown>;
+  // setApproval: UseMutationResult<unknown, unknown, void, unknown>;
   setShowActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const tokenState: Map<number, boolean> = new Map<number, boolean>();
-  ownedTokens.forEach((tokenId) => {
-    tokenState.set(tokenId, false);
-  });
-  const onSelect = (tokenId: number, selected: boolean) => {
-    tokenState.set(tokenId, selected);
-  };
-  console.log("I own ", ownedTokens.length);
+
+  const web3ctx = useContext(Web3Context)
+  const {selectedTokens, sessionId, gardenContractAddress, } = useGofp()
+  const { ownedTokens, stakeTokens, useTokenUris } = useGofpContract({ sessionId, gardenContractAddress, web3ctx })
+
+
+  const tokenUris = useTokenUris(ownedTokens.data ?? [])  
+
   return (
     <Box py={6}>
       <Flex alignItems="center" onClick={() => setShowActive(true)}>
@@ -39,14 +35,12 @@ const AddCharPanel = ({
         Select characters and send them into session to start playing.
       </Text>
       <SimpleGrid columns={3} spacing={4} pt={4}>
-        {ownedTokens.map((token) => {
+        {ownedTokens.data?.map((token) => {
           return (
             <CharacterCard
               key={token}
               tokenId={token}
-              tokenImage={tokenMetadata[token].image}
-              tokenName={tokenMetadata[token].name}
-              onSelect={onSelect}
+              uri={tokenUris.data?.get(token) ?? ''}
             />
           );
         })}
@@ -57,10 +51,12 @@ const AddCharPanel = ({
           backgroundColor="#F56646"
           rounded="lg"
           onClick={async () => {
-            await stakeTokens.mutate(
-              ownedTokens.filter((tokenId) => tokenState.get(tokenId) == true)
-            );
-            setShowActive(true);
+            if (ownedTokens.data) {
+              await stakeTokens.mutate(
+                ownedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId))
+              );
+              setShowActive(true);
+            }
           }}
         >
           Play
