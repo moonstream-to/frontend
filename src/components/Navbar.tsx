@@ -47,8 +47,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
             <Flex>
               <code>
                 <Badge
-                  p='10px 20px'
-                  fontSize='16px'
+                  p='10px 1vw'
                   fontWeight='400'
                   textTransform='none'
                   backgroundColor='white'
@@ -64,7 +63,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
                     borderRadius={'inherit'}
                     startColor='red.500'
                     endColor='blue.500'
-                    fontSize='16px'
+                    fontSize='min(16px, 9px + 0.5vw)'
                     lineHeight='16px'
                     p={0}
                   >

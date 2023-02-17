@@ -67,15 +67,15 @@ const Airdrop = () => {
 
   return (
     <Layout home={false}>
-      <Text pl='7%' fontSize='40px' py='40px' color='white' fontWeight='700'>Claim</Text>
+      <Text pl='7%' fontSize={['24px', '40px']} py='40px' color='white' fontWeight='700'>Claim</Text>
       <Center>
-        <Flex fontSize='18px' direction='column' px='7%' color='white' mb='60px'>
-          <Flex direction='column' gap='40px' borderRadius='10px' p='30px' maxW='560px' border='1px solid white'>
+        <Flex fontSize='min(18px, 9px + 0.7vw)' direction='column' color='white' mb='60px'>
+          <Flex direction='column' p='calc(2vw)' minW='250px' gap='40px' borderRadius='10px' border='1px solid white'>
             <Flex direction='column' gap='10px'>
               <Text>Wallet address</Text>
-              <Input               
+              <Input     
+                variant='address'          
                 onKeyDown={handleKeyDown}
-                w='50ch'
                 placeholder='wallet address'
                 type='text'
                 value={claimantAddress}
@@ -86,7 +86,7 @@ const Airdrop = () => {
               <Text>Email</Text>
               <Input
                 onKeyDown={handleKeyDown}
-                w='50ch'
+                variant='address'
                 placeholder='email'
                 type='email'
                 value={claimantEmail}
@@ -95,7 +95,7 @@ const Airdrop = () => {
               <Text>Discord</Text>
               <Input
                 onKeyDown={handleKeyDown}
-                w='50ch'
+                variant='address'
                 placeholder='discord account'
                 type='text'
                 value={claimantDiscord}
