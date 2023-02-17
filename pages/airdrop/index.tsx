@@ -3,15 +3,16 @@ import { useContext, useState } from 'react'
 
 import { useMutation } from 'react-query'
 import axios from 'axios'
-import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
+import { Button, Center, Flex, Input, Text } from '@chakra-ui/react'
 
 import Layout from '../../src/components/layout'
 import Spinner from '../../src/components/Spinner/Spinner'
 import Web3Context from '../../src/contexts/Web3Context/context'
 import { ENTITY_API, WHITELIST_EVENT_COLLECTION_ID } from '../../src/constants'
+import useMoonToast from '../../src/hooks/useMoonToast'
 
 const Airdrop = () => {
-  const toast = useToast()
+  const toast = useMoonToast()
   const [claimantAddress, setClaimantAddress] = useState('')
   const [claimantEmail, setClaimantEmail] = useState('')
   const [claimantDiscord, setClaimantDiscord] = useState('')
@@ -19,31 +20,9 @@ const Airdrop = () => {
   const { web3 } = useContext(Web3Context) 
 
 
-
-  const onSuccess = (data: any) => {
-    toast({
-    render: () => (
-      <Box borderRadius='15px' border='2px solid white' textAlign='center' color='white' py={3} px={5} bg='#353535'>
-        succesfully claimed for {data?.data?.address}
-      </Box>
-    ),
-    duration: 5000,
-    position: 'top',
-  })}
-
-
-  const onError = (error: any) => {
-    toast({
-      render: () => (
-        <Box borderRadius='15px' border='2px solid #F56646' textAlign='center' color='#F56646' py={3} px={5} bg='#353535'>
-          {error?.message}
-        </Box>
-      ),
-      isClosable: true,
-      position: 'top',
-    })
+  const onError = (error: {message: string}) => {
+    toast(error?.message ?? 'Error', 'error', 5000)
   }
-
 
   const createPublicEntryMutation = useMutation(({address, email, discord}: {address: string; email: string; discord: string }) => {
     return axios.get(`${ENTITY_API}/public/collections/${WHITELIST_EVENT_COLLECTION_ID}/search?required_field=address:${claimantAddress}`)
@@ -63,8 +42,8 @@ const Airdrop = () => {
     })
   },
   {
-    onError,
-    onSuccess,
+    onError: (error: Error) => onError(error),
+    onSuccess: (data: any) => toast(`succesfully claimed for ${data?.data?.address}`, 'success', 5000),
   },)
 
 
