@@ -36,6 +36,7 @@ const overrides = {
     global: () => ({
       body: {
         bg: '#1A1D22',
+        color: 'white',
       },
     }),
   },
