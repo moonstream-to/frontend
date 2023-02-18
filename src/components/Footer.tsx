@@ -48,7 +48,7 @@ const Footer = ({ home }: { home?: boolean }) => {
               Follow Us
             </Text>
             <Flex width='158px' justifyContent='space-between'>
-              <SocialButton label={'Discord'} href={'/discordleed'}>
+              <SocialButton label={'Discord'} href={'https://discord.gg/K56VNUQGvA'}>
                 <ChakraImage maxW='26px' src={`${AWS_ASSETS_PATH}/icons/discord-logo.png`} />
               </SocialButton>
               <SocialButton label={'Twitter'} href={'https://twitter.com/moonstreamto'}>
