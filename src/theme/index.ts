@@ -17,6 +17,19 @@ const overrides = {
   components: {
     Button,
     Menu,
+    Input: {
+      variants: {
+        address: {
+          field: {
+            border: '1px solid white',
+            bg: 'transparent',
+            fontSize: 'min(18px, 9px + 0.7vw)',
+            w: '47ch',
+            pl: '1ch',
+          },          
+        },        
+      },
+    }
     // Other components go here
   },
   styles: {
