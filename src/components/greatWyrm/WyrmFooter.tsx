@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Text, Link, Box, Container, Stack, Image as ChakraImage, Flex, Spacer, useMediaQuery } from '@chakra-ui/react'
+import { Text, Link, Image as ChakraImage, Flex, useMediaQuery } from '@chakra-ui/react'
 
 import SocialButton from '../SocialButton'
 
@@ -9,57 +9,38 @@ const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstrea
 const Footer = ({ home }: { home?: boolean }) => {
   const [isMobileView] = useMediaQuery('(max-width: 767px)')
   return (
-    <Box textColor='white' borderTop='1px' borderColor='white' px='7%' mx='auto' minW='100vw'>
-      <Container as={Stack} py={10} px='0px' maxW='1238px'>
-        <Flex direction={['column', 'column', 'row']}>
-          <Stack spacing={6}>
-            <Box pb={isMobileView ? '40px' : '0px'}>
-              {!home ? (
-                <Link href='/' alignSelf='center'>
-                  <Text fontWeight='700' fontSize='30px'>great wyrm</Text>
-                </Link>
-              ) : (
-                <Text fontWeight='700' fontSize='30px'>great wyrm</Text>
-                )}
-            </Box>
-            <Flex direction='column' pb={isMobileView ? '40px' : '0px'} ml={['0px', '0px', '5vw', '100px']}>
-            <Text fontWeight='semibold' mb='20px'>
-              Follow Us
-            </Text>
-            <Flex width='158px' justifyContent='space-between'>
-              <SocialButton label={'Discord'} href={'/discordleed'}>
-                <ChakraImage maxW='26px' src={`${AWS_ASSETS_PATH}/icons/discord-logo.png`} />
-              </SocialButton>
-              <SocialButton label={'Twitter'} href={'https://twitter.com/moonstreamto'}>
-                <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/twitter-logo.png`} />
-              </SocialButton>
-              <SocialButton label={'Github'} href={'https://github.com/bugout-dev/moonstream'}>
-                <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/github-logo.png`} />
-              </SocialButton>
-              <SocialButton label={'LinkedIn'} href={'https://www.linkedin.com/company/moonstream/'}>
-                <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/linkedin-logo.png`} />
-              </SocialButton>
-            </Flex>
-          </Flex>
-            {!isMobileView && (
-              <>
-                <Flex justifyContent='start'>
+    <Flex direction='column' gap='40px' p='40px 18px' borderTop='1px solid white' alignItems='center'>
+      <Text fontWeight='700' fontSize='30px'>great wyrm</Text>
+      <Flex direction='column' gap='20px'>
+        <Text fontWeight='semibold' textAlign='center'>
+          Follow Us
+        </Text>
+        <Flex width='158px' justifyContent='space-between'>
+          <SocialButton label={'Discord'} href={'/discordleed'}>
+            <ChakraImage maxW='26px' src={`${AWS_ASSETS_PATH}/icons/discord-logo.png`} />
+          </SocialButton>
+          <SocialButton label={'Twitter'} href={'https://twitter.com/moonstreamto'}>
+            <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/twitter-logo.png`} />
+          </SocialButton>
+          <SocialButton label={'Github'} href={'https://github.com/bugout-dev/moonstream'}>
+            <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/github-logo.png`} />
+          </SocialButton>
+          <SocialButton label={'LinkedIn'} href={'https://www.linkedin.com/company/moonstream/'}>
+            <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/linkedin-logo.png`} />
+          </SocialButton>
+        </Flex>
+      </Flex>
+      <Flex direction='column' gap='20px'  fontSize='14px'>
+        <Flex justifyContent='center'>
                   <Link href='https://moonstream.to/privacy-policy'>Privacy policy</Link>
                   <Link href='https://moonstream.to/tos' ml='20px'>
                     Terms of Service
                   </Link>
-                </Flex>
-                <Text fontSize={'sm'}>© {new Date().getFullYear()} Moonstream.to All&nbsp;rights&nbsp;reserved</Text>
-              </>
-            )}
-          </Stack>
-          <Spacer />
-
-
-          {isMobileView && <Text fontSize={'sm'}>© {new Date().getFullYear()} Moonstream.to All&nbsp;rights&nbsp;reserved</Text>}
         </Flex>
-      </Container>
-    </Box>
+        <Text>© {new Date().getFullYear()} Moonstream.to All&nbsp;rights&nbsp;reserved</Text>
+      </Flex>
+    </Flex>
+
   )
 }
 
