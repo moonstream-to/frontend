@@ -2,7 +2,6 @@ import Head from 'next/head'
 
 import { Flex } from '@chakra-ui/react'
 
-// import BreadcrumbView from './BreadcrumbView'
 import WyrmFooter from './WyrmFooter'
 import WyrmNavbar from './WyrmNavbar'
 
@@ -17,6 +16,7 @@ export default function Layout({ children, home }: { children: React.ReactNode; 
         <link rel='icon' 
           href='/favicon.png' //TODO
         /> 
+        <link href='https://fonts.googleapis.com/css?family=Space Grotesk' rel='stylesheet' />
         <meta
           name='description'
           content='The only player-owned role-playing game in the world. Great Wyrm players have full control of the world we all play in.'

@@ -15,6 +15,7 @@ export default function Layout({ children, home }: { children: React.ReactNode; 
     <div>
       <Head>
         <link rel='icon' href='/favicon.png' />
+        <link href='https://fonts.googleapis.com/css?family=Space Grotesk' rel='stylesheet' />
         <meta
           name='description'
           content='Moonstream provides economic infrastructure for web3 games. Gather actionable data with our web3 data analytics. Act on it with our on-chain mechanics. Watch your economy flourish.'
