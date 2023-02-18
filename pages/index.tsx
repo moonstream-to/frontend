@@ -37,7 +37,7 @@ export default function Home() {
       <Center>
         <Flex gap='40px'>
           {features.map((feature) => (
-            <FeatureCard feature={feature} key='feature.name' />
+            <FeatureCard feature={feature} key={feature.name} />
           ))}
         </Flex>
       </Center>
