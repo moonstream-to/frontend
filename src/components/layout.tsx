@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import { Flex } from '@chakra-ui/react'
+import { Flex, Spacer } from '@chakra-ui/react'
 
 import BreadcrumbView from './BreadcrumbView'
 import Footer from './Footer'
@@ -27,12 +27,13 @@ export default function Layout({ children, home }: { children: React.ReactNode; 
         />
         <meta name='og:image' content={`${AWS_ASSETS_PATH}/metadata-image.png`} />
       </Head>
-      <Flex minH='100vh' flexDirection='column' justifyContent='space-between'>
+      <Flex minH='100vh' flexDirection='column' justifyContent='start'>
         <Flex direction='column'>
           <Navbar home={home} px='7%' />
           <BreadcrumbView />
         </Flex>
         {children}
+        <Spacer />
         <Footer home={home} />
       </Flex>
     </div>

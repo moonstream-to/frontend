@@ -35,7 +35,7 @@ export default function Home() {
         <link rel='icon' href='/favicon.png' />
       </Head>
       <Center>
-        <Flex gap='40px'>
+        <Flex gap='40px' py='40px'>
           {features.map((feature) => (
             <FeatureCard feature={feature} key={feature.name} />
           ))}
