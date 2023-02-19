@@ -27,7 +27,7 @@ export default function Home() {
           <Flex direction={['column', 'column', 'column', 'row']} gap={['20px', '20px', '40px']} textAlign='center'>
             {isSmallView && <ImageFallback text='illustration' h='194px' mb='20px'/>}
             <Flex flex='1' direction='column' gap={['20px', '20px', '40px']} textAlign={isSmallView ? 'center' : 'start'}>
-              <Text fontWeight='700' fontSize={['30px', '40px', '40px', '40px', '50px']} lineHeight='100%'>Enter the world of Great Wyrm</Text>
+              <Text fontWeight='700' fontSize={{base: '30px', sm:'40px', l: '50px'}} lineHeight='100%'>Enter the world of Great Wyrm</Text>
               <Text>The only player-owned role-playing game in the world. Great Wyrm players have full control of the world we all play in.</Text>
               <Flex mt='20px' w={['100%', '100%', '100%', 'fit-content', 'fit-content']} direction={['column', 'row', 'row', 'column', 'row']} gap='20px' justifyContent='center' alignItems='center'>
                 <Button 
@@ -65,7 +65,7 @@ export default function Home() {
           <Flex direction={['column', 'row', 'row']} gap={['40px', '60px', '60px']}>
             <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>
             <Flex direction='column' gap='20px' textAlign={['center', 'center', 'start']} flex='1'>
-              <Text fontWeight='700' fontSize={['30px', '30px', '30px', '30px', '40px']} lineHeight='120%'>Start your adventure</Text>
+              <Text fontWeight='700' fontSize={{base: '30px', l: '40px'}} lineHeight='120%'>Start your adventure</Text>
               <Text>Make a character or choose an existing character to add to the game’s lore.</Text> 
               <Text>Choose a  path to follow.  </Text>
               <Text>Create your own stories behind the paths you choose. Form alliances based on your choices. Convince other people to join your alliance, or trick them into choosing paths that end in despair.</Text>
@@ -84,15 +84,16 @@ export default function Home() {
           </Flex>
 
 
-            <Flex alignItems='center' bg='#EB8C6A' p='30px' borderRadius='20px' gap='20px' direction='column' textAlign='center'>
-              <Text fontSize='30px' fontWeight='700' lineHeight='100%'>Join the Great Wyrm community to start the world building and be the first to play</Text>
-              <Text>The game is now in early access. You can start creating your own content, making your own characters, forming alliances, or apply to be a Game Master.</Text>  
+            <Flex alignItems='center' bg='#EB8C6A' p='30px' borderRadius='20px' gap={{base: '40px', l: '60px'}} direction={{base: 'column', l: 'row'}} textAlign={{base: 'center', l: 'left'}}>
+              <Flex direction='column' gap='20px'>
+                <Text fontSize='30px' fontWeight='700' lineHeight='100%'>Join the Great Wyrm community to start the world building and be the first to play</Text>
+                <Text>The game is now in early access. You can start creating your own content, making your own characters, forming alliances, or apply to be a Game Master.</Text>  
+              </Flex>
               <Button 
                 variant='wyrmButton'
                 color='black' 
                 bg='white' 
                 _hover={{bg: '#EAA88F'}}
-                mt='20px'
                 p={['10px', '10px 80px', '10px 80px']}
               >
                 Join
