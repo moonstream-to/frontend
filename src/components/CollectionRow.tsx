@@ -1,7 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
-const CollectionRow = ({collection}: {collection: {name: string; id: string}}) => {
+const CollectionRow = ({collection}: {collection: {name: string; collection_id: string}}) => {
   const router = useRouter()
   return (
     <Flex 
@@ -17,13 +17,14 @@ const CollectionRow = ({collection}: {collection: {name: string; id: string}}) =
         router.push({
           pathname: '/airdrop',
           query: {
-            eventId: collection.id,
+            eventId: collection.collection_id,
+            name: collection.name,
           },
         })
     })}
     >
       <Text>{collection.name}</Text>
-      <Text>{collection.id}</Text>
+      <Text>{collection.collection_id}</Text>
   </Flex>
   )
 }

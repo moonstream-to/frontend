@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 
 import { useMutation, useQuery } from 'react-query'
@@ -10,7 +11,7 @@ import Spinner from '../../src/components/Spinner/Spinner'
 import Web3Context from '../../src/contexts/Web3Context/context'
 import { ENTITY_API } from '../../src/constants'
 import useMoonToast from '../../src/hooks/useMoonToast'
-import { useRouter } from 'next/router'
+import hookCommon from '../../src/hooks/hookCommon'
 import CollectionRow from '../../src/components/CollectionRow'
 
 const Airdrop = () => {
@@ -18,13 +19,14 @@ const Airdrop = () => {
   const [claimantAddress, setClaimantAddress] = useState('')
   const [claimantEmail, setClaimantEmail] = useState('')
   const [claimantDiscord, setClaimantDiscord] = useState('')
+  const [collectionName, setCollectionName] = useState('')
   const [eventId, setEventId] = useState('')
   const router = useRouter()
 
   useEffect(() => {
     if (router.isReady) {
-      console.log(router.query.eventId)
       setEventId(typeof router.query.eventId === 'string' ? router.query.eventId : '')
+      setCollectionName(typeof router.query.name === 'string' ? router.query.name : '')
    }
 }, [router.isReady, router.query]);
 
@@ -35,29 +37,24 @@ const Airdrop = () => {
     toast(error?.message ?? 'Error', 'error', 5000)
   }
 
-  const events = useQuery(['get-events'], () => {
-    return new Promise((resolve) => {
-      resolve([
-        {id: '064cfd14-0b4b-4c1d-88d8-c4fee386ff35', name: 'Moonstream airdrop'},
-        {id: '064cfd14-0b4b-4c1d-88d8-c4fee386ff36', name: 'Moonstream airdrop wrong'},
-      ])
-    })
-  })
+  
+  const getCollections = async (userId: string) => {
+    return axios.get(`https://api.moonstream.to/entity/public/collections?user_id=${userId}`)
+      .then((res: any) => res.data?.collections)
+  };
+  
+  function useCollections(userId: string) {
+    return useQuery(
+      ['get_collections', userId], 
+      () => getCollections(userId),
+      {
+        ...hookCommon,
+        onError: (e: Error) => onError(e),
+      });
+  } 
+  
+  const events = useCollections(process.env.NEXT_PUBLIC_PUBLIC_USER_ETHDENVER_ID ?? '');
 
-  const collectionName = useQuery(['collection-name', eventId], () => {
-    return new Promise((resolve, reject) => {
-      if (eventId === '064cfd14-0b4b-4c1d-88d8-c4fee386ff35') {
-        resolve('Moonstream airdrop')
-      } else {
-        reject('Unknown Id')
-      }
-    })
-  },
-  {
-    onError: (error: Error) => toast(error?.message, 'error'),
-    enabled: !!eventId,
-  },
-  )
 
   const createPublicEntryMutation = useMutation(({address, email, discord}: {address: string; email: string; discord: string }) => {
     return axios.get(`${ENTITY_API}/public/collections/${eventId}/search?required_field=address:${address}`)
@@ -103,7 +100,8 @@ const Airdrop = () => {
   return (
     <Layout home={false}>
       <Flex px='7%' gap='40px' py='40px' direction='column' justifyContent='start' h='100%'>
-        <Text fontSize={['24px', '40px']} color='white' fontWeight='700'>{!eventId ? `Claims` : `Claim  - ${collectionName.data ?? ''}`}</Text>
+        <Text fontSize={['24px', '40px']} color='white' fontWeight='700'>{!eventId ? `Claims` : `Claim  - ${collectionName ?? ''}`}</Text>
+        {events.isLoading && <Spinner />}
         {eventId && (
           <Center>
             <Flex fontSize='min(18px, 9px + 0.7vw)' direction='column' color='white'>
@@ -149,7 +147,7 @@ const Airdrop = () => {
         <>
         {!eventId && events.data && (
           <Flex direction='column' gap='20px'>
-            {events.data.map((event) => <CollectionRow collection={event} key={event.id} />)}
+            {events.data.map((collection: {collection_id: string, name: string}) => <CollectionRow collection={collection} key={collection.collection_id} />)}
           </Flex>
 
         )}
