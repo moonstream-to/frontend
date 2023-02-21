@@ -43,6 +43,17 @@ const variantOrangeGradient = () => {
   }
 }
 
+const variantWyrmButton = () => {
+  return {
+    minW: ['100%', '100%', '0'],
+    px: ['0', '0', '80px'],
+    fontSize: ['16px', '20px', '20px'],
+    h: ['40px', '46px', '46px'],
+    borderRadius: '30px',
+  }
+}
+
+
 const variantPlainOrange = () => {
   return {
     alignItems: 'center',
@@ -104,6 +115,7 @@ const Button = {
     menuButton: variantMenuButton,
     plainOrange: variantPlainOrange,
     orangeGradient: variantOrangeGradient,
+    wyrmButton: variantWyrmButton,
   },
 }
 export default Button
