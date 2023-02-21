@@ -45,7 +45,7 @@ const PathCard = ({
     } else {
       setStatus(PathStatus.undecided)
     }
-  },[correctPaths.data])
+  },[correctPaths.data, pathIdx, stageIdx])
 
 
   const [{ isOver, canDrop }, drop] = useDrop({
@@ -80,7 +80,14 @@ const PathCard = ({
   }
 
   return (
-    <Box ref={drop} id={pathId} px={2} onClick={() => selectPath(pathIdx + 1) } fontWeight={canDrop ? '700' : '400'}>
+    <Box ref={drop} id={pathId} px={2} 
+      onClick={() => {
+        console.log(stageIdx, currentStage.data)
+        if (stageIdx + 1 === currentStage.data) {
+          selectPath(pathIdx + 1)
+        } }} 
+      fontWeight={canDrop ? '700' : '400'}
+    >
       <Flex
         flexDirection="column"
         position="relative"

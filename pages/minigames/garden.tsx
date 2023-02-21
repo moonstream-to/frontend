@@ -35,6 +35,7 @@ const Garden = () => {
         minH="100vh"
         bgColor="#1A1D22"
         px='7%'
+        color='white'
       >
         <Heading>Garden of Forking Paths</Heading>
           <DndProvider backend={HTML5Backend}>

@@ -43,10 +43,6 @@ const StagePanel = ({
         selectStage(stageIdx + 1);
       }}
     >
-      {/* <Text fontSize="md" fontWeight="bold" pb={5}>
-        {stageMetadata.lore}
-      </Text>
-      <br /> <br /> */}
       <Flex flexDirection="row" alignItems="center">
         {sessionMetadata.data?.stages[stageIdx].paths.map((path, pathIdx) => {
           return (

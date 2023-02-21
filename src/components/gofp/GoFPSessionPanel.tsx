@@ -110,14 +110,7 @@ const SessionPanel = () => {
           return (
             <Center key={stageIdx}>
               <StagePanel
-                // stageMetadata={stage}
                 stageIdx={stageIdx}
-                // completed={completed}
-                // correctPath={correctPath}
-                // generatePathId={generatePathId}
-                // setSelectedStage={setSelectedStage}
-                // setSelectedPath={setSelectedPath}
-                // isCurrent={stageIdx + 1 === currentStage.data}
               ></StagePanel>
             </Center>
           );

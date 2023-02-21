@@ -35,7 +35,7 @@ const ActiveCharPanel = ({
           Assign Characters
         </Text>
         <Spacer />
-        <Flex alignItems="center" onClick={() => setShowActive(false)}>
+        <Flex alignItems="center" cursor='pointer' onClick={() => setShowActive(false)}>
           <AiOutlinePlus size="10px" />
           <Text fontSize="sm">Add More</Text>
         </Flex>

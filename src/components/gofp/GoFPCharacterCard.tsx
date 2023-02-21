@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import { Flex, Box, Text } from "@chakra-ui/react"
 import { useDrag } from 'react-dnd'
@@ -21,8 +21,17 @@ const CharacterCard = ({
   const web3ctx = useContext(Web3Context);
   const {selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress} = useGofp()
 
-  const { usePath } = useGofpContract({sessionId, gardenContractAddress, web3ctx})
+  const { usePath, useGuard, ownedTokens } = useGofpContract({sessionId, gardenContractAddress, web3ctx})
   const path = usePath(tokenId)
+  const guard = useGuard(tokenId)
+  const [status, setStatus] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    if (guard.data && ownedTokens.data?.includes(tokenId)) {
+      setStatus(guard.data ? 'Already played' : 'Available')
+    } else {
+      setStatus(path.data ? `Assigned to path ${path.data}` : 'Choose path')
+    }
+  }, [path.data, guard.data, tokenId, ownedTokens.data])
 
   const metadata = useURI({link: uri})
 
@@ -41,9 +50,9 @@ const CharacterCard = ({
     <Flex
       ref={path?.data ? null : drag}
       flexDirection="column"
-      w="80px"
-      h="100px"
-      mx={2}
+      w="90px"
+      h="130px"
+      mx={1}
       rounded="lg"
       borderWidth={selectedTokens.includes(tokenId) ? "4px" : "1px"}
       borderColor="#FFFFFF"
@@ -65,10 +74,18 @@ const CharacterCard = ({
         backgroundPosition="center"
         backgroundSize="contain"
       />
-      <Text userSelect='none' fontSize="xs" px={1}>
-        {metadata.data?.name || uri || tokenId}
+      <Text userSelect='none' px={1} fontSize="12px" pt={1}>
+        {metadata.data?.name || tokenId}
       </Text>
-      {!!path.data && <Text userSelect='none' fontSize="xs" >Path {path.data}</Text>}
+      {status && <Text 
+        userSelect='none' 
+        fontSize="8px" 
+        pt={1}
+        px={1}
+        textColor={status === 'Already played' ? "#EE8686" : undefined}
+      >
+        {status}
+      </Text>}
     </Flex>
   );
 };

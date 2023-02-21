@@ -91,7 +91,6 @@ export const useGofpContract = ({
         .getCurrentStage(sessionId)
         .call();
       const _stage = parseInt(result);
-      // console.log("Current stage is ", _stage);
       //setSelectedStage(Math.min(_stage, sessionInfo.data[6].length)); //TODO
       return _stage;
     },
@@ -137,13 +136,24 @@ export const useGofpContract = ({
 
 
   const getPathForToken = async (tokenId: number) => {
-    const res = await gardenContract.methods.getPathChoice(sessionId, tokenId, 1).call() //TODO current stage
+    const res = await gardenContract.methods.getPathChoice(sessionId, tokenId, currentStage.data).call() //TODO current stage
     return Number(res)
   };
 
   function usePath(tokenId: number) {
-    return useQuery(['path_for_token', tokenId], () => getPathForToken(tokenId), { ...hookCommon });
+    return useQuery(['path_for_token', tokenId], () => getPathForToken(tokenId), { ...hookCommon, enabled: !!currentStage.data });
   }
+
+  const getTokenGuard = async (tokenId: number) => {
+    const res = await gardenContract.methods.getSessionTokenStakeGuard(sessionId, tokenId).call() //TODO current stage
+    return Number(res)
+  };
+
+  function useGuard(tokenId: number) {
+    return useQuery(['guard_for_token', tokenId], () => getTokenGuard(tokenId), { ...hookCommon });
+  }
+
+
 
   const getTokensUri = async (tokenIds: number[]) => {
     tokenContract.options.address = sessionInfo.data[0];
@@ -286,6 +296,8 @@ export const useGofpContract = ({
       onSuccess: () => {
         toast("Path choice successful.", "success");
         queryClient.invalidateQueries('path_for_token')
+        queryClient.invalidateQueries('guard_for_token')
+
       },
       onError: (error) => {
         toast("Path choice failed.", "error");
@@ -333,6 +345,7 @@ export const useGofpContract = ({
     stakedTokens,
     choosePath,
     setApproval,
+    useGuard,
   }
 }
 
