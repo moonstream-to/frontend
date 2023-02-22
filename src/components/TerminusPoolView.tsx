@@ -165,7 +165,7 @@ const TerminusPoolView = ({ address, poolId, metadata }: { address: string; pool
   }
 
   return (
-    <Flex bg='#2d2d2d' minW='800px' borderRadius='20px' p='30px' color='white' direction='column' maxW='800px'>
+    <Flex id='poolView' bg='#2d2d2d' minW='800px' borderRadius='20px' p='30px' color='white' direction='column' maxW='800px'>
       <Flex gap={2}>
       <Text 
         textAlign='start' 

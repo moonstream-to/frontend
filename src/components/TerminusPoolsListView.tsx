@@ -108,7 +108,7 @@ const TerminusPoolsListView = ({
       <Text fontWeight='700' fontSize='24px'>
         pools
       </Text>
-      {!queryPoolId && <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder='search' borderRadius='10px' p='8px 15px'/>}
+      <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder='search' borderRadius='10px' p='8px 15px'/>
 
       <TerminusPoolsList 
         contractAddress={contractAddress} 
