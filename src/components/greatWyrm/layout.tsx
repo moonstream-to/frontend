@@ -31,9 +31,6 @@ export default function Layout({ children, home }: { children: React.ReactNode; 
         />
       </Head>
       <Flex minH='100vh' flexDirection='column' justifyContent='space-between'>
-        <Flex direction='column'>
-          <WyrmNavbar px='7%' />
-        </Flex>
         {children}
         <WyrmFooter home={home} />
       </Flex>
