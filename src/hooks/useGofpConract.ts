@@ -64,7 +64,7 @@ export const useGofpContract = ({
         return;
       }
 
-      const uri = sessionInfo.data[5];
+      const uri = sessionInfo.data[5] + `?timestamp=${new Date().getTime()}`;
 
       return fetchMetadataUri(uri).then((res) => {
         return res.data as SessionMetadata;
