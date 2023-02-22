@@ -60,11 +60,11 @@ export default function Home() {
       </Flex>
       <Center>
         <Flex fontFamily='Cinzel' maxW='1440px 'alignItems='center' gap={['40px', '80px', '80px', '160px']} py={['40px', '80px', '80px']} px={['22px', '54px', '54px', '72px', '101px']} w='100%' direction='column' fontSize={['16px', '18px', '18px']} lineHeight={['20px', '23px', '23px']}>
-          <Flex direction={['column', 'column', 'column', 'row']} gap={['20px', '20px', '40px']} textAlign='center'>
-            <Flex flex='1' direction='column' gap={['20px', '20px', '40px']} textAlign={isSmallView ? 'center' : 'start'}>
-              <Text fontWeight='700' fontSize={{base: '30px', sm:'40px', l: '50px'}} lineHeight='100%'>Enter the world of Great Wyrm</Text>
+
+            <Flex flex='1' direction='column' gap={['20px', '20px', '40px']} textAlign={'center'} maxW='703px'>
+              <Text fontWeight='700' fontSize={{base: '30px', sm:'40px', l: '50px'}} lineHeight='100%'>Enter the world of< br />Great Wyrm</Text>
               <Text>The only player-owned role-playing game in the world. Great Wyrm players have full control of the world we all play in.</Text>
-              <Flex mt='20px' w={['100%', '100%', '100%', 'fit-content', 'fit-content']} direction={['column', 'row', 'row', 'column', 'row']} gap='20px' justifyContent='center' alignItems='center'>
+              <Flex mt='20px' w={['100%']} direction={['column', 'row', 'row']} gap='20px' justifyContent='center' alignItems='center'>
                 <Button 
                   variant='wyrmButton'
                   color='black' 
@@ -75,7 +75,7 @@ export default function Home() {
                 </Button>
                 <Button 
                   variant='wyrmButton'
-                  minW={['100%', 'fit-content', 'fit-content', '100%', 'fit-content']}
+                  minW={['100%', 'fit-content', 'fit-content']}
                   px={['0', '0', '30px']}
                   border='2px solid white'
                   bg='transparent'
@@ -86,7 +86,6 @@ export default function Home() {
                 </Button>
               </Flex>
             </Flex>
-          </Flex>
 
 
 
@@ -183,7 +182,7 @@ export default function Home() {
 
             <Flex alignItems='center' bg='#EB8C6A' p='30px' borderRadius='20px' gap={{base: '40px', l: '60px'}} direction={{base: 'column', l: 'row'}} textAlign={{base: 'center', l: 'left'}}>
               <Flex direction='column' gap='20px'>
-                <Text fontSize='30px' fontWeight='700' lineHeight='100%'>Join the Great Wyrm community to start the world building and be the first to play</Text>
+                <Text fontSize='30px' fontWeight='700' lineHeight='120%'>Join the Great Wyrm community to start the world building and be the first to play</Text>
               </Flex>
               <Button 
                 variant='wyrmButton'
