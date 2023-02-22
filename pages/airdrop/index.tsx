@@ -1,21 +1,34 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useContext, useEffect, useState } from 'react'
 
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import axios from 'axios'
-import { Button, Center, Flex, Input, Text } from '@chakra-ui/react'
+import { Button, Center, Flex, Input, Spacer, Text } from '@chakra-ui/react'
 
 import Layout from '../../src/components/layout'
 import Spinner from '../../src/components/Spinner/Spinner'
 import Web3Context from '../../src/contexts/Web3Context/context'
-import { ENTITY_API, WHITELIST_EVENT_COLLECTION_ID } from '../../src/constants'
+import { ENTITY_API } from '../../src/constants'
 import useMoonToast from '../../src/hooks/useMoonToast'
+import hookCommon from '../../src/hooks/hookCommon'
+import CollectionRow from '../../src/components/CollectionRow'
 
 const Airdrop = () => {
   const toast = useMoonToast()
   const [claimantAddress, setClaimantAddress] = useState('')
   const [claimantEmail, setClaimantEmail] = useState('')
   const [claimantDiscord, setClaimantDiscord] = useState('')
+  const [collectionName, setCollectionName] = useState('')
+  const [collectionId, setCollectionId] = useState('')
+  const router = useRouter()
+
+  useEffect(() => {
+    if (router.isReady) {
+      setCollectionId(typeof router.query.eventId === 'string' ? router.query.eventId : '')
+      setCollectionName(typeof router.query.name === 'string' ? router.query.name : '')
+   }
+}, [router.isReady, router.query]);
 
   const { web3 } = useContext(Web3Context) 
 
@@ -24,8 +37,27 @@ const Airdrop = () => {
     toast(error?.message ?? 'Error', 'error', 5000)
   }
 
+  
+  const getCollections = async (userId: string) => {
+    return axios.get(`https://api.moonstream.to/entity/public/collections?user_id=${userId}`)
+      .then((res: any) => res.data?.collections)
+  };
+  
+  function useCollections(userId: string) {
+    return useQuery(
+      ['get_collections', userId], 
+      () => getCollections(userId),
+      {
+        ...hookCommon,
+        onError: (e: Error) => onError(e),
+      });
+  } 
+  
+  const events = useCollections(process.env.NEXT_PUBLIC_PUBLIC_USER_ETHDENVER_ID ?? '');
+
+
   const createPublicEntryMutation = useMutation(({address, email, discord}: {address: string; email: string; discord: string }) => {
-    return axios.get(`${ENTITY_API}/public/collections/${WHITELIST_EVENT_COLLECTION_ID}/search?required_field=address:${claimantAddress}`)
+    return axios.get(`${ENTITY_API}/public/collections/${collectionId}/search?required_field=address:${address}`)
     .then((res) => {
       if (res.data?.total_results >= 1) {
         return new Promise((_, reject) => {
@@ -38,7 +70,7 @@ const Airdrop = () => {
         name: 'Public claimant',
         required_fields: [{ email }, { discord }],
       }
-      return axios.post(`${ENTITY_API}/public/collections/${WHITELIST_EVENT_COLLECTION_ID}/entities`, data)
+      return axios.post(`${ENTITY_API}/public/collections/${collectionId}/entities`, data)
     })
   },
   {
@@ -67,47 +99,62 @@ const Airdrop = () => {
 
   return (
     <Layout home={false}>
-      <Text pl='7%' fontSize={['24px', '40px']} py='40px' color='white' fontWeight='700'>Claim</Text>
-      <Center>
-        <Flex fontSize='min(18px, 9px + 0.7vw)' direction='column' color='white' mb='60px'>
-          <Flex direction='column' p='calc(2vw)' minW='250px' gap='40px' borderRadius='10px' border='1px solid white'>
-            <Flex direction='column' gap='10px'>
-              <Text>Wallet address</Text>
-              <Input     
-                variant='address'          
-                onKeyDown={handleKeyDown}
-                placeholder='wallet address'
-                type='text'
-                value={claimantAddress}
-                onChange={(e) => { 
-                  setClaimantAddress(e.target.value)
-                }}
-                />
-              <Text>Email</Text>
-              <Input
-                onKeyDown={handleKeyDown}
-                variant='address'
-                placeholder='email'
-                type='email'
-                value={claimantEmail}
-                onChange={(e) => setClaimantEmail(e.target.value)}
-              />
-              <Text>Discord</Text>
-              <Input
-                onKeyDown={handleKeyDown}
-                variant='address'
-                placeholder='discord account'
-                type='text'
-                value={claimantDiscord}
-                onChange={(e) => setClaimantDiscord(e.target.value)}
-              />
+      <Flex px='7%' gap='40px' py='40px' direction='column' justifyContent='start' h='100%'>
+        <Text fontSize={['24px', '40px']} color='white' fontWeight='700'>{!collectionId ? `Claims` : `Claim  - ${collectionName ?? ''}`}</Text>
+        {events.isLoading && <Spinner />}
+        {collectionId && (
+          <Center>
+            <Flex fontSize='min(18px, 9px + 0.7vw)' direction='column' color='white'>
+              <Flex direction='column' p='calc(2vw)' minW='250px' gap='40px' borderRadius='10px' border='1px solid white'>
+                <Flex direction='column' gap='10px'>
+                  <Text>Wallet address</Text>
+                  <Input     
+                    variant='address'          
+                    onKeyDown={handleKeyDown}
+                    placeholder='wallet address'
+                    type='text'
+                    value={claimantAddress}
+                    onChange={(e) => { 
+                      setClaimantAddress(e.target.value)
+                    }}
+                    />
+                  <Text>Email</Text>
+                  <Input
+                    onKeyDown={handleKeyDown}
+                    variant='address'
+                    placeholder='email'
+                    type='email'
+                    value={claimantEmail}
+                    onChange={(e) => setClaimantEmail(e.target.value)}
+                  />
+                  <Text>Discord</Text>
+                  <Input
+                    onKeyDown={handleKeyDown}
+                    variant='address'
+                    placeholder='discord account'
+                    type='text'
+                    value={claimantDiscord}
+                    onChange={(e) => setClaimantDiscord(e.target.value)}
+                  />
+                </Flex>
+                <Button variant='plainOrange' borderRadius='10px' minW='100%' bg='#F56646' color='white' onClick={handleSubmit}>
+                  {createPublicEntryMutation.isLoading ? <Spinner h='22px' w='22px'/> : <Text>Claim</Text>}
+                </Button>
+              </Flex>
             </Flex>
-            <Button variant='plainOrange' borderRadius='10px' minW='100%' bg='#F56646' color='white' onClick={handleSubmit}>
-              {createPublicEntryMutation.isLoading ? <Spinner h='22px' w='22px'/> : <Text>Claim</Text>}
-            </Button>
+          </Center>
+        )}
+        <>
+        {!collectionId && events.data && (
+          <Flex direction='column' gap='20px'>
+            {events.data.map((collection: {collection_id: string, name: string}) => <CollectionRow collection={collection} key={collection.collection_id} />)}
           </Flex>
-        </Flex>
-      </Center>
+
+        )}
+        </>
+        <Spacer />
+      </Flex>
+      
     </Layout>
   )
 }
