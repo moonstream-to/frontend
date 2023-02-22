@@ -7,21 +7,15 @@ const SocialButtons = ({...props}) => {
 
   return (
     <Flex direction='column' gap='20px' fontSize='16px' fontWeight='700' {...props}>
-      <Text fontWeight='semibold' textAlign='center' px='7px'>
+      <Text fontWeight='semibold' textAlign='center' px='13px'>
         Follow Us
       </Text>
-      <Flex width='158px' justifyContent='space-between'>
+      <Flex width='158px' justifyContent='start'>
         <SocialButton label={'Discord'} href={'/discordleed'}>
           <ChakraImage maxW='26px' src={`${AWS_ASSETS_PATH}/icons/discord-logo.png`} />
         </SocialButton>
         <SocialButton label={'Twitter'} href={'https://twitter.com/moonstreamto'}>
           <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/twitter-logo.png`} />
-        </SocialButton>
-        <SocialButton label={'Github'} href={'https://github.com/bugout-dev/moonstream'}>
-          <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/github-logo.png`} />
-        </SocialButton>
-        <SocialButton label={'LinkedIn'} href={'https://www.linkedin.com/company/moonstream/'}>
-          <ChakraImage maxW='24px' src={`${AWS_ASSETS_PATH}/icons/linkedin-logo.png`} />
         </SocialButton>
       </Flex>
     </Flex>

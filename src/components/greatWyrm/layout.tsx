@@ -30,7 +30,7 @@ export default function Layout({ children, home }: { children: React.ReactNode; 
           content={`${AWS_ASSETS_PATH}/metadata-image.png`} //TODO
         />
       </Head>
-      <Flex minH='100vh' flexDirection='column' justifyContent='space-between'>
+      <Flex minH='100vh' flexDirection='column' justifyContent='space-between' fontFamily='Cinzel'>
         {children}
         <WyrmFooter home={home} />
       </Flex>
