@@ -20,12 +20,12 @@ const Airdrop = () => {
   const [claimantEmail, setClaimantEmail] = useState('')
   const [claimantDiscord, setClaimantDiscord] = useState('')
   const [collectionName, setCollectionName] = useState('')
-  const [eventId, setEventId] = useState('')
+  const [collectionId, setCollectionId] = useState('')
   const router = useRouter()
 
   useEffect(() => {
     if (router.isReady) {
-      setEventId(typeof router.query.eventId === 'string' ? router.query.eventId : '')
+      setCollectionId(typeof router.query.eventId === 'string' ? router.query.eventId : '')
       setCollectionName(typeof router.query.name === 'string' ? router.query.name : '')
    }
 }, [router.isReady, router.query]);
@@ -57,7 +57,7 @@ const Airdrop = () => {
 
 
   const createPublicEntryMutation = useMutation(({address, email, discord}: {address: string; email: string; discord: string }) => {
-    return axios.get(`${ENTITY_API}/public/collections/${eventId}/search?required_field=address:${address}`)
+    return axios.get(`${ENTITY_API}/public/collections/${collectionId}/search?required_field=address:${address}`)
     .then((res) => {
       if (res.data?.total_results >= 1) {
         return new Promise((_, reject) => {
@@ -70,7 +70,7 @@ const Airdrop = () => {
         name: 'Public claimant',
         required_fields: [{ email }, { discord }],
       }
-      return axios.post(`${ENTITY_API}/public/collections/${eventId}/entities`, data)
+      return axios.post(`${ENTITY_API}/public/collections/${collectionId}/entities`, data)
     })
   },
   {
@@ -100,9 +100,9 @@ const Airdrop = () => {
   return (
     <Layout home={false}>
       <Flex px='7%' gap='40px' py='40px' direction='column' justifyContent='start' h='100%'>
-        <Text fontSize={['24px', '40px']} color='white' fontWeight='700'>{!eventId ? `Claims` : `Claim  - ${collectionName ?? ''}`}</Text>
+        <Text fontSize={['24px', '40px']} color='white' fontWeight='700'>{!collectionId ? `Claims` : `Claim  - ${collectionName ?? ''}`}</Text>
         {events.isLoading && <Spinner />}
-        {eventId && (
+        {collectionId && (
           <Center>
             <Flex fontSize='min(18px, 9px + 0.7vw)' direction='column' color='white'>
               <Flex direction='column' p='calc(2vw)' minW='250px' gap='40px' borderRadius='10px' border='1px solid white'>
@@ -145,7 +145,7 @@ const Airdrop = () => {
           </Center>
         )}
         <>
-        {!eventId && events.data && (
+        {!collectionId && events.data && (
           <Flex direction='column' gap='20px'>
             {events.data.map((collection: {collection_id: string, name: string}) => <CollectionRow collection={collection} key={collection.collection_id} />)}
           </Flex>
