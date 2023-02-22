@@ -100,9 +100,9 @@ export default function Home() {
             <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>
             <Flex direction='column' gap='20px' textAlign={['center', 'center', 'start']} flex='1'>
               <Text fontWeight='700' fontSize={{base: '30px', l: '40px'}} lineHeight='120%'>Start your adventure</Text>
-              <Text>Make a character or choose an existing character to add to the game’s lore.</Text> 
-              <Text>Choose a  path to follow.  </Text>
-              <Text>Create your own stories behind the paths you choose. Form alliances based on your choices. Convince other people to join your alliance, or trick them into choosing paths that end in despair.</Text>
+              <Text fontFamily='Inter' >Make a character or choose an existing character to add to the game’s lore.</Text> 
+              <Text fontFamily='Inter' >Choose a  path to follow.  </Text>
+              <Text fontFamily='Inter' >Create your own stories behind the paths you choose. Form alliances based on your choices. Convince other people to join your alliance, or trick them into choosing paths that end in despair.</Text>
               <Spacer />
             <Button 
                 variant='wyrmButton'
@@ -117,11 +117,73 @@ export default function Home() {
                 </Flex>
           </Flex>
 
+          <Flex direction={['column', 'row', 'row']} gap={['40px', '60px', '60px']}>
+            {isBaseView && <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>}
+            <Flex direction='column' gap='20px' textAlign={['center', 'center', 'start']} flex='1'>
+              <Text fontWeight='700' fontSize={{base: '30px', l: '40px'}} lineHeight='120%'>Become a Game Master</Text>
+              <Text fontFamily='Inter' >If creating elaborate adventures for players to embark on is more your thing, become a Game Master.</Text> 
+              <Text fontFamily='Inter' >Create new stories. Bring the content you&apos;ve already developed but haven&apos;t had a chance to play through. See ratings of how many people played your sessions.</Text>
+              <Text fontFamily='Inter' >Alternatively, become a Lore Master to have the last say on which story lines become canon.</Text>
+              <Spacer />
+              <Button 
+                  variant='wyrmButton'
+                  color='white' 
+                  bg='#EB8C6A' 
+                  _hover={{bg: '#EAA88F'}}
+                  mb={['40px', '0', '0']}
+                  mt='20px'
+                  >
+                  Start creating
+              </Button>
+            </Flex>
+            {!isBaseView && <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>}
+          </Flex>
+
+          <Flex direction={['column', 'row', 'row']} gap={['40px', '60px', '60px']}>
+            <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>
+            <Flex direction='column' gap='20px' textAlign={['center', 'center', 'start']} flex='1'>
+              <Text fontWeight='700' fontSize={{base: '30px', l: '40px'}} lineHeight='120%'>Garden of  Forking Paths</Text>
+              <Text fontFamily='Inter' >Great Wyrm runs on the Garden of Forking Paths, a platform which allows anybody to host and run multiplayer choose your own adventure games..</Text> 
+              <Text fontFamily='Inter' >You can create content. You can commission content. You can sell and buy content without paying taxes to the game creators. </Text>
+              <Spacer />
+            <Button 
+                variant='wyrmButton'
+                color='white' 
+                bg='#EB8C6A' 
+                _hover={{bg: '#EAA88F'}}
+                mb={['40px', '0', '0']}
+                mt='20px'
+                >
+                Explore the story
+            </Button>
+                </Flex>
+          </Flex>
+
+          <Flex direction={['column', 'row', 'row']} gap={['40px', '60px', '60px']}>
+            {isBaseView && <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>}
+            <Flex direction='column' gap='20px' textAlign={['center', 'center', 'start']} flex='1'>
+              <Text fontWeight='700' fontSize={{base: '30px', l: '40px'}} lineHeight='120%'>Nobody else sees this but you</Text>
+              <Text fontFamily='Inter' fontWeight='700' >Are you at ETHDenver?</Text> 
+              <Text fontFamily='Inter' >It&apos;s your chance to be a god in this story. Decide fates of Great Wyrm adventurers. Vote on each of their steps&apos; outcome. What will it be?</Text>
+              <Spacer />
+              <Button 
+                  variant='wyrmButton'
+                  color='white' 
+                  bg='#EB8C6A' 
+                  _hover={{bg: '#EAA88F'}}
+                  mb={['40px', '0', '0']}
+                  mt='20px'
+                  >
+                  Become a god
+              </Button>
+            </Flex>
+            {!isBaseView && <ImageFallback text='UI demo or illustration' minH={['501px', '0px', '0px']} minW={['100%', '0%', '0%']} flex='1'/>}
+          </Flex>
+
 
             <Flex alignItems='center' bg='#EB8C6A' p='30px' borderRadius='20px' gap={{base: '40px', l: '60px'}} direction={{base: 'column', l: 'row'}} textAlign={{base: 'center', l: 'left'}}>
               <Flex direction='column' gap='20px'>
                 <Text fontSize='30px' fontWeight='700' lineHeight='100%'>Join the Great Wyrm community to start the world building and be the first to play</Text>
-                <Text>The game is now in early access. You can start creating your own content, making your own characters, forming alliances, or apply to be a Game Master.</Text>  
               </Flex>
               <Button 
                 variant='wyrmButton'
@@ -133,25 +195,11 @@ export default function Home() {
                 Join
               </Button>
             </Flex>
+
+
             <Flex alignItems='center' bg='white' color='black' p='30px' borderRadius='20px' gap={['20px', '40px', '40px']} direction={['column', 'row', 'row']} textAlign='center'>
-              <Text textAlign={['center', 'start', 'start']}>Learn more about crypto, NFT and DAOs, find links to educational resources, discuss gaming projects, and laugh at memes.   </Text>  
-              <Button 
-                color='#1A1D22' 
-                minW={['100%', 'fit-content', 'fit-content']} 
-                p={['10px', '10px 30px', '10px 30px']}
+              <Text textAlign={['center']}>The game is now in early access. You can start creating your own content, making your own characters, forming alliances, or apply to be a Game Master.  </Text>  
 
-                bg='white' 
-                _hover={{bg: '#EAA88F'}}
-                borderRadius='30px'
-                mt={['20px', '0', '0']}
-                border='2px solid #1A1D22'
-                onClick={() => window.open('https://discord.gg/K56VNUQGvA')}
-                fontSize={['16px', '20px', '20px']}
-                h={['40px', '46px', '46px']}
-
-              >
-                Join our Discord
-              </Button>
             </Flex>
         </Flex>
       </Center>

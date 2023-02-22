@@ -48,8 +48,10 @@ const variantWyrmButton = () => {
     minW: ['100%', '100%', '0'],
     px: ['0', '0', '80px'],
     fontSize: ['16px', '20px', '20px'],
+    fontWeight: '900',
     h: ['40px', '46px', '46px'],
     borderRadius: '30px',
+    textTransform: 'uppercase',
   }
 }
 
