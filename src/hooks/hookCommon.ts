@@ -11,3 +11,7 @@ export const queryCacheProps = {
   },
 }
 export default queryCacheProps
+
+export interface ErrorAPI extends Error {
+  request: any
+}
