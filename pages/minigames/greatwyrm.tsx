@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import { Button, Center, Flex, Spacer, Text, useMediaQuery } from '@chakra-ui/react'
+import { Button, Center, Flex, Image, Spacer, Text, useMediaQuery } from '@chakra-ui/react'
 
 import Layout from '../../src/components/greatWyrm/layout'
 import ImageFallback from '../../src/components/greatWyrm/ImageFallback'
@@ -10,7 +10,9 @@ const AWS_ASSETS_PATH = 'https://s3.amazonaws.com/static.simiotics.com/play/mini
 const assets = {
   coverLg: `${AWS_ASSETS_PATH}great-wyrm-cover-lg.png`,
   coverSm: `${AWS_ASSETS_PATH}great-wyrm-cover-sm.png`,
-  coverMd: `${AWS_ASSETS_PATH}great-wyrm-cover-md.png`
+  coverMd: `${AWS_ASSETS_PATH}great-wyrm-cover-md.png`,
+  logo: `${AWS_ASSETS_PATH}great-wyrm-logo.png`
+
 }
 const gradient = 'linear-gradient(180deg, rgba(26, 29, 34, 0) 63.89%, rgba(26, 29, 34, 0.0100738) 69.1%, rgba(26, 29, 34, 0.0386868) 73.45%, rgba(26, 29, 34, 0.0834265) 77.06%, rgba(26, 29, 34, 0.14188) 80.01%, rgba(26, 29, 34, 0.211635) 82.42%, rgba(26, 29, 34, 0.290279) 84.4%, rgba(26, 29, 34, 0.3754) 86.05%, rgba(26, 29, 34, 0.464584) 87.47%, rgba(26, 29, 34, 0.555419) 88.78%, rgba(26, 29, 34, 0.645493) 90.07%, rgba(26, 29, 34, 0.732393) 91.45%, rgba(26, 29, 34, 0.813706) 93.03%, rgba(26, 29, 34, 0.88702) 94.91%, rgba(26, 29, 34, 0.949922) 97.2%, #1A1D22 100%)'
 
@@ -36,7 +38,7 @@ export default function Home() {
       </Head>
       <Flex 
         w='100vw'
-      
+        position='relative'
         h={isBaseView ? 'calc(400px + 122 * (100vw -320px) / 768 )' : '66vw'}
         maxH='962'
         bgSize='cover' 
@@ -44,7 +46,16 @@ export default function Home() {
         resize='horizontal'
         backgroundImage={`${gradient}, url(${isVerySmallView ? assets.coverSm : (is1440View ? assets.coverMd : assets.coverLg)})`}
       >
-
+        <Image 
+          src={assets.logo} 
+          w={{base: '150px', sm: '203px', l: '300px'}}
+          alt=''
+          position='absolute'
+          top={{base: '20px', sm: '50px'}}
+          mx='auto'
+          left='0'
+          right='0'
+        />
 
       </Flex>
       <Center>
