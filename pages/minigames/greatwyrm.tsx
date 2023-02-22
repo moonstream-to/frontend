@@ -59,9 +59,8 @@ export default function Home() {
 
       </Flex>
       <Center>
-        <Flex maxW='1440px 'alignItems='center' gap={['40px', '80px', '80px', '160px']} py={['40px', '80px', '80px']} px={['22px', '54px', '54px', '72px', '101px']} w='100%' direction='column' fontSize={['16px', '18px', '18px']} lineHeight={['20px', '23px', '23px']}>
+        <Flex fontFamily='Cinzel' maxW='1440px 'alignItems='center' gap={['40px', '80px', '80px', '160px']} py={['40px', '80px', '80px']} px={['22px', '54px', '54px', '72px', '101px']} w='100%' direction='column' fontSize={['16px', '18px', '18px']} lineHeight={['20px', '23px', '23px']}>
           <Flex direction={['column', 'column', 'column', 'row']} gap={['20px', '20px', '40px']} textAlign='center'>
-            {isSmallView && <ImageFallback text='illustration' h='194px' mb='20px'/>}
             <Flex flex='1' direction='column' gap={['20px', '20px', '40px']} textAlign={isSmallView ? 'center' : 'start'}>
               <Text fontWeight='700' fontSize={{base: '30px', sm:'40px', l: '50px'}} lineHeight='100%'>Enter the world of Great Wyrm</Text>
               <Text>The only player-owned role-playing game in the world. Great Wyrm players have full control of the world we all play in.</Text>
@@ -87,7 +86,6 @@ export default function Home() {
                 </Button>
               </Flex>
             </Flex>
-            {!isSmallView && <ImageFallback flex='1' text='illustration' minW='0' maxW='400px'/>}
           </Flex>
 
 
