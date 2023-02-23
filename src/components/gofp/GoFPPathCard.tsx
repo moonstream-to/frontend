@@ -57,10 +57,11 @@ const PathCard = ({
     }),
   });
 
-  const trophy =
-    "https://s3.amazonaws.com/static.simiotics.com/play/minigames/trophy.png";
-  const skull =
-    "https://s3.amazonaws.com/static.simiotics.com/play/minigames/skull.png";
+  const assets = {
+    trophy: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/trophy.png",
+    skull: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/skull.png",
+    path_into_fog: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/path_into_fog.png",
+  };
 
   let cardFill = "";
 
@@ -113,7 +114,7 @@ const PathCard = ({
         <Box position="relative" h="90px" w="90px">
           <Image
             alt={pathId}
-            src={status == PathStatus.correct ? trophy : skull}
+            src={status == PathStatus.correct ? assets["trophy"] : assets["skull"]}
             h="40px"
             w="40px"
             mt="30px"
@@ -121,18 +122,32 @@ const PathCard = ({
             position="absolute"
             display={status == PathStatus.undecided ? "none" : ""}
           ></Image>
-          <Image
-            alt={pathId}
-            src={pathMetadata.imageUrl}
-            h="90px"
-            w="90px"
-            mt={4}
-            border="1px solid"
-            borderColor="white"
-            position="relative"
-            opacity={status == PathStatus.undecided ? 1.0 : 0.4}
-          ></Image>
-          <Text fontSize="sm" color="white" align="center">
+          {pathMetadata.imageUrl.length > 0 ? (
+            <Image
+              alt={pathId}
+              src={pathMetadata.imageUrl}
+              h="90px"
+              w="90px"
+              mt={4}
+              border="1px solid"
+              borderColor="white"
+              position="relative"
+              opacity={status == PathStatus.undecided ? 1.0 : 0.4}
+            ></Image>
+          ) : (
+            <Image
+              alt={pathId}
+              src={assets["path_into_fog"]}
+              h="90px"
+              w="90px"
+              mt={4}
+              border="1px solid"
+              borderColor="white"
+              position="relative"
+              opacity={status == PathStatus.undecided ? 1.0 : 0.4}
+            ></Image>            
+          )}
+          <Text fontSize="xs" color="white" align="center" py={2}>
             {pathMetadata.title}
           </Text>
         </Box>

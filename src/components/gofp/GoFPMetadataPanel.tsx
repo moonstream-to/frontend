@@ -1,10 +1,26 @@
 import React, { useContext } from "react";
 
-import { Flex, Center, Text, Image } from "@chakra-ui/react";
+import { 
+  Flex,
+  Center,
+  Text,
+  Image,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  useDisclosure
+} from "@chakra-ui/react";
 
 import Web3Context from "../../contexts/Web3Context/context";
 import useGofp from "../../contexts/GoFPContext";
 import useGofpContract from "../../hooks/useGofpConract";
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const MetadataPanel = () => {
   const web3ctx = useContext(Web3Context);
@@ -17,6 +33,11 @@ const MetadataPanel = () => {
 
   const stage = sessionMetadata.data?.stages[selectedStage - 1];
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // if (stage) {
+  //   stage["lore"] = ">Dog\n\n>>Cat\n\n>>Cat\n\n>>Cat\n\n>Dog"
+  // }
 
   return (
     <>
@@ -32,18 +53,50 @@ const MetadataPanel = () => {
       <Text fontSize="md" fontWeight="semibold" pt={6}>
         Stage {selectedStage}
       </Text>
-      <Text fontSize="xl" fontWeight="bold" pt={4}>
+      <Text fontSize="md" fontWeight="bold" pt={4}>
         {stage.title}
       </Text>
-      <Flex borderWidth="2px" borderColor="#BFBFBF" borderRadius="10px" mt={6}>
-        <Text p={2}>{stage.lore}</Text>
+      <Flex borderWidth="2px" borderColor="#BFBFBF" borderRadius="10px" mt={6} p={2} flexDir="column">
+        <Text fontSize="m" maxH="120px" overflow="hidden">{stage.lore}</Text>
+        <Center>
+          <Text fontSize="sm" color="#8ab4f8" onClick={onOpen}>read more...</Text>
+        </Center>
+        <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+          <ModalOverlay />
+          <ModalContent
+            bg="#1A1D22"
+            border="1px solid white"
+            borderRadius="20px"
+            textColor="white"
+          >
+            <ModalHeader>{stage.title}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Flex flexDir="column" px={10}>
+                {stage.imageUrl.length > 0 && (
+                  <Center pb={6}>
+                    <Image w="900px" h="300px" alt={"Stage Image"} src={stage.imageUrl} />
+                  </Center>
+                )}
+                <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
+                  {stage.lore}
+                </ReactMarkdown>
+              </Flex>
+            </ModalBody>
+            <ModalFooter>
+              <Button bgColor="#4D4D4D" onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Flex>
       {stage.imageUrl.length > 0 && (
         <Center>
           <Image
             alt={"Stage " + selectedStage}
             w="300px"
-            h="300px"
+            h="100px"
             src={stage.imageUrl}
             pt={6}
           />
