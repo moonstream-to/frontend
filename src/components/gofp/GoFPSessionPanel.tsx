@@ -93,6 +93,7 @@ const SessionPanel = () => {
         onScroll={() => {
           console.log("scrolling");
         }}
+        maxWidth="700px"
         position="relative"
       >
         <Connections

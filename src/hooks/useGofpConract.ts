@@ -153,7 +153,22 @@ export const useGofpContract = ({
     return useQuery(['guard_for_token', tokenId], () => getTokenGuard(tokenId), { ...hookCommon });
   }
 
+  const getApprovalForAll = async () => {
+    console.log("Attempting getApproval");
+    tokenContract.options.address = sessionInfo.data[0];
+    const approved = await tokenContract.methods.isApprovedForAll(web3ctx.account, gardenContractAddress).call();
+    console.log("User is", approved ? "approved." : "not approved.");
+    return approved;
+  };
 
+  function useApprovalForAll() {
+    return useQuery(
+      ['contract_approval', gardenContractAddress, web3ctx.account],
+      () => getApprovalForAll(), 
+      { ...hookCommon, 
+        notifyOnChangeProps: ["data"], 
+      });
+  }
 
   const getTokensUri = async (tokenIds: number[]) => {
     tokenContract.options.address = sessionInfo.data[0];
@@ -225,8 +240,6 @@ export const useGofpContract = ({
         toast("Staking successful.", "success");
         queryClient.invalidateQueries('owned_tokens')
         queryClient.invalidateQueries('staked_tokens')
-        // userOwnedTokens.refetch();
-        // stakedTokens.refetch();
       },
       onError: (error) => {
         toast("Staking failed.", "error");
@@ -307,13 +320,15 @@ export const useGofpContract = ({
   );
 
   const setApproval = useMutation(
-    () => {
+    async () => {
       if (!web3ctx.account) {
         return new Promise((_, reject) => {
           reject(new Error(`Account address isn't set`))
         })
       }
-      return tokenContract.methods
+
+      tokenContract.options.address = sessionInfo.data[0];
+      return await tokenContract.methods
         .setApprovalForAll(gardenContractAddress, true)
         .send({
           from: web3ctx.account,
@@ -321,6 +336,7 @@ export const useGofpContract = ({
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries('contract_approval');
         toast("SetApproval successful.", "success");
       },
       onError: (e: Error) => {
@@ -346,6 +362,7 @@ export const useGofpContract = ({
     choosePath,
     setApproval,
     useGuard,
+    useApprovalForAll,
   }
 }
 
