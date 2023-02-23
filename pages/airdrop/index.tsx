@@ -62,10 +62,13 @@ const Airdrop = () => {
 
         const data = new FormData()
         data.append('address', address)
+        data.append('blockchain', 'polygon')
+        data.append('name', 'Public claimant protected')
+        data.append('password', password)
         data.append('email', email)
         data.append('discord', discord)
-        data.append('password', password)
-        return axios.post(`${ENTITY_API}/public/collections/${collectionId}/ethdenver`, data)
+
+        return axios.post(`${ENTITY_API}/public/collections/${collectionId}/entities/protected`, data)
       })
     },
     {
