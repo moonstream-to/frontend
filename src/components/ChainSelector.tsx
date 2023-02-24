@@ -20,7 +20,7 @@ const ChainSelector = () => {
         _hover={{ textDecoration: 'none', fontWeight: '700' }}
         rightIcon={<ChevronDownIcon />}
         leftIcon={
-          ['ethereum', 'mumbai', 'polygon'].includes(web3Provider?.targetChain?.name ?? '') ? (
+          ['ethereum', 'mumbai', 'polygon', 'wyrm'].includes(web3Provider?.targetChain?.name ?? '') ? (
             <Image
               display={'inline'}
               alt='chain'
@@ -91,6 +91,20 @@ const ChainSelector = () => {
             src='https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png'
           ></Image>
           Mumbai
+        </MenuItem>
+        <MenuItem
+          // isDisabled={web3Provider.targetChain?.name === "mumbai"}
+          onClick={() => {
+            web3Provider.changeChain('wyrm')
+          }}
+        >
+          <Image
+            alt='wyrm'
+            h='24px'
+            mr={4}
+            src='https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png'
+          ></Image>
+          Wyrm
         </MenuItem>
         <MenuItem
           // isDisabled={web3Provider.targetChain?.name === "localhost"}
