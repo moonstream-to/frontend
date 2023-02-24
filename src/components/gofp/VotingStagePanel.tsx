@@ -1,8 +1,10 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react"
-import { useMutation } from "react-query"
+import axios from "axios"
+import { useEffect } from "react"
+import { useMutation, useQuery } from "react-query"
 
 import useGofp from "../../contexts/GoFPContext"
-import { useToast } from "../../hooks"
+import { hookCommon, useToast } from "../../hooks"
 import PathCard from "./GoFPPathCard"
 
 const VotingStagePanel = ({stage, currentStage, stageMetadata}: {stage: number, currentStage: number, stageMetadata: any}) => {
@@ -19,9 +21,36 @@ const VotingStagePanel = ({stage, currentStage, stageMetadata}: {stage: number, 
     onSuccess: () => toast('Success','success')
   },
   )
+  
+  const getVotes = async () => {
+    const MOONSTREAM_S3_PUBLIC_DATA_BUCKET = process.env.NEXT_PUBLIC_MOONSTREAM_S3_PUBLIC_DATA_BUCKET ?? "https://data.moonstream.to"
+    const MOONSTREAM_S3_PUBLIC_DATA_BUCKET_PREFIX= process.env.NEXT_PUBLIC_MOONSTREAM_S3_PUBLIC_DATA_BUCKET_PREFIX ?? "prod"
+    const res = await axios.get(`${MOONSTREAM_S3_PUBLIC_DATA_BUCKET}/${MOONSTREAM_S3_PUBLIC_DATA_BUCKET_PREFIX}/great_wyrm/votes/game_sessions.json`)
+    .then((res) => res.data.find((session: {game_session_id: string}) => session.game_session_id === 'dbc5b0b3-bbff-40c0-857d-3aaa0337ba8c'))
+    .then((session: {stages: {stage: number, paths: {path: string}[]}[]}) => {
+      return session.stages.map((stage: {stage: number, paths: {path: string}[]}) => {
+        const votes: number[] = []
+        stage.paths.forEach((vote: {path: string}) => {
+          const path = Number(vote.path) - 1
+          votes[path] = (votes[path] ?? 0) + 1
+        })
+        return(votes)
+      })
+    })
+    return res;
+  }
+
+  function useVotes() {
+    return useQuery(['get_votes'], getVotes, { ...hookCommon });
+  }
+
+  const votes = useVotes();
+  useEffect(() => {
+    console.log(votes.data)
+  }, [votes.data])
 
   return (
-    <Flex direction='column' position='relative' gap='40px' alignItems='center' h='500px' px='30px'>
+    <Flex direction='column' position='relative' gap='40px' alignItems='center' h='646px' px='30px'>
       <Box position='absolute' >
         <svg
         width="288" 
@@ -77,14 +106,16 @@ const VotingStagePanel = ({stage, currentStage, stageMetadata}: {stage: number, 
 
       {stageMetadata.paths.map((path: any, idx: number) => {
         return (
-          <PathCard
-            key={idx}
-            pathMetadata={path}
-            pathIdx={idx}
-            stageIdx={stage - 1}
-            accept='none'
-            pathId={generatePathId(stage - 1, idx)}
-        />
+          <Flex direction='column' alignItems='center' key={idx} gap='5px'>
+            <PathCard
+              pathMetadata={path}
+              pathIdx={idx}
+              stageIdx={stage - 1}
+              accept='none'
+              pathId={generatePathId(stage - 1, idx)}
+          />
+          {votes.data && <Text>{votes.data[stage - 1][idx] ?? '0'}</Text>}
+        </Flex>
         )
       })}
     </Flex>

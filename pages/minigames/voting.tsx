@@ -38,7 +38,7 @@ const Voting = () => {
     console.log(currentStage.data)
   }, [sessionMetadata.data, currentStage.data])
 
-  const siteTitle = 'Moonstream apps portal'
+  const siteTitle = 'Great Wyrm Voting'
   const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
 
 
