@@ -11,9 +11,25 @@ import Web3 from "web3";
 import Web3Context from "../../../src/contexts/Web3Context/context";
 const terminusAbi = require('../../../src/web3/abi/MockTerminus.json');
 import { MockTerminus as TerminusFacet } from '../../../src/web3/contracts/types/MockTerminus';
+const erc721Abi = require('../../../src/web3/abi/MockERC721.json');
+import { MockERC721 as Erc721Facet } from '../../../src/web3/contracts/types/MockERC721';
 import { hookCommon } from "../../../src/hooks";
+import NFTCard from '../../../src/components/NFTCard';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+interface NFTMetadata {
+  name: string;
+  image: string;
+  description?: string;
+}
+
+interface NFTInfo {
+  tokenID: string;
+  tokenURI: string;
+  imageURI: string;
+  metadata: NFTMetadata;
+}
 
 const Inventory = () => {
   const router = useRouter();
@@ -25,16 +41,18 @@ const Inventory = () => {
   }, [web3ctx.account]);
 
   const terminusAddress = "0x49ca1F6801c085ABB165a827baDFD6742a3f8DBc";
-  type terminusType = "type1" | "type2";
-  const terminusTypes: terminusType[] = ["type1", "type2"];
+  const characterAddress = "0xDfbC5320704b417C5DBbd950738A32B8B5Ed75b3";
+
+  type terminusType = "gamemaster" | "character_creation";
+  const terminusTypes: terminusType[] = ["gamemaster", "character_creation"];
   const terminusPoolIds: { [key in terminusType]: number } = {
-    type1: 1,
-    type2: 2,
+    gamemaster: 1,
+    character_creation: 2,
   };
 
   const defaultBalances: { [key in terminusType]: number } = {
-    type1: 0,
-    type2: 0,
+    gamemaster: 0,
+    character_creation: 0,
   };
 
   const terminusBalances = useQuery(
@@ -85,12 +103,118 @@ const Inventory = () => {
     }
   );
 
+  const characterList = useQuery<NFTInfo[]>(
+    ["characters", characterAddress, currentAccount],
+    async ({ queryKey }) => {
+      const currentUserAddress = String(queryKey[2]);
+
+      const inventory: NFTInfo[] = [];
+
+      if (currentUserAddress == "0x0000000000000000000000000000000000000000") {
+        return inventory;
+      }
+
+      const characterContract = new web3ctx.web3.eth.Contract(
+        erc721Abi
+      ) as unknown as Erc721Facet;
+      characterContract.options.address = String(queryKey[1]);
+
+
+      try {
+        const numCharsRaw: string = await characterContract.methods
+          .balanceOf(currentUserAddress)
+          .call();
+
+        let numChars = 0;
+        try {
+          numChars = parseInt(numCharsRaw, 10);
+        } catch (e) {
+          console.error(
+            `Error: Could not parse number of owned characters as an integer: ${numCharsRaw}`
+          );
+        }
+
+        const tokenIDPromises = [];
+        for (let i = 0; i < numChars; i++) {
+          tokenIDPromises.push(
+            characterContract.methods
+              .tokenOfOwnerByIndex(currentUserAddress, i)
+              .call()
+          );
+        }
+        const tokenIDs = await Promise.all(tokenIDPromises);
+
+        const tokenURIPromises = tokenIDs.map((tokenID) =>
+          characterContract.methods.tokenURI(tokenID).call()
+        );
+        const tokenURIs = await Promise.all(tokenURIPromises);
+
+        const tokenMetadataPromises = tokenURIs.map((tokenURI) =>
+          fetch(tokenURI).then((response) => response.json())
+        );
+        const tokenMetadata = await Promise.all(tokenMetadataPromises);
+
+        const imageURIs = tokenMetadata.map((metadata) => metadata.image);
+
+        tokenIDs.forEach((tokenID, index) => {
+          inventory.push({
+            tokenID,
+            tokenURI: tokenURIs[index],
+            imageURI: imageURIs[index],
+            metadata: tokenMetadata[index],
+          });
+        });
+      } catch (e) {
+        console.error(
+          "There was an issue retrieving information about user's characters: "
+        );
+        console.error(e);
+      }
+
+      console.log(inventory);
+
+      return inventory;
+    },
+    {
+      ...hookCommon,
+    }
+  );
+
   return (
     <Layout home={true}>
       <Head>
         <title>Moonstream portal - Inventory</title>
       </Head>
-      <Center>
+      <Center pt={10}>
+        <Flex flexDir="column">
+          {terminusBalances.data && (
+            <>
+              <Text>Role:           
+                {terminusBalances.data && terminusBalances.data['gamemaster'] > 0 ? (
+                  " Game Master"
+                ) : (
+                  " Player"
+                )}</Text>
+              <Text>Character Creation tokens: {terminusBalances.data['character_creation']}</Text>
+            </>
+          )}
+          <Flex wrap="wrap" justifyContent="center" gap="20px" mt="20px">
+            {characterList.data?.map((item: NFTInfo, idx: number) => {
+              console.log(item);
+              return (
+                <NFTCard
+                  maxW={["140px", "170px", "220px"]}
+                  key={idx}
+                  imageUrl={item.imageURI}
+                  name={item.metadata.name}
+                  description={item.metadata.description}
+                  balance={1}
+                  showQuantity={false}
+                />
+              );
+            })}
+          </Flex>
+        </Flex>
       </Center>
     </Layout>
   )
