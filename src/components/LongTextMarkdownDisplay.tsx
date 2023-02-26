@@ -35,7 +35,7 @@ const LongTextMarkdownDisplay = ({
       <Center>
         <Text fontSize="sm" color="#8ab4f8" onClick={onOpen}>read more...</Text>
       </Center>
-      <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent
           bg="#1A1D22"

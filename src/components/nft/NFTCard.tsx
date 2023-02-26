@@ -8,7 +8,9 @@ import {
   VStack,
   Box,
 } from "@chakra-ui/react";
-import LongTextMarkdownDisplay from "./LongTextMarkdownDisplay";
+import LongTextMarkdownDisplay from "../LongTextMarkdownDisplay";
+
+const defaultImageUrl = "https://s3.amazonaws.com/static.greatwyrm.xyz/anonymous_person.jpg";
 
 const _NFTCard = ({
   name,
@@ -29,15 +31,18 @@ const _NFTCard = ({
   grayedOut?: boolean;
 }) => {
   return (
-    <Flex {...props} pb={10}>
+    <Flex {...props} backgroundColor="#353535">
       <VStack maxW="250" border="solid" borderColor="white" borderRadius="lg">
         <Image
-          src={imageUrl}
+          src={imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl}
           as={isVideo ? "video" : undefined}
           filter={grayedOut ? "grayscale(100%)" : undefined}
           opacity={grayedOut ? "0.3" : undefined}
           loading="lazy"
-          p={2}
+          w="200px"
+          h="200px"
+          px={2}
+          py={4}
           borderRadius="sm"
           alt="NFT Image"
         />

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 
-import { useContext, useEffect, useState } from 'react'
+import { use, useContext, useEffect, useState } from 'react'
 import { useQuery } from "react-query";
+import { useRouter } from 'next/router'
 import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 
 import Layout from '../../../src/components/layout';
@@ -14,31 +14,30 @@ import { MockTerminus as TerminusFacet } from '../../../src/web3/contracts/types
 const erc721Abi = require('../../../src/web3/abi/MockERC721.json');
 import { MockERC721 as Erc721Facet } from '../../../src/web3/contracts/types/MockERC721';
 import { hookCommon } from "../../../src/hooks";
-import NFTCard from '../../../src/components/NFTCard';
+// import useSpyMode from "../../../src/hooks/useSpyMode";
+import NFTList from '../../../src/components/nft/NFTList';
+import { NFTInfo } from '../../../src/components/nft/types';
+import { MdOutlineStayCurrentLandscape } from 'react-icons/md';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-interface NFTMetadata {
-  name: string;
-  image: string;
-  description?: string;
-}
-
-interface NFTInfo {
-  tokenID: string;
-  tokenURI: string;
-  imageURI: string;
-  metadata: NFTMetadata;
-}
-
 const Inventory = () => {
   const router = useRouter();
-  const web3ctx = useContext(Web3Context);
+  const queryAddress = router.query["spyAddress"] as string;
 
+  const web3ctx = useContext(Web3Context);
   const [currentAccount, setCurrentAccount] = useState(ZERO_ADDRESS);
+
   useEffect(() => {
-    if (Web3.utils.isAddress(web3ctx.account)) setCurrentAccount(web3ctx.account);
-  }, [web3ctx.account]);
+    let nextAddress = ZERO_ADDRESS;
+    if (queryAddress && Web3.utils.isAddress(queryAddress)) {
+      nextAddress = queryAddress;
+    } else {
+      nextAddress = web3ctx.account;
+    }
+    console.log("Next address:", nextAddress);
+    if (Web3.utils.isAddress(nextAddress)) setCurrentAccount(nextAddress);
+  }, [web3ctx.account, queryAddress]);
 
   const terminusAddress = "0x49ca1F6801c085ABB165a827baDFD6742a3f8DBc";
   const characterAddress = "0xDfbC5320704b417C5DBbd950738A32B8B5Ed75b3";
@@ -114,7 +113,7 @@ const Inventory = () => {
         return inventory;
       }
 
-      const characterContract = new web3ctx.web3.eth.Contract(
+      const characterContract = new web3ctx.wyrmClient.eth.Contract(
         erc721Abi
       ) as unknown as Erc721Facet;
       characterContract.options.address = String(queryKey[1]);
@@ -149,12 +148,16 @@ const Inventory = () => {
         );
         const tokenURIs = await Promise.all(tokenURIPromises);
 
-        const tokenMetadataPromises = tokenURIs.map((tokenURI) =>
-          fetch(tokenURI).then((response) => response.json())
-        );
+        const tokenMetadataPromises = tokenURIs.map((tokenURI) => {
+          if(tokenURI && tokenURI.trim() != "") {
+            return fetch(tokenURI, { cache: 'no-cache' }).then((response) => response.json());
+          } else {
+            return null;
+          }
+        });
         const tokenMetadata = await Promise.all(tokenMetadataPromises);
 
-        const imageURIs = tokenMetadata.map((metadata) => metadata.image);
+        const imageURIs = tokenMetadata.map((metadata) => metadata ? metadata.image: null);
 
         tokenIDs.forEach((tokenID, index) => {
           inventory.push({
@@ -185,8 +188,8 @@ const Inventory = () => {
       <Head>
         <title>Moonstream portal - Inventory</title>
       </Head>
-      <Center pt={10}>
-        <Flex flexDir="column">
+      <Box py={10}>
+        <Flex ml="100px" flexDir="column">
           {terminusBalances.data && (
             <>
               <Text>Role:           
@@ -198,24 +201,11 @@ const Inventory = () => {
               <Text>Character Creation tokens: {terminusBalances.data['character_creation']}</Text>
             </>
           )}
-          <Flex wrap="wrap" justifyContent="center" gap="20px" mt="20px">
-            {characterList.data?.map((item: NFTInfo, idx: number) => {
-              console.log(item);
-              return (
-                <NFTCard
-                  maxW={["140px", "170px", "220px"]}
-                  key={idx}
-                  imageUrl={item.imageURI}
-                  name={item.metadata.name}
-                  description={item.metadata.description}
-                  balance={1}
-                  showQuantity={false}
-                />
-              );
-            })}
-          </Flex>
         </Flex>
-      </Center>
+        {characterList.data && (
+          <NFTList nftList={characterList.data} />
+        )}
+      </Box>
     </Layout>
   )
 }
