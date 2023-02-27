@@ -8,7 +8,7 @@ export interface WalletStatesInterface {
   UNKNOWN_CHAIN: string
 }
 
-export type supportedChains = 'localhost' | 'mumbai' | 'polygon' | 'ethereum'
+export type supportedChains = 'localhost' | 'mumbai' | 'polygon' | 'ethereum' | 'wyrm'
 
 export interface ChainInterface {
   chainId: number
@@ -28,6 +28,7 @@ declare function ChangeChain(chainName: supportedChains): void
 export interface MoonstreamWeb3ProviderInterface {
   web3: Web3
   polygonClient: Web3
+  wyrmClient: Web3
   onConnectWalletClick: React.MouseEventHandler<HTMLButtonElement>
   buttonText: string
   WALLET_STATES: WalletStatesInterface

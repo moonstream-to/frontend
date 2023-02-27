@@ -98,6 +98,13 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
       'https://matic-mainnet-full-rpc.bwarelabs.com',
     ],
   },
+  wyrm: {
+    chainId: 322,
+    name: 'wyrm',
+    rpcs:[
+      'https://wyrm.constellationchain.xyz/http'
+    ]
+  }
 }
 
 export const chainByChainId: { [key: number]: string } = {
@@ -116,6 +123,7 @@ const isKnownChain = (_chainId: number) => {
 const Web3Provider = ({ children }: { children: JSX.Element }) => {
   const [web3] = React.useState<Web3>(new Web3(null))
   const [polygonClient] = React.useState<Web3>(new Web3(new Web3.providers.HttpProvider('https://polygon-rpc.com')))
+  const [wyrmClient] = React.useState<Web3>(new Web3(new Web3.providers.HttpProvider('https://wyrm.constellationchain.xyz/http')))
 
   const _signAccessToken = async (account: string) => {
     if (web3.currentProvider) {
@@ -307,6 +315,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
       value={{
         web3,
         polygonClient,
+        wyrmClient,
         onConnectWalletClick,
         buttonText,
         WALLET_STATES,

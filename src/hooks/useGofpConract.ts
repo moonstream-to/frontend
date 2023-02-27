@@ -9,10 +9,6 @@ import { MockERC721 } from '../web3/contracts/types/MockERC721';
 import { ChoosePathData, SessionMetadata } from "../../src/components/gofp/GoFPTypes";
 import http from "../utils/http";
 
-
-
-
-
 export const useGofpContract = ({
   sessionId,
   gardenContractAddress,
