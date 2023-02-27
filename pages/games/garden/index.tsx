@@ -6,12 +6,12 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Box, Heading, HStack, Spacer } from '@chakra-ui/react'
 
-import SessionPanel from '../../src/components/gofp/GoFPSessionPanel'
-import MetadataPanel from '../../src/components/gofp/GoFPMetadataPanel'
-import CharacterPanel from '../../src/components/gofp/GoFPCharacterPanel'
-import { useRouter } from '../../src/hooks'
-import Layout from '../../src/components/layout'
-import useGofp from '../../src/contexts/GoFPContext'
+import SessionPanel from '../../../src/components/gofp/GoFPSessionPanel'
+import MetadataPanel from '../../../src/components/gofp/GoFPMetadataPanel'
+import CharacterPanel from '../../../src/components/gofp/GoFPCharacterPanel'
+import { useRouter } from '../../../src/hooks'
+import Layout from '../../../src/components/layout'
+import useGofp from '../../../src/contexts/GoFPContext'
 
 const Garden = () => {
   const router = useRouter()
