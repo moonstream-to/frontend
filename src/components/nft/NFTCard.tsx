@@ -8,7 +8,7 @@ import {
   VStack,
   Box,
 } from "@chakra-ui/react";
-import LongTextMarkdownDisplay from "../LongTextMarkdownDisplay";
+import TextWithPopup from "../TextWithPopup";
 
 const defaultImageUrl = "https://s3.amazonaws.com/static.greatwyrm.xyz/anonymous_person.jpg";
 
@@ -30,6 +30,7 @@ const _NFTCard = ({
   isVideo?: boolean;
   grayedOut?: boolean;
 }) => {
+  const calculatedImaged = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl;
   return (
     <Flex {...props} backgroundColor="#353535">
       <VStack maxW="250" border="solid" borderColor="white" borderRadius="lg">
@@ -47,9 +48,10 @@ const _NFTCard = ({
           alt="NFT Image"
         />
         <Box px={2} pb={2}>
-          <Text fontSize="md" pb={2}>{name}</Text>
-          {description && (
-            <LongTextMarkdownDisplay longTextMarkdown={description} header={name}></LongTextMarkdownDisplay>
+          {description ? (
+            <TextWithPopup text={description} image={calculatedImaged} title={name} />
+          ): (
+            <Text fontSize="md" pb={2}>{name}</Text>
           )}
           {showQuantity && (
             <Flex fontSize="sm" w="100%">

@@ -17,7 +17,6 @@ import { hookCommon } from "../../../src/hooks";
 // import useSpyMode from "../../../src/hooks/useSpyMode";
 import NFTList from '../../../src/components/nft/NFTList';
 import { NFTInfo } from '../../../src/components/nft/types';
-import { MdOutlineStayCurrentLandscape } from 'react-icons/md';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -41,6 +40,7 @@ const Inventory = () => {
 
   const terminusAddress = "0x49ca1F6801c085ABB165a827baDFD6742a3f8DBc";
   const characterAddress = "0xDfbC5320704b417C5DBbd950738A32B8B5Ed75b3";
+  const greatwyrmContractAddress = "0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b"
 
   type terminusType = "gamemaster" | "character_creation";
   const terminusTypes: terminusType[] = ["gamemaster", "character_creation"];
@@ -102,7 +102,7 @@ const Inventory = () => {
     }
   );
 
-  const characterList = useQuery<NFTInfo[]>(
+  const playerOwnedCharacters = useQuery<NFTInfo[]>(
     ["characters", characterAddress, currentAccount],
     async ({ queryKey }) => {
       const currentUserAddress = String(queryKey[2]);
@@ -183,6 +183,87 @@ const Inventory = () => {
     }
   );
 
+  // const contractOwnedCharacters = useQuery<NFTInfo[]>(
+  //   ["characters", characterAddress, currentAccount],
+  //   async ({ queryKey }) => {
+  //     const currentUserAddress = String(queryKey[2]);
+
+  //     const inventory: NFTInfo[] = [];
+
+  //     if (currentUserAddress == "0x0000000000000000000000000000000000000000") {
+  //       return inventory;
+  //     }
+
+  //     // const characterContract = new web3ctx.wyrmClient.eth.Contract(
+  //     //   erc721Abi
+  //     // ) as unknown as Erc721Facet;
+  //     // characterContract.options.address = String(queryKey[1]);
+
+
+  //     try {
+  //       const numCharsRaw: string = await characterContract.methods
+  //         .balanceOf(currentUserAddress)
+  //         .call();
+
+  //       let numChars = 0;
+  //       try {
+  //         numChars = parseInt(numCharsRaw, 10);
+  //       } catch (e) {
+  //         console.error(
+  //           `Error: Could not parse number of owned characters as an integer: ${numCharsRaw}`
+  //         );
+  //       }
+
+  //       const tokenIDPromises = [];
+  //       for (let i = 0; i < numChars; i++) {
+  //         tokenIDPromises.push(
+  //           characterContract.methods
+  //             .tokenOfOwnerByIndex(currentUserAddress, i)
+  //             .call()
+  //         );
+  //       }
+  //       const tokenIDs = await Promise.all(tokenIDPromises);
+
+  //       const tokenURIPromises = tokenIDs.map((tokenID) =>
+  //         characterContract.methods.tokenURI(tokenID).call()
+  //       );
+  //       const tokenURIs = await Promise.all(tokenURIPromises);
+
+  //       const tokenMetadataPromises = tokenURIs.map((tokenURI) => {
+  //         if(tokenURI && tokenURI.trim() != "") {
+  //           return fetch(tokenURI, { cache: 'no-cache' }).then((response) => response.json());
+  //         } else {
+  //           return null;
+  //         }
+  //       });
+  //       const tokenMetadata = await Promise.all(tokenMetadataPromises);
+
+  //       const imageURIs = tokenMetadata.map((metadata) => metadata ? metadata.image: null);
+
+  //       tokenIDs.forEach((tokenID, index) => {
+  //         inventory.push({
+  //           tokenID,
+  //           tokenURI: tokenURIs[index],
+  //           imageURI: imageURIs[index],
+  //           metadata: tokenMetadata[index],
+  //         });
+  //       });
+  //     } catch (e) {
+  //       console.error(
+  //         "There was an issue retrieving information about user's characters: "
+  //       );
+  //       console.error(e);
+  //     }
+
+  //     console.log(inventory);
+
+  //     return inventory;
+  //   },
+  //   {
+  //     ...hookCommon,
+  //   }
+  // );
+
   return (
     <Layout home={true}>
       <Head>
@@ -202,8 +283,8 @@ const Inventory = () => {
             </>
           )}
         </Flex>
-        {characterList.data && (
-          <NFTList nftList={characterList.data} />
+        {playerOwnedCharacters.data && (
+          <NFTList nftList={playerOwnedCharacters.data} />
         )}
       </Box>
     </Layout>
