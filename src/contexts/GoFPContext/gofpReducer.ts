@@ -2,7 +2,7 @@
 
 export const initialState = {
   sessionId: 118,
-  gardenContractAddress: '0x8b9493d84e70e94ff9EB1385aD0ed632FD5edE13',
+  gardenContractAddress: '',
   selectedStage: 1,
   selectedPath: 1,
   selectedTokens: [],
@@ -18,17 +18,22 @@ const gofpReducer = (state: any, action: {type: string; payload: any}) => {
       return {
         ...state,
         sessionId: payload.sessionId
-      };
+      }
+    case "SET_GARDEN_ADDRESS":
+      return {
+        ...state,
+        gardenContractAddress: payload.address,
+    }
     case "SELECT_PATH":
       return {
         ...state,
         selectedPath: payload.pathId
-      };
+      }
     case "SELECT_STAGE":
       return {
         ...state,
         selectedStage: payload.stageId
-      };
+      }
     case 'TOGGLE_TOKEN_SELECT':
       let newSelectedTokens = []
         if (state.selectedTokens.includes(payload.tokenId)) {

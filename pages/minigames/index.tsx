@@ -16,10 +16,11 @@ import useGofp from '../../src/contexts/GoFPContext'
 const Garden = () => {
   const router = useRouter()
 
-  const { setSessionId } = useGofp()
+  const { setSessionId, setGardenContractAddress } = useGofp()
 
   useEffect(() => {
     setSessionId(router.query['sessionId'])
+    setGardenContractAddress(router.query['contractId'])
   }, [])
 
   return (

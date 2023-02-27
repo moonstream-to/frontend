@@ -14,6 +14,7 @@ type gofpContextType = {
   selectToken: (tokenId: number) => void
   generatePathId: (stage: number, path: number) => string
   setSessionId: (sessionId: number) => void
+  setGardenContractAddress: (address: string) => void
   toggleTokenSelect: (tokenId: number) => void
 }
 
@@ -72,6 +73,15 @@ export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
     })
   }
 
+  const setGardenContractAddress = (address: string) => {
+    dispatch({
+      type: 'SET_GARDEN_ADDRESS',
+      payload: {
+        address,
+      }
+    })
+  }
+
   const {selectedStage, selectedPath, selectedTokens, sessionId, gardenContractAddress} = state
   
 
@@ -87,6 +97,7 @@ export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
     gardenContractAddress,
     setSessionId,
     toggleTokenSelect,
+    setGardenContractAddress,
   };
 
 
