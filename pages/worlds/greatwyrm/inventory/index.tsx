@@ -6,17 +6,17 @@ import { useQuery } from "react-query";
 import { useRouter } from 'next/router'
 import { Box, Button, Center, Flex, Input, Text, useToast } from '@chakra-ui/react'
 
-import Layout from '../../../src/components/layout';
+import Layout from '../../../../src/components/layout';
 import Web3 from "web3";
-import Web3Context from "../../../src/contexts/Web3Context/context";
-const terminusAbi = require('../../../src/web3/abi/MockTerminus.json');
-import { MockTerminus as TerminusFacet } from '../../../src/web3/contracts/types/MockTerminus';
-const erc721Abi = require('../../../src/web3/abi/MockERC721.json');
-import { MockERC721 as Erc721Facet } from '../../../src/web3/contracts/types/MockERC721';
-import { hookCommon } from "../../../src/hooks";
+import Web3Context from "../../../../src/contexts/Web3Context/context";
+const terminusAbi = require('../../../../src/web3/abi/MockTerminus.json');
+import { MockTerminus as TerminusFacet } from '../../../../src/web3/contracts/types/MockTerminus';
+const erc721Abi = require('../../../../src/web3/abi/MockERC721.json');
+import { MockERC721 as Erc721Facet } from '../../../../src/web3/contracts/types/MockERC721';
+import { hookCommon } from "../../../../src/hooks";
 // import useSpyMode from "../../../src/hooks/useSpyMode";
-import NFTList from '../../../src/components/nft/NFTList';
-import { NFTInfo } from '../../../src/components/nft/types';
+import NFTList from '../../../../src/components/nft/NFTList';
+import { NFTInfo } from '../../../../src/components/nft/types';
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
