@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from '@chakra-ui/react'
 
 import useRouter from '../hooks/useRouter'
+import { ChevronRightIcon } from '@chakra-ui/icons'
 
 const BreadcrumbView = () => {
   const [path, setPath] = useState<string[]>([])
@@ -13,10 +14,16 @@ const BreadcrumbView = () => {
     setPath(newPath)
   }, [router.nextRouter.pathname, router.query.contractAddress])
   return (
-    <Breadcrumb spacing='8px' pt={2} fontSize={['sm', 'sm', 'md']} separator={'/'} px='7%'>
+    <Breadcrumb
+      spacing="8px"
+      pt={2}
+      px='7%'
+      fontSize={['sm', 'sm', 'md']} 
+      separator={<ChevronRightIcon color='gray.500' />}
+    >
       {path.length !== 0 && (
         <BreadcrumbItem>
-          <BreadcrumbLink textTransform={'capitalize'} href={`/`}>
+          <BreadcrumbLink textTransform={'capitalize'} href={'/'}>
             Home
           </BreadcrumbLink>
         </BreadcrumbItem>
@@ -27,37 +34,18 @@ const BreadcrumbView = () => {
           if (index <= idx) linkPath += value + '/'
         })
 
-        const query =
-          linkPath === '/terminus/' && router.query.contractAddress ? { contractAddress: router.query.contractAddress } : undefined
         return (
-          <React.Fragment key={`bcl-${element}-${idx}`}>
-            {query ? (
-              <>
-                <BreadcrumbItem>
-                  <NextLink passHref shallow href={ '/terminus' }>
-                    <Text fontWeight={'normal'} textTransform={'capitalize'}>
-                      Terminus
-                    </Text>
-                  </NextLink>
-                </BreadcrumbItem>
-                <Text mx={2}>/</Text>
-                <BreadcrumbItem>
-                  <Text fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'} textTransform={'capitalize'}>
-                    {router.query.contractAddress}
-                  </Text>
-                </BreadcrumbItem>
-              </>
-            ) : (
-            <BreadcrumbItem>
-              <NextLink passHref shallow href={{ pathname: linkPath }}>
-                <Text fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'} textTransform={'capitalize'}>
-                  {element}
-                </Text>
-              </NextLink>
-            </BreadcrumbItem>
-            )}
-          </React.Fragment>
-        )
+          <BreadcrumbItem key={`bcl-${element}-${idx}`}>
+              <BreadcrumbLink
+                isCurrentPage={idx === path.length ? true : false}
+                fontWeight={idx === path.length - 1 ? 'semibold' : 'normal'}
+                textTransform={'capitalize'}
+                href={linkPath}
+              >
+                {element}
+              </BreadcrumbLink>
+          </BreadcrumbItem>
+        );
       })}
     </Breadcrumb>
   )
