@@ -104,7 +104,7 @@ const SessionPanel = () => {
         />
         <Center>
           <Text fontSize="lg" pb={10}>
-            {sessionMetadata.data?.lore}
+            {sessionMetadata.data?.title}
           </Text>
         </Center>
         {sessionMetadata.data?.stages.map((stage, stageIdx) => {
