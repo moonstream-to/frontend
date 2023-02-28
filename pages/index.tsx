@@ -9,7 +9,7 @@ import { AWS_ASSETS_PATH } from '../src/constants'
 const assets = {
   airdrop: `${AWS_ASSETS_PATH}/airdrop.png`,
   terminus: `${AWS_ASSETS_PATH}/Terminus.png`,
-  minigames: `${AWS_ASSETS_PATH}/minigames-card.png`,
+  games: `${AWS_ASSETS_PATH}/minigames-card.png`,
 }
 
 const features = [
@@ -26,10 +26,10 @@ const features = [
     href: '/airdrop',
   },
   {
-    name: 'Minigames',
+    name: 'Games',
     description: 'Start your adventure at Garden of Forking Paths',
-    image: assets.minigames,
-    href: '/minigames',
+    image: assets.games,
+    href: '/games/garden',
   },
 ]
 
