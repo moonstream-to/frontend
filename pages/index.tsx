@@ -26,7 +26,7 @@ const features = [
     href: '/airdrop',
   },
   {
-    name: 'Games',
+    name: 'Garden of Forking Paths',
     description: 'Start your adventure at Garden of Forking Paths',
     image: assets.games,
     href: '/games/garden',
