@@ -33,6 +33,7 @@ const Airdrop = () => {
   }, [router.isReady, router.query])
 
   const { web3 } = useContext(Web3Context)
+  const ens = web3.eth.ens
 
   const onError = (error: { message: string }) => {
     toast(error?.message ?? 'Error', 'error', 5000)
@@ -88,17 +89,31 @@ const Airdrop = () => {
     },
   )
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (claimantAddress === '' || claimantEmail === '' || claimantDiscord === '' || claimantPassword === '') {
       onError({ message: 'please fill all fields' })
       return
     }
-    if (!web3.utils.isAddress(claimantAddress)) {
-      onError({ message: 'address is not valid' })
-      return
+
+    let address
+    if (web3.utils.isAddress(claimantAddress)) {
+      address = claimantAddress
+    } else {
+      try {
+        if (web3.currentProvider) {
+          address = await ens.getAddress(claimantAddress)
+        } else {
+          onError({ message: 'to resolve ens name please connect metamask' })
+          return
+        }
+      } catch (err) {
+        onError({ message: 'address or ens name is not valid' })
+        return
+      }
     }
+
     createPublicEntryMutation.mutate({
-      address: claimantAddress,
+      address: address,
       email: claimantEmail,
       discord: claimantDiscord,
       password: claimantPassword,
@@ -127,7 +142,7 @@ const Airdrop = () => {
                   <Input
                     variant='address'
                     onKeyDown={handleKeyDown}
-                    placeholder='wallet address'
+                    placeholder='wallet address or ens name'
                     type='text'
                     value={claimantAddress}
                     onChange={(e) => {
