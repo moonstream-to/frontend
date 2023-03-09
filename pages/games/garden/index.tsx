@@ -12,6 +12,7 @@ import CharacterPanel from '../../../src/components/gofp/GoFPCharacterPanel'
 import { useRouter } from '../../../src/hooks'
 import Layout from '../../../src/components/layout'
 import useGofp from '../../../src/contexts/GoFPContext'
+import { CustomDragLayer } from '../../../src/components/gofp/CustomDragLayer'
 
 const Garden = () => {
   const router = useRouter()
@@ -28,6 +29,7 @@ const Garden = () => {
       <Box className='Garden' borderRadius={'xl'} pt={10} minH='100vh' bgColor='#1A1D22' px='7%' color='white'>
         <Heading>Garden of Forking Paths</Heading>
         <DndProvider backend={HTML5Backend}>
+          <CustomDragLayer />
           <HStack my='10' alignItems='top'>
             <MetadataPanel />
             <Spacer />

@@ -6,6 +6,7 @@ export const initialState = {
   selectedStage: 1,
   selectedPath: 1,
   selectedTokens: [],
+  isCardsDragging: false,
 };
 
 
@@ -33,6 +34,11 @@ const gofpReducer = (state: any, action: {type: string; payload: any}) => {
       return {
         ...state,
         selectedStage: payload.stageId
+      }
+    case 'SET_CARDS_DRAGGING':
+      return {
+        ...state,
+        isCardsDragging: payload.isDragging
       }
     case 'TOGGLE_TOKEN_SELECT':
       let newSelectedTokens = []

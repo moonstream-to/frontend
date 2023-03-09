@@ -8,6 +8,7 @@ import Web3Context from "../../contexts/Web3Context/context";
 import useGofp from "../../contexts/GoFPContext";
 import useGofpContract from "../../hooks/useGofpConract";
 import useURI from "../../hooks/useLink";
+import { getEmptyImage } from "react-dnd-html5-backend";
 
 
 const CharacterCard = ({
@@ -19,14 +20,14 @@ const CharacterCard = ({
 }) => {
 
   const web3ctx = useContext(Web3Context);
-  const {selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress} = useGofp()
+  const {selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress, isCardsDragging, setCardsDragging} = useGofp()
 
   const { usePath, useGuard, ownedTokens } = useGofpContract({sessionId, gardenContractAddress, web3ctx})
   const path = usePath(tokenId)
   const guard = useGuard(tokenId)
   const [status, setStatus] = useState<string | undefined>(undefined)
   useEffect(() => {
-    if (guard.data && ownedTokens.data?.includes(tokenId)) {
+    if (ownedTokens.data?.includes(tokenId)) {
       setStatus(guard.data ? 'Already played' : 'Available')
     } else {
       setStatus(path.data ? `Assigned to path ${path.data}` : 'Choose path')
@@ -36,15 +37,28 @@ const CharacterCard = ({
   const metadata = useURI({link: uri})
 
 
-  const [{ isDragging }, drag] = useDrag({
-    item: { id: tokenId },
+  const [{ isDragging }, drag, dragPreview] = useDrag({
+    item: { id: tokenId, image: metadata.data?.image, name: metadata.data?.name },
     type: "character",
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   });
 
-  const opacity = isDragging ? 0.3 : 1;
+  useEffect(() => {
+    dragPreview(getEmptyImage(), { captureDraggingState: true });
+  }, []);
+
+  useEffect(() => {
+    if (isCardsDragging !== isDragging) {
+      setCardsDragging(isDragging)
+    }
+    if (isDragging && !selectedTokens.includes(tokenId)) {
+      toggleTokenSelect(tokenId)
+    }
+  }, [isDragging])
+
+  const opacity = (isCardsDragging && selectedTokens.includes(tokenId)) ? 0.3 : 1;
 
   return (
     <Flex

@@ -9,6 +9,7 @@ type gofpContextType = {
   selectedTokens: number[]
   gardenContractAddress: string
   sessionId: number
+  isCardsDragging: boolean
   selectStage: (stage: number) => void
   selectPath: (path: number) => void
   selectToken: (tokenId: number) => void
@@ -82,7 +83,18 @@ export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
     })
   }
 
-  const {selectedStage, selectedPath, selectedTokens, sessionId, gardenContractAddress} = state
+  const setCardsDragging = (isDragging: boolean) => {
+    dispatch({
+      type: 'SET_CARDS_DRAGGING',
+      payload: {
+        isDragging,
+      }
+    })
+  }
+
+
+
+  const {selectedStage, selectedPath, selectedTokens, sessionId, gardenContractAddress, isCardsDragging} = state
   
 
   const value = {
@@ -98,6 +110,8 @@ export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
     setSessionId,
     toggleTokenSelect,
     setGardenContractAddress,
+    setCardsDragging,
+    isCardsDragging,
   };
 
 

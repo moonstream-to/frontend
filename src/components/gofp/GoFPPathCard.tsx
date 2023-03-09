@@ -25,14 +25,15 @@ const PathCard = ({
   const undecidedPathColor = "#4C4C4C";
 
 
-  const { selectPath, sessionId, gardenContractAddress } = useGofp()
+  const { selectPath, sessionId, gardenContractAddress, selectedTokens } = useGofp()
   const web3ctx = useContext(Web3Context)
 
   const { choosePath, correctPaths, currentStage } = useGofpContract({ sessionId, gardenContractAddress, web3ctx })
 
   const handleDrop = (item: {id: number}) => {
     const pathNumber = Number(pathId.split('_').slice(-1)[0]) + 1
-    choosePath.mutate({tokenIds: [item.id], path: pathNumber})
+    const tokenIds = selectedTokens.includes(item.id) ? selectedTokens : [...selectedTokens, item.id]
+    choosePath.mutate({tokenIds, path: pathNumber})
   }
 
   const [status, setStatus] = useState(PathStatus.undecided)
