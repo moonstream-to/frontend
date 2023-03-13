@@ -24,8 +24,9 @@ const terminusAbi = require("../web3/abi/MockTerminus.json")
 import { MockTerminus } from "../web3/contracts/types/MockTerminus"
 import { useRouter } from "next/router"
 import { MAX_INT } from "../constants"
+import DropperClaimsList from "./DropperClaimsList"
 
-const TerminusPoolsListView = ({
+const DropperClaimsListView = ({
 	contractAddress,
 	selected,
 	onChange,
@@ -39,24 +40,24 @@ const TerminusPoolsListView = ({
 	const toast = useToast()
 	const router = useRouter()
 
-	const [queryPoolId, setQueryPoolID] = useState<number | undefined>(undefined)
+	const [queryClaimId, setQueryClaimId] = useState<number | undefined>(undefined)
 	const [filter, setFilter] = useState("")
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const web3ctx = useContext(Web3Context)
-	const [newPoolProps, setNewPoolProps] = useState<{
+	const [newClaimProps, setNewClaimProps] = useState<{
 		capacity: string | undefined
 		isTransferable: boolean
 		isBurnable: boolean
 	}>({ capacity: undefined, isTransferable: true, isBurnable: true })
 
 	useEffect(() => {
-		setQueryPoolID(
-			typeof router.query.poolId === "string" ? Number(router.query.poolId) : undefined,
+		setQueryClaimId(
+			typeof router.query.claimlId === "string" ? Number(router.query.claimId) : undefined,
 		)
 	}, [router.query])
 
-	const terminusFacet = new web3ctx.web3.eth.Contract(terminusAbi) as any as MockTerminus
-	terminusFacet.options.address = contractAddress
+	// const terminusFacet = new web3ctx.web3.eth.Contract(terminusAbi) as any as MockTerminus
+	// terminusFacet.options.address = contractAddress
 
 	const commonProps = {
 		onSuccess: () => {
@@ -78,51 +79,51 @@ const TerminusPoolsListView = ({
 		},
 	}
 
-	const newPool = useMutation(
-		({
-			capacity,
-			isBurnable,
-			isTransferable,
-		}: {
-			capacity: string
-			isBurnable: boolean
-			isTransferable: boolean
-		}) =>
-			terminusFacet.methods
-				.createPoolV1(capacity, isTransferable, isBurnable)
-				.send({ from: web3ctx.account }),
-		{ ...commonProps },
-	)
+	// const newPool = useMutation(
+	// 	({
+	// 		capacity,
+	// 		isBurnable,
+	// 		isTransferable,
+	// 	}: {
+	// 		capacity: string
+	// 		isBurnable: boolean
+	// 		isTransferable: boolean
+	// 	}) =>
+	// 		terminusFacet.methods
+	// 			.createPoolV1(capacity, isTransferable, isBurnable)
+	// 			.send({ from: web3ctx.account }),
+	// 	{ ...commonProps },
+	// )
 
-	const createNewPool = () => {
-		const capacity = Number(newPoolProps.capacity)
+	// const createNewPool = () => {
+	// 	const capacity = Number(newPoolProps.capacity)
 
-		if (
-			!newPoolProps.capacity ||
-			!Number(capacity) ||
-			!Number.isInteger(capacity) ||
-			capacity < 1
-		) {
-			onOpen()
-			toast({
-				title: "Capacity must be a positive number",
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			})
-			return
-		}
-		newPool.mutate(
-			{
-				capacity: newPoolProps.capacity,
-				isTransferable: newPoolProps.isTransferable,
-				isBurnable: newPoolProps.isBurnable,
-			},
-			{
-				// onSettled: () => {}, TODO
-			},
-		)
-	}
+	// 	if (
+	// 		!newPoolProps.capacity ||
+	// 		!Number(capacity) ||
+	// 		!Number.isInteger(capacity) ||
+	// 		capacity < 1
+	// 	) {
+	// 		onOpen()
+	// 		toast({
+	// 			title: "Capacity must be a positive number",
+	// 			status: "error",
+	// 			duration: 3000,
+	// 			isClosable: true,
+	// 		})
+	// 		return
+	// 	}
+	// 	newPool.mutate(
+	// 		{
+	// 			capacity: newPoolProps.capacity,
+	// 			isTransferable: newPoolProps.isTransferable,
+	// 			isBurnable: newPoolProps.isBurnable,
+	// 		},
+	// 		{
+	// 			// onSettled: () => {}, TODO
+	// 		},
+	// 	)
+	// }
 
 	return (
 		<Flex
@@ -136,7 +137,7 @@ const TerminusPoolsListView = ({
 			color="white"
 		>
 			<Text fontWeight="700" fontSize="24px">
-				pools
+				claims
 			</Text>
 			<Input
 				value={filter}
@@ -146,15 +147,15 @@ const TerminusPoolsListView = ({
 				p="8px 15px"
 			/>
 
-			<TerminusPoolsList
+			<DropperClaimsList
 				contractAddress={contractAddress}
 				onChange={onChange}
 				selected={selected}
 				filter={filter}
-				queryPoolId={queryPoolId ?? undefined}
+				queryClaimId={queryClaimId ?? undefined}
 			/>
 
-			{contractState && contractState.controller === web3ctx.account && (
+			{contractState && contractState.owner === web3ctx.account && (
 				<Button
 					width="100%"
 					bg="gray.0"
@@ -175,19 +176,19 @@ const TerminusPoolsListView = ({
 						<Flex gap={3}>
 							<Input
 								onChange={(e) =>
-									setNewPoolProps((prev) => {
+									setNewClaimProps((prev) => {
 										return { ...prev, capacity: e.target.value }
 									})
 								}
 								placeholder="capacity"
 								type="number"
-								value={newPoolProps.capacity}
+								value={newClaimProps.capacity}
 								mb={4}
 							/>
 							<Button
 								colorScheme="purple"
 								onClick={() => {
-									setNewPoolProps((prev) => {
+									setNewClaimProps((prev) => {
 										return { ...prev, capacity: MAX_INT }
 									})
 								}}
@@ -199,22 +200,22 @@ const TerminusPoolsListView = ({
 							colorScheme="white"
 							mr={3}
 							onChange={(e) =>
-								setNewPoolProps((prev) => {
+								setNewClaimProps((prev) => {
 									return { ...prev, isBurnable: e.target.checked }
 								})
 							}
-							isChecked={newPoolProps.isBurnable}
+							isChecked={newClaimProps.isBurnable}
 						>
 							Burnable
 						</Checkbox>
 						<Checkbox
 							colorScheme="white"
 							onChange={(e) =>
-								setNewPoolProps((prevState) => {
+								setNewClaimProps((prevState) => {
 									return { ...prevState, isTransferable: e.target.checked }
 								})
 							}
-							isChecked={newPoolProps.isTransferable}
+							isChecked={newClaimProps.isTransferable}
 						>
 							Transferable
 						</Checkbox>
@@ -227,7 +228,7 @@ const TerminusPoolsListView = ({
 						<Button
 							colorScheme="teal"
 							onClick={() => {
-								createNewPool()
+								// createNewPool()
 								onClose()
 							}}
 						>
@@ -240,4 +241,4 @@ const TerminusPoolsListView = ({
 	)
 }
 
-export default TerminusPoolsListView
+export default DropperClaimsListView
