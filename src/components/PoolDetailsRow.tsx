@@ -7,6 +7,7 @@ const PoolDetailsRow = ({
 	type,
 	value,
 	displayFull,
+	...props
 }: {
 	type: string
 	value: string
@@ -85,7 +86,7 @@ const PoolDetailsRow = ({
 	}, [value, displayFull])
 
 	return (
-		<Flex justifyContent="space-between">
+		<Flex justifyContent="space-between" {...props}>
 			<Text fontWeight="400" fontSize="18px">
 				{type}
 			</Text>
