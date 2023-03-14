@@ -32,6 +32,7 @@ import { Dropper } from "../web3/contracts/types/Dropper"
 import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 import remarkGfm from "remark-gfm"
 import { queryHttp } from "../utils/http"
+import useDrops from "../hooks/useDrops"
 
 const DropperClaimView = ({
 	address,
@@ -88,12 +89,12 @@ const DropperClaimView = ({
 	// 	)
 	// }
 
-	useEffect(() => {
-		console.log(address, metadata, claimId)
-	}, [claimId])
+	// useEffect(() => {
+	// 	console.log(address, metadata, claimId)
+	// }, [claimId])
 
 	const claim = useQuery(
-		[`/play/drops/${"ff23cb79-dca0-495b-b2c5-39abe36e4d59"}`],
+		[`/play/drops/${"550dbfe5-e3e0-4094-8255-5ba08e40744c"}`],
 		(query: any) => queryHttp(query).then((r: any) => r.data),
 		{
 			...queryCacheProps,
@@ -101,14 +102,39 @@ const DropperClaimView = ({
 		},
 	)
 
+	const { adminClaims, pageOptions, dropperContracts } = useDrops({
+		dropperAddress: address,
+		ctx: web3ctx,
+	})
+
+	useEffect(() => {
+		console.log(adminClaims.data)
+		console.log(dropperContracts.data)
+	}, [adminClaims.data, dropperContracts.data])
+	// Антон, для дев серва вот этот ENGINE_DROPPER_ADDRESS="0x6339129961dc2EaCC3C81Bc84BD4AB196F5CBa0d" как NEXT_PUBLIC_DROPPER_ADDRESS
+
 	useEffect(() => {
 		console.log(claim.data)
 	}, [claim.data])
 
+	// const DROP_TYPES = new Map({
+	// 	"20": "ERC20",
+	// 	"712": "ERC721",
+	// 	"1155": "ERC1155",
+	// 	"1": "Mint Terminus",
+	// })
+
+	const dropTypes = new Map<string, string>([
+		["20", "ERC20"],
+		["721", "ERC721"],
+		["1155", "ERC1155"],
+		["1", "Mint Terminus"],
+	])
+
 	const claimState = useQuery(
 		["claimState", address, claimId, chainId],
 		async () => {
-			console.log("claimState")
+			// console.log("claimState")
 			const MULTICALL2_CONTRACT_ADDRESS =
 				MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
 			if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
@@ -120,11 +146,12 @@ const DropperClaimView = ({
 			// const target = address
 			// const callDatas = []
 			const claim = await dropperContract.methods.getClaim(claimId).call()
-			const status = await dropperContract.methods.getClaimStatus(claimId, web3ctx.account).call()
+			// const status = await dropperContract.methods.getClaimStatus(claimId, web3ctx.account).call()
 			const claimUri = await dropperContract.methods.claimUri(claimId).call()
 			const signer = await dropperContract.methods.getSignerForClaim(claimId).call()
-			console.log(claim, status, claimUri, signer)
-			return { claim, status, claimUri, signer }
+			// console.log(claim, claimUri, signer, claim[3], typeof claim[3])
+			const dropType = dropTypes.get(claim[3]) ?? "undefined"
+			return { claim, claimUri, signer, dropType }
 			// callDatas.push(dropperContract.methods.getClaim(claimId).encodeABI())
 			// callDatas.push(dropperContract.methods.getClaimStatus(claimId, web3ctx.account).encodeABI())
 			// callDatas.push(dropperContract.methods.claimUri(claimId).encodeABI())
@@ -201,6 +228,10 @@ const DropperClaimView = ({
 			})
 	}
 
+	if (Number(claimId) < 0) {
+		return <></>
+	}
+
 	return (
 		<Flex
 			id="poolView"
@@ -223,7 +254,7 @@ const DropperClaimView = ({
 					fontSize="20px"
 					mb="20px"
 				>
-					{`pool ${claimId}`}
+					{`claim ${claimId}`}
 				</Text>
 				<IconButton
 					bg="transparent"
@@ -256,11 +287,13 @@ const DropperClaimView = ({
 						{claimState.data?.claim && (
 							<Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
 								<PoolDetailsRow type="Token address" value={claimState.data.claim.tokenAddress} />
+								<PoolDetailsRow type="Drop type" value={claimState.data.dropType} />
+
 								<PoolDetailsRow type="Signer" value={claimState.data.signer} />
-								<PoolDetailsRow
+								{/* <PoolDetailsRow
 									type="Status"
 									value={claimState.data.status ? "Active" : "Inactive"}
-								/>
+								/> */}
 								{metadata && (
 									<Accordion allowMultiple>
 										<AccordionItem border="none">
@@ -293,6 +326,7 @@ const DropperClaimView = ({
 																	key={attribute.trait_type}
 																	type={attribute.trait_type}
 																	value={String(attribute.value)}
+																	ml="20px"
 																/>
 															),
 														)}
