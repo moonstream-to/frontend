@@ -197,6 +197,7 @@ const DropperClaimView = ({
 		},
 		{
 			...queryCacheProps,
+			enabled: Number(claimId) > 0,
 			// onSuccess: () => {}, //TODO
 		},
 	)
