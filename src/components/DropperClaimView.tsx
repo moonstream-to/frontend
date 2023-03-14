@@ -23,7 +23,7 @@ import Spinner from "./Spinner/Spinner"
 import Web3Context from "../contexts/Web3Context/context"
 import { MockTerminus } from "../web3/contracts/types/MockTerminus"
 import queryCacheProps from "../hooks/hookCommon"
-import { MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
+import { MULTICALL2_CONTRACT_ADDRESSES, PORTAL_PATH } from "../constants"
 import { LinkIcon } from "@chakra-ui/icons"
 const terminusAbi = require("../web3/abi/MockTerminus.json")
 const multicallABI = require("../web3/abi/Multicall2.json")
@@ -107,15 +107,48 @@ const DropperClaimView = ({
 		ctx: web3ctx,
 	})
 
+	const [dbData, setDbData] = useState<
+		| {
+				deadline: string
+				id: string
+				terminusAddress: string
+				terminusPoolId: string
+		  }
+		| undefined
+	>(undefined)
+
 	useEffect(() => {
 		console.log(adminClaims.data)
 		console.log(dropperContracts.data)
-	}, [adminClaims.data, dropperContracts.data])
+		if (adminClaims.data) {
+			const claimDbData = adminClaims.data.find(
+				(claim: { drop_number: number }) => claim.drop_number === Number(claimId),
+			)
+			if (claimDbData) {
+				const {
+					id,
+					claim_block_deadline: deadline,
+					terminus_address: terminusAddress,
+					terminus_pool_id: terminusPoolId,
+				} = claimDbData
+				setDbData({
+					id,
+					terminusAddress, //: `${PORTAL_PATH}/terminus/?contractAddress=${terminusAddress}`,
+					terminusPoolId: `${PORTAL_PATH}/terminus/?contractAddress=${terminusAddress}&poolId=${terminusPoolId}`,
+					deadline,
+				})
+			}
+		}
+	}, [adminClaims.data, dropperContracts.data, claimId])
 	// Антон, для дев серва вот этот ENGINE_DROPPER_ADDRESS="0x6339129961dc2EaCC3C81Bc84BD4AB196F5CBa0d" как NEXT_PUBLIC_DROPPER_ADDRESS
 
 	useEffect(() => {
 		console.log(claim.data)
 	}, [claim.data])
+
+	useEffect(() => {
+		console.log(dbData)
+	}, [dbData])
 
 	// const DROP_TYPES = new Map({
 	// 	"20": "ERC20",
@@ -291,10 +324,6 @@ const DropperClaimView = ({
 								<PoolDetailsRow type="Drop type" value={claimState.data.dropType} />
 
 								<PoolDetailsRow type="Signer" value={claimState.data.signer} />
-								{/* <PoolDetailsRow
-									type="Status"
-									value={claimState.data.status ? "Active" : "Inactive"}
-								/> */}
 								{metadata && (
 									<Accordion allowMultiple>
 										<AccordionItem border="none">
@@ -336,6 +365,16 @@ const DropperClaimView = ({
 											</AccordionPanel>
 										</AccordionItem>
 									</Accordion>
+								)}
+								{dbData && (
+									<>
+										<PoolDetailsRow type="Deadline" value={String(dbData.deadline)} />
+										<PoolDetailsRow
+											type="Terminus address"
+											value={String(dbData.terminusAddress)}
+										/>
+										<PoolDetailsRow type="Terminus Pool" value={String(dbData.terminusPoolId)} />
+									</>
 								)}
 							</Flex>
 						)}

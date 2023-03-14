@@ -14,6 +14,7 @@ import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
 const dropperAbi = require("../web3/abi/Dropper.json")
 import { Dropper } from "../web3/contracts/types/Dropper"
 import DropperClaimsListItem from "./DropperClaimsListItem"
+import useDrops from "../hooks/useDrops"
 
 const DropperClaimsList = ({
 	contractAddress,
@@ -31,6 +32,9 @@ const DropperClaimsList = ({
 	queryClaimId: number | undefined
 }) => {
 	const { chainId, web3 } = useContext(Web3Context)
+	const web3ctx = useContext(Web3Context)
+
+	const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress })
 
 	const claimsList = useQuery(
 		["claimsList", contractAddress, chainId, queryClaimId],
@@ -114,6 +118,7 @@ const DropperClaimsList = ({
 					uri={claim.uri}
 					onChange={onChange}
 					filter={filter}
+					dbData={adminClaims.data?.find((dbClaim: any) => dbClaim.drop_number === claim.id)}
 				/>
 			))}
 		</Flex>
