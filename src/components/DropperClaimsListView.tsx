@@ -29,11 +29,13 @@ import DropperClaimsList from "./DropperClaimsList"
 const DropperClaimsListView = ({
 	contractAddress,
 	selected,
+	setSelected,
 	onChange,
 	contractState,
 }: {
 	contractAddress: string
 	selected: number
+	setSelected: any
 	onChange: (id: string, metadata: unknown) => void
 	contractState: any
 }) => {
@@ -150,6 +152,7 @@ const DropperClaimsListView = ({
 			<DropperClaimsList
 				contractAddress={contractAddress}
 				onChange={onChange}
+				setSelected={setSelected}
 				selected={selected}
 				filter={filter}
 				queryClaimId={queryClaimId ?? undefined}

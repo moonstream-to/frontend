@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { useQuery } from "react-query"
 import { Flex } from "@chakra-ui/react"
 
@@ -18,12 +18,14 @@ import DropperClaimsListItem from "./DropperClaimsListItem"
 const DropperClaimsList = ({
 	contractAddress,
 	selected,
+	setSelected,
 	onChange,
 	filter,
 	queryClaimId,
 }: {
 	contractAddress: string
 	selected: number
+	setSelected: any
 	onChange: (id: string, metadata: unknown) => void
 	filter: string
 	queryClaimId: number | undefined
@@ -64,7 +66,7 @@ const DropperClaimsList = ({
 				.tryAggregate(false, uriQueries)
 				.call()
 				.then((results: string[]) => {
-					return results.map((result) => {
+					return results.map((result, idx) => {
 						let parsed
 						try {
 							parsed = web3.utils.hexToUtf8(result[1]).split("https://")[1]
@@ -76,11 +78,11 @@ const DropperClaimsList = ({
 							console.log(e)
 							parsed = undefined
 						}
-						return parsed
+						return { uri: parsed, id: idx + 1 }
 					})
 				})
 				.then((parsedResults: string[]) => {
-					return parsedResults
+					return parsedResults.reverse()
 				})
 		},
 		{
@@ -89,20 +91,27 @@ const DropperClaimsList = ({
 		},
 	)
 
+	useEffect(() => {
+		console.log(selected, claimsList.data)
+		if (selected === -1 && claimsList.data) {
+			setSelected(claimsList.data.length)
+		}
+	}, [claimsList.data, selected])
+
 	if (!claimsList.data) {
 		return <Spinner />
 	}
 
 	return (
 		<Flex direction="column" gap="15px" h="100%" overflowY="auto">
-			{claimsList.data.map((uri: string, idx: number) => (
+			{claimsList.data.map((claim: { uri: string; id: number }) => (
 				<DropperClaimsListItem
-					key={idx}
+					key={claim.id}
 					address={contractAddress}
-					claimId={String(idx + 1)}
-					selected={idx + 1 === selected}
-					inQuery={idx + 1 === queryClaimId}
-					uri={uri}
+					claimId={String(claim.id)}
+					selected={claim.id === selected}
+					inQuery={claim.id === queryClaimId}
+					uri={claim.uri}
 					onChange={onChange}
 					filter={filter}
 				/>

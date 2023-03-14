@@ -20,12 +20,12 @@ const Dropper = () => {
 	const web3ctx = useContext(Web3Context)
 
 	const { contractState } = useDropperContract({ dropperAddress: contractAddress, ctx: web3ctx })
+	const [selected, setSelected] = useState(-1)
 
 	const handleClick = (claimId: string, metadata: unknown) => {
 		setSelected(Number(claimId))
 		setClaimMetadata(metadata)
 	}
-	const [selected, setSelected] = useState(1)
 	const [claimMetadata, setClaimMetadata] = useState<unknown>({})
 	const [nextValue, setNextValue] = useState(contractAddress)
 
@@ -33,7 +33,7 @@ const Dropper = () => {
 
 	useEffect(() => {
 		if (!router.query.claimId) {
-			setSelected(1)
+			setSelected(-1)
 		} else {
 			setSelected(Number(router.query.claimId))
 		}
@@ -118,6 +118,7 @@ const Dropper = () => {
 									contractState={contractState}
 									onChange={handleClick}
 									selected={selected}
+									setSelected={setSelected}
 								/>
 								<DropperClaimView
 									address={contractAddress}
