@@ -21,18 +21,16 @@ import { Image } from "@chakra-ui/image"
 import PoolDetailsRow from "./PoolDetailsRow"
 import Spinner from "./Spinner/Spinner"
 import Web3Context from "../contexts/Web3Context/context"
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
 import queryCacheProps from "../hooks/hookCommon"
 import { MULTICALL2_CONTRACT_ADDRESSES, PORTAL_PATH } from "../constants"
 import { LinkIcon } from "@chakra-ui/icons"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-const multicallABI = require("../web3/abi/Multicall2.json")
 const dropperAbi = require("../web3/abi/Dropper.json")
 import { Dropper } from "../web3/contracts/types/Dropper"
 import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 import remarkGfm from "remark-gfm"
 import { queryHttp } from "../utils/http"
 import useDrops from "../hooks/useDrops"
+import useDrop from "../hooks/useDrop"
 
 const DropperClaimView = ({
 	address,
@@ -107,6 +105,14 @@ const DropperClaimView = ({
 		ctx: web3ctx,
 	})
 
+	// const useDrop = ({
+	//   ctx,
+	//   claimId,
+	//   getAll,
+	// }: {
+
+	// const { claimants } = useDrop({ ctx: web3ctx, claimId, getAll: false })
+
 	const [dbData, setDbData] = useState<
 		| {
 				deadline: string
@@ -134,7 +140,7 @@ const DropperClaimView = ({
 				setDbData({
 					id,
 					terminusAddress, //: `${PORTAL_PATH}/terminus/?contractAddress=${terminusAddress}`,
-					terminusPoolId: `${PORTAL_PATH}/terminus/?contractAddress=${terminusAddress}&poolId=${terminusPoolId}`,
+					terminusPoolId, //: `${PORTAL_PATH}/terminus/?contractAddress=${terminusAddress}&poolId=${terminusPoolId}`,
 					deadline,
 				})
 			}
@@ -335,7 +341,11 @@ const DropperClaimView = ({
 												<AccordionIcon />
 											</AccordionButton>
 											<AccordionPanel>
-												<PoolDetailsRow type="uri" value={claimState.data.claimUri} />
+												<PoolDetailsRow
+													type="uri"
+													href={claimState.data.claimUri}
+													value={claimState.data.claimUri}
+												/>
 
 												{Object.keys(metadata)
 													.filter((key) => !headerMeta.includes(key))
@@ -370,10 +380,17 @@ const DropperClaimView = ({
 									<>
 										<PoolDetailsRow type="Deadline" value={String(dbData.deadline)} />
 										<PoolDetailsRow
+											href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
 											type="Terminus address"
 											value={String(dbData.terminusAddress)}
 										/>
-										<PoolDetailsRow type="Terminus Pool" value={String(dbData.terminusPoolId)} />
+
+										<PoolDetailsRow
+											href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+											type="Terminus Pool"
+											value={String(dbData.terminusPoolId)}
+										/>
+										{/* </Link> */}
 									</>
 								)}
 							</Flex>
