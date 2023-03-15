@@ -7,13 +7,18 @@ const PoolDetailsRow = ({
 	type,
 	value,
 	displayFull,
+	href,
 	...props
 }: {
 	type: string
 	value: string
+	href?: string
 	displayFull?: boolean
 }) => {
 	const [valueString, setValueString] = useState("")
+	useEffect(() => {
+		console.log(href)
+	}, [href])
 	const valueComponent = () => {
 		if (!value) {
 			return <Text fontStyle="italic">{String(value)}</Text>
@@ -26,7 +31,8 @@ const PoolDetailsRow = ({
 				<Link
 					href={value}
 					target="_blank"
-					_hover={{ color: "orange.1000", textDecoration: "none" }}
+					color="orange.1000"
+					_hover={{ color: "orange.400", textDecoration: "none" }}
 				>
 					<Text
 						title={value.length > valueString.length ? value : ""}
@@ -90,7 +96,18 @@ const PoolDetailsRow = ({
 			<Text fontWeight="400" fontSize="18px">
 				{type}
 			</Text>
-			{valueComponent()}
+			{href ? (
+				<Link
+					href={href}
+					color="orange.1000"
+					_hover={{ color: "orange.400", textDecoration: "none" }}
+					target="_blank"
+				>
+					{valueComponent()}
+				</Link>
+			) : (
+				valueComponent()
+			)}
 		</Flex>
 	)
 }
