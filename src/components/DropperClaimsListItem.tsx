@@ -98,7 +98,6 @@ const DropperClaimsListItem = ({
 							<Text unselectable="on">{metadata.data.name}</Text>
 						</>
 					)}
-					{dbData && <Text>{dbData.active ? "active" : "inactive"}</Text>}
 					{!metadata.data?.name && (
 						<>
 							<Text borderRadius="5px" h="32px" flexGrow="1" textStyle="italic" color="gray">
