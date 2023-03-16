@@ -32,12 +32,10 @@ import {
 import Web3Context from "../contexts/Web3Context/context"
 import useDrop from "../hooks/useDrop"
 import useMoonToast from "../hooks/useMoonToast"
-import useSearch from "../hooks/useSearch"
 import http from "../utils/http"
 
 const ClaimantsView = ({ claimId }: { claimId: string }) => {
 	const [searchString, setSearchString] = useState("")
-	const [searchAddress, setSearchAddress] = useState("")
 
 	const toast = useMoonToast()
 	const web3ctx = useContext(Web3Context)
@@ -70,10 +68,36 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 		setClaimantsPage(0)
 	}, [claimId])
 
-	const { search } = useSearch({
-		pathname: `/admin/drops/${claimId}/claimants/search`,
-		query: { address: searchAddress },
-	}) //TODO
+	const [searchResult, setSearchResult] = useState<{
+		result?: string | undefined
+		isSearching: boolean
+	}>({ isSearching: false })
+
+	const searchForAddress = async (address: string) => {
+		const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
+		setSearchResult((prev) => {
+			return { ...prev, isSearching: true }
+		})
+
+		http({
+			method: "GET",
+			url: `${API}/admin/drops/${claimId}/claimants/search`,
+			params: { address },
+		})
+			.then((res: any) => {
+				if (!res.data?.address) {
+					throw new Error("Not found")
+				}
+				setSearchResult({ result: `Amount: ${res.data.raw_amount}`, isSearching: false })
+			})
+			.catch((e: any) => {
+				const result =
+					e.response?.data?.detail === "Address not present in that drop."
+						? "Address not present in that drop."
+						: e.message
+				setSearchResult({ result, isSearching: false })
+			})
+	}
 
 	const { onOpen, onClose, isOpen } = useDisclosure()
 	const [addingClaimant, setAddingClaimant] = useState(false)
@@ -83,7 +107,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
 	const handleSearchClick = () => {
 		if (web3ctx.web3.utils.isAddress(searchString)) {
-			setSearchAddress(searchString)
+			searchForAddress(searchString)
 			onOpen()
 		} else {
 			toast("invalid address", "error")
@@ -197,13 +221,10 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 						</Flex>
 
 						<Collapse in={isOpen} animateOpacity>
-							{search.isLoading && <Spinner />}
-							{!search.isLoading && (
+							{searchResult.isSearching && <Spinner />}
+							{!searchResult.isSearching && (
 								<Flex justifyContent="space-between" alignItems="center">
-									{!search.isLoading && search.data?.address && (
-										<Text>Amount: {search.data?.raw_amount ?? "undefined"}</Text>
-									)}
-									{!search.isLoading && !search.data?.address && <Text>Not found</Text>}
+									{!!searchResult.result && <Text>{searchResult.result}</Text>}
 									<IconButton
 										bg="transparent"
 										aria-label="close"
