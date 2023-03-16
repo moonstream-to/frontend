@@ -66,6 +66,28 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
 	const addClaimants = useMutation(
 		({ claimants }: { claimants: { address: string; amount: number }[] }) => {
+			const wrongAddressClaimant = claimants.find(
+				(claimant) => !web3ctx.web3.utils.isAddress(claimant.address),
+			)
+			if (wrongAddressClaimant) {
+				return new Promise((_, reject) => {
+					reject(new Error(`${wrongAddressClaimant.address} is not valid address`))
+				})
+			}
+
+			const wrongAmountClaimant = claimants.find(
+				(claimant) => !claimant.amount || claimant.amount < 1,
+			)
+			if (wrongAmountClaimant) {
+				return new Promise((_, reject) => {
+					reject(
+						new Error(
+							`Wrong amount - ${wrongAmountClaimant.amount} - for ${wrongAmountClaimant.address}`,
+						),
+					)
+				})
+			}
+
 			const data = { dropper_claim_id: claimId, claimants: claimants }
 			const API = "https://engineapi.moonstream.to" //TODO
 			const ADMIN_API = `${API}`
@@ -81,8 +103,8 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 				toast("Claimant updated", "success")
 				onDoneAdding()
 			},
-			onError: () => {
-				toast("Updating drop failed >.<", "error")
+			onError: (e: Error) => {
+				toast(e.message, "error")
 			},
 		},
 	)
