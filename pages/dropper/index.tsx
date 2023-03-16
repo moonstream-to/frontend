@@ -13,125 +13,125 @@ import DropperClaimsListView from "../../src/components/DropperClaimsListView"
 import DropperClaimView from "../../src/components/DropperClaimView"
 
 const Dropper = () => {
-	const router = useRouter()
-	const contractAddress =
-		typeof router.query.contractAddress === "string" ? router.query.contractAddress : ""
+  const router = useRouter()
+  const contractAddress =
+    typeof router.query.contractAddress === "string" ? router.query.contractAddress : ""
 
-	const web3ctx = useContext(Web3Context)
+  const web3ctx = useContext(Web3Context)
 
-	const { contractState } = useDropperContract({ dropperAddress: contractAddress, ctx: web3ctx })
-	const [selected, setSelected] = useState(-1)
+  const { contractState } = useDropperContract({ dropperAddress: contractAddress, ctx: web3ctx })
+  const [selected, setSelected] = useState(-1)
 
-	const handleClick = (claimId: string, metadata: unknown) => {
-		setSelected(Number(claimId))
-		setClaimMetadata(metadata)
-	}
-	const [claimMetadata, setClaimMetadata] = useState<unknown>({})
-	const [nextValue, setNextValue] = useState(contractAddress)
+  const handleClick = (claimId: string, metadata: unknown) => {
+    setSelected(Number(claimId))
+    setClaimMetadata(metadata)
+  }
+  const [claimMetadata, setClaimMetadata] = useState<unknown>({})
+  const [nextValue, setNextValue] = useState(contractAddress)
 
-	const toast = useToast()
+  const toast = useToast()
 
-	useEffect(() => {
-		if (!router.query.claimId) {
-			setSelected(-1)
-		} else {
-			setSelected(Number(router.query.claimId))
-		}
-	}, [router.query.claimId])
+  useEffect(() => {
+    if (!router.query.claimId) {
+      setSelected(-1)
+    } else {
+      setSelected(Number(router.query.claimId))
+    }
+  }, [router.query.claimId])
 
-	useEffect(() => {
-		if (contractAddress) {
-			setNextValue(contractAddress)
-		}
-		setClaimMetadata({})
-	}, [contractAddress])
+  useEffect(() => {
+    if (contractAddress) {
+      setNextValue(contractAddress)
+    }
+    setClaimMetadata({})
+  }, [contractAddress])
 
-	const { chainId, web3 } = useContext(Web3Context)
+  const { chainId, web3 } = useContext(Web3Context)
 
-	useEffect(() => {
-		if (nextValue && web3.utils.isAddress(nextValue)) {
-			handleSubmit()
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chainId])
+  useEffect(() => {
+    if (nextValue && web3.utils.isAddress(nextValue)) {
+      handleSubmit()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId])
 
-	const handleSubmit = () => {
-		if (web3.utils.isAddress(nextValue)) {
-			setClaimMetadata({})
-			router.push({
-				pathname: "/dropper",
-				query: {
-					contractAddress: nextValue,
-					claimId: router.query.claimId,
-				},
-			})
-		} else {
-			toast({
-				render: () => (
-					<Box borderRadius="5px" textAlign="center" color="black" p={1} bg="red.600">
-						Invalid address
-					</Box>
-				),
-				isClosable: true,
-			})
-		}
-	}
+  const handleSubmit = () => {
+    if (web3.utils.isAddress(nextValue)) {
+      setClaimMetadata({})
+      router.push({
+        pathname: "/dropper",
+        query: {
+          contractAddress: nextValue,
+          claimId: router.query.claimId,
+        },
+      })
+    } else {
+      toast({
+        render: () => (
+          <Box borderRadius="5px" textAlign="center" color="black" p={1} bg="red.600">
+            Invalid address
+          </Box>
+        ),
+        isClosable: true,
+      })
+    }
+  }
 
-	const handleKeyDown = (e: React.KeyboardEvent) => {
-		if (e.code === "Enter") {
-			handleSubmit()
-		}
-	}
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.code === "Enter") {
+      handleSubmit()
+    }
+  }
 
-	return (
-		<Layout home={true}>
-			<Head>
-				<title>Moonstream portal - Dropper</title>
-			</Head>
-			<Center>
-				<Flex gap="30px" direction="column" px="7%" py="30px" color="white">
-					<Flex gap="20px">
-						<Input
-							onKeyDown={handleKeyDown}
-							w="50ch"
-							placeholder="dropper contract address"
-							type="text"
-							value={nextValue}
-							onChange={(e) => setNextValue(e.target.value)}
-						/>
-						<Button
-							bg="gray.0"
-							fontWeight="400"
-							fontSize="18px"
-							color="#2d2d2d"
-							onClick={handleSubmit}
-						>
-							Show
-						</Button>
-					</Flex>
-					{contractAddress && (
-						<>
-							<DropperContractView address={contractAddress} />
-							<Flex gap="40px" maxH="700px">
-								<DropperClaimsListView
-									contractAddress={contractAddress}
-									contractState={contractState}
-									onChange={handleClick}
-									selected={selected}
-									setSelected={setSelected}
-								/>
-								<DropperClaimView
-									address={contractAddress}
-									claimId={String(selected)}
-									metadata={claimMetadata}
-								/>
-							</Flex>
-						</>
-					)}
-				</Flex>
-			</Center>
-		</Layout>
-	)
+  return (
+    <Layout home={true}>
+      <Head>
+        <title>Moonstream portal - Dropper</title>
+      </Head>
+      <Center>
+        <Flex gap="30px" direction="column" px="7%" py="30px" color="white">
+          <Flex gap="20px">
+            <Input
+              onKeyDown={handleKeyDown}
+              w="50ch"
+              placeholder="dropper contract address"
+              type="text"
+              value={nextValue}
+              onChange={(e) => setNextValue(e.target.value)}
+            />
+            <Button
+              bg="gray.0"
+              fontWeight="400"
+              fontSize="18px"
+              color="#2d2d2d"
+              onClick={handleSubmit}
+            >
+              Show
+            </Button>
+          </Flex>
+          {contractAddress && (
+            <>
+              <DropperContractView address={contractAddress} />
+              <Flex gap="40px" maxH="700px">
+                <DropperClaimsListView
+                  contractAddress={contractAddress}
+                  contractState={contractState}
+                  onChange={handleClick}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <DropperClaimView
+                  address={contractAddress}
+                  claimId={String(selected)}
+                  metadata={claimMetadata}
+                />
+              </Flex>
+            </>
+          )}
+        </Flex>
+      </Center>
+    </Layout>
+  )
 }
 
 export default Dropper
