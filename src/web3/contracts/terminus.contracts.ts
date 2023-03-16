@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { MockTerminus as TerminusFacet } from './types/MockTerminus'
-import { MoonstreamWeb3ProviderInterface } from '../../types'
+import { MockTerminus as TerminusFacet } from "./types/MockTerminus"
+import { MoonstreamWeb3ProviderInterface } from "../../types/Moonstream"
 
 const terminusAbi = require('../abi/MockTerminus.json')
 export const getTerminusFacetState = (ctx: MoonstreamWeb3ProviderInterface, terminusAddress: string) => async () => {
