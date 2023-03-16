@@ -1,6 +1,5 @@
 import http from "../utils/http"
-// const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
-const API = "https://engineapi.moonstream.to"
+const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
 
 const PLAY_API = `${API}/play`
 const ADMIN_API = `${API}/admin`
