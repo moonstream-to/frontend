@@ -202,6 +202,22 @@ const DropperClaimView = ({
 									href={claimState.data.claimUri}
 									value={claimState.data.claimUri}
 								/>
+								{dbData && (
+									<>
+										<PoolDetailsRow type="Deadline" value={String(dbData.deadline)} />
+										<PoolDetailsRow
+											href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+											type="Terminus address"
+											value={String(dbData.terminusAddress)}
+										/>
+
+										<PoolDetailsRow
+											href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+											type="Terminus Pool"
+											value={String(dbData.terminusPoolId)}
+										/>
+									</>
+								)}
 								{metadata && (
 									<Accordion allowMultiple>
 										<AccordionItem border="none">
@@ -241,27 +257,6 @@ const DropperClaimView = ({
 											</AccordionPanel>
 										</AccordionItem>
 									</Accordion>
-								)}
-								{dbData && (
-									<>
-										<PoolDetailsRow type="Deadline" value={String(dbData.deadline)} />
-										<PoolDetailsRow
-											type="id"
-											value={dbData.id}
-											onClick={() => copyToClipboard(dbData.id)}
-										/>
-										<PoolDetailsRow
-											href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
-											type="Terminus address"
-											value={String(dbData.terminusAddress)}
-										/>
-
-										<PoolDetailsRow
-											href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
-											type="Terminus Pool"
-											value={String(dbData.terminusPoolId)}
-										/>
-									</>
 								)}
 							</Flex>
 						)}

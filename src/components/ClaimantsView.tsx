@@ -17,9 +17,15 @@ import {
 	Text,
 	useDisclosure,
 	Icon,
+	Select,
 } from "@chakra-ui/react"
-import { useContext, useState } from "react"
-import { AiOutlineSave } from "react-icons/ai"
+import { useContext, useEffect, useState } from "react"
+import {
+	AiOutlineArrowLeft,
+	AiOutlineArrowRight,
+	AiOutlineSave,
+	AiOutlineVerticalRight,
+} from "react-icons/ai"
 import { useMutation, useQueryClient } from "react-query"
 import Web3Context from "../contexts/Web3Context/context"
 import useDrop from "../hooks/useDrop"
@@ -33,10 +39,34 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
 	const toast = useMoonToast()
 	const web3ctx = useContext(Web3Context)
-	const { claimants } = useDrop({
-		ctx: web3ctx,
-		claimId: claimId,
-	})
+	const { claimants, setClaimantsPage, claimantsPage, setClaimantsPageSize, claimantsPageSize } =
+		useDrop({
+			ctx: web3ctx,
+			claimId: claimId,
+		})
+	const [displayingPages, setDisplayingPages] = useState("")
+
+	const _pageOptions = ["10", "25", "50"]
+
+	useEffect(() => {
+		if (!claimants.data) {
+			return
+		}
+		const length = Math.min(claimants.data.length, claimantsPageSize)
+		if (length === 0) {
+			setDisplayingPages("no more claimants")
+		} else {
+			setDisplayingPages(
+				`showing ${claimantsPage * claimantsPageSize + 1} to ${
+					claimantsPage * claimantsPageSize + length
+				}`,
+			)
+		}
+	}, [claimantsPage, claimantsPageSize, claimants.data])
+
+	useEffect(() => {
+		setClaimantsPage(0)
+	}, [claimId])
 
 	const { search } = useSearch({
 		pathname: `/admin/drops/${claimId}/claimants/search`,
@@ -118,58 +148,76 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 					<AccordionIcon />
 				</AccordionButton>
 				<AccordionPanel p="0px">
-					{claimants.data && (
-						<Flex direction="column" gap="20px">
-							<Flex justifyContent="space-between" alignItems="center" mt="20px">
-								<InputGroup w="480px">
-									<Input
-										value={searchString}
-										onChange={(e) => setSearchString(e.target.value)}
-										placeholder="search for address"
-										borderRadius="10px"
-										p="8px 15px"
-									/>
-									<InputRightElement
-										children={
+					<Flex direction="column" gap="20px">
+						<Flex justifyContent="space-between" alignItems="center" mt="20px">
+							<InputGroup w="500px">
+								<Input
+									value={searchString}
+									onChange={(e) => setSearchString(e.target.value)}
+									placeholder="search for address"
+									borderRadius="10px"
+									p="8px 15px"
+								/>
+								<InputRightElement
+									w="80px"
+									children={
+										<Flex>
+											<IconButton
+												icon={<SmallCloseIcon />}
+												_hover={{ color: "#ffccd4" }}
+												bg="transparent"
+												aria-label="clean"
+												onClick={() => setSearchString("")}
+												m="0"
+												minW="20px"
+											/>
 											<IconButton
 												_hover={{ color: "#ffccd4" }}
 												bg="transparent"
 												aria-label="search"
 												icon={<SearchIcon />}
+												minW="20px"
 												onClick={() => handleSearchClick()}
+												pl="10px"
 											/>
-										}
-									/>
-								</InputGroup>
-								<Flex
-									alignItems="center"
-									gap="10px"
-									cursor="pointer"
-									onClick={() => setAddingClaimant(true)}
-								>
-									<Text>Add claimant</Text>
-									<SmallAddIcon />
-								</Flex>
+										</Flex>
+									}
+								/>
+							</InputGroup>
+							<Flex
+								alignItems="center"
+								gap="10px"
+								cursor="pointer"
+								onClick={() => setAddingClaimant(true)}
+							>
+								<Text>Add claimant</Text>
+								<SmallAddIcon />
 							</Flex>
+						</Flex>
 
-							<Collapse in={isOpen} animateOpacity>
-								{search.isLoading && <Spinner />}
-								{!search.isLoading && (
-									<Flex justifyContent="space-between" alignItems="center">
-										{!search.isLoading && search.data?.address && (
-											<Text>Amount: {search.data?.raw_amount ?? "undefined"}</Text>
-										)}
-										{!search.isLoading && !search.data?.address && <Text>Not found</Text>}
-										<IconButton
-											bg="transparent"
-											aria-label="close"
-											icon={<SmallCloseIcon />}
-											onClick={onClose}
-											_hover={{ bg: "#3f3f3f" }}
-										/>
-									</Flex>
-								)}
-							</Collapse>
+						<Collapse in={isOpen} animateOpacity>
+							{search.isLoading && <Spinner />}
+							{!search.isLoading && (
+								<Flex justifyContent="space-between" alignItems="center">
+									{!search.isLoading && search.data?.address && (
+										<Text>Amount: {search.data?.raw_amount ?? "undefined"}</Text>
+									)}
+									{!search.isLoading && !search.data?.address && <Text>Not found</Text>}
+									<IconButton
+										bg="transparent"
+										aria-label="close"
+										icon={<SmallCloseIcon />}
+										onClick={() => {
+											setSearchString("")
+											onClose()
+										}}
+										_hover={{ bg: "#3f3f3f" }}
+									/>
+								</Flex>
+							)}
+						</Collapse>
+						{claimants.isLoading && <Spinner />}
+						{claimants.data && (
 							<Flex gap="40px" fontSize="16px">
 								<Flex direction="column">
 									<Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
@@ -241,8 +289,61 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 									))}
 								</Flex>
 							</Flex>
+						)}
+						<Flex alignItems="center" justifyContent="space-between" fontWeight="300">
+							<Text>page {claimantsPage + 1}</Text>
+							<Flex alignItems="center" justifyContent="center">
+								<IconButton
+									bg="transparent"
+									aria-label="to start"
+									_hover={{ bg: "#3f3f3f" }}
+									icon={<Icon as={AiOutlineVerticalRight} />}
+									onClick={() => setClaimantsPage(0)}
+									disabled={claimantsPage < 1}
+								/>
+								<IconButton
+									bg="transparent"
+									aria-label="to start"
+									_hover={{ bg: "#3f3f3f" }}
+									icon={<Icon as={AiOutlineArrowLeft} />}
+									onClick={() => setClaimantsPage(claimantsPage - 1)}
+									disabled={claimantsPage < 1}
+								/>
+								<Text px="20px">{displayingPages}</Text>
+								<IconButton
+									bg="transparent"
+									aria-label="to start"
+									_hover={{ bg: "#3f3f3f" }}
+									icon={<Icon as={AiOutlineArrowRight} />}
+									onClick={() => setClaimantsPage(claimantsPage + 1)}
+									disabled={!claimants.data || claimants.data.length < claimantsPageSize}
+								/>
+							</Flex>
+							<Flex gap="15px" alignItems="center">
+								<Select
+									bg="transparent"
+									color="white"
+									borderRadius="10px"
+									borderColor="#4d4d4d"
+									size="sm"
+									w="fit-content"
+									onChange={(e) => {
+										setClaimantsPageSize(Number(e.target.value))
+									}}
+									value={claimantsPageSize}
+								>
+									{_pageOptions.map((pageSize: string) => {
+										return (
+											<option key={`paginator-options-pagesize-${pageSize}`} value={pageSize}>
+												{pageSize}
+											</option>
+										)
+									})}
+								</Select>
+								<Text>per page</Text>
+							</Flex>
 						</Flex>
-					)}
+					</Flex>
 				</AccordionPanel>
 			</AccordionItem>
 		</Accordion>
