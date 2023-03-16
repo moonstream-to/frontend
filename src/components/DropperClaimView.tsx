@@ -98,7 +98,6 @@ const DropperClaimView = ({
 			const claimUri = await dropperContract.methods.claimUri(claimId).call() //TODO take from ClaimsList
 			const signer = await dropperContract.methods.getSignerForClaim(claimId).call() //TODO MULTICALL?
 			const dropType = dropTypes.get(claim[3]) ?? "undefined"
-			console.log(claim)
 			return { claim, claimUri, signer, dropType }
 		},
 		{

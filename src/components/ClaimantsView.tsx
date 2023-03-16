@@ -1,4 +1,7 @@
 /* eslint-disable react/no-children-prop */
+import { useContext, useEffect, useState } from "react"
+
+import { useMutation, useQueryClient } from "react-query"
 import { SearchIcon, SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons"
 import {
 	Accordion,
@@ -19,14 +22,13 @@ import {
 	Icon,
 	Select,
 } from "@chakra-ui/react"
-import { useContext, useEffect, useState } from "react"
 import {
 	AiOutlineArrowLeft,
 	AiOutlineArrowRight,
 	AiOutlineSave,
 	AiOutlineVerticalRight,
 } from "react-icons/ai"
-import { useMutation, useQueryClient } from "react-query"
+
 import Web3Context from "../contexts/Web3Context/context"
 import useDrop from "../hooks/useDrop"
 import useMoonToast from "../hooks/useMoonToast"
@@ -71,7 +73,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 	const { search } = useSearch({
 		pathname: `/admin/drops/${claimId}/claimants/search`,
 		query: { address: searchAddress },
-	})
+	}) //TODO
 
 	const { onOpen, onClose, isOpen } = useDisclosure()
 	const [addingClaimant, setAddingClaimant] = useState(false)
@@ -119,11 +121,10 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 			}
 
 			const data = { dropper_claim_id: claimId, claimants: claimants }
-			const API = "https://engineapi.moonstream.to" //TODO
-			const ADMIN_API = `${API}`
+			const API = process.env.NEXT_PUBLIC_ENGINE_API_URL
 			return http({
 				method: "POST",
-				url: `${ADMIN_API}/drops/claimants`,
+				url: `${API}/drops/claimants`,
 				data: data,
 			})
 		},

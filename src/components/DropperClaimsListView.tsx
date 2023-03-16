@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react"
-import { useMutation } from "react-query"
 import {
 	Button,
 	Checkbox,
@@ -15,13 +14,9 @@ import {
 	ModalOverlay,
 	Text,
 	useDisclosure,
-	useToast,
 } from "@chakra-ui/react"
 
-import TerminusPoolsList from "./TerminusPoolsList"
 import Web3Context from "../contexts/Web3Context/context"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
 import { useRouter } from "next/router"
 import { MAX_INT } from "../constants"
 import DropperClaimsList from "./DropperClaimsList"
@@ -39,7 +34,6 @@ const DropperClaimsListView = ({
 	onChange: (id: string, metadata: unknown) => void
 	contractState: any
 }) => {
-	const toast = useToast()
 	const router = useRouter()
 
 	const [queryClaimId, setQueryClaimId] = useState<number | undefined>(undefined)
@@ -57,75 +51,6 @@ const DropperClaimsListView = ({
 			typeof router.query.claimlId === "string" ? Number(router.query.claimId) : undefined,
 		)
 	}, [router.query])
-
-	// const terminusFacet = new web3ctx.web3.eth.Contract(terminusAbi) as any as MockTerminus
-	// terminusFacet.options.address = contractAddress
-
-	const commonProps = {
-		onSuccess: () => {
-			toast({
-				title: "Successfully updated contract",
-				status: "success",
-				duration: 5000,
-				isClosable: true,
-			})
-			// contractState.refetch(); //TODO
-		},
-		onError: () => {
-			toast({
-				title: "Something went wrong",
-				status: "error",
-				duration: 5000,
-				isClosable: true,
-			})
-		},
-	}
-
-	// const newPool = useMutation(
-	// 	({
-	// 		capacity,
-	// 		isBurnable,
-	// 		isTransferable,
-	// 	}: {
-	// 		capacity: string
-	// 		isBurnable: boolean
-	// 		isTransferable: boolean
-	// 	}) =>
-	// 		terminusFacet.methods
-	// 			.createPoolV1(capacity, isTransferable, isBurnable)
-	// 			.send({ from: web3ctx.account }),
-	// 	{ ...commonProps },
-	// )
-
-	// const createNewPool = () => {
-	// 	const capacity = Number(newPoolProps.capacity)
-
-	// 	if (
-	// 		!newPoolProps.capacity ||
-	// 		!Number(capacity) ||
-	// 		!Number.isInteger(capacity) ||
-	// 		capacity < 1
-	// 	) {
-	// 		onOpen()
-	// 		toast({
-	// 			title: "Capacity must be a positive number",
-	// 			status: "error",
-	// 			duration: 3000,
-	// 			isClosable: true,
-	// 		})
-	// 		return
-	// 	}
-	// 	newPool.mutate(
-	// 		{
-	// 			capacity: newPoolProps.capacity,
-	// 			isTransferable: newPoolProps.isTransferable,
-	// 			isBurnable: newPoolProps.isBurnable,
-	// 		},
-	// 		{
-	// 			// onSettled: () => {}, TODO
-	// 		},
-	// 	)
-	// }
 
 	return (
 		<Flex
@@ -231,7 +156,6 @@ const DropperClaimsListView = ({
 						<Button
 							colorScheme="teal"
 							onClick={() => {
-								// createNewPool()
 								onClose()
 							}}
 						>

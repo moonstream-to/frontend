@@ -19,16 +19,13 @@ const useDrop = ({
 	initialPageSize?: number
 	getAll?: boolean
 }) => {
-	// const admin = useDrops({ ctx })
 	const toast = useToast()
 	const queryClient = useQueryClient()
-	console.log("useDrop")
 
 	const [claimantsPage, setClaimantsPage] = React.useState(0)
 	const [claimantsPageSize, setClaimantsPageSize] = React.useState(5)
 
 	const _getClaimants = async (page: number) => {
-		console.log("_getClaimants")
 		const response = await getClaimants({ dropperClaimId: claimId })({
 			limit: claimantsPageSize,
 			offset: page * claimantsPageSize,

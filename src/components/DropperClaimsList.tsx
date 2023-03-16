@@ -5,11 +5,8 @@ import { Flex } from "@chakra-ui/react"
 
 import Spinner from "./Spinner/Spinner"
 import Web3Context from "../contexts/Web3Context/context"
-import TerminusPoolsListItem from "./TerminusPoolsListItem"
 import queryCacheProps from "../hooks/hookCommon"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
 const multicallABI = require("../web3/abi/Multicall2.json")
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
 import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
 const dropperAbi = require("../web3/abi/Dropper.json")
 import { Dropper } from "../web3/contracts/types/Dropper"
@@ -96,10 +93,10 @@ const DropperClaimsList = ({
 	)
 
 	useEffect(() => {
-		console.log(selected, claimsList.data)
 		if (selected === -1 && claimsList.data) {
 			setSelected(claimsList.data.length)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [claimsList.data, selected])
 
 	if (!claimsList.data) {

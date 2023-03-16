@@ -44,7 +44,6 @@ export const getState = (address: any, ctx: any) => async () => {
 	const numClaims = await dropper.methods.numClaims().call()
 	const owner = await dropper.methods.owner().call()
 	const paused = await dropper.methods.paused().call()
-	console.log(ERC20_TYPE, ERC721_TYPE, ERC1155_TYPE, numClaims, owner, paused)
 
 	return { ERC20_TYPE, ERC721_TYPE, ERC1155_TYPE, numClaims, owner, paused }
 }

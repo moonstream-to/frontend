@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // import enableMockupRequests from './mockupRequests'
 let axios = require("axios")
-// const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
-const API = "https://engineapi.moonstream.to"
-console.log(API)
+const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
 
 process.env.NODE_ENV !== "production" // && enableMockupRequests(axios)
 

@@ -21,7 +21,6 @@ const useDrops = ({
 		() =>
 			getTerminus(ctx.targetChain?.name)()
 				.then((response) => {
-					console.log(response.data)
 					return response.data
 				})
 				.catch((e) => console.log(e)),
@@ -32,7 +31,6 @@ const useDrops = ({
 	)
 
 	const _hasAdminPermissions = React.useCallback(async () => {
-		console.log(terminusList.data)
 		if (terminusList.data) {
 			const terminusAuthorizations = await Promise.all(
 				terminusList.data.map(
@@ -61,9 +59,6 @@ const useDrops = ({
 		{
 			...queryCacheProps,
 			enabled: !!terminusList.data && !!ctx.account,
-			onSuccess: (data: any) => {
-				console.log(data)
-			},
 			onError: (err) => {
 				console.error("adminPermissions err", err)
 			},
@@ -71,7 +66,6 @@ const useDrops = ({
 	)
 
 	const _getAdminClaimsList = async () => {
-		console.log(adminPermissions.data)
 		const claimsByPermission = adminPermissions.data
 			? await Promise.all(
 					adminPermissions.data.map(async (permission: any) => {
