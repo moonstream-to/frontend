@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { getAdminList, getTerminus } from "../services/moonstream-engine.service"
 import { useQuery } from "react-query"
 import { balanceOfAddress } from "../web3/contracts/terminus.contracts"
@@ -30,10 +30,6 @@ const useDrops = ({
 			enabled: !!ctx.account && !!ctx.chainId && ctx.chainId === ctx.targetChain?.chainId,
 		},
 	)
-
-	// useEffect(() => {
-	// 	console.log(terminusList.data)
-	// }, [terminusList.data])
 
 	const _hasAdminPermissions = React.useCallback(async () => {
 		console.log(terminusList.data)
@@ -127,7 +123,6 @@ const useDrops = ({
 		(query: any) => queryHttp(query).then((result: any) => result.data),
 		{
 			...queryCacheProps,
-			onSuccess: () => {},
 			enabled: ctx.web3?.utils.isAddress(ctx.account) && ctx.chainId === ctx.chainId,
 		},
 	)

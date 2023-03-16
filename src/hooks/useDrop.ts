@@ -2,16 +2,12 @@ import React from "react"
 import {
 	deleteClaimants as _deleteClaimants,
 	getClaimants,
-	activate,
-	deactivate,
 	setClaimants,
 } from "../services/moonstream-engine.service"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import useToast from "./useMoonToast"
 import queryCacheProps from "./hookCommon"
-import useDrops from "./useDrops"
-import { patchHttp } from "../utils/http"
-import { MoonstreamWeb3ProviderInterface, UpdateClaim } from "../types/Moonstream"
+import { MoonstreamWeb3ProviderInterface } from "../types/Moonstream"
 
 const useDrop = ({
 	ctx,
@@ -23,14 +19,16 @@ const useDrop = ({
 	initialPageSize?: number
 	getAll?: boolean
 }) => {
-	const admin = useDrops({ ctx })
+	// const admin = useDrops({ ctx })
 	const toast = useToast()
 	const queryClient = useQueryClient()
+	console.log("useDrop")
 
 	const [claimantsPage, setClaimantsPage] = React.useState(0)
-	const [claimantsPageSize, setClaimantsPageSize] = React.useState(0)
+	const [claimantsPageSize, setClaimantsPageSize] = React.useState(5)
 
 	const _getClaimants = async (page: number) => {
+		console.log("_getClaimants")
 		const response = await getClaimants({ dropperClaimId: claimId })({
 			limit: claimantsPageSize,
 			offset: page * claimantsPageSize,
@@ -44,7 +42,6 @@ const useDrop = ({
 		{
 			...queryCacheProps,
 			enabled: !!ctx.account && claimantsPageSize != 0,
-			onSuccess: () => {},
 		},
 	)
 
@@ -56,32 +53,7 @@ const useDrop = ({
 			queryClient.refetchQueries(["claimants", "claimId", claimId])
 		},
 		onError: () => {
-			toast("Revoking claim failed", "error", "Error! >.<")
-		},
-		onSettled: () => {},
-	})
-
-	const activateDrop = useMutation(activate, {
-		onSuccess: () => {
-			toast("Activated drop", "success")
-			admin.adminClaims.refetch()
-		},
-		onError: () => {
-			toast("Activating drop failed", "error", "Error! >.<")
-		},
-		onSettled: () => {},
-	})
-
-	const deactivateDrop = useMutation(deactivate, {
-		onSuccess: () => {
-			toast("Deactivated drop", "success")
-			admin.adminClaims.refetch()
-		},
-		onError: () => {
-			toast("Deactivating drop failed", "error", "Error! >.<")
-		},
-		onSettled: () => {
-			deactivateDrop.reset()
+			toast("Revoking claim failed", "error")
 		},
 	})
 
@@ -113,24 +85,7 @@ const useDrop = ({
 		{
 			...queryCacheProps,
 			keepPreviousData: true,
-			onSuccess: () => {},
 			enabled: !!getAll,
-		},
-	)
-
-	const update = useMutation(
-		(data: UpdateClaim) => {
-			if (claimId) return patchHttp(`/admin/drops/${claimId}`, { ...data })
-			else throw new Error("Cannot use update without claimid")
-		},
-		{
-			onSuccess: () => {
-				admin.adminClaims.refetch()
-				toast("Updated drop info", "success")
-			},
-			onError: () => {
-				toast("Updating drop failed >.<", "error")
-			},
 		},
 	)
 
@@ -139,9 +94,8 @@ const useDrop = ({
 			toast("File uploaded successfully", "success")
 		},
 		onError: () => {
-			toast("Uploading file failed", "error", "Error! >.<")
+			toast("Uploading file failed", "error")
 		},
-		onSettled: () => {},
 	})
 
 	return {
@@ -151,10 +105,7 @@ const useDrop = ({
 		claimantsPage,
 		setClaimantsPageSize,
 		claimantsPageSize,
-		deactivateDrop,
-		activateDrop,
 		AllClaimants,
-		update,
 		uploadFile,
 	}
 }

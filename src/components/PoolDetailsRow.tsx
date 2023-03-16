@@ -1,24 +1,18 @@
-import { useEffect, useState } from "react"
+import { HTMLAttributes, useEffect, useState } from "react"
 import { Flex, Link, Text } from "@chakra-ui/layout"
 
 import { MAX_INT } from "../constants"
 
-const PoolDetailsRow = ({
-	type,
-	value,
-	displayFull,
-	href,
-	...props
-}: {
+interface DetailsProps extends HTMLAttributes<HTMLElement> {
 	type: string
 	value: string
 	href?: string
 	displayFull?: boolean
-}) => {
+}
+
+const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsProps) => {
 	const [valueString, setValueString] = useState("")
-	useEffect(() => {
-		console.log(href)
-	}, [href])
+
 	const valueComponent = () => {
 		if (!value) {
 			return <Text fontStyle="italic">{String(value)}</Text>
@@ -26,7 +20,7 @@ const PoolDetailsRow = ({
 		if (value == MAX_INT) {
 			return <Text fontStyle="italic">MAX_INT</Text>
 		}
-		if (value.slice(0, 4) === "http") {
+		if (value.slice(0, 4) === "http" && !href) {
 			return (
 				<Link
 					href={value}
