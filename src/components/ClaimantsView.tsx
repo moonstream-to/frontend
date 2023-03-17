@@ -1,7 +1,6 @@
 /* eslint-disable react/no-children-prop */
 import { useContext, useEffect, useState } from "react"
 
-import { useMutation, useQueryClient } from "react-query"
 import { SearchIcon, SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons"
 import {
   Accordion,
@@ -22,19 +21,18 @@ import {
   Icon,
   Select,
 } from "@chakra-ui/react"
-import {
-  AiOutlineArrowLeft,
-  AiOutlineArrowRight,
-  AiOutlineSave,
-  AiOutlineVerticalRight,
-} from "react-icons/ai"
+import { AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineVerticalRight } from "react-icons/ai"
 
 import Web3Context from "../contexts/Web3Context/context"
 import useDrop from "../hooks/useDrop"
 import useMoonToast from "../hooks/useMoonToast"
 import http from "../utils/http"
 
+import NewClaimantView from "./NewClaimantView"
+
 const ClaimantsView = ({ claimId }: { claimId: string }) => {
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
+
   const [searchString, setSearchString] = useState("")
 
   const toast = useMoonToast()
@@ -74,7 +72,6 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
   }>({ isSearching: false })
 
   const searchForAddress = async (address: string) => {
-    const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
     setSearchResult((prev) => {
       return { ...prev, isSearching: true }
     })
@@ -101,9 +98,6 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   const { onOpen, onClose, isOpen } = useDisclosure()
   const [addingClaimant, setAddingClaimant] = useState(false)
-  const [newAddress, setNewAddress] = useState("")
-  const [newAmount, setNewAmount] = useState("")
-  const queryClient = useQueryClient()
 
   const handleSearchClick = () => {
     if (web3ctx.web3.utils.isAddress(searchString)) {
@@ -113,56 +107,6 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
       toast("invalid address", "error")
     }
   }
-
-  const onDoneAdding = () => {
-    setNewAddress("")
-    setNewAmount("")
-    setAddingClaimant(false)
-  }
-
-  const addClaimants = useMutation(
-    ({ claimants }: { claimants: { address: string; amount: number }[] }) => {
-      const wrongAddressClaimant = claimants.find(
-        (claimant) => !web3ctx.web3.utils.isAddress(claimant.address),
-      )
-      if (wrongAddressClaimant) {
-        return new Promise((_, reject) => {
-          reject(new Error(`${wrongAddressClaimant.address} is not valid address`))
-        })
-      }
-
-      const wrongAmountClaimant = claimants.find(
-        (claimant) => !claimant.amount || claimant.amount < 1,
-      )
-      if (wrongAmountClaimant) {
-        return new Promise((_, reject) => {
-          reject(
-            new Error(
-              `Wrong amount - ${wrongAmountClaimant.amount} - for ${wrongAmountClaimant.address}`,
-            ),
-          )
-        })
-      }
-
-      const data = { dropper_claim_id: claimId, claimants: claimants }
-      const API = process.env.NEXT_PUBLIC_ENGINE_API_URL
-      return http({
-        method: "POST",
-        url: `${API}/drops/claimants`,
-        data: data,
-      })
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("claimants")
-        toast("Claimant updated", "success")
-        onDoneAdding()
-      },
-      onError: (e: Error) => {
-        toast(e.message, "error")
-      },
-    },
-  )
 
   return (
     <Accordion allowToggle borderRadius="10px" bg="#232323" border="1px solid #4d4d4d" p="20px">
@@ -239,23 +183,14 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
               )}
             </Collapse>
             {claimants.isLoading && <Spinner />}
+            {addingClaimant && <NewClaimantView claimId={claimId} setAdding={setAddingClaimant} />}
+
             {claimants.data && (
               <Flex gap="40px" fontSize="16px">
                 <Flex direction="column">
                   <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
                     Address
                   </Text>
-                  {addingClaimant && (
-                    <InputGroup mt="10px" fontFamily="Jet Brains Mono, monospace">
-                      <Input
-                        variant="address"
-                        fontSize="16px"
-                        w="45ch"
-                        value={newAddress}
-                        onChange={(e) => setNewAddress(e.target.value)}
-                      />
-                    </InputGroup>
-                  )}
                   {claimants.data.map((claimant: { address: string }, idx: number) => (
                     <Text
                       py="12px"
@@ -271,39 +206,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                   <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
                     Amount
                   </Text>
-                  {addingClaimant && (
-                    <Flex alignItems="center" mt="10px" gap="10px">
-                      <Input
-                        variant="address"
-                        fontSize="16px"
-                        w="5ch"
-                        value={newAmount}
-                        onChange={(e) => setNewAmount(e.target.value)}
-                      />
-                      {!addClaimants.isLoading ? (
-                        <IconButton
-                          bg="transparent"
-                          aria-label="cancel"
-                          icon={<Icon as={AiOutlineSave} />}
-                          _hover={{ bg: "#3f3f3f" }}
-                          onClick={() =>
-                            addClaimants.mutate({
-                              claimants: [{ address: newAddress, amount: Number(newAmount) }],
-                            })
-                          }
-                        />
-                      ) : (
-                        <Spinner />
-                      )}
-                      <IconButton
-                        bg="transparent"
-                        aria-label="cancel"
-                        icon={<SmallCloseIcon />}
-                        onClick={() => onDoneAdding()}
-                        _hover={{ bg: "#3f3f3f" }}
-                      />
-                    </Flex>
-                  )}
+
                   {claimants.data.map((claimant: { amount: string }, idx: number) => (
                     <Text py="12px" key={idx}>
                       {claimant.amount}
