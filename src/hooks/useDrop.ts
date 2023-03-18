@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import useToast from "./useMoonToast"
 import queryCacheProps from "./hookCommon"
 import { MoonstreamWeb3ProviderInterface } from "../types/Moonstream"
+import { AxiosError } from "axios"
 
 const useDrop = ({
   ctx,
@@ -90,8 +91,9 @@ const useDrop = ({
     onSuccess: () => {
       toast("File uploaded successfully", "success")
     },
-    onError: () => {
-      toast("Uploading file failed", "error")
+    onError: (e: AxiosError) => {
+      const msg = e.response?.data?.detail ?? "Uploading file failed"
+      toast(msg, "error", 7000)
     },
   })
 
