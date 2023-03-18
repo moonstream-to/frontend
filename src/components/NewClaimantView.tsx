@@ -80,34 +80,6 @@ const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: a
         url: `${API}/drops/claimants`,
         data: data,
       })
-      //   return http({
-      //     method: "GET",
-      //     url: `${API}/admin/drops/${claimId}/claimants/search`,
-      //     params: { address: claimants[0].address },
-      //   }).then((res: any) => {
-      //     console.log(res)
-      //     if (res.data?.address) {
-      //       setExistingClaimant({
-      //         address: res.data.address,
-      //         amount: res.data.raw_amount,
-      //       })
-      //       return new Promise((_, reject) => {
-      //         reject(new Error("address already exists"))
-      //       })
-      //     } else {
-      //       return http({
-      //         method: "POST",
-      //         url: `${API}/drops/claimants`,
-      //         data: data,
-      //       })
-      //     }
-      //   })
-      // } else {
-      //   return http({
-      //     method: "POST",
-      //     url: `${API}/drops/claimants`,
-      //     data: data,
-      //   })
     },
     {
       onSuccess: () => {
@@ -131,19 +103,17 @@ const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: a
           <Flex fontSize="16px" direction="column" gap="5px" maxW="43ch">
             <Text>Address:</Text>
             <Input
-              // fontFamily="Jet Brains Mono, monospace"
               variant="address"
               fontSize="16px"
               pl="auto"
               pr="auto"
-              // w="43ch"
               value={newAddress}
               onChange={(e) => setNewAddress(e.target.value)}
             />
           </Flex>
           <Flex direction="column" w="100%" gap="5px">
             <Text>Amount:</Text>
-            <Flex gap="5px">
+            <Flex gap="5px" alignItems="center">
               <Input
                 variant="address"
                 fontSize="16px"
@@ -164,13 +134,14 @@ const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: a
                   }
                 />
               ) : (
-                <Spinner />
+                <Spinner mx="12px" w="16px" h="16px" />
               )}
               <IconButton
                 bg="transparent"
                 aria-label="cancel"
                 icon={<SmallCloseIcon />}
                 onClick={() => onDoneAdding()}
+                disabled={addClaimants.isLoading}
                 _hover={{ bg: "#3f3f3f" }}
               />
             </Flex>
@@ -179,31 +150,37 @@ const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: a
       )}
       {existingClaimant && (
         <Flex mt="10px" gap="10px">
-          <Text pl="5px">
-            {`${existingClaimant.address}  is already in the list with amount of ${existingClaimant.amount}. Do
-           you want to update amount to ${newAmount}?`}
-          </Text>
-          <Button
-            bg="transparent"
-            border="1px solid white"
-            disabled={addClaimants.isLoading}
-            _hover={{ bg: "#3f3f3f" }}
-            onClick={() =>
-              addClaimants.mutate({
-                claimants: [{ address: newAddress, amount: Number(newAmount) }],
-              })
-            }
-          >
-            {!addClaimants.isLoading ? <Text>Yes</Text> : <Spinner />}
-          </Button>
-          <Button
-            bg="transparent"
-            _hover={{ bg: "#3f3f3f" }}
-            border="1px solid white"
-            onClick={() => onDoneAdding()}
-          >
-            No
-          </Button>
+          <Flex direction="column" w="42ch">
+            <Text fontFamily="Jet Brains Mono, monospace">{existingClaimant.address} </Text>
+            <Text w="40ch">
+              {`has ${existingClaimant.amount} already. Do
+           you want to update it to ${newAmount}?`}
+            </Text>
+          </Flex>
+          <Flex w="100%" justifyContent="center" gap="10px" alignItems="center">
+            <Button
+              bg="transparent"
+              border="1px solid white"
+              disabled={addClaimants.isLoading}
+              _hover={{ bg: "#3f3f3f" }}
+              onClick={() =>
+                addClaimants.mutate({
+                  claimants: [{ address: newAddress, amount: Number(newAmount) }],
+                })
+              }
+            >
+              {!addClaimants.isLoading ? <Text>Yes</Text> : <Spinner />}
+            </Button>
+            <Button
+              bg="transparent"
+              _hover={{ bg: "#3f3f3f" }}
+              border="1px solid white"
+              disabled={addClaimants.isLoading}
+              onClick={() => onDoneAdding()}
+            >
+              No
+            </Button>
+          </Flex>
         </Flex>
       )}
     </>
