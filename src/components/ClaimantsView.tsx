@@ -48,6 +48,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   useEffect(() => {
     setClaimantsPageSize(Number(_pageOptions[0]))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -68,12 +69,18 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   useEffect(() => {
     setClaimantsPage(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimId])
 
   const [searchResult, setSearchResult] = useState<{
     result?: string | undefined
     isSearching: boolean
   }>({ isSearching: false })
+
+  type responseWithDetails = {
+    response: { data: { detail: string } }
+    message: string
+  }
 
   const searchForAddress = async (address: string) => {
     setSearchResult((prev) => {
@@ -85,17 +92,15 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
       url: `${API}/admin/drops/${claimId}/claimants/search`,
       params: { address },
     })
-      .then((res: any) => {
+      .then((res: { data: { address: string; raw_amount: string } }) => {
         if (!res.data?.address) {
           throw new Error("Not found")
         }
         setSearchResult({ result: `Amount: ${res.data.raw_amount}`, isSearching: false })
       })
-      .catch((e: any) => {
+      .catch((e: responseWithDetails) => {
         const result =
-          e.response?.data?.detail === "Address not present in that drop."
-            ? "Address not present in that drop."
-            : e.message
+          e.response?.data?.detail === "Address not present in that drop." ? "Not found" : e.message
         setSearchResult({ result, isSearching: false })
       })
   }

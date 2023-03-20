@@ -23,7 +23,7 @@ const DropperClaimsList = ({
 }: {
   contractAddress: string
   selected: number
-  setSelected: any
+  setSelected: (arg0: number) => void
   onChange: (id: string, metadata: unknown) => void
   filter: string
   queryClaimId: number | undefined
@@ -38,7 +38,7 @@ const DropperClaimsList = ({
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      const dropperContract = new web3.eth.Contract(dropperAbi) as any as Dropper
+      const dropperContract = new web3.eth.Contract(dropperAbi) as unknown as Dropper
       dropperContract.options.address = contractAddress ?? ""
 
       const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
@@ -115,7 +115,9 @@ const DropperClaimsList = ({
               uri={claim.uri}
               onChange={onChange}
               filter={filter}
-              dbData={adminClaims.data?.find((dbClaim: any) => dbClaim.drop_number === claim.id)}
+              dbData={adminClaims.data?.find(
+                (dbClaim: { drop_number: number }) => dbClaim.drop_number === claim.id,
+              )}
             />
           ))}
         </Flex>

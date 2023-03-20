@@ -263,7 +263,7 @@ const DropperClaimView = ({
           </Flex>
         </>
       )}
-      {!claimState.data && (
+      {claimState.isLoading && (
         <Flex alignItems="center" justifyContent="center" h="100%">
           <Spinner h="50px" w="50px" />
         </Flex>

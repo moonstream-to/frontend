@@ -30,7 +30,7 @@ const DropperClaimsListView = ({
 }: {
   contractAddress: string
   selected: number
-  setSelected: any
+  setSelected: (arg0: number) => void
   onChange: (id: string, metadata: unknown) => void
   contractState: any
 }) => {
@@ -48,9 +48,9 @@ const DropperClaimsListView = ({
 
   useEffect(() => {
     setQueryClaimId(
-      typeof router.query.claimlId === "string" ? Number(router.query.claimId) : undefined,
+      typeof router.query.claimId === "string" ? Number(router.query.claimId) : undefined,
     )
-  }, [router.query])
+  }, [router.query.claimId])
 
   return (
     <Flex
