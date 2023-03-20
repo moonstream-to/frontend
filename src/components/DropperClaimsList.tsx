@@ -38,9 +38,6 @@ const DropperClaimsList = ({
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
-        return
-      }
       const dropperContract = new web3.eth.Contract(dropperAbi) as any as Dropper
       dropperContract.options.address = contractAddress ?? ""
 
@@ -88,6 +85,7 @@ const DropperClaimsList = ({
     },
     {
       ...queryCacheProps,
+      enabled: !!contractAddress && !!MULTICALL2_CONTRACT_ADDRESSES,
       // onSuccess: () => {}, //TODO
     },
   )
@@ -99,26 +97,30 @@ const DropperClaimsList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimsList.data, selected])
 
-  if (!claimsList.data) {
+  if (claimsList.isLoading) {
     return <Spinner />
   }
 
   return (
-    <Flex direction="column" gap="15px" h="100%" overflowY="auto">
-      {claimsList.data.map((claim: { uri: string; id: number }) => (
-        <DropperClaimsListItem
-          key={claim.id}
-          address={contractAddress}
-          claimId={String(claim.id)}
-          selected={claim.id === selected}
-          inQuery={claim.id === queryClaimId}
-          uri={claim.uri}
-          onChange={onChange}
-          filter={filter}
-          dbData={adminClaims.data?.find((dbClaim: any) => dbClaim.drop_number === claim.id)}
-        />
-      ))}
-    </Flex>
+    <>
+      {claimsList.data && (
+        <Flex direction="column" gap="15px" h="100%" overflowY="auto">
+          {claimsList.data.map((claim: { uri: string; id: number }) => (
+            <DropperClaimsListItem
+              key={claim.id}
+              address={contractAddress}
+              claimId={String(claim.id)}
+              selected={claim.id === selected}
+              inQuery={claim.id === queryClaimId}
+              uri={claim.uri}
+              onChange={onChange}
+              filter={filter}
+              dbData={adminClaims.data?.find((dbClaim: any) => dbClaim.drop_number === claim.id)}
+            />
+          ))}
+        </Flex>
+      )}
+    </>
   )
 }
 
