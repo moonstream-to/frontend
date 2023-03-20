@@ -47,6 +47,10 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
   const _pageOptions = ["10", "25", "50"]
 
   useEffect(() => {
+    setClaimantsPageSize(Number(_pageOptions[0]))
+  }, [])
+
+  useEffect(() => {
     if (!claimants.data) {
       return
     }
