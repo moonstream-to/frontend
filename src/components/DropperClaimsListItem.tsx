@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Box, Flex, Text } from "@chakra-ui/layout"
+import { Box, Flex, Spacer, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/react"
 
 import useLink from "../hooks/useLink"
@@ -20,7 +20,7 @@ const DropperClaimsListItem = ({
   uri: string
   filter: string
   inQuery: boolean
-  dbData: any
+  dbData: { active: boolean }
 }) => {
   const metadata = useLink({ link: uri })
 
@@ -77,7 +77,7 @@ const DropperClaimsListItem = ({
           onClick={handleClick}
           cursor="pointer"
           p="10px"
-          id={`pool-${String(claimId)}`}
+          id={`claim-${String(claimId)}`}
         >
           {!metadata.data?.image && (
             <>
@@ -99,11 +99,28 @@ const DropperClaimsListItem = ({
             </>
           )}
           {!metadata.data?.name && (
-            <>
-              <Text borderRadius="5px" h="32px" flexGrow="1" textStyle="italic" color="gray">
-                no name
-              </Text>
-            </>
+            <Text
+              borderRadius="5px"
+              h="32px"
+              flexGrow="1"
+              textStyle="italic"
+              color="gray"
+              textAlign="justify"
+              flex="2"
+            >
+              no name
+            </Text>
+          )}
+          <Spacer /> {/*TODO  Layout without spacer and name-textAlign-justify  */}
+          {dbData && (
+            <Text
+              fontSize="16px"
+              // flex="1"
+              fontWeight="700"
+              color={dbData.active ? "#46C370" : "#EE8686"}
+            >
+              {dbData.active ? "Active" : "Inactive"}
+            </Text>
           )}
         </Flex>
       )}
