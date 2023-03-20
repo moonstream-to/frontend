@@ -13,10 +13,15 @@ const terminusAbi = require('../../../../src/web3/abi/MockTerminus.json');
 import { MockTerminus as TerminusFacet } from '../../../../src/web3/contracts/types/MockTerminus';
 const erc721Abi = require('../../../../src/web3/abi/MockERC721.json');
 import { MockERC721 as Erc721Facet } from '../../../../src/web3/contracts/types/MockERC721';
+const gardenAbi = require('../../../../src/web3/abi/GoFPABI.json');
+import {GOFPFacet as GardenFacet } from '../../../../src/web3/contracts/types/GOFPFacet';
 import { hookCommon } from "../../../../src/hooks";
 // import useSpyMode from "../../../src/hooks/useSpyMode";
 import NFTList from '../../../../src/components/nft/NFTList';
 import { NFTInfo } from '../../../../src/components/nft/types';
+import { numberToHex } from 'web3-utils';
+import { StakedTokenInfo } from '../types';
+import Link from 'next/link'
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -34,7 +39,6 @@ const Inventory = () => {
     } else {
       nextAddress = web3ctx.account;
     }
-    console.log("Next address:", nextAddress);
     if (Web3.utils.isAddress(nextAddress)) setCurrentAccount(nextAddress);
   }, [web3ctx.account, queryAddress]);
 
@@ -94,7 +98,6 @@ const Inventory = () => {
         );
       }
 
-      console.log(currentBalances);
       return currentBalances;
     },
     {
@@ -102,8 +105,23 @@ const Inventory = () => {
     }
   );
 
+  const fetchMetdata = async (tokenURI: string) => {
+    if(tokenURI && tokenURI.trim() != "") {
+      return fetch(tokenURI, { cache: 'no-cache' }).then((response) => response.json());
+    } else {
+      return null;
+    }
+  };
+
+  const getTokenURIs = async (characterContract: Erc721Facet, tokenIDs: number[]) => {
+    const tokenURIPromises = tokenIDs.map((tokenID) =>
+      characterContract.methods.tokenURI(tokenID).call()
+    );
+    return await Promise.all(tokenURIPromises);
+  };
+
   const playerOwnedCharacters = useQuery<NFTInfo[]>(
-    ["characters", characterAddress, currentAccount],
+    ["playerCharacters", characterAddress, currentAccount],
     async ({ queryKey }) => {
       const currentUserAddress = String(queryKey[2]);
 
@@ -143,17 +161,10 @@ const Inventory = () => {
         }
         const tokenIDs = await Promise.all(tokenIDPromises);
 
-        const tokenURIPromises = tokenIDs.map((tokenID) =>
-          characterContract.methods.tokenURI(tokenID).call()
-        );
-        const tokenURIs = await Promise.all(tokenURIPromises);
+        const tokenURIs = await getTokenURIs(characterContract, tokenIDs.map((tokenId) => parseInt(tokenId)));
 
         const tokenMetadataPromises = tokenURIs.map((tokenURI) => {
-          if(tokenURI && tokenURI.trim() != "") {
-            return fetch(tokenURI, { cache: 'no-cache' }).then((response) => response.json());
-          } else {
-            return null;
-          }
+          return fetchMetdata(tokenURI);
         });
         const tokenMetadata = await Promise.all(tokenMetadataPromises);
 
@@ -174,8 +185,6 @@ const Inventory = () => {
         console.error(e);
       }
 
-      console.log(inventory);
-
       return inventory;
     },
     {
@@ -183,86 +192,107 @@ const Inventory = () => {
     }
   );
 
-  // const contractOwnedCharacters = useQuery<NFTInfo[]>(
-  //   ["characters", characterAddress, currentAccount],
-  //   async ({ queryKey }) => {
-  //     const currentUserAddress = String(queryKey[2]);
+  const getSessionCount = async (gameContract: GardenFacet) => {
+    return parseInt(await gameContract.methods.numSessions().call());
+  };
 
-  //     const inventory: NFTInfo[] = [];
+  const getStakedCount = async (gameContract: GardenFacet, sessionId: number, staker: string) => {
+    return parseInt(await gameContract.methods.numTokensStakedIntoSession(sessionId, staker).call());
+  };
 
-  //     if (currentUserAddress == "0x0000000000000000000000000000000000000000") {
-  //       return inventory;
-  //     }
+  const getTokensStakedInSession = async (gameContract: GardenFacet, sessionId: number, staker: string) => {
+    const numStaked = await getStakedCount(gameContract, sessionId, staker);
+    const tokens: number[] = [];
+    for (let i = 1; i <= numStaked; i++) {
+      const tokenId = parseInt(await gameContract.methods.tokenOfStakerInSessionByIndex(sessionId, staker, i).call());
+      tokens.push(tokenId);
+    }
+    return tokens;
+  };
 
-  //     // const characterContract = new web3ctx.wyrmClient.eth.Contract(
-  //     //   erc721Abi
-  //     // ) as unknown as Erc721Facet;
-  //     // characterContract.options.address = String(queryKey[1]);
+  const formatSessionCharacterArray = (map: Map<number, StakedTokenInfo>): { sessionId: number, characters: StakedTokenInfo[] }[] => {
+    const sessionCharacterMap: Map<number, StakedTokenInfo[]> = new Map<number, StakedTokenInfo[]>();
+    map.forEach((value: StakedTokenInfo) => {
+      const sessionId = value.sessionId;
+      if (sessionCharacterMap.has(sessionId)) {
+        sessionCharacterMap.get(sessionId)?.push(value);
+      } else {
+        sessionCharacterMap.set(sessionId, [value]);
+      }
+    });
 
+    const sessionCharacterArray: { sessionId: number, characters: StakedTokenInfo[] }[] = []
+    sessionCharacterMap.forEach((value: StakedTokenInfo[], key: number) => {
+      sessionCharacterArray.push({ sessionId: key, characters: value});
+    });
+    sessionCharacterArray.sort((a, b) => {
+      return a.sessionId - b.sessionId;
+    });
+    return sessionCharacterArray;
+  };
 
-  //     try {
-  //       const numCharsRaw: string = await characterContract.methods
-  //         .balanceOf(currentUserAddress)
-  //         .call();
+  const contractOwnedCharacters = useQuery(
+    ["contractCharacters", greatwyrmContractAddress, characterAddress, currentAccount],
+    async ({ queryKey }) => {
+      const currentUserAddress = String(queryKey[3]);
 
-  //       let numChars = 0;
-  //       try {
-  //         numChars = parseInt(numCharsRaw, 10);
-  //       } catch (e) {
-  //         console.error(
-  //           `Error: Could not parse number of owned characters as an integer: ${numCharsRaw}`
-  //         );
-  //       }
+      if (currentUserAddress == "0x0000000000000000000000000000000000000000") {
+        return [];
+      }
 
-  //       const tokenIDPromises = [];
-  //       for (let i = 0; i < numChars; i++) {
-  //         tokenIDPromises.push(
-  //           characterContract.methods
-  //             .tokenOfOwnerByIndex(currentUserAddress, i)
-  //             .call()
-  //         );
-  //       }
-  //       const tokenIDs = await Promise.all(tokenIDPromises);
+      const gameContract = new web3ctx.wyrmClient.eth.Contract(
+          gardenAbi
+      ) as unknown as GardenFacet;
+      gameContract.options.address = greatwyrmContractAddress;
 
-  //       const tokenURIPromises = tokenIDs.map((tokenID) =>
-  //         characterContract.methods.tokenURI(tokenID).call()
-  //       );
-  //       const tokenURIs = await Promise.all(tokenURIPromises);
+      const characterContract = new web3ctx.wyrmClient.eth.Contract(
+        erc721Abi
+      ) as unknown as Erc721Facet;
+      characterContract.options.address = characterAddress;
 
-  //       const tokenMetadataPromises = tokenURIs.map((tokenURI) => {
-  //         if(tokenURI && tokenURI.trim() != "") {
-  //           return fetch(tokenURI, { cache: 'no-cache' }).then((response) => response.json());
-  //         } else {
-  //           return null;
-  //         }
-  //       });
-  //       const tokenMetadata = await Promise.all(tokenMetadataPromises);
+      const numSessions = await getSessionCount(gameContract);
 
-  //       const imageURIs = tokenMetadata.map((metadata) => metadata ? metadata.image: null);
+      const allTokens: number[] = [];
+      const stakedTokenMap: Map<number, number> = new Map<number, number>();
 
-  //       tokenIDs.forEach((tokenID, index) => {
-  //         inventory.push({
-  //           tokenID,
-  //           tokenURI: tokenURIs[index],
-  //           imageURI: imageURIs[index],
-  //           metadata: tokenMetadata[index],
-  //         });
-  //       });
-  //     } catch (e) {
-  //       console.error(
-  //         "There was an issue retrieving information about user's characters: "
-  //       );
-  //       console.error(e);
-  //     }
+      for (let i = 1; i <= numSessions; i++) {
+        const sessionStakedTokens = await getTokensStakedInSession(gameContract, i, currentUserAddress);
+        sessionStakedTokens.forEach((tokenId) => {
+          allTokens.push(tokenId);
+          stakedTokenMap.set(tokenId, i);
+        });
+      }
 
-  //     console.log(inventory);
+      const tokenURIs = await getTokenURIs(characterContract, allTokens);
 
-  //     return inventory;
-  //   },
-  //   {
-  //     ...hookCommon,
-  //   }
-  // );
+      const tokenMetadata = await Promise.all(tokenURIs.map((tokenURI) => {
+          return fetchMetdata(tokenURI);
+        }));
+
+      const metadataMap: Map<number, StakedTokenInfo> = new Map<number, StakedTokenInfo>();
+
+      tokenMetadata.map(async (metadata, index) => {
+        const tokenId = allTokens[index];
+        const info: StakedTokenInfo = 
+        { 
+          tokenID: tokenId.toString(),
+          tokenURI: tokenURIs[index],
+          imageURI: metadata ? metadata.image: null,
+          metadata: metadata,
+          sessionId: stakedTokenMap.get(tokenId) || 0
+        }
+        metadataMap.set(tokenId, info);
+      });
+
+      console.log("Formatted session character array: ")
+      console.log(formatSessionCharacterArray(metadataMap));
+
+      return formatSessionCharacterArray(metadataMap);
+    },
+    {
+      ...hookCommon,
+    }
+  );
 
   return (
     <Layout home={true}>
@@ -270,7 +300,21 @@ const Inventory = () => {
         <title>Moonstream portal - Inventory</title>
       </Head>
       <Box py={10}>
-        <Flex ml="100px" flexDir="column">
+        <Flex ml="108px" flexDir="column">
+
+          <Text pb={2}>Wallet Address</Text>
+          <Input
+            variant='address'
+            // onKeyDown={handleKeyDown}
+            placeholder='wallet address'
+            type='text'
+            value={currentAccount}
+            onChange={(e) => {
+              setCurrentAccount(e.target.value)
+            }}
+            mb={12}
+          />
+
           {terminusBalances.data && (
             <>
               <Text>Role:           
@@ -282,10 +326,24 @@ const Inventory = () => {
               <Text>Character Creation tokens: {terminusBalances.data['character_creation']}</Text>
             </>
           )}
+          <Flex flexDirection="column" mt={6}>
+            <Text fontSize="lg" fontWeight="semibold">In Session</Text>
+            {contractOwnedCharacters.data && contractOwnedCharacters.data.map((value, index) => {
+              return (
+                <Flex key={index} flexDirection="column" mt={6}>
+                  <Link href="/games/garden/?sessionId=1&amp;contractId=0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b">Session {value.sessionId}</Link>
+                  <NFTList nftList={value.characters} />
+                </Flex>
+              );
+            })}
+          </Flex>
+          <Flex flexDirection="column" mt={12}>
+            <Text fontSize="lg" fontWeight="semibold">Idle</Text>
+            {playerOwnedCharacters.data && (
+              <NFTList nftList={playerOwnedCharacters.data} />
+            )}
+          </Flex>
         </Flex>
-        {playerOwnedCharacters.data && (
-          <NFTList nftList={playerOwnedCharacters.data} />
-        )}
       </Box>
     </Layout>
   )
