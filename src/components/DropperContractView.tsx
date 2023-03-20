@@ -23,55 +23,52 @@ const DropperContractView = ({ address }: { address: string }) => {
 
   return (
     <>
-      {contractState.data && (
-        <Flex bg="#2d2d2d" maxW="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
-          <Flex gap="30px">
-            {contractState.data?.owner && (
-              <Flex
-                flex="1 1 0px"
-                direction="column"
-                gap="10px"
-                p={5}
-                borderRadius="10px"
-                bg="#232323"
-                // maxW="595px"
-              >
-                <PoolDetailsRow
-                  type={"Owner"}
-                  value={
-                    contractState.data.owner +
-                    (web3ctx.account === contractState.data.owner ? " (you)" : "")
-                  }
-                  displayFull={true}
-                />
-                <PoolDetailsRow type={"Number of claims"} value={contractState.data.numClaims} />
+      <Flex bg="#2d2d2d" maxW="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
+        <Flex gap="30px">
+          {contractState.data?.owner && (
+            <Flex
+              flex="1 1 0px"
+              direction="column"
+              gap="10px"
+              p={5}
+              borderRadius="10px"
+              bg="#232323"
+            >
+              <PoolDetailsRow
+                type={"Owner"}
+                value={
+                  contractState.data.owner +
+                  (web3ctx.account === contractState.data.owner ? " (you)" : "")
+                }
+                displayFull={true}
+              />
+              <PoolDetailsRow type={"Number of claims"} value={contractState.data.numClaims} />
 
-                <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
-              </Flex>
-            )}
-            {!contractState.data?.owner && (
-              <Flex alignItems="center" gap="10px" color="gray.900">
-                <Text fontStyle="italic" color="gray.900">
-                  {errorDialog[dialogStep]}
+              <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
+            </Flex>
+          )}
+          {!contractState.data?.owner && (
+            <Flex alignItems="center" gap="10px" color="gray.900">
+              <Text fontStyle="italic" color="gray.900">
+                {errorDialog[dialogStep]}
+              </Text>
+              {dialogStep < errorDialog.length - 1 && (
+                <Text
+                  cursor="pointer"
+                  h="fit-content"
+                  p="2px 12px"
+                  border="1px solid gray"
+                  borderRadius="5px"
+                  bg="transparent"
+                  onClick={nextStep}
+                >
+                  Yes
                 </Text>
-                {dialogStep < errorDialog.length - 1 && (
-                  <Text
-                    cursor="pointer"
-                    h="fit-content"
-                    p="2px 12px"
-                    border="1px solid gray"
-                    borderRadius="5px"
-                    bg="transparent"
-                    onClick={nextStep}
-                  >
-                    Yes
-                  </Text>
-                )}
-              </Flex>
-            )}
-          </Flex>
+              )}
+            </Flex>
+          )}
         </Flex>
-      )}
+      </Flex>
     </>
   )
 }
