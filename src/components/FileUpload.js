@@ -35,12 +35,12 @@ const rejectStyle = {
   borderColor: "#ff1744",
 }
 
-function FileUpload({ isUploading, columns, ...props }: { isUploading: boolean; columns: any }) {
+function FileUpload({ isUploading, onDrop, ...props }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: {
       "text/csv": [".csv"],
     },
-    onDrop: props.onDrop,
+    onDrop,
   })
 
   const style = React.useMemo(
@@ -54,7 +54,15 @@ function FileUpload({ isUploading, columns, ...props }: { isUploading: boolean; 
   )
 
   return (
-    <Container {...props} minH="50px" w="100%" m="0" p="0" alignItems={"center"}>
+    <Container
+      {...props}
+      minH="50px"
+      w="100%"
+      m="0"
+      p="0"
+      alignItems={"center"}
+      pointerEvents={isUploading ? "none" : "all"}
+    >
       <Box h={[null, null, "105px"]} {...getRootProps({ style })} justifyContent="center">
         {isUploading ? (
           <Spinner speed="1s" size="md" p="0" m="0" />

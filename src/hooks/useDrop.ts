@@ -91,9 +91,9 @@ const useDrop = ({
     onSuccess: () => {
       toast("File uploaded successfully", "success")
     },
-    onError: (e: AxiosError) => {
-      const msg = e.response?.data?.detail ?? "Uploading file failed"
-      toast(msg, "error", 7000)
+    onError: (e: any) => {
+      const msg = e.response?.data?.detail ?? e.message
+      toast(msg, "error", 7000, "Upload failed")
     },
   })
 

@@ -29,9 +29,6 @@ import useMoonToast from "../hooks/useMoonToast"
 import http from "../utils/http"
 
 import NewClaimantView from "./NewClaimantView"
-import FileUpload from "./FileUpload"
-import Papa from "papaparse"
-import { useQueryClient } from "react-query"
 
 const ClaimantsView = ({ claimId }: { claimId: string }) => {
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
@@ -40,17 +37,11 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   const toast = useMoonToast()
   const web3ctx = useContext(Web3Context)
-  const {
-    claimants,
-    uploadFile,
-    setClaimantsPage,
-    claimantsPage,
-    setClaimantsPageSize,
-    claimantsPageSize,
-  } = useDrop({
-    ctx: web3ctx,
-    claimId: claimId,
-  })
+  const { claimants, setClaimantsPage, claimantsPage, setClaimantsPageSize, claimantsPageSize } =
+    useDrop({
+      ctx: web3ctx,
+      claimId: claimId,
+    })
   const [displayingPages, setDisplayingPages] = useState("")
 
   const _pageOptions = ["10", "25", "50"]
@@ -107,81 +98,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   const { onOpen, onClose, isOpen } = useDisclosure()
   const [addingClaimant, setAddingClaimant] = useState(false)
-  const [addingFile, setAddingFile] = useState(true)
-  const [isUploading, setIsUploading] = useState(false)
-  const querClient = useQueryClient()
 
-  const handleParsingError = function (error: string): void {
-    setIsUploading(false)
-    toast(error, "error", 7000)
-    throw error
-  }
-
-  const validateHeader = function (headerValue: string, column: number): string {
-    const header = headerValue.trim().toLowerCase()
-    if (column == 0 && header != "address") {
-      handleParsingError("First column header must be 'address'")
-    }
-    if (column == 1 && header != "amount") {
-      handleParsingError("Second column header must be 'amount'")
-    }
-    return header
-  }
-  let parserLineNumber = 0
-
-  const validateCellValue = function (cellValue: string, column: any): string {
-    const value = cellValue.trim()
-    if (column == "address") {
-      parserLineNumber++
-      try {
-        web3ctx.web3.utils.toChecksumAddress(value)
-      } catch (error) {
-        handleParsingError(
-          `Error parsing value '${value}' on line ${parserLineNumber}. Value in 'address' column must be a valid address.`,
-        )
-      }
-    }
-    if (column == "amount") {
-      const numVal = parseInt(value)
-      if (isNaN(numVal) || numVal < 0) {
-        handleParsingError(
-          `Error parsing value: '${value}' on line ${parserLineNumber}. Value in 'amount' column must be an integer.`,
-        )
-      }
-    }
-    return value
-  }
-
-  const onDrop = (file: any) => {
-    if (!file.length) {
-      return
-    }
-    parserLineNumber = 0
-    setIsUploading(true)
-    Papa.parse(file[0], {
-      header: true,
-      skipEmptyLines: true,
-      fastMode: true,
-      transform: validateCellValue,
-      transformHeader: validateHeader,
-      complete: (result: any) => {
-        uploadFile.mutate(
-          {
-            dropperClaimId: claimId,
-            claimants: result.data,
-          },
-          {
-            onSettled: () => {
-              setIsUploading(false)
-              setAddingClaimant(false)
-              querClient.refetchQueries(["claimants", "claimId", claimId])
-            },
-          },
-        )
-      },
-      error: (err: Error) => handleParsingError(err.message),
-    })
-  }
   const handleSearchClick = () => {
     if (web3ctx.web3.utils.isAddress(searchString)) {
       searchForAddress(searchString)
@@ -267,14 +184,6 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
             </Collapse>
             {claimants.isLoading && <Spinner />}
             {addingClaimant && <NewClaimantView claimId={claimId} setAdding={setAddingClaimant} />}
-            {addingClaimant && (
-              <FileUpload
-                onDrop={onDrop}
-                alignSelf="center"
-                minW="100%"
-                isUploading={isUploading}
-              />
-            )}
             {claimants.data && (
               <Flex gap="40px" fontSize="16px">
                 <Flex direction="column">
