@@ -85,7 +85,11 @@ const DropperClaimsList = ({
     },
     {
       ...queryCacheProps,
-      enabled: !!contractAddress && !!MULTICALL2_CONTRACT_ADDRESSES,
+      enabled:
+        !!contractAddress &&
+        !!MULTICALL2_CONTRACT_ADDRESSES[
+          String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
+        ],
       // onSuccess: () => {}, //TODO
     },
   )
