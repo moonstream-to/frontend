@@ -20,7 +20,7 @@ import { hookCommon } from "../../../../src/hooks"
 import NFTList from "../../../../src/components/nft/NFTList"
 import { NFTInfo } from "../../../../src/components/nft/types"
 import { numberToHex } from "web3-utils"
-import { StakedTokenInfo } from "../types"
+import { StakedTokenInfo } from "../../../../src/types/Moonstream"
 import Link from "next/link"
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"

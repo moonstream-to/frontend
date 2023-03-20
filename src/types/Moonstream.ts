@@ -64,3 +64,9 @@ export interface ClaimInterface {
   terminus_pool_id: number
   title: string
 }
+
+import { NFTInfo } from "../components/nft/types"
+
+export type StakedTokenInfo = NFTInfo & {
+  sessionId: number
+}
