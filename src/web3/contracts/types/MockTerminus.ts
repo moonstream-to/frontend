@@ -2,11 +2,18 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import BN from 'bn.js'
-import { ContractOptions } from 'web3-eth-contract'
-import { EventLog } from 'web3-core'
-import { EventEmitter } from 'events'
-import { Callback, PayableTransactionObject, NonPayableTransactionObject, BlockType, ContractEventLog, BaseContract } from './types'
+import BN from "bn.js"
+import { ContractOptions } from "web3-eth-contract"
+import { EventLog } from "web3-core"
+import { EventEmitter } from "events"
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract,
+} from "./types"
 
 export interface EventOptions {
   filter?: object
@@ -69,29 +76,51 @@ export interface MockTerminus extends BaseContract {
   constructor(jsonInterface: any[], address?: string, options?: ContractOptions): MockTerminus
   clone(): MockTerminus
   methods: {
-    approveForPool(poolID: number | string | BN, operator: string): NonPayableTransactionObject<void>
+    approveForPool(
+      poolID: number | string | BN,
+      operator: string,
+    ): NonPayableTransactionObject<void>
 
     balanceOf(account: string, id: number | string | BN): NonPayableTransactionObject<string>
 
-    balanceOfBatch(accounts: string[], ids: (number | string | BN)[]): NonPayableTransactionObject<string[]>
+    balanceOfBatch(
+      accounts: string[],
+      ids: (number | string | BN)[],
+    ): NonPayableTransactionObject<string[]>
 
-    burn(from: string, poolID: number | string | BN, amount: number | string | BN): NonPayableTransactionObject<void>
+    burn(
+      from: string,
+      poolID: number | string | BN,
+      amount: number | string | BN,
+    ): NonPayableTransactionObject<void>
 
     contractURI(): NonPayableTransactionObject<string>
 
-    createPoolV1(_capacity: number | string | BN, _transferable: boolean, _burnable: boolean): NonPayableTransactionObject<string>
+    createPoolV1(
+      _capacity: number | string | BN,
+      _transferable: boolean,
+      _burnable: boolean,
+    ): NonPayableTransactionObject<string>
 
     createSimplePool(_capacity: number | string | BN): NonPayableTransactionObject<string>
 
     isApprovedForAll(account: string, operator: string): NonPayableTransactionObject<boolean>
 
-    isApprovedForPool(poolID: number | string | BN, operator: string): NonPayableTransactionObject<boolean>
+    isApprovedForPool(
+      poolID: number | string | BN,
+      operator: string,
+    ): NonPayableTransactionObject<boolean>
 
     poolIsBurnable(poolID: number | string | BN): NonPayableTransactionObject<boolean>
 
     poolIsTransferable(poolID: number | string | BN): NonPayableTransactionObject<boolean>
 
-    mint(to: string, poolID: number | string | BN, amount: number | string | BN, data: string | number[]): NonPayableTransactionObject<void>
+    mint(
+      to: string,
+      poolID: number | string | BN,
+      amount: number | string | BN,
+      data: string | number[],
+    ): NonPayableTransactionObject<void>
 
     mintBatch(
       to: string,
@@ -104,7 +133,11 @@ export interface MockTerminus extends BaseContract {
 
     poolBasePrice(): NonPayableTransactionObject<string>
 
-    poolMintBatch(id: number | string | BN, toAddresses: string[], amounts: (number | string | BN)[]): NonPayableTransactionObject<void>
+    poolMintBatch(
+      id: number | string | BN,
+      toAddresses: string[],
+      amounts: (number | string | BN)[],
+    ): NonPayableTransactionObject<void>
 
     safeBatchTransferFrom(
       from: string,
@@ -132,7 +165,10 @@ export interface MockTerminus extends BaseContract {
 
     setPoolBasePrice(newBasePrice: number | string | BN): NonPayableTransactionObject<void>
 
-    setPoolController(poolID: number | string | BN, newController: string): NonPayableTransactionObject<void>
+    setPoolController(
+      poolID: number | string | BN,
+      newController: string,
+    ): NonPayableTransactionObject<void>
 
     setURI(poolID: number | string | BN, poolURI: string): NonPayableTransactionObject<void>
 
@@ -150,7 +186,10 @@ export interface MockTerminus extends BaseContract {
 
     uri(poolID: number | string | BN): NonPayableTransactionObject<string>
 
-    withdrawPayments(toAddress: string, amount: number | string | BN): NonPayableTransactionObject<void>
+    withdrawPayments(
+      toAddress: string,
+      amount: number | string | BN,
+    ): NonPayableTransactionObject<void>
   }
   events: {
     ApprovalForAll(cb?: Callback<ApprovalForAll>): EventEmitter
@@ -171,18 +210,18 @@ export interface MockTerminus extends BaseContract {
     allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter
   }
 
-  once(event: 'ApprovalForAll', cb: Callback<ApprovalForAll>): void
-  once(event: 'ApprovalForAll', options: EventOptions, cb: Callback<ApprovalForAll>): void
+  once(event: "ApprovalForAll", cb: Callback<ApprovalForAll>): void
+  once(event: "ApprovalForAll", options: EventOptions, cb: Callback<ApprovalForAll>): void
 
-  once(event: 'PoolMintBatch', cb: Callback<PoolMintBatch>): void
-  once(event: 'PoolMintBatch', options: EventOptions, cb: Callback<PoolMintBatch>): void
+  once(event: "PoolMintBatch", cb: Callback<PoolMintBatch>): void
+  once(event: "PoolMintBatch", options: EventOptions, cb: Callback<PoolMintBatch>): void
 
-  once(event: 'TransferBatch', cb: Callback<TransferBatch>): void
-  once(event: 'TransferBatch', options: EventOptions, cb: Callback<TransferBatch>): void
+  once(event: "TransferBatch", cb: Callback<TransferBatch>): void
+  once(event: "TransferBatch", options: EventOptions, cb: Callback<TransferBatch>): void
 
-  once(event: 'TransferSingle', cb: Callback<TransferSingle>): void
-  once(event: 'TransferSingle', options: EventOptions, cb: Callback<TransferSingle>): void
+  once(event: "TransferSingle", cb: Callback<TransferSingle>): void
+  once(event: "TransferSingle", options: EventOptions, cb: Callback<TransferSingle>): void
 
-  once(event: 'URI', cb: Callback<URI>): void
-  once(event: 'URI', options: EventOptions, cb: Callback<URI>): void
+  once(event: "URI", cb: Callback<URI>): void
+  once(event: "URI", options: EventOptions, cb: Callback<URI>): void
 }

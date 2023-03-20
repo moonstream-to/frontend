@@ -2,39 +2,34 @@
 import React, { useContext, useEffect, useState } from "react"
 
 import { Flex, Box, Text } from "@chakra-ui/react"
-import { useDrag } from 'react-dnd'
+import { useDrag } from "react-dnd"
 
-import Web3Context from "../../contexts/Web3Context/context";
-import useGofp from "../../contexts/GoFPContext";
-import useGofpContract from "../../hooks/useGofpConract";
-import useURI from "../../hooks/useLink";
+import Web3Context from "../../contexts/Web3Context/context"
+import useGofp from "../../contexts/GoFPContext"
+import useGofpContract from "../../hooks/useGofpConract"
+import useURI from "../../hooks/useLink"
 
+const CharacterCard = ({ tokenId, uri }: { tokenId: number; uri: string }) => {
+  const web3ctx = useContext(Web3Context)
+  const { selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress } = useGofp()
 
-const CharacterCard = ({
-  tokenId,
-  uri,
-}: {
-  tokenId: number;
-  uri: string,
-}) => {
-
-  const web3ctx = useContext(Web3Context);
-  const {selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress} = useGofp()
-
-  const { usePath, useGuard, ownedTokens } = useGofpContract({sessionId, gardenContractAddress, web3ctx})
+  const { usePath, useGuard, ownedTokens } = useGofpContract({
+    sessionId,
+    gardenContractAddress,
+    web3ctx,
+  })
   const path = usePath(tokenId)
   const guard = useGuard(tokenId)
   const [status, setStatus] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (guard.data && ownedTokens.data?.includes(tokenId)) {
-      setStatus(guard.data ? 'Already played' : 'Available')
+      setStatus(guard.data ? "Already played" : "Available")
     } else {
-      setStatus(path.data ? `Assigned to path ${path.data}` : 'Choose path')
+      setStatus(path.data ? `Assigned to path ${path.data}` : "Choose path")
     }
   }, [path.data, guard.data, tokenId, ownedTokens.data])
 
-  const metadata = useURI({link: uri})
-
+  const metadata = useURI({ link: uri })
 
   const [{ isDragging }, drag] = useDrag({
     item: { id: tokenId },
@@ -42,9 +37,9 @@ const CharacterCard = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-  });
+  })
 
-  const opacity = isDragging ? 0.3 : 1;
+  const opacity = isDragging ? 0.3 : 1
 
   return (
     <Flex
@@ -59,8 +54,8 @@ const CharacterCard = ({
       borderRadius="10px"
       alignItems="center"
       textAlign="center"
-      style={{opacity}}
-      cursor={usePath(tokenId).data ? 'default' : 'pointer'}
+      style={{ opacity }}
+      cursor={usePath(tokenId).data ? "default" : "pointer"}
       onClick={() => toggleTokenSelect(tokenId)}
     >
       <Box
@@ -74,20 +69,22 @@ const CharacterCard = ({
         backgroundPosition="center"
         backgroundSize="contain"
       />
-      <Text userSelect='none' px={1} fontSize="12px" pt={1}>
+      <Text userSelect="none" px={1} fontSize="12px" pt={1}>
         {metadata.data?.name || tokenId}
       </Text>
-      {status && <Text 
-        userSelect='none' 
-        fontSize="8px" 
-        pt={1}
-        px={1}
-        textColor={status === 'Already played' ? "#EE8686" : undefined}
-      >
-        {status}
-      </Text>}
+      {status && (
+        <Text
+          userSelect="none"
+          fontSize="8px"
+          pt={1}
+          px={1}
+          textColor={status === "Already played" ? "#EE8686" : undefined}
+        >
+          {status}
+        </Text>
+      )}
     </Flex>
-  );
-};
+  )
+}
 
-export default CharacterCard;
+export default CharacterCard

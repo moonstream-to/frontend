@@ -1,13 +1,11 @@
-import React, { useState } from "react";
-import { Flex } from "@chakra-ui/react";
+import React, { useState } from "react"
+import { Flex } from "@chakra-ui/react"
 
-import ActiveCharPanel from "./GoFPActiveCharPanel";
-import AddCharPanel from "./GoFPAddCharPanel";
+import ActiveCharPanel from "./GoFPActiveCharPanel"
+import AddCharPanel from "./GoFPAddCharPanel"
 
 const CharacterPanel = () => {
-  const [showActive, setShowActive] = useState<boolean>(
-    true
-  );
+  const [showActive, setShowActive] = useState<boolean>(true)
 
   return (
     <Flex
@@ -22,20 +20,12 @@ const CharacterPanel = () => {
     >
       {true && (
         <>
-          {showActive && (
-            <ActiveCharPanel
-              setShowActive={setShowActive}
-            />
-          )}
-          {!showActive && (
-            <AddCharPanel
-              setShowActive={setShowActive}
-            />
-          )}
+          {showActive && <ActiveCharPanel setShowActive={setShowActive} />}
+          {!showActive && <AddCharPanel setShowActive={setShowActive} />}
         </>
       )}
     </Flex>
-  );
-};
+  )
+}
 
-export default CharacterPanel;
+export default CharacterPanel

@@ -1,17 +1,11 @@
-import React, { useContext } from "react";
-import { Flex, Center } from "@chakra-ui/react";
-import PathCard from "./GoFPPathCard";
-import useGofp from "../../contexts/GoFPContext";
-import useGofpContract from "../../hooks/useGofpConract";
-import Web3Context from "../../contexts/Web3Context/context";
+import React, { useContext } from "react"
+import { Flex, Center } from "@chakra-ui/react"
+import PathCard from "./GoFPPathCard"
+import useGofp from "../../contexts/GoFPContext"
+import useGofpContract from "../../hooks/useGofpConract"
+import Web3Context from "../../contexts/Web3Context/context"
 
-const StagePanel = ({
-  stageIdx,
-}: {
-  stageIdx: number;
-}) => {
-
-
+const StagePanel = ({ stageIdx }: { stageIdx: number }) => {
   const { generatePathId, selectStage, sessionId, gardenContractAddress } = useGofp()
 
   const web3ctx = useContext(Web3Context)
@@ -20,7 +14,6 @@ const StagePanel = ({
     gardenContractAddress,
     web3ctx,
   })
-
 
   // const getPathStatus = (pathIdx: number) => {
   //   if (completed) {
@@ -40,7 +33,7 @@ const StagePanel = ({
       pb={10}
       zIndex={1}
       onClick={() => {
-        selectStage(stageIdx + 1);
+        selectStage(stageIdx + 1)
       }}
     >
       <Flex flexDirection="row" alignItems="center">
@@ -48,18 +41,18 @@ const StagePanel = ({
           return (
             <Center key={pathIdx}>
               <PathCard
-                accept={currentStage.data === stageIdx + 1 ? 'character' : 'none'}
+                accept={currentStage.data === stageIdx + 1 ? "character" : "none"}
                 pathMetadata={path}
                 pathIdx={pathIdx}
                 stageIdx={stageIdx}
                 pathId={generatePathId(stageIdx, pathIdx)}
               ></PathCard>
             </Center>
-          );
+          )
         })}
       </Flex>
     </Flex>
-  );
-};
+  )
+}
 
-export default StagePanel;
+export default StagePanel

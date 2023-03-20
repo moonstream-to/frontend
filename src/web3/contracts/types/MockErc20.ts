@@ -2,11 +2,18 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import BN from 'bn.js'
-import { ContractOptions } from 'web3-eth-contract'
-import { EventLog } from 'web3-core'
-import { EventEmitter } from 'events'
-import { Callback, PayableTransactionObject, NonPayableTransactionObject, BlockType, ContractEventLog, BaseContract } from './types'
+import BN from "bn.js"
+import { ContractOptions } from "web3-eth-contract"
+import { EventLog } from "web3-core"
+import { EventEmitter } from "events"
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract,
+} from "./types"
 
 export interface EventOptions {
   filter?: object
@@ -43,9 +50,15 @@ export interface MockErc20 extends BaseContract {
 
     decimals(): NonPayableTransactionObject<string>
 
-    decreaseAllowance(spender: string, subtractedValue: number | string | BN): NonPayableTransactionObject<boolean>
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: number | string | BN,
+    ): NonPayableTransactionObject<boolean>
 
-    increaseAllowance(spender: string, addedValue: number | string | BN): NonPayableTransactionObject<boolean>
+    increaseAllowance(
+      spender: string,
+      addedValue: number | string | BN,
+    ): NonPayableTransactionObject<boolean>
 
     mint(account: string, amount: number | string | BN): NonPayableTransactionObject<void>
 
@@ -57,7 +70,11 @@ export interface MockErc20 extends BaseContract {
 
     transfer(recipient: string, amount: number | string | BN): NonPayableTransactionObject<boolean>
 
-    transferFrom(sender: string, recipient: string, amount: number | string | BN): NonPayableTransactionObject<boolean>
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: number | string | BN,
+    ): NonPayableTransactionObject<boolean>
   }
   events: {
     Approval(cb?: Callback<Approval>): EventEmitter
@@ -69,9 +86,9 @@ export interface MockErc20 extends BaseContract {
     allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter
   }
 
-  once(event: 'Approval', cb: Callback<Approval>): void
-  once(event: 'Approval', options: EventOptions, cb: Callback<Approval>): void
+  once(event: "Approval", cb: Callback<Approval>): void
+  once(event: "Approval", options: EventOptions, cb: Callback<Approval>): void
 
-  once(event: 'Transfer', cb: Callback<Transfer>): void
-  once(event: 'Transfer', options: EventOptions, cb: Callback<Transfer>): void
+  once(event: "Transfer", cb: Callback<Transfer>): void
+  once(event: "Transfer", options: EventOptions, cb: Callback<Transfer>): void
 }

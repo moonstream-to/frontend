@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Box, Flex, Text } from '@chakra-ui/layout'
-import { Image } from '@chakra-ui/react'
+import { useEffect, useState } from "react"
+import { Box, Flex, Text } from "@chakra-ui/layout"
+import { Image } from "@chakra-ui/react"
 
-import useLink from '../hooks/useLink'
+import useLink from "../hooks/useLink"
 
 const TerminusPoolsListItem = ({
   poolId,
@@ -35,56 +35,76 @@ const TerminusPoolsListItem = ({
   useEffect(() => {
     if (inQuery) {
       const element = document.getElementById(`pool-${poolId}`)
-      element?.scrollIntoView({block: 'center'})
-      const poolView = document.getElementById('poolView')
+      element?.scrollIntoView({ block: "center" })
+      const poolView = document.getElementById("poolView")
       poolView?.scrollIntoView()
     }
   }, [inQuery, poolId])
 
   const [show, setShow] = useState(true)
   useEffect(() => {
-    if (filter === '') { setShow(true); return } 
-    const lFilter = filter.toLowerCase();
-    if (metadata.data?.name?.toLowerCase().includes(lFilter)) { setShow(true); return } 
-    if (metadata.data?.description?.toLowerCase().includes(lFilter)) { setShow(true); return } 
-    if (poolId.toString().startsWith(lFilter)) {setShow(true); return}
-    setShow(false);
+    if (filter === "") {
+      setShow(true)
+      return
+    }
+    const lFilter = filter.toLowerCase()
+    if (metadata.data?.name?.toLowerCase().includes(lFilter)) {
+      setShow(true)
+      return
+    }
+    if (metadata.data?.description?.toLowerCase().includes(lFilter)) {
+      setShow(true)
+      return
+    }
+    if (poolId.toString().startsWith(lFilter)) {
+      setShow(true)
+      return
+    }
+    setShow(false)
   }, [filter, metadata.data, poolId])
 
   return (
     <>
-    {show && (
-    <Flex
-      gap='15px'
-      alignItems='center'
-      bg={selected ? '#4d4d4d' : 'transparent'}
-      fontWeight={selected ? '900' : '400'}
-      borderRadius='10px'
-      onClick={handleClick}
-      cursor='pointer'
-      p='10px'
-      id={`pool-${String(poolId)}`}
-    >
-      {!metadata.data?.image && (
-        <>
-          <Box border='1px solid black' borderRadius='5px' w='32px' h='32px' />
-        </>
+      {show && (
+        <Flex
+          gap="15px"
+          alignItems="center"
+          bg={selected ? "#4d4d4d" : "transparent"}
+          fontWeight={selected ? "900" : "400"}
+          borderRadius="10px"
+          onClick={handleClick}
+          cursor="pointer"
+          p="10px"
+          id={`pool-${String(poolId)}`}
+        >
+          {!metadata.data?.image && (
+            <>
+              <Box border="1px solid black" borderRadius="5px" w="32px" h="32px" />
+            </>
+          )}
+          {metadata.data && (
+            <>
+              {metadata.data.image && (
+                <Image
+                  src={metadata.data.image}
+                  width="32px"
+                  height="32px"
+                  alt={metadata.data.image}
+                  borderRadius="5px"
+                />
+              )}
+              <Text unselectable="on">{metadata.data.name}</Text>
+            </>
+          )}
+          {!metadata.data?.name && (
+            <>
+              <Text borderRadius="5px" h="32px" flexGrow="1" textStyle="italic" color="gray">
+                no name
+              </Text>
+            </>
+          )}
+        </Flex>
       )}
-      {metadata.data && (
-        <>
-          {metadata.data.image && <Image src={metadata.data.image} width='32px' height='32px' alt={metadata.data.image} borderRadius='5px' />}
-          <Text unselectable='on'>{metadata.data.name}</Text>
-        </>
-      )}
-      {!metadata.data?.name && (
-        <>
-          <Text borderRadius='5px' h='32px' flexGrow='1' textStyle='italic' color='gray'>
-            no name
-          </Text>
-        </>
-      )}
-    </Flex>
-    )}
     </>
   )
 }

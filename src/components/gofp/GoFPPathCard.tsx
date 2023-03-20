@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Flex, Image, Text, Box } from "@chakra-ui/react";
-import { useDrop } from 'react-dnd'
+import React, { useContext, useEffect, useState } from "react"
+import { Flex, Image, Text, Box } from "@chakra-ui/react"
+import { useDrop } from "react-dnd"
 
-import { PathMetadata, PathStatus } from "./GoFPTypes";
-import useGofp from "../../contexts/GoFPContext";
-import Web3Context from "../../contexts/Web3Context/context";
-import useGofpContract from "../../hooks/useGofpConract";
+import { PathMetadata, PathStatus } from "./GoFPTypes"
+import useGofp from "../../contexts/GoFPContext"
+import Web3Context from "../../contexts/Web3Context/context"
+import useGofpContract from "../../hooks/useGofpConract"
 
 const PathCard = ({
   pathIdx,
@@ -20,33 +20,38 @@ const PathCard = ({
   accept: string
   stageIdx: number
 }) => {
-  const correctPathColor = "#3BB563";
-  const incorrectPathColor = "#E85858";
-  const undecidedPathColor = "#4C4C4C";
-
+  const correctPathColor = "#3BB563"
+  const incorrectPathColor = "#E85858"
+  const undecidedPathColor = "#4C4C4C"
 
   const { selectPath, sessionId, gardenContractAddress } = useGofp()
   const web3ctx = useContext(Web3Context)
 
-  const { choosePath, correctPaths, currentStage } = useGofpContract({ sessionId, gardenContractAddress, web3ctx })
+  const { choosePath, correctPaths, currentStage } = useGofpContract({
+    sessionId,
+    gardenContractAddress,
+    web3ctx,
+  })
 
-  const handleDrop = (item: {id: number}) => {
-    const pathNumber = Number(pathId.split('_').slice(-1)[0]) + 1
-    choosePath.mutate({tokenIds: [item.id], path: pathNumber})
+  const handleDrop = (item: { id: number }) => {
+    const pathNumber = Number(pathId.split("_").slice(-1)[0]) + 1
+    choosePath.mutate({ tokenIds: [item.id], path: pathNumber })
   }
 
   const [status, setStatus] = useState(PathStatus.undecided)
-  
 
   useEffect(() => {
-    if (!correctPaths.data) { return }
+    if (!correctPaths.data) {
+      return
+    }
     if (stageIdx < correctPaths.data?.length) {
-      setStatus(correctPaths.data[stageIdx] === pathIdx + 1 ? PathStatus.correct : PathStatus.incorrect)
+      setStatus(
+        correctPaths.data[stageIdx] === pathIdx + 1 ? PathStatus.correct : PathStatus.incorrect,
+      )
     } else {
       setStatus(PathStatus.undecided)
     }
-  },[correctPaths.data, pathIdx, stageIdx])
-
+  }, [correctPaths.data, pathIdx, stageIdx])
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept,
@@ -55,54 +60,52 @@ const PathCard = ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
-  });
+  })
 
   const assets = {
     trophy: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/trophy.png",
     skull: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/skull.png",
     path_into_fog: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/path_into_fog.png",
-  };
+  }
 
-  let cardFill = "";
+  let cardFill = ""
 
   switch (status) {
     case PathStatus.correct:
-      cardFill = correctPathColor;
-      break;
+      cardFill = correctPathColor
+      break
     case PathStatus.incorrect:
-      cardFill = incorrectPathColor;
-      break;
+      cardFill = incorrectPathColor
+      break
     case PathStatus.undecided:
-      cardFill = undecidedPathColor;
-      break;
+      cardFill = undecidedPathColor
+      break
     default:
-      cardFill = undecidedPathColor;
-      break;
+      cardFill = undecidedPathColor
+      break
   }
 
   return (
-    <Box ref={drop} id={pathId} px={2} 
+    <Box
+      ref={drop}
+      id={pathId}
+      px={2}
       onClick={() => {
         console.log(stageIdx, currentStage.data)
         if (stageIdx + 1 === currentStage.data) {
           selectPath(pathIdx + 1)
-        } }} 
-      fontWeight={canDrop ? '700' : '400'}
+        }
+      }}
+      fontWeight={canDrop ? "700" : "400"}
     >
-      <Flex
-        flexDirection="column"
-        position="relative"
-        w="122.5px"
-        h="170px"
-        alignItems="center"
-      >
+      <Flex flexDirection="column" position="relative" w="122.5px" h="170px" alignItems="center">
         <Box position="absolute" w="122.5px" h="170px">
           <svg
             width="122.5"
             height="170"
             viewBox="0 0 100 138"
             fill={cardFill}
-            opacity={isOver && canDrop ? '1' : "0.5"}
+            opacity={isOver && canDrop ? "1" : "0.5"}
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -145,7 +148,7 @@ const PathCard = ({
               borderColor="white"
               position="relative"
               opacity={status == PathStatus.undecided ? 1.0 : 0.4}
-            ></Image>            
+            ></Image>
           )}
           <Text fontSize="xs" color="white" align="center" py={2}>
             {pathMetadata.title}
@@ -153,7 +156,7 @@ const PathCard = ({
         </Box>
       </Flex>
     </Box>
-  );
-};
+  )
+}
 
-export default PathCard;
+export default PathCard

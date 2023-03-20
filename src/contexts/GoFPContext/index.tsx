@@ -1,7 +1,5 @@
-import { createContext, useReducer, useContext } from "react";
-import gofpReducer, { initialState } from "./gofpReducer";
-
-
+import { createContext, useReducer, useContext } from "react"
+import gofpReducer, { initialState } from "./gofpReducer"
 
 type gofpContextType = {
   selectedStage: number
@@ -18,31 +16,30 @@ type gofpContextType = {
   toggleTokenSelect: (tokenId: number) => void
 }
 
+const GofpContext = createContext<gofpContextType | any>(initialState) //TODO
 
-const GofpContext = createContext<gofpContextType | any>(initialState); //TODO
-
-export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
-  const [state, dispatch] = useReducer(gofpReducer, initialState);
+export const GofpProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, dispatch] = useReducer(gofpReducer, initialState)
 
   const selectStage = (stageId: number) => {
     dispatch({
       type: "SELECT_STAGE",
       payload: {
         stageId,
-      }
-    });
-  };
+      },
+    })
+  }
 
-  const generatePathId =  (stage: number, path: number) => {
-    return `stage_${stage}_path_${path}`;
+  const generatePathId = (stage: number, path: number) => {
+    return `stage_${stage}_path_${path}`
   }
 
   const toggleTokenSelect = (tokenId: number) => {
     dispatch({
-      type: 'TOGGLE_TOKEN_SELECT',
+      type: "TOGGLE_TOKEN_SELECT",
       payload: {
         tokenId,
-      }
+      },
     })
   }
 
@@ -51,39 +48,38 @@ export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
       type: "SELECT_PATH",
       payload: {
         pathId,
-      }
-    });
-  };
+      },
+    })
+  }
 
   const selectToken = (tokenId: number) => {
     dispatch({
       type: "SELECT_TOKEN",
       payload: {
         tokenId,
-      }
-    });
-  };
+      },
+    })
+  }
 
   const setSessionId = (sessionId: number) => {
     dispatch({
-      type: 'SET_SESSION_ID',
+      type: "SET_SESSION_ID",
       payload: {
-        sessionId
-      }
+        sessionId,
+      },
     })
   }
 
   const setGardenContractAddress = (address: string) => {
     dispatch({
-      type: 'SET_GARDEN_ADDRESS',
+      type: "SET_GARDEN_ADDRESS",
       payload: {
         address,
-      }
+      },
     })
   }
 
-  const {selectedStage, selectedPath, selectedTokens, sessionId, gardenContractAddress} = state
-  
+  const { selectedStage, selectedPath, selectedTokens, sessionId, gardenContractAddress } = state
 
   const value = {
     selectedStage,
@@ -98,20 +94,19 @@ export const GofpProvider = ({ children }: {children: React.ReactNode}) => {
     setSessionId,
     toggleTokenSelect,
     setGardenContractAddress,
-  };
-
-
-  return <GofpContext.Provider value={value}>{children}</GofpContext.Provider>;
-};
-
-const useGofp = () => {
-  const context = useContext(GofpContext);
-
-  if (context === undefined) {
-    throw new Error("useGofp must be used within gofpContext");
   }
 
-  return context;
-};
+  return <GofpContext.Provider value={value}>{children}</GofpContext.Provider>
+}
 
-export default useGofp;
+const useGofp = () => {
+  const context = useContext(GofpContext)
+
+  if (context === undefined) {
+    throw new Error("useGofp must be used within gofpContext")
+  }
+
+  return context
+}
+
+export default useGofp

@@ -2,11 +2,18 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import BN from 'bn.js'
-import { ContractOptions } from 'web3-eth-contract'
-import { EventLog } from 'web3-core'
-import { EventEmitter } from 'events'
-import { Callback, PayableTransactionObject, NonPayableTransactionObject, BlockType, ContractEventLog, BaseContract } from './types'
+import BN from "bn.js"
+import { ContractOptions } from "web3-eth-contract"
+import { EventLog } from "web3-core"
+import { EventEmitter } from "events"
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract,
+} from "./types"
 
 export interface EventOptions {
   filter?: object
@@ -50,7 +57,10 @@ export interface Multicall2 extends BaseContract {
 
     getLastBlockHash(): NonPayableTransactionObject<string>
 
-    tryAggregate(requireSuccess: boolean, calls: [string, string | number[]][]): NonPayableTransactionObject<[boolean, string][]>
+    tryAggregate(
+      requireSuccess: boolean,
+      calls: [string, string | number[]][],
+    ): NonPayableTransactionObject<[boolean, string][]>
 
     tryBlockAndAggregate(
       requireSuccess: boolean,

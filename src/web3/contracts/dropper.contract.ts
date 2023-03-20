@@ -36,11 +36,11 @@ export const getState = (address: any, ctx: any) => async () => {
   dropper.options.address = address
 
   //eslint-disable-next-line
-  const ERC20_TYPE = await dropper.methods.ERC20_TYPE().call();
+  const ERC20_TYPE = await dropper.methods.ERC20_TYPE().call()
   //eslint-disable-next-line
-  const ERC721_TYPE = await dropper.methods.ERC721_TYPE().call();
+  const ERC721_TYPE = await dropper.methods.ERC721_TYPE().call()
   //eslint-disable-next-line
-  const ERC1155_TYPE = await dropper.methods.ERC1155_TYPE().call();
+  const ERC1155_TYPE = await dropper.methods.ERC1155_TYPE().call()
   const numClaims = await dropper.methods.numClaims().call()
   const owner = await dropper.methods.owner().call()
   const paused = await dropper.methods.paused().call()
