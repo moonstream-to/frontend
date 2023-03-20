@@ -15,14 +15,18 @@ const TextWithPopup = ({text, image, title}: {text: string, title: string, image
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const textCut = 80;
+
   return (
     <>
       <Text fontWeight='700' fontSize='18px' pb={6}>{title}</Text>
-      <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
-        {text.length > 100 ? text.slice(0, 100) + ' ... ' : text}
-      </ReactMarkdown>
+      <Center fontSize={"xs"}>
+        <ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>
+          {text.length > textCut ? text.slice(0, textCut) + ' ... ' : text}
+        </ReactMarkdown>
+      </Center>
 
-      {text.length > 100 && <Text w='fit-content' color='#F56646' fontWeight='700' fontSize='12px' onClick={onOpen} cursor='pointer'>Read More</Text>}
+      {text.length > textCut && <Text w='fit-content' color='#F56646' fontWeight='700' fontSize='12px' onClick={onOpen} cursor='pointer'>Read More</Text>}
       <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent

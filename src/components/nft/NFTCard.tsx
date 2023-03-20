@@ -33,21 +33,20 @@ const _NFTCard = ({
   const calculatedImaged = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl;
   return (
     <Flex {...props} backgroundColor="#353535">
-      <VStack maxW="250" border="solid" borderColor="white" borderRadius="lg">
+      <VStack minW="220" minH="360" border="solid" borderColor="white" borderRadius="lg">
         <Image
           src={imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl}
           as={isVideo ? "video" : undefined}
           filter={grayedOut ? "grayscale(100%)" : undefined}
           opacity={grayedOut ? "0.3" : undefined}
           loading="lazy"
-          w="200px"
-          h="200px"
-          px={2}
-          py={4}
+          w="180px"
+          h="180px"
+          mt="20px"
           borderRadius="sm"
           alt="NFT Image"
         />
-        <Box px={2} pb={2}>
+        <Box px={6} pb={4}>
           {description ? (
             <TextWithPopup text={description} image={calculatedImaged} title={name} />
           ): (
