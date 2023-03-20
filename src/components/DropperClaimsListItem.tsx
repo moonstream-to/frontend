@@ -38,8 +38,8 @@ const DropperClaimsListItem = ({
     if (inQuery) {
       const element = document.getElementById(`claim-${claimId}`)
       element?.scrollIntoView({ block: "center" })
-      const poolView = document.getElementById("poolView")
-      poolView?.scrollIntoView()
+      const claimView = document.getElementById("claimView")
+      claimView?.scrollIntoView()
     }
   }, [inQuery, claimId])
 

@@ -138,7 +138,7 @@ const DropperClaimView = ({
 
   return (
     <Flex
-      id="poolView"
+      id="claimView"
       bg="#2d2d2d"
       minW="800px"
       borderRadius="20px"
