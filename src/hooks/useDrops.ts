@@ -74,7 +74,7 @@ const useDrops = ({
               ctx.targetChain?.name,
               permission[1],
               claimsPage * claimsPageSize,
-              claimsPageSize,
+              500,
               dropperAddress,
             )()
             return response.data.drops
