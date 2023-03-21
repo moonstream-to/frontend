@@ -30,7 +30,7 @@ import useMoonToast from "../hooks/useMoonToast"
 import http from "../utils/http"
 
 import NewClaimantView from "./NewClaimantView"
-import { BsCloudArrowUp } from "react-icons/bs"
+import ClaimantsUpload from "./ClaimantsUpload"
 
 const ClaimantsView = ({ claimId }: { claimId: string }) => {
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
@@ -109,7 +109,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   const { onOpen, onClose, isOpen } = useDisclosure()
   const { onToggle: onToggleContent, isOpen: isOpenContent } = useDisclosure()
-  const { onToggle: onToggleUpload, isOpen: isOpenUpload } = useDisclosure()
+  const { onToggle: onToggleUpload, isOpen: isOpenUpload, onClose: onCloseUpload } = useDisclosure()
 
   const [addingClaimant, setAddingClaimant] = useState(false)
 
@@ -173,6 +173,9 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
           bg="transparent"
         />
       </Flex>
+      <Collapse in={isOpenUpload}>
+        <ClaimantsUpload claimId={claimId} onClose={onCloseUpload} />
+      </Collapse>
       <Collapse in={isOpenContent} animateOpacity>
         <Flex direction="column" gap="20px">
           <Flex justifyContent="space-between" alignItems="center">
