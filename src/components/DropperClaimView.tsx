@@ -132,7 +132,7 @@ const DropperClaimView = ({
       })
   }
 
-  if (Number(claimId) < 0) {
+  if (Number(claimId) < 1) {
     return <></>
   }
 

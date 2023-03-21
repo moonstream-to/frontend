@@ -172,7 +172,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
           bg="transparent"
         />
       </Flex>
-      <Collapse in={isOpenUpload || claimants.data?.length === 0}>
+      <Collapse in={isOpenUpload || (isOpenContent && claimants.data?.length === 0)}>
         <ClaimantsUpload claimId={claimId} onClose={onCloseUpload} />
       </Collapse>
       <Collapse in={isOpenContent} animateOpacity>

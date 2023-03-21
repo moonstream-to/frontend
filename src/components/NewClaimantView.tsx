@@ -137,9 +137,10 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
             value={newAddress}
             borderRadius="10px"
             onChange={(e) => setNewAddress(e.target.value)}
-            maxW="42ch"
-            w="42ch"
+            maxW="45ch"
+            w="45ch"
             borderColor={inputColor}
+            fontFamily="Jet Brains Mono, monospace"
           />
           <Input
             variant="address"
