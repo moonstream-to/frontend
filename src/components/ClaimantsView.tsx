@@ -14,8 +14,15 @@ import {
   useDisclosure,
   Icon,
   Select,
+  Button,
+  Spacer,
 } from "@chakra-ui/react"
-import { AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineVerticalRight } from "react-icons/ai"
+import {
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
+  AiOutlineCloudUpload,
+  AiOutlineVerticalRight,
+} from "react-icons/ai"
 
 import Web3Context from "../contexts/Web3Context/context"
 import useDrop from "../hooks/useDrop"
@@ -23,6 +30,7 @@ import useMoonToast from "../hooks/useMoonToast"
 import http from "../utils/http"
 
 import NewClaimantView from "./NewClaimantView"
+import { BsCloudArrowUp } from "react-icons/bs"
 
 const ClaimantsView = ({ claimId }: { claimId: string }) => {
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
@@ -101,6 +109,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
 
   const { onOpen, onClose, isOpen } = useDisclosure()
   const { onToggle: onToggleContent, isOpen: isOpenContent } = useDisclosure()
+  const { onToggle: onToggleUpload, isOpen: isOpenUpload } = useDisclosure()
 
   const [addingClaimant, setAddingClaimant] = useState(false)
 
@@ -138,8 +147,24 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
         justifyContent="space-between"
         onClick={!isOpenContent ? onToggleContent : undefined}
         cursor={isOpenContent ? "default" : "pointer"}
+        gap="40px"
       >
-        <Text>Claimslist</Text>
+        <Text fontSize="18px" fontWeight="700">
+          Claimslist
+        </Text>
+        {isOpenContent && (
+          <Button
+            onClick={onToggleUpload}
+            gap="10px"
+            bg="transparent"
+            _hover={{ bg: "transparent" }}
+            fontSize="16px"
+            fontWeight="400"
+          >
+            <Icon as={AiOutlineCloudUpload} /> <Text>Update</Text>
+          </Button>
+        )}
+        <Spacer />
         <IconButton
           aria-label="toggle"
           icon={isOpenContent ? <SmallCloseIcon /> : <ChevronDownIcon />}
