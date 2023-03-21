@@ -302,7 +302,6 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
   }, [])
 
   React.useEffect(() => {
-    if (REQUEST_SIGNATURE == "false") return
     const token = localStorage.getItem("APP_ACCESS_TOKEN") ?? ""
     const stringToken = Buffer.from(token, "base64").toString("ascii")
     const objectToken: TokenInterface =
