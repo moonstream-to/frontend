@@ -110,8 +110,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
   const { onOpen, onClose, isOpen } = useDisclosure()
   const { onToggle: onToggleContent, isOpen: isOpenContent } = useDisclosure()
   const { onToggle: onToggleUpload, isOpen: isOpenUpload, onClose: onCloseUpload } = useDisclosure()
-
-  const [addingClaimant, setAddingClaimant] = useState(false)
+  const { onToggle: onToggleAdd, isOpen: isOpenAdd, onClose: onCloseAdd } = useDisclosure()
 
   const handleSearchClick = () => {
     if (web3ctx.web3.utils.isAddress(searchString)) {
@@ -213,12 +212,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 }
               />
             </InputGroup>
-            <Flex
-              alignItems="center"
-              gap="10px"
-              cursor="pointer"
-              onClick={() => setAddingClaimant(true)}
-            >
+            <Flex alignItems="center" gap="10px" cursor="pointer" onClick={onToggleAdd}>
               <Text>Add claimant</Text>
               <SmallAddIcon />
             </Flex>
@@ -243,7 +237,9 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
             )}
           </Collapse>
           {claimants.isLoading && <Spinner />}
-          {addingClaimant && <NewClaimantView claimId={claimId} setAdding={setAddingClaimant} />}
+          <Collapse in={isOpenAdd} animateOpacity>
+            <NewClaimantView claimId={claimId} onClose={onCloseAdd} />
+          </Collapse>
           {claimants.data && (
             <Flex gap="40px" fontSize="16px">
               <Flex direction="column">

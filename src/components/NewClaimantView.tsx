@@ -10,13 +10,7 @@ import Web3Context from "../contexts/Web3Context/context"
 import useMoonToast from "../hooks/useMoonToast"
 import http from "../utils/http"
 
-const NewClaimantView = ({
-  claimId,
-  setAdding,
-}: {
-  claimId: string
-  setAdding: (arg0: boolean) => void
-}) => {
+const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () => void }) => {
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
 
   const toast = useMoonToast()
@@ -33,7 +27,7 @@ const NewClaimantView = ({
     setNewAddress("")
     setNewAmount("")
     if (!justClean) {
-      setAdding(false)
+      onClose()
     }
     setExistingClaimant(undefined)
   }
