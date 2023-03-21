@@ -243,11 +243,17 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
           {claimants.data && (
             <Flex gap="40px" fontSize="16px">
               <Flex direction="column">
-                <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
+                <Text py="10px" px="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
                   Address
                 </Text>
                 {claimants.data.map((claimant: { address: string }, idx: number) => (
-                  <Text py="12px" key={idx} fontFamily="Jet Brains Mono, monospace" fontSize="16px">
+                  <Text
+                    py="12px"
+                    px="10px"
+                    key={idx}
+                    fontFamily="Jet Brains Mono, monospace"
+                    fontSize="16px"
+                  >
                     {claimant.address}
                   </Text>
                 ))}
