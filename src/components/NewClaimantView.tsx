@@ -13,7 +13,13 @@ import http from "../utils/http"
 import FileUpload from "./FileUpload"
 import useDrop from "../hooks/useDrop"
 
-const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: any }) => {
+const NewClaimantView = ({
+  claimId,
+  setAdding,
+}: {
+  claimId: string
+  setAdding: (arg0: boolean) => void
+}) => {
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
 
   const toast = useMoonToast()
@@ -126,7 +132,7 @@ const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: a
   }
   let parserLineNumber = 0
 
-  const validateCellValue = function (cellValue: string, column: any): string {
+  const validateCellValue = function (cellValue: string, column: string): string {
     const value = cellValue.trim()
     if (column == "address") {
       parserLineNumber++
@@ -236,7 +242,16 @@ const NewClaimantView = ({ claimId, setAdding }: { claimId: string; setAdding: a
             </Flex>
           </Flex>
           {!addClaimants.isLoading && (
-            <FileUpload minW="100%" isUploading={isUploading} onDrop={onDrop} />
+            <Flex position="relative">
+              <FileUpload minW="100%" isUploading={isUploading} onDrop={onDrop} />
+              <SmallCloseIcon
+                position="absolute"
+                right="10px"
+                top="10px"
+                onClick={() => setAdding(false)}
+                cursor="pointer"
+              />
+            </Flex>
           )}
         </Flex>
       )}
