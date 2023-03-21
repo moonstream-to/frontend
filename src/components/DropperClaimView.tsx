@@ -44,7 +44,7 @@ const DropperClaimView = ({
 
   const toast = useToast()
 
-  const { adminClaims, dropperContracts } = useDrops({
+  const { adminClaims } = useDrops({
     dropperAddress: address,
     ctx: web3ctx,
   })
@@ -79,7 +79,7 @@ const DropperClaimView = ({
         })
       }
     }
-  }, [adminClaims.data, dropperContracts.data, claimId])
+  }, [adminClaims.data, claimId])
 
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
