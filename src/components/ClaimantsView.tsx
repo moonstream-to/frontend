@@ -46,7 +46,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
     })
   const [displayingPages, setDisplayingPages] = useState("")
 
-  const _pageOptions = ["10", "25", "50"]
+  const _pageOptions = ["10", "25", "50", "500"]
 
   useEffect(() => {
     setClaimantsPageSize(Number(_pageOptions[0]))
@@ -151,7 +151,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
         <Text fontSize="18px" fontWeight="700">
           Claimslist
         </Text>
-        {isOpenContent && (
+        {isOpenContent && claimants.data?.length > 0 && (
           <Button
             onClick={onToggleUpload}
             gap="10px"
@@ -172,7 +172,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
           bg="transparent"
         />
       </Flex>
-      <Collapse in={isOpenUpload}>
+      <Collapse in={isOpenUpload || claimants.data?.length === 0}>
         <ClaimantsUpload claimId={claimId} onClose={onCloseUpload} />
       </Collapse>
       <Collapse in={isOpenContent} animateOpacity>
