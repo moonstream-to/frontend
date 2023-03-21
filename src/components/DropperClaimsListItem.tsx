@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { Box, Flex, Spacer, Text } from "@chakra-ui/layout"
+import { Flex, Spacer, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/react"
 
 import useLink from "../hooks/useLink"
+import { SmallCloseIcon } from "@chakra-ui/icons"
 
 const DropperClaimsListItem = ({
   claimId,
@@ -81,7 +82,16 @@ const DropperClaimsListItem = ({
         >
           {!metadata.data?.image && (
             <>
-              <Box border="1px solid black" borderRadius="5px" w="32px" h="32px" />
+              <Flex
+                border="1px solid #454545"
+                alignItems="center"
+                borderRadius="5px"
+                w="32px"
+                h="32px"
+                justifyContent="center"
+              >
+                <SmallCloseIcon w="32px" color="#454545" />
+              </Flex>
             </>
           )}
           {metadata.data && (
@@ -93,6 +103,7 @@ const DropperClaimsListItem = ({
                   height="32px"
                   alt={metadata.data.image}
                   borderRadius="5px"
+                  border="1px solid #2d2d2d"
                 />
               )}
               <Text unselectable="on">{metadata.data.name}</Text>
