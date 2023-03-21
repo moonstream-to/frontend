@@ -178,7 +178,7 @@ const DropperClaimView = ({
               {metadata.name}
             </Text>
           )}
-          <Flex direction="column" gap="20px" overflowY="auto">
+          <Flex direction="column" gap="20px" overflowY="auto" id="claim-content">
             <Flex gap="20px">
               {metadata?.image && (
                 <Image

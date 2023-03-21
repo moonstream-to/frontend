@@ -1,20 +1,14 @@
 /* eslint-disable react/no-children-prop */
 import { useContext, useEffect, useState } from "react"
 
-import { SearchIcon, SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons"
+import { ChevronDownIcon, SearchIcon, SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons"
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Collapse,
   Flex,
   IconButton,
   Input,
   InputGroup,
   InputRightElement,
-  Spacer,
   Spinner,
   Text,
   useDisclosure,
@@ -106,6 +100,8 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
   }
 
   const { onOpen, onClose, isOpen } = useDisclosure()
+  const { onToggle: onToggleContent, isOpen: isOpenContent } = useDisclosure()
+
   const [addingClaimant, setAddingClaimant] = useState(false)
 
   const handleSearchClick = () => {
@@ -117,169 +113,190 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
     }
   }
 
+  useEffect(() => {
+    if (isOpenContent) {
+      setTimeout(() => {
+        const element = document.getElementById("claimants-view")
+        element?.scrollIntoView({ behavior: "smooth" })
+      }, 400)
+    }
+  }, [isOpenContent])
+
   return (
-    <Accordion allowToggle borderRadius="10px" bg="#232323" border="1px solid #4d4d4d" p="20px">
-      <AccordionItem border="none">
-        <AccordionButton p="0px">
-          <Text>Claimlist</Text>
-          <Spacer />
-          <AccordionIcon />
-        </AccordionButton>
-        <AccordionPanel p="0px">
-          <Flex direction="column" gap="20px">
-            <Flex justifyContent="space-between" alignItems="center" mt="20px">
-              <InputGroup w="500px">
-                <Input
-                  value={searchString}
-                  onChange={(e) => setSearchString(e.target.value)}
-                  placeholder="search for address"
-                  borderRadius="10px"
-                  p="8px 15px"
-                />
-                <InputRightElement
-                  w="80px"
-                  children={
-                    <Flex>
-                      <IconButton
-                        icon={<SmallCloseIcon />}
-                        _hover={{ color: "#ffccd4" }}
-                        bg="transparent"
-                        aria-label="clean"
-                        onClick={() => setSearchString("")}
-                        m="0"
-                        minW="20px"
-                      />
-                      <IconButton
-                        _hover={{ color: "#ffccd4" }}
-                        bg="transparent"
-                        aria-label="search"
-                        icon={<SearchIcon />}
-                        minW="20px"
-                        onClick={() => handleSearchClick()}
-                        pl="10px"
-                      />
-                    </Flex>
-                  }
-                />
-              </InputGroup>
-              <Flex
-                alignItems="center"
-                gap="10px"
-                cursor="pointer"
-                onClick={() => setAddingClaimant(true)}
-              >
-                <Text>Add claimant</Text>
-                <SmallAddIcon />
-              </Flex>
-            </Flex>
-
-            <Collapse in={isOpen} animateOpacity>
-              {searchResult.isSearching && <Spinner />}
-              {!searchResult.isSearching && (
-                <Flex justifyContent="space-between" alignItems="center">
-                  {!!searchResult.result && <Text>{searchResult.result}</Text>}
-                  <IconButton
-                    bg="transparent"
-                    aria-label="close"
-                    icon={<SmallCloseIcon />}
-                    onClick={() => {
-                      setSearchString("")
-                      onClose()
-                    }}
-                    _hover={{ bg: "#3f3f3f" }}
-                  />
-                </Flex>
-              )}
-            </Collapse>
-            {claimants.isLoading && <Spinner />}
-            {addingClaimant && <NewClaimantView claimId={claimId} setAdding={setAddingClaimant} />}
-            {claimants.data && (
-              <Flex gap="40px" fontSize="16px">
-                <Flex direction="column">
-                  <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
-                    Address
-                  </Text>
-                  {claimants.data.map((claimant: { address: string }, idx: number) => (
-                    <Text
-                      py="12px"
-                      key={idx}
-                      fontFamily="Jet Brains Mono, monospace"
-                      fontSize="16px"
-                    >
-                      {claimant.address}
-                    </Text>
-                  ))}
-                </Flex>
-                <Flex direction="column">
-                  <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
-                    Amount
-                  </Text>
-
-                  {claimants.data.map((claimant: { amount: string }, idx: number) => (
-                    <Text py="12px" key={idx}>
-                      {claimant.amount}
-                    </Text>
-                  ))}
-                </Flex>
-              </Flex>
-            )}
-            <Flex alignItems="center" justifyContent="space-between" fontWeight="300">
-              <Text>page {claimantsPage + 1}</Text>
-              <Flex alignItems="center" justifyContent="center">
-                <IconButton
-                  bg="transparent"
-                  aria-label="to start"
-                  _hover={{ bg: "#3f3f3f" }}
-                  icon={<Icon as={AiOutlineVerticalRight} />}
-                  onClick={() => setClaimantsPage(0)}
-                  disabled={claimantsPage < 1}
-                />
-                <IconButton
-                  bg="transparent"
-                  aria-label="to start"
-                  _hover={{ bg: "#3f3f3f" }}
-                  icon={<Icon as={AiOutlineArrowLeft} />}
-                  onClick={() => setClaimantsPage(claimantsPage - 1)}
-                  disabled={claimantsPage < 1}
-                />
-                <Text px="20px">{displayingPages}</Text>
-                <IconButton
-                  bg="transparent"
-                  aria-label="to start"
-                  _hover={{ bg: "#3f3f3f" }}
-                  icon={<Icon as={AiOutlineArrowRight} />}
-                  onClick={() => setClaimantsPage(claimantsPage + 1)}
-                  disabled={!claimants.data || claimants.data.length < claimantsPageSize}
-                />
-              </Flex>
-              <Flex gap="15px" alignItems="center">
-                <Select
-                  bg="transparent"
-                  color="white"
-                  borderRadius="10px"
-                  borderColor="#4d4d4d"
-                  size="sm"
-                  w="fit-content"
-                  onChange={(e) => {
-                    setClaimantsPageSize(Number(e.target.value))
-                  }}
-                  value={claimantsPageSize}
-                >
-                  {_pageOptions.map((pageSize: string) => {
-                    return (
-                      <option key={`paginator-options-pagesize-${pageSize}`} value={pageSize}>
-                        {pageSize}
-                      </option>
-                    )
-                  })}
-                </Select>
-                <Text>per page</Text>
-              </Flex>
+    <Flex
+      direction="column"
+      gap="20px"
+      id="claimants-view"
+      borderRadius="10px"
+      bg="#232323"
+      border="1px solid #4d4d4d"
+      py={isOpenContent ? "20px" : "10px"}
+      px="20px"
+    >
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        onClick={!isOpenContent ? onToggleContent : undefined}
+        cursor={isOpenContent ? "default" : "pointer"}
+      >
+        <Text>Claimslist</Text>
+        <IconButton
+          aria-label="toggle"
+          icon={isOpenContent ? <SmallCloseIcon /> : <ChevronDownIcon />}
+          onClick={onToggleContent}
+          _hover={{ bg: "transparent" }}
+          bg="transparent"
+        />
+      </Flex>
+      <Collapse in={isOpenContent} animateOpacity>
+        <Flex direction="column" gap="20px">
+          <Flex justifyContent="space-between" alignItems="center">
+            <InputGroup w="500px">
+              <Input
+                value={searchString}
+                onChange={(e) => setSearchString(e.target.value)}
+                placeholder="search for address"
+                borderRadius="10px"
+                p="8px 15px"
+              />
+              <InputRightElement
+                w="80px"
+                children={
+                  <Flex>
+                    <IconButton
+                      icon={<SmallCloseIcon />}
+                      _hover={{ color: "#ffccd4" }}
+                      bg="transparent"
+                      aria-label="clean"
+                      onClick={() => setSearchString("")}
+                      m="0"
+                      minW="20px"
+                    />
+                    <IconButton
+                      _hover={{ color: "#ffccd4" }}
+                      bg="transparent"
+                      aria-label="search"
+                      icon={<SearchIcon />}
+                      minW="20px"
+                      onClick={() => handleSearchClick()}
+                      pl="10px"
+                    />
+                  </Flex>
+                }
+              />
+            </InputGroup>
+            <Flex
+              alignItems="center"
+              gap="10px"
+              cursor="pointer"
+              onClick={() => setAddingClaimant(true)}
+            >
+              <Text>Add claimant</Text>
+              <SmallAddIcon />
             </Flex>
           </Flex>
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
+
+          <Collapse in={isOpen} animateOpacity>
+            {searchResult.isSearching && <Spinner />}
+            {!searchResult.isSearching && (
+              <Flex justifyContent="space-between" alignItems="center">
+                {!!searchResult.result && <Text>{searchResult.result}</Text>}
+                <IconButton
+                  bg="transparent"
+                  aria-label="close"
+                  icon={<SmallCloseIcon />}
+                  onClick={() => {
+                    setSearchString("")
+                    onClose()
+                  }}
+                  _hover={{ bg: "#3f3f3f" }}
+                />
+              </Flex>
+            )}
+          </Collapse>
+          {claimants.isLoading && <Spinner />}
+          {addingClaimant && <NewClaimantView claimId={claimId} setAdding={setAddingClaimant} />}
+          {claimants.data && (
+            <Flex gap="40px" fontSize="16px">
+              <Flex direction="column">
+                <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
+                  Address
+                </Text>
+                {claimants.data.map((claimant: { address: string }, idx: number) => (
+                  <Text py="12px" key={idx} fontFamily="Jet Brains Mono, monospace" fontSize="16px">
+                    {claimant.address}
+                  </Text>
+                ))}
+              </Flex>
+              <Flex direction="column">
+                <Text py="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
+                  Amount
+                </Text>
+
+                {claimants.data.map((claimant: { amount: string }, idx: number) => (
+                  <Text py="12px" key={idx}>
+                    {claimant.amount}
+                  </Text>
+                ))}
+              </Flex>
+            </Flex>
+          )}
+          <Flex alignItems="center" justifyContent="space-between" fontWeight="300">
+            <Text>page {claimantsPage + 1}</Text>
+            <Flex alignItems="center" justifyContent="center">
+              <IconButton
+                bg="transparent"
+                aria-label="to start"
+                _hover={{ bg: "#3f3f3f" }}
+                icon={<Icon as={AiOutlineVerticalRight} />}
+                onClick={() => setClaimantsPage(0)}
+                disabled={claimantsPage < 1}
+              />
+              <IconButton
+                bg="transparent"
+                aria-label="to start"
+                _hover={{ bg: "#3f3f3f" }}
+                icon={<Icon as={AiOutlineArrowLeft} />}
+                onClick={() => setClaimantsPage(claimantsPage - 1)}
+                disabled={claimantsPage < 1}
+              />
+              <Text px="20px">{displayingPages}</Text>
+              <IconButton
+                bg="transparent"
+                aria-label="to start"
+                _hover={{ bg: "#3f3f3f" }}
+                icon={<Icon as={AiOutlineArrowRight} />}
+                onClick={() => setClaimantsPage(claimantsPage + 1)}
+                disabled={!claimants.data || claimants.data.length < claimantsPageSize}
+              />
+            </Flex>
+            <Flex gap="15px" alignItems="center" id="paginator">
+              <Select
+                bg="transparent"
+                color="white"
+                borderRadius="10px"
+                borderColor="#4d4d4d"
+                size="sm"
+                w="fit-content"
+                onChange={(e) => {
+                  setClaimantsPageSize(Number(e.target.value))
+                }}
+                value={claimantsPageSize}
+              >
+                {_pageOptions.map((pageSize: string) => {
+                  return (
+                    <option key={`paginator-options-pagesize-${pageSize}`} value={pageSize}>
+                      {pageSize}
+                    </option>
+                  )
+                })}
+              </Select>
+              <Text>per page</Text>
+            </Flex>
+          </Flex>
+        </Flex>
+      </Collapse>
+    </Flex>
   )
 }
 
