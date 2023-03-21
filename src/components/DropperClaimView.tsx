@@ -158,7 +158,7 @@ const DropperClaimView = ({
           fontSize="20px"
           mb="20px"
         >
-          {`claim ${claimId}`}
+          {`drop ${claimId}`}
         </Text>
         <IconButton
           bg="transparent"
@@ -181,7 +181,14 @@ const DropperClaimView = ({
           <Flex direction="column" gap="20px" overflowY="auto">
             <Flex gap="20px">
               {metadata?.image && (
-                <Image w="140px" h="140px" borderRadius="20px" src={metadata.image} alt="image" />
+                <Image
+                  w="140px"
+                  h="140px"
+                  borderRadius="20px"
+                  border="1px solid #4d4d4d"
+                  src={metadata.image}
+                  alt="image"
+                />
               )}
               {metadata?.description && (
                 <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>

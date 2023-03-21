@@ -64,7 +64,7 @@ const DropperClaimsListView = ({
       color="white"
     >
       <Text fontWeight="700" fontSize="24px">
-        claims
+        drops
       </Text>
       <Input
         value={filter}

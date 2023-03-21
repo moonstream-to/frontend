@@ -42,7 +42,7 @@ const DropperContractView = ({ address }: { address: string }) => {
                 }
                 displayFull={true}
               />
-              <PoolDetailsRow type={"Number of claims"} value={contractState.data.numClaims} />
+              <PoolDetailsRow type={"Number of drops"} value={contractState.data.numClaims} />
 
               <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
             </Flex>
