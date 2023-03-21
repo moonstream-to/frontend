@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import { Flex, Text } from "@chakra-ui/layout"
 
@@ -20,6 +20,16 @@ const DropperContractView = ({ address }: { address: string }) => {
   }
   const web3ctx = useContext(Web3Context)
   const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address })
+  const [isTimeout, setIsTimeout] = useState(false)
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => setIsTimeout(true), 9000)
+    return () => clearTimeout(timeOutId)
+  }, [address])
+
+  useEffect(() => {
+    setIsTimeout(false)
+  }, [address])
 
   return (
     <>
@@ -47,7 +57,7 @@ const DropperContractView = ({ address }: { address: string }) => {
               <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
             </Flex>
           )}
-          {!contractState.data?.owner && (
+          {!contractState.data?.owner && isTimeout && (
             <Flex alignItems="center" gap="10px" color="gray.900">
               <Text fontStyle="italic" color="gray.900">
                 {errorDialog[dialogStep]}
