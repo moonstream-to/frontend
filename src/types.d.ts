@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import Web3 from 'web3/types'
-import { AbiItem } from 'web3-utils'
+import Web3 from "web3/types"
+import { AbiItem } from "web3-utils"
 
 export interface WalletStatesInterface {
   ONBOARD: string
@@ -9,7 +9,7 @@ export interface WalletStatesInterface {
   UNKNOWN_CHAIN: string
 }
 
-export type supportedChains = 'localhost' | 'mumbai' | 'polygon' | 'ethereum'
+export type supportedChains = "localhost" | "mumbai" | "polygon" | "ethereum"
 
 export interface ChainInterface {
   chainId: number

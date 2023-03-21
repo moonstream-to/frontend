@@ -1,25 +1,38 @@
-import { useEffect, useState } from 'react'
-import { Flex, Link, Text } from '@chakra-ui/layout'
+import { HTMLAttributes, useEffect, useState } from "react"
+import { Flex, Link, Text } from "@chakra-ui/layout"
 
-import { MAX_INT } from '../constants'
+import { MAX_INT } from "../constants"
 
-const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
-  const [valueString, setValueString] = useState('')
+interface DetailsProps extends HTMLAttributes<HTMLElement> {
+  type: string
+  value: string
+  href?: string
+  displayFull?: boolean
+}
+
+const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsProps) => {
+  const [valueString, setValueString] = useState("")
+
   const valueComponent = () => {
     if (!value) {
-      return <Text fontStyle='italic'>{String(value)}</Text>
+      return <Text fontStyle="italic">{String(value)}</Text>
     }
     if (value == MAX_INT) {
-      return <Text fontStyle='italic'>MAX_INT</Text>
+      return <Text fontStyle="italic">MAX_INT</Text>
     }
-    if (value.slice(0, 4) === 'http') {
+    if (value.slice(0, 4) === "http" && !href) {
       return (
-        <Link href={value} target='_blank'  _hover={{color: 'orange.1000', textDecoration: 'none'}}>
+        <Link
+          href={value}
+          target="_blank"
+          color="orange.1000"
+          _hover={{ color: "orange.400", textDecoration: "none" }}
+        >
           <Text
-            title={value.length > valueString.length ? value : ''}
-            fontFamily='Jet Brains Mono, monospace'
-            fontWeight='400'
-            fontSize='18px'           
+            title={value.length > valueString.length ? value : ""}
+            fontFamily="Jet Brains Mono, monospace"
+            fontWeight="400"
+            fontSize="18px"
           >
             {valueString}
           </Text>
@@ -28,10 +41,10 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
     } else {
       return (
         <Text
-          title={value.length > valueString.length ? value : ''}
-          fontFamily='Jet Brains Mono, monospace'
-          fontWeight='400'
-          fontSize='18px'
+          title={value.length > valueString.length ? value : ""}
+          fontFamily="Jet Brains Mono, monospace"
+          fontWeight="400"
+          fontSize="18px"
         >
           {valueString}
         </Text>
@@ -43,6 +56,10 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
     if (!value) {
       return
     }
+    if (displayFull) {
+      setValueString(value)
+      return
+    }
     const shortString = (fullString: string, atStart: number, atEnd: number) => {
       if (!fullString) {
         return fullString
@@ -50,14 +67,14 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
       if (fullString.length <= atStart + atEnd) {
         return fullString
       }
-      return fullString.slice(0, atStart) + '...' + fullString.slice(-atEnd)
+      return fullString.slice(0, atStart) + "..." + fullString.slice(-atEnd)
     }
 
-    if (String(value).slice(0, 4) === 'http') {
+    if (String(value).slice(0, 4) === "http") {
       setValueString(shortString(String(value), 20, 10))
       return
     }
-    if (String(value).slice(0, 2) === '0x') {
+    if (String(value).slice(0, 2) === "0x") {
       setValueString(shortString(String(value), 6, 4))
       return
     }
@@ -66,13 +83,25 @@ const PoolDetailsRow = ({ type, value }: { type: string; value: string }) => {
       return
     }
     setValueString(value)
-  }, [value])
+  }, [value, displayFull])
+
   return (
-    <Flex justifyContent='space-between'>
-      <Text fontWeight='400' fontSize='18px'>
+    <Flex justifyContent="space-between" {...props}>
+      <Text fontWeight="400" fontSize="18px">
         {type}
       </Text>
-      {valueComponent()}
+      {href ? (
+        <Link
+          href={href}
+          color="orange.1000"
+          _hover={{ color: "orange.400", textDecoration: "none" }}
+          target="_blank"
+        >
+          {valueComponent()}
+        </Link>
+      ) : (
+        valueComponent()
+      )}
     </Flex>
   )
 }

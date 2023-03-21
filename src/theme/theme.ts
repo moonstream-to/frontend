@@ -1,5 +1,5 @@
-import { extendTheme } from '@chakra-ui/react'
-import breakpoints from './breakpoints'
+import { extendTheme } from "@chakra-ui/react"
+import breakpoints from "./breakpoints"
 
 const theme = extendTheme({
   breakpoints,
@@ -7,7 +7,7 @@ const theme = extendTheme({
   styles: {
     global: () => ({
       body: {
-        bg: '#1A1D22',
+        bg: "#1A1D22",
       },
     }),
   },

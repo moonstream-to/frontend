@@ -1,16 +1,8 @@
-import React from "react";
-import {
-  Flex,
-  Image,
-  Text,
-  chakra,
-  Spacer,
-  VStack,
-  Box,
-} from "@chakra-ui/react";
-import TextWithPopup from "../TextWithPopup";
+import React from "react"
+import { Flex, Image, Text, chakra, Spacer, VStack, Box } from "@chakra-ui/react"
+import TextWithPopup from "../TextWithPopup"
 
-const defaultImageUrl = "https://s3.amazonaws.com/static.greatwyrm.xyz/anonymous_person.jpg";
+const defaultImageUrl = "https://s3.amazonaws.com/static.greatwyrm.xyz/anonymous_person.jpg"
 
 const _NFTCard = ({
   name,
@@ -22,36 +14,37 @@ const _NFTCard = ({
   grayedOut = false,
   ...props
 }: {
-  name: string;
-  imageUrl: string;
-  balance: number;
-  description?: string;
-  showQuantity?: boolean;
-  isVideo?: boolean;
-  grayedOut?: boolean;
+  name: string
+  imageUrl: string
+  balance: number
+  description?: string
+  showQuantity?: boolean
+  isVideo?: boolean
+  grayedOut?: boolean
 }) => {
-  const calculatedImaged = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl;
+  const calculatedImaged = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl
   return (
     <Flex {...props} backgroundColor="#353535">
-      <VStack maxW="250" border="solid" borderColor="white" borderRadius="lg">
+      <VStack minW="220" minH="360" border="solid" borderColor="white" borderRadius="lg">
         <Image
           src={imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl}
           as={isVideo ? "video" : undefined}
           filter={grayedOut ? "grayscale(100%)" : undefined}
           opacity={grayedOut ? "0.3" : undefined}
           loading="lazy"
-          w="200px"
-          h="200px"
-          px={2}
-          py={4}
+          w="180px"
+          h="180px"
+          mt="20px"
           borderRadius="sm"
           alt="NFT Image"
         />
-        <Box px={2} pb={2}>
+        <Box px={6} pb={4}>
           {description ? (
             <TextWithPopup text={description} image={calculatedImaged} title={name} />
-          ): (
-            <Text fontSize="md" pb={2}>{name}</Text>
+          ) : (
+            <Text fontSize="md" pb={2}>
+              {name}
+            </Text>
           )}
           {showQuantity && (
             <Flex fontSize="sm" w="100%">
@@ -63,8 +56,8 @@ const _NFTCard = ({
         </Box>
       </VStack>
     </Flex>
-  );
-};
+  )
+}
 
-const NFTCard = chakra(_NFTCard);
-export default NFTCard;
+const NFTCard = chakra(_NFTCard)
+export default NFTCard

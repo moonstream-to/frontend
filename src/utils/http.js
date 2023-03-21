@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // import enableMockupRequests from './mockupRequests'
-let axios = require('axios')
+let axios = require("axios")
 const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
-process.env.NODE_ENV !== 'production' // && enableMockupRequests(axios)
+
+process.env.NODE_ENV !== "production" // && enableMockupRequests(axios)
 
 const http = (config, noAuth = false) => {
-  const token = localStorage.getItem('APP_ACCESS_TOKEN')
+  const token = localStorage.getItem("APP_ACCESS_TOKEN")
   const authorization = token && !noAuth ? { Authorization: `Moonstream ${token}` } : {}
   const defaultHeaders = config.headers ?? {}
   const options = {
@@ -20,12 +21,12 @@ const http = (config, noAuth = false) => {
 }
 
 export const queryPublic = (uri) => {
-  return axios({ method: 'GET', url: uri })
+  return axios({ method: "GET", url: uri })
 }
 
 export const putHttp = (endpoint, data) => {
   return http({
-    method: 'PUT',
+    method: "PUT",
     url: `${API}${endpoint}`,
     data: data,
   })
@@ -34,7 +35,7 @@ export const putHttp = (endpoint, data) => {
 export const queryHttp = (query) => {
   const _query = query.queryKey.length >= 1 ? query.queryKey[1] : undefined
   return http({
-    method: 'GET',
+    method: "GET",
     url: `${API}${query.queryKey[0]}`,
     params: { ..._query },
   })
@@ -42,7 +43,7 @@ export const queryHttp = (query) => {
 
 export const patchHttp = (endpoint, data) => {
   return http({
-    method: 'PATCH',
+    method: "PATCH",
     url: `${API}${endpoint}`,
     data: data,
   })

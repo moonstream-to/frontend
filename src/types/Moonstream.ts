@@ -1,5 +1,5 @@
-import Web3 from 'web3/types'
-import { AbiItem } from 'web3-utils'
+import Web3 from "web3/types"
+import { AbiItem } from "web3-utils"
 
 export interface WalletStatesInterface {
   ONBOARD: string
@@ -8,7 +8,7 @@ export interface WalletStatesInterface {
   UNKNOWN_CHAIN: string
 }
 
-export type supportedChains = 'localhost' | 'mumbai' | 'polygon' | 'ethereum' | 'wyrm'
+export type supportedChains = "localhost" | "mumbai" | "polygon" | "ethereum" | "wyrm"
 
 export interface ChainInterface {
   chainId: number
@@ -63,4 +63,10 @@ export interface ClaimInterface {
   terminus_address: string
   terminus_pool_id: number
   title: string
+}
+
+import { NFTInfo } from "../components/nft/types"
+
+export type StakedTokenInfo = NFTInfo & {
+  sessionId: number
 }

@@ -1,12 +1,12 @@
 export interface NFTMetadata {
-  name: string;
-  image: string;
-  description?: string;
+  name: string
+  image: string
+  description?: string
 }
 
 export interface NFTInfo {
-  tokenID: string;
-  tokenURI: string;
-  imageURI: string;
-  metadata: NFTMetadata;
+  tokenID: string
+  tokenURI: string
+  imageURI: string
+  metadata: NFTMetadata
 }

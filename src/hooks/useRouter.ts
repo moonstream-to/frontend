@@ -1,4 +1,4 @@
-import { useRouter as useNextRouter } from 'next/router'
+import { useRouter as useNextRouter } from "next/router"
 
 /**
  * Given a string such as:
@@ -13,8 +13,8 @@ import { useRouter as useNextRouter } from 'next/router'
  * }
  */
 const queryFromUrl = (url: string) => {
-  const [, ...queryStrings] = url.split('?')
-  const queryString = queryStrings.join('?')
+  const [, ...queryStrings] = url.split("?")
+  const queryString = queryStrings.join("?")
   const query: { [key: string]: string } = {}
 
   for (const [key, value] of new URLSearchParams(queryString).entries()) {
@@ -106,7 +106,9 @@ const useRouter = () => {
         shallow: !!shallow,
       })
     } else {
-      router.replace({ pathname: router.pathname, query: newQuery }, undefined, { shallow: !!shallow })
+      router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
+        shallow: !!shallow,
+      })
     }
   }
 
@@ -118,7 +120,9 @@ const useRouter = () => {
         shallow: !!shallow,
       })
     } else {
-      router.replace({ pathname: router.pathname, query: newQuery }, undefined, { shallow: !!shallow })
+      router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
+        shallow: !!shallow,
+      })
     }
   }
 
