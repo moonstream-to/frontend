@@ -1,7 +1,13 @@
 /* eslint-disable react/no-children-prop */
 import { useContext, useEffect, useState } from "react"
 
-import { ChevronDownIcon, SearchIcon, SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons"
+import {
+  ChevronDownIcon,
+  RepeatIcon,
+  SearchIcon,
+  SmallAddIcon,
+  SmallCloseIcon,
+} from "@chakra-ui/icons"
 import {
   Collapse,
   Flex,
@@ -252,7 +258,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 onClick={() => claimants.refetch()}
                 _active={{ bg: "white" }}
               >
-                {!claimants.isLoading ? "Retry" : <Spinner />}
+                {!claimants.isFetching ? <RepeatIcon /> : <Spinner w="16px" h="16px" />}
               </Button>
             </Flex>
           )}
