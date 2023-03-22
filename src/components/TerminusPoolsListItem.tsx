@@ -47,16 +47,16 @@ const TerminusPoolsListItem = ({
       setShow(true)
       return
     }
-    const lFilter = filter.toLowerCase()
-    if (metadata.data?.name?.toLowerCase().includes(lFilter)) {
+    const lowCaseFilter = filter.toLowerCase()
+    if (metadata.data?.name?.toLowerCase().includes(lowCaseFilter)) {
       setShow(true)
       return
     }
-    if (metadata.data?.description?.toLowerCase().includes(lFilter)) {
+    if (metadata.data?.description?.toLowerCase().includes(lowCaseFilter)) {
       setShow(true)
       return
     }
-    if (poolId.toString().startsWith(lFilter)) {
+    if (poolId.toString().startsWith(lowCaseFilter)) {
       setShow(true)
       return
     }

@@ -55,7 +55,7 @@ const DropperClaimView = ({
     adminClaims.refetch()
   }, [address, web3ctx.account])
 
-  const [dbData, setDbData] = useState<
+  const [dropState, setDropState] = useState<
     | {
         deadline: string
         id: string
@@ -68,18 +68,18 @@ const DropperClaimView = ({
 
   useEffect(() => {
     if (adminClaims.data) {
-      const claimDbData = adminClaims.data.find(
+      const claimState = adminClaims.data.find(
         (claim: { drop_number: number }) => claim.drop_number === Number(claimId),
       )
-      if (claimDbData) {
+      if (claimState) {
         const {
           id,
           claim_block_deadline: deadline,
           terminus_address: terminusAddress,
           terminus_pool_id: terminusPoolId,
           active,
-        } = claimDbData
-        setDbData({
+        } = claimState
+        setDropState({
           id,
           terminusAddress,
           terminusPoolId,
@@ -87,7 +87,7 @@ const DropperClaimView = ({
           active,
         })
       } else {
-        setDbData(undefined)
+        setDropState(undefined)
       }
     }
   }, [adminClaims.data, claimId])
@@ -151,12 +151,12 @@ const DropperClaimView = ({
 
   const setActive = useMutation(
     (active: boolean) => {
-      if (!dbData) {
+      if (!dropState) {
         return
       } //TODO
       return http({
         method: "PUT",
-        url: `${ADMIN_API}/drops/${dbData?.id}/${active ? "" : "de"}activate`,
+        url: `${ADMIN_API}/drops/${dropState?.id}/${active ? "" : "de"}activate`,
       }).then(() => setTempCaption(active ? "Activated" : "Deactivated"))
     },
     {
@@ -184,7 +184,7 @@ const DropperClaimView = ({
       maxW="800px"
       position="relative"
     >
-      {dbData?.active ? (
+      {dropState?.active ? (
         <Button
           bg="#e85858"
           _hover={{ bg: "#ff6565" }}
@@ -280,19 +280,19 @@ const DropperClaimView = ({
                   href={claimState.data.claimUri}
                   value={claimState.data.claimUri}
                 />
-                {dbData && (
+                {dropState && (
                   <>
-                    <PoolDetailsRow type="Deadline" value={String(dbData.deadline)} />
+                    <PoolDetailsRow type="Deadline" value={String(dropState.deadline)} />
                     <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
                       type="Terminus address"
-                      value={String(dbData.terminusAddress)}
+                      value={String(dropState.terminusAddress)}
                     />
 
                     <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
                       type="Terminus Pool"
-                      value={String(dbData.terminusPoolId)}
+                      value={String(dropState.terminusPoolId)}
                     />
                   </>
                 )}
@@ -338,7 +338,7 @@ const DropperClaimView = ({
                 )}
               </Flex>
             )}
-            {dbData && <ClaimantsView claimId={dbData.id} />}
+            {dropState && <ClaimantsView claimId={dropState.id} />}
           </Flex>
         </>
       )}

@@ -142,7 +142,7 @@ const DropperClaimsList = ({
               onChange={onChange}
               filter={filter}
               statusFilter={statusFilter}
-              dbData={adminClaims.data?.find(
+              dropState={adminClaims.data?.find(
                 (dbClaim: { drop_number: number }) => dbClaim.drop_number === claim.id,
               )}
             />
