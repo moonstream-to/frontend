@@ -101,11 +101,7 @@ const MetadataPanel = () => {
           </Flex>
           {stage.imageUrl.length > 0 && (
             <Center>
-              <Image
-                alt={"Stage " + selectedStage}
-                h="100px"
-                src={stage.imageUrl}
-                pt={6}
+              <Image alt={"Stage " + selectedStage} h="100px" src={stage.imageUrl} pt={6}
               />
             </Center>
           )}
