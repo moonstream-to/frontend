@@ -8,7 +8,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import useToast from "./useMoonToast"
 import queryCacheProps from "./hookCommon"
 import { MoonstreamWeb3ProviderInterface } from "../types/Moonstream"
-import { AxiosError } from "axios"
 
 const useDrop = ({
   ctx,
@@ -27,12 +26,12 @@ const useDrop = ({
   const [claimantsPageSize, setClaimantsPageSize] = React.useState(5)
 
   const _getClaimants = async (page: number) => {
-    const response = await getClaimants({ dropperClaimId: claimId })({
+    return getClaimants({ dropperClaimId: claimId })({
       limit: claimantsPageSize,
       offset: page * claimantsPageSize,
-    })
-    return response.data.claimants
+    }).then((response: any) => response.data.claimants)
   }
+
   const claimants = useQuery(
     ["claimants", "claimId", claimId, claimantsPage, claimantsPageSize],
     () => _getClaimants(claimantsPage),

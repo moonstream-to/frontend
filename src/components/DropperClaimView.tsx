@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react"
 
-import { useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import {
   Accordion,
   AccordionButton,
@@ -11,6 +11,7 @@ import {
   IconButton,
   useToast,
   Spinner,
+  Button,
 } from "@chakra-ui/react"
 import { LinkIcon } from "@chakra-ui/icons"
 import { Box, Flex, Spacer, Text } from "@chakra-ui/layout"
@@ -26,6 +27,7 @@ import queryCacheProps from "../hooks/hookCommon"
 import { PORTAL_PATH } from "../constants"
 const dropperAbi = require("../web3/abi/Dropper.json")
 import { Dropper } from "../web3/contracts/types/Dropper"
+import http from "../utils/http"
 
 const DropperClaimView = ({
   address,
@@ -49,34 +51,43 @@ const DropperClaimView = ({
     ctx: web3ctx,
   })
 
-  const [dbData, setDbData] = useState<
+  useEffect(() => {
+    adminClaims.refetch()
+  }, [address, web3ctx.account])
+
+  const [dropState, setDropState] = useState<
     | {
         deadline: string
         id: string
         terminusAddress: string
         terminusPoolId: string
+        active: boolean
       }
     | undefined
   >(undefined)
 
   useEffect(() => {
     if (adminClaims.data) {
-      const claimDbData = adminClaims.data.find(
+      const claimState = adminClaims.data.find(
         (claim: { drop_number: number }) => claim.drop_number === Number(claimId),
       )
-      if (claimDbData) {
+      if (claimState) {
         const {
           id,
           claim_block_deadline: deadline,
           terminus_address: terminusAddress,
           terminus_pool_id: terminusPoolId,
-        } = claimDbData
-        setDbData({
+          active,
+        } = claimState
+        setDropState({
           id,
           terminusAddress,
           terminusPoolId,
           deadline,
+          active,
         })
+      } else {
+        setDropState(undefined)
       }
     }
   }, [adminClaims.data, claimId])
@@ -132,6 +143,30 @@ const DropperClaimView = ({
       })
   }
 
+  const [tempCaption, setTempCaption] = useState("")
+  const queryClient = useQueryClient()
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
+
+  const ADMIN_API = `${API}/admin`
+
+  const setActive = useMutation(
+    (active: boolean) => {
+      if (!dropState) {
+        return
+      } //TODO
+      return http({
+        method: "PUT",
+        url: `${ADMIN_API}/drops/${dropState?.id}/${active ? "" : "de"}activate`,
+      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"))
+    },
+    {
+      onSuccess: () => {
+        setTimeout(() => setTempCaption(""), 5000)
+        queryClient.invalidateQueries("claimAdmin")
+      },
+    },
+  )
+
   if (Number(claimId) < 1) {
     return <></>
   }
@@ -143,10 +178,47 @@ const DropperClaimView = ({
       minW="800px"
       borderRadius="20px"
       p="30px"
+      pb="0"
       color="white"
       direction="column"
       maxW="800px"
+      position="relative"
     >
+      {dropState?.active ? (
+        <Button
+          bg="#e85858"
+          _hover={{ bg: "#ff6565" }}
+          borderRadius="10px"
+          fontWeight="700"
+          position="absolute"
+          right="30px"
+          bottom="30px"
+          fontSize="20px"
+          zIndex="2"
+          onClick={() => setActive.mutate(false)}
+        >
+          {tempCaption !== ""
+            ? tempCaption
+            : !setActive.isLoading
+            ? "Deactivate"
+            : "Deactivating..."}
+        </Button>
+      ) : (
+        <Button
+          bg="#f56646"
+          _hover={{ bg: "#f37e5b" }}
+          borderRadius="10px"
+          fontWeight="700"
+          position="absolute"
+          right="30px"
+          bottom="30px"
+          fontSize="20px"
+          zIndex="2"
+          onClick={() => setActive.mutate(true)}
+        >
+          {tempCaption !== "" ? tempCaption : !setActive.isLoading ? "Activate" : "Activating..."}
+        </Button>
+      )}
       <Flex gap={2}>
         <Text
           textAlign="start"
@@ -208,19 +280,19 @@ const DropperClaimView = ({
                   href={claimState.data.claimUri}
                   value={claimState.data.claimUri}
                 />
-                {dbData && (
+                {dropState && (
                   <>
-                    <PoolDetailsRow type="Deadline" value={String(dbData.deadline)} />
+                    <PoolDetailsRow type="Deadline" value={String(dropState.deadline)} />
                     <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
                       type="Terminus address"
-                      value={String(dbData.terminusAddress)}
+                      value={String(dropState.terminusAddress)}
                     />
 
                     <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dbData.terminusAddress}&poolId=${dbData.terminusPoolId}`}
+                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
                       type="Terminus Pool"
-                      value={String(dbData.terminusPoolId)}
+                      value={String(dropState.terminusPoolId)}
                     />
                   </>
                 )}
@@ -266,7 +338,7 @@ const DropperClaimView = ({
                 )}
               </Flex>
             )}
-            {dbData && <ClaimantsView claimId={dbData.id} />}
+            {dropState && <ClaimantsView claimId={dropState.id} />}
           </Flex>
         </>
       )}

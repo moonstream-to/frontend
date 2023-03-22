@@ -11,8 +11,9 @@ const DropperClaimsListItem = ({
   onChange,
   uri,
   filter,
+  statusFilter,
   inQuery,
-  dbData,
+  dropState,
 }: {
   claimId: string
   address: string
@@ -20,8 +21,9 @@ const DropperClaimsListItem = ({
   onChange: (id: string, metadata: unknown) => void
   uri: string
   filter: string
+  statusFilter: string
   inQuery: boolean
-  dbData: { active: boolean }
+  dropState: { active: boolean }
 }) => {
   const metadata = useLink({ link: uri })
 
@@ -34,6 +36,19 @@ const DropperClaimsListItem = ({
       onChange(claimId, metadata.data)
     }
   }, [selected, metadata, claimId, onChange])
+
+  const [statusShow, setStatusShow] = useState(true)
+  useEffect(() => {
+    if (!dropState) {
+      setStatusShow(true)
+      return
+    }
+    if (dropState.active) {
+      setStatusShow(statusFilter !== "inactive")
+    } else {
+      setStatusShow(statusFilter !== "active")
+    }
+  }, [dropState, statusFilter])
 
   useEffect(() => {
     if (inQuery) {
@@ -50,25 +65,33 @@ const DropperClaimsListItem = ({
       setShow(true)
       return
     }
-    const lFilter = filter.toLowerCase()
-    if (metadata.data?.name?.toLowerCase().includes(lFilter)) {
+    const lowCaseFilter = filter.toLowerCase()
+    if (metadata.data?.name?.toLowerCase().includes(lowCaseFilter)) {
       setShow(true)
       return
     }
-    if (metadata.data?.description?.toLowerCase().includes(lFilter)) {
+    if (metadata.data?.description?.toLowerCase().includes(lowCaseFilter)) {
       setShow(true)
       return
     }
-    if (claimId.toString().startsWith(lFilter)) {
+    if (claimId.toString().startsWith(lowCaseFilter)) {
+      setShow(true)
+      return
+    }
+    if (lowCaseFilter === "inactive" && dropState?.active === false) {
+      setShow(true)
+      return
+    }
+    if (lowCaseFilter === "active" && dropState?.active === true) {
       setShow(true)
       return
     }
     setShow(false)
-  }, [filter, metadata.data, claimId])
+  }, [filter, metadata.data, claimId, dropState])
 
   return (
     <>
-      {show && (
+      {show && statusShow && (
         <Flex
           gap="15px"
           alignItems="center"
@@ -123,14 +146,14 @@ const DropperClaimsListItem = ({
             </Text>
           )}
           <Spacer /> {/*TODO  Layout without spacer and name-textAlign-justify  */}
-          {dbData && (
+          {dropState && (
             <Text
               fontSize="16px"
               // flex="1"
               fontWeight="700"
-              color={dbData.active ? "#46C370" : "#EE8686"}
+              color={dropState.active ? "#46C370" : "#EE8686"}
             >
-              {dbData.active ? "Active" : "Inactive"}
+              {dropState.active ? "Active" : "Inactive"}
             </Text>
           )}
         </Flex>

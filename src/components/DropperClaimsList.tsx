@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { Flex } from "@chakra-ui/react"
+import { Flex, Select, Text } from "@chakra-ui/react"
 
 import Spinner from "./Spinner/Spinner"
 import Web3Context from "../contexts/Web3Context/context"
@@ -30,6 +30,7 @@ const DropperClaimsList = ({
 }) => {
   const { chainId, web3 } = useContext(Web3Context)
   const web3ctx = useContext(Web3Context)
+  const [statusFilter, setStatusFilter] = useState("All")
 
   const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress })
 
@@ -95,7 +96,7 @@ const DropperClaimsList = ({
   )
 
   useEffect(() => {
-    if (selected === -1 && claimsList.data) {
+    if (selected < 1 && claimsList.data) {
       setSelected(claimsList.data.length)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,6 +110,27 @@ const DropperClaimsList = ({
     <>
       {claimsList.data && (
         <Flex direction="column" gap="15px" h="100%" overflowY="auto">
+          {adminClaims.data?.length > 0 && (
+            <Flex alignItems="center" fontSize="18px">
+              <Text>Drop state:</Text>
+              <Select
+                fontSize="18px"
+                w="fit-content"
+                border="none"
+                _focus={{ border: "none" }}
+                _hover={{ border: "none" }}
+                _active={{ border: "none" }}
+                _focusVisible={{ border: "none" }}
+                textAlign="center"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </Select>
+            </Flex>
+          )}
           {claimsList.data.map((claim: { uri: string; id: number }) => (
             <DropperClaimsListItem
               key={claim.id}
@@ -119,7 +141,8 @@ const DropperClaimsList = ({
               uri={claim.uri}
               onChange={onChange}
               filter={filter}
-              dbData={adminClaims.data?.find(
+              statusFilter={statusFilter}
+              dropState={adminClaims.data?.find(
                 (dbClaim: { drop_number: number }) => dbClaim.drop_number === claim.id,
               )}
             />

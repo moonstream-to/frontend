@@ -1,7 +1,13 @@
 /* eslint-disable react/no-children-prop */
 import { useContext, useEffect, useState } from "react"
 
-import { ChevronDownIcon, SearchIcon, SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons"
+import {
+  ChevronDownIcon,
+  RepeatIcon,
+  SearchIcon,
+  SmallAddIcon,
+  SmallCloseIcon,
+} from "@chakra-ui/icons"
 import {
   Collapse,
   Flex,
@@ -140,6 +146,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
       border="1px solid #4d4d4d"
       py={isOpenContent ? "20px" : "10px"}
       px="20px"
+      mb={isOpenContent ? "0" : "90px"}
     >
       <Flex
         alignItems="center"
@@ -240,7 +247,23 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
           <Collapse in={isOpenAdd} animateOpacity>
             <NewClaimantView claimId={claimId} onClose={onCloseAdd} />
           </Collapse>
-          {claimants.data && (
+          {claimants.isError && (
+            <Flex alignItems="center" gap="20px">
+              <Text color="#d40000">{claimants.error.message}</Text>
+              <Button
+                color="#bababa"
+                bg="transparent"
+                border="1px solid #bababa"
+                borderRadius="10px"
+                _hover={{ bg: "#3f3f3f" }}
+                onClick={() => claimants.refetch()}
+                _active={{ bg: "white" }}
+              >
+                {!claimants.isFetching ? <RepeatIcon /> : <Spinner w="16px" h="16px" />}
+              </Button>
+            </Flex>
+          )}
+          {claimants.data && !claimants.isError && (
             <Flex gap="40px" fontSize="16px">
               <Flex direction="column">
                 <Text py="10px" px="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">
@@ -271,7 +294,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
               </Flex>
             </Flex>
           )}
-          <Flex alignItems="center" justifyContent="space-between" fontWeight="300">
+          <Flex alignItems="center" justifyContent="space-between" fontWeight="300" pb="60px">
             <Text>page {claimantsPage + 1}</Text>
             <Flex alignItems="center" justifyContent="center">
               <IconButton
