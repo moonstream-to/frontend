@@ -12,6 +12,7 @@ import useDropperContract from "../../src/hooks/useDropper.sol"
 import DropperClaimsListView from "../../src/components/DropperClaimsListView"
 import DropperClaimView from "../../src/components/DropperClaimView"
 import { useQueryClient } from "react-query"
+import { TokenInterface } from "../../src/types/Moonstream"
 
 const Dropper = () => {
   const router = useRouter()
@@ -47,9 +48,10 @@ const Dropper = () => {
     setClaimMetadata({})
   }, [contractAddress])
 
-  const { chainId, web3 } = useContext(Web3Context)
+  const { chainId, web3, signAccessToken } = useContext(Web3Context)
 
   const queryClient = useQueryClient()
+
   useEffect(() => {
     if (nextValue && web3.utils.isAddress(nextValue)) {
       handleSubmit()
@@ -60,6 +62,31 @@ const Dropper = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, web3ctx.account])
+
+  useEffect(() => {
+    const token = localStorage.getItem("APP_ACCESS_TOKEN") ?? ""
+    const stringToken = Buffer.from(token, "base64").toString("ascii")
+    const account = web3ctx.account
+    const objectToken: TokenInterface =
+      stringToken !== ""
+        ? JSON.parse(`${stringToken}`)
+        : { address: null, deadline: null, signed_message: null }
+    const isOutdated = (deadline: number | string) => {
+      if (!deadline) return true
+      if (Number(deadline) <= Math.floor(new Date().getTime() / 1000)) return true
+      return false
+    }
+
+    if (web3?.utils.isAddress(account)) {
+      if (
+        objectToken?.address !== account ||
+        isOutdated(objectToken?.deadline) ||
+        !objectToken.signed_message
+      ) {
+        signAccessToken(account)
+      }
+    }
+  }, [web3ctx.account])
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(nextValue)) {
