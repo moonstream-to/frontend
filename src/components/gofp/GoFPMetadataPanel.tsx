@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 
 import {
   Flex,
+  Box,
   Center,
   Text,
   Image,
@@ -34,10 +35,6 @@ const MetadataPanel = () => {
   const stage = sessionMetadata.data?.stages[selectedStage - 1]
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  // if (stage) {
-  //   stage["lore"] = ">Dog\n\n>>Cat\n\n>>Cat\n\n>>Cat\n\n>Dog"
-  // }
 
   return (
     <>
@@ -86,7 +83,7 @@ const MetadataPanel = () => {
                   <Flex flexDir="column" px={10}>
                     {stage.imageUrl.length > 0 && (
                       <Center pb={6}>
-                        <Image w="900px" h="300px" alt={"Stage Image"} src={stage.imageUrl} />
+                        <Image h="300px" alt={"Stage Image"} src={stage.imageUrl} />
                       </Center>
                     )}
                     <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
@@ -104,13 +101,7 @@ const MetadataPanel = () => {
           </Flex>
           {stage.imageUrl.length > 0 && (
             <Center>
-              <Image
-                alt={"Stage " + selectedStage}
-                w="300px"
-                h="100px"
-                src={stage.imageUrl}
-                pt={6}
-              />
+              <Image alt={"Stage " + selectedStage} h="100px" src={stage.imageUrl} pt={6} />
             </Center>
           )}
           <Flex flexDirection="column" mb={10}>
@@ -127,7 +118,11 @@ const MetadataPanel = () => {
                   <Text fontWeight="semibold" p={2}>
                     Path {pathIdx + 1} - {path.title}
                   </Text>
-                  <Text p={2}>{path.lore}</Text>
+                  <Box p={2}>
+                    <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                      {path.lore}
+                    </ReactMarkdown>
+                  </Box>
                 </Flex>
               )
             })}
