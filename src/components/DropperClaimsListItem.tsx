@@ -11,6 +11,7 @@ const DropperClaimsListItem = ({
   onChange,
   uri,
   filter,
+  statusFilter,
   inQuery,
   dbData,
 }: {
@@ -20,6 +21,7 @@ const DropperClaimsListItem = ({
   onChange: (id: string, metadata: unknown) => void
   uri: string
   filter: string
+  statusFilter: string
   inQuery: boolean
   dbData: { active: boolean }
 }) => {
@@ -34,6 +36,19 @@ const DropperClaimsListItem = ({
       onChange(claimId, metadata.data)
     }
   }, [selected, metadata, claimId, onChange])
+
+  const [statusShow, setStatusShow] = useState(true)
+  useEffect(() => {
+    if (!dbData) {
+      setStatusShow(true)
+      return
+    }
+    if (dbData.active) {
+      setStatusShow(statusFilter !== "inactive")
+    } else {
+      setStatusShow(statusFilter !== "active")
+    }
+  }, [dbData, statusFilter])
 
   useEffect(() => {
     if (inQuery) {
@@ -63,12 +78,20 @@ const DropperClaimsListItem = ({
       setShow(true)
       return
     }
+    if (lFilter === "inactive" && dbData?.active === false) {
+      setShow(true)
+      return
+    }
+    if (lFilter === "active" && dbData?.active === true) {
+      setShow(true)
+      return
+    }
     setShow(false)
-  }, [filter, metadata.data, claimId])
+  }, [filter, metadata.data, claimId, dbData])
 
   return (
     <>
-      {show && (
+      {show && statusShow && (
         <Flex
           gap="15px"
           alignItems="center"
