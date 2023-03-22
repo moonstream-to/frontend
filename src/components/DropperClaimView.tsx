@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react"
 
-import { useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import {
   Accordion,
   AccordionButton,
@@ -11,6 +11,7 @@ import {
   IconButton,
   useToast,
   Spinner,
+  Button,
 } from "@chakra-ui/react"
 import { LinkIcon } from "@chakra-ui/icons"
 import { Box, Flex, Spacer, Text } from "@chakra-ui/layout"
@@ -26,6 +27,7 @@ import queryCacheProps from "../hooks/hookCommon"
 import { PORTAL_PATH } from "../constants"
 const dropperAbi = require("../web3/abi/Dropper.json")
 import { Dropper } from "../web3/contracts/types/Dropper"
+import http from "../utils/http"
 
 const DropperClaimView = ({
   address,
@@ -59,6 +61,7 @@ const DropperClaimView = ({
         id: string
         terminusAddress: string
         terminusPoolId: string
+        active: boolean
       }
     | undefined
   >(undefined)
@@ -74,12 +77,14 @@ const DropperClaimView = ({
           claim_block_deadline: deadline,
           terminus_address: terminusAddress,
           terminus_pool_id: terminusPoolId,
+          active,
         } = claimDbData
         setDbData({
           id,
           terminusAddress,
           terminusPoolId,
           deadline,
+          active,
         })
       } else {
         setDbData(undefined)
@@ -138,6 +143,30 @@ const DropperClaimView = ({
       })
   }
 
+  const [tempCaption, setTempCaption] = useState("")
+  const queryClient = useQueryClient()
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
+
+  const ADMIN_API = `${API}/admin`
+
+  const setActive = useMutation(
+    (active: boolean) => {
+      if (!dbData) {
+        return
+      } //TODO
+      return http({
+        method: "PUT",
+        url: `${ADMIN_API}/drops/${dbData?.id}/${active ? "" : "de"}activate`,
+      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"))
+    },
+    {
+      onSuccess: () => {
+        setTimeout(() => setTempCaption(""), 5000)
+        queryClient.invalidateQueries("claimAdmin")
+      },
+    },
+  )
+
   if (Number(claimId) < 1) {
     return <></>
   }
@@ -149,10 +178,47 @@ const DropperClaimView = ({
       minW="800px"
       borderRadius="20px"
       p="30px"
+      pb="0"
       color="white"
       direction="column"
       maxW="800px"
+      position="relative"
     >
+      {dbData?.active ? (
+        <Button
+          bg="#e85858"
+          _hover={{ bg: "#ff6565" }}
+          borderRadius="10px"
+          fontWeight="700"
+          position="absolute"
+          right="30px"
+          bottom="30px"
+          fontSize="20px"
+          zIndex="2"
+          onClick={() => setActive.mutate(false)}
+        >
+          {tempCaption !== ""
+            ? tempCaption
+            : !setActive.isLoading
+            ? "Deactivate"
+            : "Deactivating..."}
+        </Button>
+      ) : (
+        <Button
+          bg="#f56646"
+          _hover={{ bg: "#f37e5b" }}
+          borderRadius="10px"
+          fontWeight="700"
+          position="absolute"
+          right="30px"
+          bottom="30px"
+          fontSize="20px"
+          zIndex="2"
+          onClick={() => setActive.mutate(true)}
+        >
+          {tempCaption !== "" ? tempCaption : !setActive.isLoading ? "Activate" : "Activating..."}
+        </Button>
+      )}
       <Flex gap={2}>
         <Text
           textAlign="start"
