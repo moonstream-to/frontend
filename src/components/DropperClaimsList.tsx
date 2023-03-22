@@ -95,7 +95,7 @@ const DropperClaimsList = ({
   )
 
   useEffect(() => {
-    if (selected === -1 && claimsList.data) {
+    if (selected < 1 && claimsList.data) {
       setSelected(claimsList.data.length)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
