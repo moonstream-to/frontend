@@ -95,6 +95,7 @@ const useDrops = ({
       claimsPage,
       claimsPageSize,
       dropperAddress,
+      adminPermissions.data,
     ],
     _getAdminClaimsList,
     {
