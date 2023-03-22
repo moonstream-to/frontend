@@ -240,7 +240,23 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
           <Collapse in={isOpenAdd} animateOpacity>
             <NewClaimantView claimId={claimId} onClose={onCloseAdd} />
           </Collapse>
-          {claimants.data && (
+          {claimants.isError && (
+            <Flex alignItems="center" gap="20px">
+              <Text color="#d40000">{claimants.error.message}</Text>
+              <Button
+                color="#bababa"
+                bg="transparent"
+                border="1px solid #bababa"
+                borderRadius="10px"
+                _hover={{ bg: "#3f3f3f" }}
+                onClick={() => claimants.refetch()}
+                _active={{ bg: "white" }}
+              >
+                {!claimants.isLoading ? "Retry" : <Spinner />}
+              </Button>
+            </Flex>
+          )}
+          {claimants.data && !claimants.isError && (
             <Flex gap="40px" fontSize="16px">
               <Flex direction="column">
                 <Text py="10px" px="10px" borderBottom="0.5px solid #8b8b8b" fontWeight="700">

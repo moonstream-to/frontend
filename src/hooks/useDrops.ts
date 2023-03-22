@@ -14,7 +14,7 @@ const useDrops = ({
   ctx: MoonstreamWeb3ProviderInterface
 }) => {
   const [claimsPage, setClaimsPage] = React.useState(0)
-  const [claimsPageSize, setClaimsPageSize] = React.useState(5)
+  const [claimsPageSize, setClaimsPageSize] = React.useState(500)
 
   const terminusList = useQuery(
     ["terminusAddresses"],

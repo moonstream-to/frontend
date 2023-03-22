@@ -49,6 +49,10 @@ const DropperClaimView = ({
     ctx: web3ctx,
   })
 
+  useEffect(() => {
+    adminClaims.refetch()
+  }, [address, web3ctx.account])
+
   const [dbData, setDbData] = useState<
     | {
         deadline: string
@@ -77,6 +81,8 @@ const DropperClaimView = ({
           terminusPoolId,
           deadline,
         })
+      } else {
+        setDbData(undefined)
       }
     }
   }, [adminClaims.data, claimId])
