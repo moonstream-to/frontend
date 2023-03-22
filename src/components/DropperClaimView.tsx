@@ -184,40 +184,48 @@ const DropperClaimView = ({
       maxW="800px"
       position="relative"
     >
-      {dropState?.active ? (
-        <Button
-          bg="#e85858"
-          _hover={{ bg: "#ff6565" }}
-          borderRadius="10px"
-          fontWeight="700"
-          position="absolute"
-          right="30px"
-          bottom="30px"
-          fontSize="20px"
-          zIndex="2"
-          onClick={() => setActive.mutate(false)}
-        >
-          {tempCaption !== ""
-            ? tempCaption
-            : !setActive.isLoading
-            ? "Deactivate"
-            : "Deactivating..."}
-        </Button>
-      ) : (
-        <Button
-          bg="#f56646"
-          _hover={{ bg: "#f37e5b" }}
-          borderRadius="10px"
-          fontWeight="700"
-          position="absolute"
-          right="30px"
-          bottom="30px"
-          fontSize="20px"
-          zIndex="2"
-          onClick={() => setActive.mutate(true)}
-        >
-          {tempCaption !== "" ? tempCaption : !setActive.isLoading ? "Activate" : "Activating..."}
-        </Button>
+      {dropState && (
+        <>
+          {dropState?.active ? (
+            <Button
+              bg="#e85858"
+              _hover={{ bg: "#ff6565" }}
+              borderRadius="10px"
+              fontWeight="700"
+              position="absolute"
+              right="30px"
+              bottom="30px"
+              fontSize="20px"
+              zIndex="2"
+              onClick={() => setActive.mutate(false)}
+            >
+              {tempCaption !== ""
+                ? tempCaption
+                : !setActive.isLoading
+                ? "Deactivate"
+                : "Deactivating..."}
+            </Button>
+          ) : (
+            <Button
+              bg="#f56646"
+              _hover={{ bg: "#f37e5b" }}
+              borderRadius="10px"
+              fontWeight="700"
+              position="absolute"
+              right="30px"
+              bottom="30px"
+              fontSize="20px"
+              zIndex="2"
+              onClick={() => setActive.mutate(true)}
+            >
+              {tempCaption !== ""
+                ? tempCaption
+                : !setActive.isLoading
+                ? "Activate"
+                : "Activating..."}
+            </Button>
+          )}
+        </>
       )}
       <Flex gap={2}>
         <Text
