@@ -146,6 +146,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
       border="1px solid #4d4d4d"
       py={isOpenContent ? "20px" : "10px"}
       px="20px"
+      mb={isOpenContent ? "0" : "90px"}
     >
       <Flex
         alignItems="center"
@@ -293,7 +294,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
               </Flex>
             </Flex>
           )}
-          <Flex alignItems="center" justifyContent="space-between" fontWeight="300">
+          <Flex alignItems="center" justifyContent="space-between" fontWeight="300" pb="60px">
             <Text>page {claimantsPage + 1}</Text>
             <Flex alignItems="center" justifyContent="center">
               <IconButton
