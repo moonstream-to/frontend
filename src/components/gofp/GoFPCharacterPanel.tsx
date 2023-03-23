@@ -1,11 +1,22 @@
-import React, { useState } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { Flex } from "@chakra-ui/react"
 
 import ActiveCharPanel from "./GoFPActiveCharPanel"
 import AddCharPanel from "./GoFPAddCharPanel"
 
+import Web3Context from "../../contexts/Web3Context/context"
+import useGofp from "../../contexts/GoFPContext"
+import useGofpContract from "../../hooks/useGofpConract"
+
 const CharacterPanel = () => {
-  const [showActive, setShowActive] = useState<boolean>(true)
+  const web3ctx = useContext(Web3Context)
+  const { sessionId, gardenContractAddress } = useGofp()
+  const { stakedTokens } = useGofpContract({ sessionId, gardenContractAddress, web3ctx })
+  const [showActive, setShowActive] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (stakedTokens && stakedTokens.data && stakedTokens.data.length > 0) setShowActive(true)
+  }, [stakedTokens])
 
   return (
     <Flex

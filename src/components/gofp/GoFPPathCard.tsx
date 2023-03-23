@@ -24,7 +24,7 @@ const PathCard = ({
   const incorrectPathColor = "#E85858"
   const undecidedPathColor = "#4C4C4C"
 
-  const { selectPath, sessionId, gardenContractAddress } = useGofp()
+  const { selectedPath, selectPath, sessionId, gardenContractAddress } = useGofp()
   const web3ctx = useContext(Web3Context)
 
   const { choosePath, correctPaths, currentStage } = useGofpContract({
@@ -39,6 +39,7 @@ const PathCard = ({
   }
 
   const [status, setStatus] = useState(PathStatus.undecided)
+  const [isSelected, setIsSelected] = useState<boolean>(false)
 
   useEffect(() => {
     if (!correctPaths.data) {
@@ -52,6 +53,14 @@ const PathCard = ({
       setStatus(PathStatus.undecided)
     }
   }, [correctPaths.data, pathIdx, stageIdx])
+
+  useEffect(() => {
+    if (stageIdx + 1 === currentStage.data && pathIdx + 1 === selectedPath) {
+      setIsSelected(true)
+    } else {
+      setIsSelected(false)
+    }
+  }, [selectedPath, pathIdx, stageIdx, currentStage.data])
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept,
@@ -91,7 +100,6 @@ const PathCard = ({
       id={pathId}
       px={2}
       onClick={() => {
-        console.log(stageIdx, currentStage.data)
         if (stageIdx + 1 === currentStage.data) {
           selectPath(pathIdx + 1)
         }
@@ -110,7 +118,7 @@ const PathCard = ({
           >
             <path
               d="M1 8.09388C1 8.09388 6.77761 10.0895 6.7459 12.2739C6.69769 15.5947 6.69769 17.3041 6.69769 17.3041L6.69768 120.696C6.69768 120.696 6.69769 122.405 6.7459 125.726C6.77761 127.91 1 129.906 1 129.906L1.67215 136.343L7.6697 137C7.6697 137 9.28032 131.035 11.9902 131.035H88.0098C90.7197 131.035 92.3303 137 92.3303 137L98.3279 136.343L99 129.906C99 129.906 93.2224 127.91 93.2541 125.726C93.3023 122.405 93.3023 120.696 93.3023 120.696V17.3041C93.3023 17.3041 93.3023 15.5947 93.2541 12.2739C93.2224 10.0895 99 8.09388 99 8.09388L98.3279 1.65679L92.3303 1C92.3303 1 90.7197 6.96489 88.0098 6.96489H11.9902C9.28032 6.96489 7.6697 1 7.6697 1L1.67215 1.65679L1 8.09388Z"
-              stroke="white"
+              stroke={isSelected ? "white" : "gray"}
             />
           </svg>
         </Box>
@@ -150,7 +158,13 @@ const PathCard = ({
               opacity={status == PathStatus.undecided ? 1.0 : 0.4}
             ></Image>
           )}
-          <Text fontSize="xs" color="white" align="center" py={2}>
+          <Text
+            fontSize={isSelected ? "sm" : "xs"}
+            fontWeight={isSelected ? "semibold" : "normal"}
+            color="white"
+            align="center"
+            py={2}
+          >
             {pathMetadata.title}
           </Text>
         </Box>
