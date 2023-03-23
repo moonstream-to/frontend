@@ -46,7 +46,7 @@ const AddCharPanel = ({
         <Text fontSize="md">Assign Characters</Text>
       </Flex>
       <Text fontSize="lg" fontWeight="bold" pt={4}>
-        All Characters
+        Available Characters
       </Text>
       <Text fontSize="sm" pt={4}>
         Select characters and send them into session to start playing.
