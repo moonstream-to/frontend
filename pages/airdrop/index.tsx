@@ -139,13 +139,13 @@ const Airdrop = () => {
   return (
     <Layout home={false}>
       <Flex px="7%" gap="40px" py="40px" direction="column" justifyContent="start" h="100%">
-        <Text fontSize={["24px", "40px"]} color="white" fontWeight="700">
+        <Text fontSize={["24px", "40px"]} fontWeight="700">
           {!collectionId ? `Claims` : `Claim  - ${collectionName ?? ""}`}
         </Text>
         {events.isLoading && <Spinner />}
         {collectionId && (
           <Center>
-            <Flex fontSize="min(18px, 9px + 0.7vw)" direction="column" color="white">
+            <Flex fontSize="min(18px, 9px + 0.7vw)" direction="column">
               <Flex
                 direction="column"
                 p="calc(2vw)"

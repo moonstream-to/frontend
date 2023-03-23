@@ -14,13 +14,10 @@ import { inputTheme } from "./components/input"
 const overrides = {
   breakpoints,
   colors,
-  // Other foundational style overrides go here
   components: {
     Button,
     Menu,
     Input: inputTheme,
-
-    // Other components go here
   },
   styles: {
     global: () => ({

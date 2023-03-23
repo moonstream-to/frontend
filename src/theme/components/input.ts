@@ -11,6 +11,8 @@ const baseStyle = definePartsStyle({
     color: "white",
     border: "1px solid white",
     borderRadius: "10px",
+    bg: "transparent",
+    fontSize: "18px",
     _focus: { border: "2px solid white" },
     _active: { border: "2px solid white" },
     _focusVisible: { border: "2px solid white" },
@@ -22,12 +24,9 @@ const baseStyle = definePartsStyle({
 const address = definePartsStyle({
   field: {
     fontFamily: "Jet Brains Mono, monospace",
-    border: "1px solid white",
-    bg: "transparent",
     fontSize: "min(18px, 9px + 0.7vw)",
     w: "42ch",
     px: "1ch",
-    color: "white",
   },
 })
 
