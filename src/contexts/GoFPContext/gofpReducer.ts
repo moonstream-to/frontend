@@ -45,6 +45,11 @@ const gofpReducer = (state: any, action: { type: string; payload: any }) => {
         ...state,
         selectedTokens: newSelectedTokens,
       }
+    case "UNSELECT_ALL":
+      return {
+        ...state,
+        selectedTokens: [],
+      }
     default:
       throw new Error(`No case for type ${type} found in shopReducer.`)
   }

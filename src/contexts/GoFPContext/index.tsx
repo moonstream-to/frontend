@@ -43,6 +43,13 @@ export const GofpProvider = ({ children }: { children: React.ReactNode }) => {
     })
   }
 
+  const unselectAll = () => {
+    dispatch({
+      type: "UNSELECT_ALL",
+      payload: {},
+    })
+  }
+
   const selectPath = (pathId: number) => {
     dispatch({
       type: "SELECT_PATH",
@@ -93,6 +100,7 @@ export const GofpProvider = ({ children }: { children: React.ReactNode }) => {
     gardenContractAddress,
     setSessionId,
     toggleTokenSelect,
+    unselectAll,
     setGardenContractAddress,
   }
 

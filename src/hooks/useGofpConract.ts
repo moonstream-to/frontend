@@ -125,8 +125,8 @@ export const useGofpContract = ({
   }
 
   const getTokenGuard = async (tokenId: number) => {
-    const res = await gardenContract.methods.getSessionTokenStakeGuard(sessionId, tokenId).call() //TODO current stage
-    return Number(res)
+    const res = await gardenContract.methods.getSessionTokenStakeGuard(sessionId, tokenId).call()
+    return res as boolean
   }
 
   function useGuard(tokenId: number) {
@@ -134,18 +134,17 @@ export const useGofpContract = ({
   }
 
   const getApprovalForAll = async () => {
-    console.log("Attempting getApproval")
+    if (!sessionInfo.data) return false
     tokenContract.options.address = sessionInfo.data[0]
     const approved = await tokenContract.methods
       .isApprovedForAll(web3ctx.account, gardenContractAddress)
       .call()
-    console.log("User is", approved ? "approved." : "not approved.")
     return approved
   }
 
   function useApprovalForAll() {
     return useQuery(
-      ["contract_approval", gardenContractAddress, web3ctx.account],
+      ["contract_approval", gardenContractAddress, web3ctx.account, sessionInfo.data],
       () => getApprovalForAll(),
       { ...hookCommon, notifyOnChangeProps: ["data"] },
     )
@@ -158,7 +157,6 @@ export const useGofpContract = ({
       const uri = await tokenContract.methods.tokenURI(tokenIds[i]).call()
       uris.set(tokenIds[i], uri)
     }
-    console.log(uris)
     return uris
   }
 
