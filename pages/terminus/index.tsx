@@ -94,20 +94,14 @@ const Terminus = () => {
         <Flex gap="30px" direction="column" px="7%" py="30px" color="white">
           <Flex gap="20px">
             <Input
-              onKeyDown={handleKeyDown}
               w="50ch"
               placeholder="terminus contract address"
               type="text"
               value={nextValue}
               onChange={(e) => setNextValue(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
-            <Button
-              bg="gray.0"
-              fontWeight="400"
-              fontSize="18px"
-              color="#2d2d2d"
-              onClick={handleSubmit}
-            >
+            <Button variant="whiteButton" onClick={handleSubmit}>
               Show
             </Button>
           </Flex>

@@ -142,7 +142,6 @@ const TerminusPoolsListView = ({
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
         placeholder="search"
-        borderRadius="10px"
         p="8px 15px"
       />
 
@@ -156,12 +155,11 @@ const TerminusPoolsListView = ({
 
       {contractState && contractState.controller === web3ctx.account && (
         <Button
-          width="100%"
-          bg="gray.0"
+          variant="whiteButton"
           fontWeight="700"
           fontSize="20px"
-          color="#2d2d2d"
           onClick={onOpen}
+          width="100%"
         >
           + Add new
         </Button>

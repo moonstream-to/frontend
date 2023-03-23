@@ -280,13 +280,7 @@ const TerminusPoolView = ({
                 onChange={(e) => setNewUri(e.target.value)}
                 type="url"
               />
-              <Button
-                bg="gray.0"
-                fontWeight="400"
-                fontSize="18px"
-                color="#2d2d2d"
-                onClick={handleNewUri}
-              >
+              <Button variant="whiteButton" onClick={handleNewUri}>
                 Save
               </Button>
             </Flex>

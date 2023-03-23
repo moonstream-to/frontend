@@ -309,7 +309,6 @@ const Inventory = () => {
           <Text pb={2}>Wallet Address</Text>
           <Input
             variant="address"
-            // onKeyDown={handleKeyDown}
             placeholder="wallet address"
             type="text"
             value={currentAccount}

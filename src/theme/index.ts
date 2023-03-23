@@ -9,6 +9,7 @@ import colors from "./foundations/colors"
 // Component style overrides
 import Button from "./components/button"
 import Menu from "./components/menu"
+import { inputTheme } from "./components/input"
 
 const overrides = {
   breakpoints,
@@ -17,19 +18,8 @@ const overrides = {
   components: {
     Button,
     Menu,
-    Input: {
-      variants: {
-        address: {
-          field: {
-            border: "1px solid white",
-            bg: "transparent",
-            fontSize: "min(18px, 9px + 0.7vw)",
-            w: "42ch",
-            px: "1ch",
-          },
-        },
-      },
-    },
+    Input: inputTheme,
+
     // Other components go here
   },
   styles: {

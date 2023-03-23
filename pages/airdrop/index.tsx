@@ -158,50 +158,43 @@ const Airdrop = () => {
                   <Text>Wallet address</Text>
                   <Input
                     variant="address"
-                    onKeyDown={handleKeyDown}
                     placeholder="wallet address"
                     type="text"
                     value={claimantAddress}
                     onChange={(e) => {
                       setClaimantAddress(e.target.value)
                     }}
+                    onKeyDown={handleKeyDown}
                   />
                   <Text>Email</Text>
                   <Input
-                    onKeyDown={handleKeyDown}
                     variant="address"
                     placeholder="email"
                     type="email"
                     value={claimantEmail}
                     onChange={(e) => setClaimantEmail(e.target.value)}
+                    onKeyDown={handleKeyDown}
                   />
                   <Text>Discord</Text>
                   <Input
-                    onKeyDown={handleKeyDown}
                     variant="address"
                     placeholder="discord account"
                     type="text"
                     value={claimantDiscord}
                     onChange={(e) => setClaimantDiscord(e.target.value)}
+                    onKeyDown={handleKeyDown}
                   />
                   <Text>Password</Text>
                   <Input
-                    onKeyDown={handleKeyDown}
                     variant="address"
                     placeholder="password"
                     type="password"
                     value={claimantPassword}
                     onChange={(e) => setClaimantPassword(e.target.value)}
+                    onKeyDown={handleKeyDown}
                   />
                 </Flex>
-                <Button
-                  variant="plainOrange"
-                  borderRadius="10px"
-                  minW="100%"
-                  bg="#F56646"
-                  color="white"
-                  onClick={handleSubmit}
-                >
+                <Button variant="plainOrange" minW="100%" onClick={handleSubmit}>
                   {createPublicEntryMutation.isLoading ? (
                     <Spinner h="22px" w="22px" />
                   ) : (

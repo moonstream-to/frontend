@@ -60,9 +60,8 @@ const AddCharPanel = ({
       </SimpleGrid>
       <Flex mt={6} flexDirection="column">
         <Button
+          variant="plainOrange"
           w="100%"
-          backgroundColor="#F56646"
-          rounded="lg"
           onClick={async () => {
             if (isApproved?.data && ownedTokens.data) {
               await stakeTokens.mutate(
@@ -100,7 +99,7 @@ const AddCharPanel = ({
                   Cancel
                 </Button>
                 <Button
-                  bgColor="#F56646"
+                  variant="plainOrange"
                   m={2}
                   onClick={async () => {
                     setApproval.mutate()

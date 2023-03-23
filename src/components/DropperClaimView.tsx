@@ -198,6 +198,7 @@ const DropperClaimView = ({
               fontSize="20px"
               zIndex="2"
               onClick={() => setActive.mutate(false)}
+              w="241px"
             >
               {tempCaption !== ""
                 ? tempCaption
@@ -207,10 +208,8 @@ const DropperClaimView = ({
             </Button>
           ) : (
             <Button
-              bg="#f56646"
-              _hover={{ bg: "#f37e5b" }}
-              borderRadius="10px"
-              fontWeight="700"
+              variant="plainOrange"
+              w="241px"
               position="absolute"
               right="30px"
               bottom="30px"

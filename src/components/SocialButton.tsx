@@ -7,16 +7,12 @@ interface SocialButtonProps {
 }
 
 const SocialButton = ({ children, label, href }: SocialButtonProps) => {
-  // const { buttonReport } = useContext(AnalyticsContext)
   return (
     <Button
-      // bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
       bg="transparent"
       rounded={"full"}
       cursor={"pointer"}
-      // maxW='30px'
       onClick={() => {
-        // buttonReport(label, 'footer', 'landing')
         window.open(href)
       }}
       display={"inline-flex"}

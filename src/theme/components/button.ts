@@ -53,13 +53,33 @@ const variantWyrmButton = () => {
   }
 }
 
+const variantWhiteButton = () => {
+  const secondColor = "#e6eaee"
+  return {
+    bg: "white",
+    color: "#2d2d2d",
+    fontWeight: "400",
+    fontSize: "18",
+
+    _hover: {
+      backgroundColor: secondColor,
+      textDecoration: "none",
+    },
+    _focus: {
+      backgroundColor: secondColor,
+    },
+    _active: {
+      backgroundColor: secondColor,
+    },
+  }
+}
+
 const variantPlainOrange = () => {
   return {
     alignItems: "center",
     justifyContent: "center",
     border: "solid transparent",
-    borderRadius: "30px",
-    // variant: "solid",
+    borderRadius: "10px",
     fontSize: ["md", "md", "lg", "lg", "xl", "xl"],
     textColor: "white",
     bg: "#F56646",
@@ -115,6 +135,7 @@ const Button = {
     plainOrange: variantPlainOrange,
     orangeGradient: variantOrangeGradient,
     wyrmButton: variantWyrmButton,
+    whiteButton: variantWhiteButton,
   },
 }
 export default Button

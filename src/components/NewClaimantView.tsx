@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react"
 
 import { useMutation, useQueryClient } from "react-query"
 import { SmallCloseIcon } from "@chakra-ui/icons"
-import { Flex, IconButton, Input, Spinner, Text, Icon, Button, Spacer } from "@chakra-ui/react"
+import { Flex, IconButton, Input, Spinner, Text, Icon, Spacer } from "@chakra-ui/react"
 import { AiOutlineCheck, AiOutlineExclamationCircle, AiOutlineSave } from "react-icons/ai"
 
 import Web3Context from "../contexts/Web3Context/context"
@@ -135,12 +135,10 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
             pl="auto"
             pr="auto"
             value={newAddress}
-            borderRadius="10px"
             onChange={(e) => setNewAddress(e.target.value)}
             maxW="45ch"
             w="45ch"
-            borderColor={inputColor}
-            fontFamily="Jet Brains Mono, monospace"
+            borderColor={`${inputColor}!important`}
           />
           <Input
             variant="address"
@@ -188,95 +186,6 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
         )}
       </Flex>
     </>
-    // <>
-    //   {!existingClaimant && (
-    //     <Flex direction="column" gap="20px">
-    //       <Flex alignItems="center" gap="10px">
-    //         <Flex fontSize="16px" direction="column" gap="5px" maxW="43ch">
-    //           <Text>Address:</Text>
-    // <Input
-    //   variant="address"
-    //   fontSize="16px"
-    //   pl="auto"
-    //   pr="auto"
-    //   value={newAddress}
-    //   onChange={(e) => setNewAddress(e.target.value)}
-    // />
-    //         </Flex>
-    //         <Flex direction="column" w="100%" gap="5px">
-    //           <Text>Amount:</Text>
-    //           <Flex gap="5px" alignItems="center">
-    // <Input
-    //   variant="address"
-    //   fontSize="16px"
-    //   w="10ch"
-    //   value={newAmount}
-    //   onChange={(e) => setNewAmount(e.target.value)}
-    // />
-    // {!addClaimants.isLoading ? (
-    //   <IconButton
-    //     bg="transparent"
-    //     aria-label="cancel"
-    //     icon={<Icon as={AiOutlineSave} />}
-    //     _hover={{ bg: "#3f3f3f" }}
-    //     onClick={() =>
-    //       addClaimants.mutate({
-    //         claimants: [{ address: newAddress, amount: Number(newAmount) }],
-    //       })
-    //     }
-    //   />
-    // ) : (
-    //   <Spinner mx="12px" w="16px" h="16px" />
-    // )}
-    // <IconButton
-    //   bg="transparent"
-    //   aria-label="cancel"
-    //   icon={<SmallCloseIcon />}
-    //   onClick={() => onDoneAdding()}
-    //   disabled={addClaimants.isLoading}
-    //   _hover={{ bg: "#3f3f3f" }}
-    // />
-    //           </Flex>
-    //         </Flex>
-    //       </Flex>
-    //     </Flex>
-    //   )}
-    //   {existingClaimant && (
-    //     <Flex mt="10px" gap="10px">
-    //       <Flex direction="column" w="42ch">
-    //         <Text fontFamily="Jet Brains Mono, monospace">{existingClaimant.address} </Text>
-    //         <Text w="40ch">
-    //     {`has ${existingClaimant.amount} already. Do
-    //  you want to update it to ${newAmount}?`}
-    //         </Text>
-    //       </Flex>
-    //       <Flex w="100%" justifyContent="center" gap="10px" alignItems="center">
-    //         <Button
-    //           bg="transparent"
-    //           border="1px solid white"
-    //           disabled={addClaimants.isLoading}
-    //           _hover={{ bg: "#3f3f3f" }}
-    //           onClick={() =>
-    //             addClaimants.mutate({
-    //               claimants: [{ address: newAddress, amount: Number(newAmount) }],
-    //             })
-    //           }
-    //         >
-    //           {!addClaimants.isLoading ? <Text>Yes</Text> : <Spinner />}
-    //         </Button>
-    //         <Button
-    //           bg="transparent"
-    //           _hover={{ bg: "#3f3f3f" }}
-    //           border="1px solid white"
-    //           disabled={addClaimants.isLoading}
-    //           onClick={() => onDoneAdding(true)}
-    //         >
-    //           No
-    //         </Button>
-    //       </Flex>
-    //     </Flex>
-    //   )}
-    // </>
   )
 }
 

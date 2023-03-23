@@ -160,12 +160,12 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
         </Text>
         {isOpenContent && claimants.data?.length > 0 && (
           <Button
-            onClick={onToggleUpload}
-            gap="10px"
             bg="transparent"
             _hover={{ bg: "transparent" }}
             fontSize="16px"
             fontWeight="400"
+            onClick={onToggleUpload}
+            gap="10px"
           >
             <Icon as={AiOutlineCloudUpload} /> <Text>Update</Text>
           </Button>
@@ -190,7 +190,6 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 value={searchString}
                 onChange={(e) => setSearchString(e.target.value)}
                 placeholder="search for address"
-                borderRadius="10px"
                 p="8px 15px"
               />
               <InputRightElement
@@ -219,6 +218,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 }
               />
             </InputGroup>
+            {/*TODO searchAddress component */}
             <Flex alignItems="center" gap="10px" cursor="pointer" onClick={onToggleAdd}>
               <Text>Add claimant</Text>
               <SmallAddIcon />

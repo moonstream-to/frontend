@@ -70,7 +70,6 @@ const DropperClaimsListView = ({
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
         placeholder="search"
-        borderRadius="10px"
         p="8px 15px"
       />
 
@@ -84,14 +83,7 @@ const DropperClaimsListView = ({
       />
 
       {contractState && contractState.owner === web3ctx.account && (
-        <Button
-          width="100%"
-          bg="gray.0"
-          fontWeight="700"
-          fontSize="20px"
-          color="#2d2d2d"
-          onClick={onOpen}
-        >
+        <Button variant="whiteButton" fontSize="20px" fontWeight="700" onClick={onOpen}>
           + Add new
         </Button>
       )}
