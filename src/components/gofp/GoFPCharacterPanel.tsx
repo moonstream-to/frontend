@@ -15,8 +15,8 @@ const CharacterPanel = () => {
   const [showActive, setShowActive] = useState<boolean>(false)
 
   useEffect(() => {
-    if (stakedTokens && stakedTokens.data && stakedTokens.data.length > 0) setShowActive(true)
-  }, [stakedTokens])
+    if (stakedTokens.data && stakedTokens.data.length > 0) setShowActive(true)
+  }, [stakedTokens.data])
 
   return (
     <Flex

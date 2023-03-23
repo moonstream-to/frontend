@@ -7,13 +7,14 @@ import CharacterCard from "./GoFPCharacterCard"
 import useGofp from "../../contexts/GoFPContext"
 import useGofpContract from "../../hooks/useGofpConract"
 import Web3Context from "../../contexts/Web3Context/context"
+import { unlinkSync } from "fs"
 
 const ActiveCharPanel = ({
   setShowActive,
 }: {
   setShowActive: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const { selectedPath, selectedTokens, gardenContractAddress, sessionId } = useGofp()
+  const { selectedPath, selectedTokens, unselectAll, gardenContractAddress, sessionId } = useGofp()
   const web3ctx = useContext(Web3Context)
 
   const { unstakeTokens, useTokenUris, stakedTokens, choosePath } = useGofpContract({
@@ -59,11 +60,12 @@ const ActiveCharPanel = ({
           <Text
             color="#EE8686"
             cursor="pointer"
-            onClick={() =>
+            onClick={() => {
               unstakeTokens.mutate(
                 stakedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId)) ?? [],
               )
-            }
+              unselectAll()
+            }}
           >
             remove characters from session
           </Text>

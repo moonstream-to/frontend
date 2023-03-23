@@ -22,7 +22,7 @@ const CharacterCard = ({ tokenId, uri }: { tokenId: number; uri: string }) => {
   const guard = useGuard(tokenId)
   const [status, setStatus] = useState<string | undefined>(undefined)
   useEffect(() => {
-    if (guard.data && ownedTokens.data?.includes(tokenId)) {
+    if (ownedTokens.data?.includes(tokenId)) {
       setStatus(guard.data ? "Already played" : "Available")
     } else {
       setStatus(path.data ? `Assigned to path ${path.data}` : "Choose path")

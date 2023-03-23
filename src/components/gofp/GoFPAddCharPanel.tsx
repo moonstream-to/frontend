@@ -31,7 +31,7 @@ const AddCharPanel = ({
 }) => {
   const web3ctx = useContext(Web3Context)
 
-  const { selectedTokens, sessionId, gardenContractAddress } = useGofp()
+  const { selectedTokens, unselectAll, sessionId, gardenContractAddress } = useGofp()
   const { ownedTokens, stakeTokens, setApproval, useTokenUris, useApprovalForAll } =
     useGofpContract({ sessionId, gardenContractAddress, web3ctx })
   const tokenUris = useTokenUris(ownedTokens.data ?? [])
@@ -69,6 +69,7 @@ const AddCharPanel = ({
                 ownedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId)),
               )
               setShowActive(true)
+              unselectAll()
             } else {
               onOpen()
             }
