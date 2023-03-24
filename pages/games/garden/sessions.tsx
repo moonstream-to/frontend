@@ -29,7 +29,6 @@ const GoFPSessions = () => {
   // const [inputValue] = React.useState("")
 
   useEffect(() => {
-    console.log("Setting contract address")
     if (router.query["contractId"]) setContractAddress(router.query["contractId"])
   }, [router.query])
 
@@ -63,8 +62,6 @@ const GoFPSessions = () => {
   const sessionCount = useQuery<number>(
     ["get_session_count", contractAddress, web3ctx.account, blockchain],
     async () => {
-      console.log(contractAddress)
-      console.log(blockchain)
       if (contractAddress == ZERO_ADDRESS || contractAddress.trim() == "") return 0
       if (!blockchain) return 0
 

@@ -24,8 +24,7 @@ const SessionCard = ({
 
   const router = useRouter()
   const imageUrl = sessionMetadata.imageUrl
-  const defaultImageUrl =
-    "https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/minigames-card.png"
+  const defaultImageUrl = "https://static.greatwyrm.xyz/default-session-image.png"
   const calculatedImage = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl
 
   return (
