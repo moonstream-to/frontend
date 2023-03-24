@@ -22,13 +22,13 @@ const features = [
   },
   {
     name: "Dropper",
-    description: "Set up loyalty program and reward your players",
+    description: "Distribute rewards to your players",
     image: assets.dropper,
     href: "/dropper",
   },
   {
     name: "Claim drops",
-    description: "Claim items and lootboxes",
+    description: "Player, claim your rewards",
     image: assets.airdrop,
     href: "/airdrop",
   },
