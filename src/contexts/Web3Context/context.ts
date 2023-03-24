@@ -28,6 +28,7 @@ const Web3Context = createContext<MoonstreamWeb3ProviderInterface>({
   web3: new Web3(null),
   polygonClient: new Web3(null),
   wyrmClient: new Web3(null),
+  mumbaiClient: new Web3(null),
   onConnectWalletClick: () => console.error("not intied"),
   buttonText: "",
   WALLET_STATES: WALLET_STATES,
