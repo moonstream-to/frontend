@@ -7,7 +7,8 @@ import Layout from "../src/components/layout"
 import { AWS_ASSETS_PATH } from "../src/constants"
 
 const assets = {
-  airdrop: `${AWS_ASSETS_PATH}/airdrop.png`,
+  airdrop: `${AWS_ASSETS_PATH}/open-lootbox.png`,
+  dropper: `${AWS_ASSETS_PATH}/airdrop.png`,
   terminus: `${AWS_ASSETS_PATH}/Terminus.png`,
   games: `${AWS_ASSETS_PATH}/minigames-card.png`,
 }
@@ -20,8 +21,14 @@ const features = [
     href: "/terminus",
   },
   {
-    name: "Airdrop",
-    description: "Claim your token",
+    name: "Dropper",
+    description: "Set up loyalty program and reward your players",
+    image: assets.dropper,
+    href: "/dropper",
+  },
+  {
+    name: "Claim drops",
+    description: "Claim items and lootboxes",
     image: assets.airdrop,
     href: "/airdrop",
   },
