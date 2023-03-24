@@ -22,7 +22,7 @@ const _NFTCard = ({
   isVideo?: boolean
   grayedOut?: boolean
 }) => {
-  const calculatedImaged = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl
+  const calculatedImage = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl
   return (
     <Flex {...props} backgroundColor="#353535">
       <VStack minW="220" minH="360" border="solid" borderColor="white" borderRadius="lg">
@@ -40,7 +40,7 @@ const _NFTCard = ({
         />
         <Box px={6} pb={4}>
           {description ? (
-            <TextWithPopup text={description} image={calculatedImaged} title={name} />
+            <TextWithPopup text={description} image={calculatedImage} title={name} />
           ) : (
             <Text fontSize="md" pb={2}>
               {name}

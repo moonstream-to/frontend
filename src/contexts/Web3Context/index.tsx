@@ -132,6 +132,9 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
   const [wyrmClient] = React.useState<Web3>(
     new Web3(new Web3.providers.HttpProvider("https://wyrm.constellationchain.xyz/http")),
   )
+  const [mumbaiClient] = React.useState<Web3>(
+    new Web3(new Web3.providers.HttpProvider("https://matic-mumbai.chainstacklabs.com")),
+  )
 
   const _signAccessToken = async (account: string) => {
     if (web3.currentProvider) {
@@ -330,6 +333,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
         web3,
         polygonClient,
         wyrmClient,
+        mumbaiClient,
         onConnectWalletClick,
         buttonText,
         WALLET_STATES,

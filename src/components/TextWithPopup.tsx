@@ -17,10 +17,20 @@ import {
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
-const TextWithPopup = ({ text, image, title }: { text: string; title: string; image?: string }) => {
+const TextWithPopup = ({
+  text,
+  image,
+  title,
+  shortCharCount,
+}: {
+  text: string
+  title: string
+  image?: string
+  shortCharCount?: number
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const textCut = 80
+  const textCut = shortCharCount || 80
 
   return (
     <>

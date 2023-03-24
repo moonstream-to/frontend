@@ -85,7 +85,6 @@ export const useGofpContract = ({
     ["get_correct_paths", gardenContractAddress, sessionId, currentStage.data],
     async () => {
       const answers: number[] = []
-      console.log("correct paths query")
       if (
         gardenContractAddress == ZERO_ADDRESS ||
         sessionId < 1 ||
@@ -102,7 +101,6 @@ export const useGofpContract = ({
         answers.push(parseInt(ans))
       }
 
-      console.log("Correct paths ", answers)
       return answers
     },
     {
@@ -230,6 +228,8 @@ export const useGofpContract = ({
   const stakedTokens = useQuery<number[]>(
     ["staked_tokens", gardenContractAddress, sessionId, web3ctx.account],
     async () => {
+      if (gardenContractAddress.trim() == "") return []
+      gardenContract.options.address = gardenContractAddress
       const balance = await gardenContract.methods
         .numTokensStakedIntoSession(sessionId, web3ctx.account)
         .call()
@@ -241,7 +241,6 @@ export const useGofpContract = ({
         tokens.push(parseInt(tok))
         // TODO MULTICALL
       }
-      console.log("staked tokens", tokens)
       return tokens
     },
     {

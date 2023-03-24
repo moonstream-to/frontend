@@ -36,7 +36,7 @@ const features = [
     name: "Garden of Forking Paths",
     description: "Start your adventure at Garden of Forking Paths",
     image: assets.games,
-    href: "/games/garden",
+    href: "/games/garden/sessions/?contractId=0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b",
   },
 ]
 
