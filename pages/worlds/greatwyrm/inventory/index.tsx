@@ -324,6 +324,13 @@ const Inventory = () => {
     else setAssetType(AssetType.Characters)
   }
 
+  const addRecentAddy = (address: string) => {
+    if (!recentAddys.includes(address)) {
+      recentAddys.push(address)
+      localStorage.setItem("spyWallets", JSON.stringify(recentAddys))
+    }
+  }
+
   useEffect(() => {
     let nextAddress = ZERO_ADDRESS
     if (queryAddress && Web3.utils.isAddress(queryAddress)) {
@@ -338,12 +345,13 @@ const Inventory = () => {
   }, [web3ctx.account, queryAddress])
 
   useEffect(() => {
-    setRecentAddys([
-      "0x9ed191DB1829371F116Deb9748c26B49467a592A",
-      "0x5270Be273265f6F8ab034dF137FF82fc1E468F88",
-      "0xb0917cD6d40cb47438415E7fc97E00a2447f882c",
-    ])
-  }, [])
+    console.log("Hitting input use effect")
+    if (Web3.utils.isAddress(inputAddy)) setCurrentAccount(inputAddy)
+  }, [inputAddy])
+
+  useEffect(() => {
+    setRecentAddys(JSON.parse(localStorage.getItem("spyWallets") ?? "[]"))
+  }, [router.asPath])
 
   return (
     <Layout home={true}>
@@ -351,7 +359,9 @@ const Inventory = () => {
         <title>Moonstream portal - Inventory</title>
       </Head>
       <Box py={10} ml="108px">
-        <Text pb={2}>Wallet Address</Text>
+        <Text fontSize="lg" pb={2}>
+          Showing inventory for wallet {currentAccount}
+        </Text>
         <Box mb={6}>
           <InputGroup w="500px">
             <Input
@@ -360,18 +370,21 @@ const Inventory = () => {
               focusBorderColor="#FFFFFF"
               border="0px"
               type="text"
-              value={inputAddy}
-              onChange={(e) => {
-                if (Web3.utils.isAddress(e.target.value)) {
-                  setCurrentAccount(e.target.value)
-                  setAcShow(false)
-                }
-              }}
               onFocus={() => {
                 setAcShow(true)
               }}
+              onChange={(e) => {
+                const val = e.target.value
+                if (Web3.utils.isAddress(val)) {
+                  setCurrentAccount(val)
+                  setAcShow(false)
+                  addRecentAddy(val)
+                }
+              }}
               onBlur={() => {
-                setAcShow(false)
+                setTimeout(() => {
+                  setAcShow(false)
+                }, 200)
               }}
               mb={2}
             />
@@ -388,7 +401,7 @@ const Inventory = () => {
             rounded="md"
             p={2}
             flexDirection="column"
-            hidden={!acShow}
+            display={acShow ? undefined : "none"}
           >
             <Flex>
               <Text fontSize={18} fontWeight="semibold">
@@ -403,7 +416,7 @@ const Inventory = () => {
                   _hover={{ bg: "#4D4D4D" }}
                   onClick={() => {
                     console.log("click event")
-                    setInputAddy(addy)
+                    setCurrentAccount(addy)
                   }}
                   rounded="md"
                   key={index}
