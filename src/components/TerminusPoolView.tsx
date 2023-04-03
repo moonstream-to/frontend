@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useQuery, useMutation } from "react-query"
-import { Button, IconButton, Input, useToast } from "@chakra-ui/react"
+import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react"
 import { Box, Flex, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/image"
 
 import PoolDetailsRow from "./PoolDetailsRow"
-import Spinner from "./Spinner/Spinner"
 import Web3Context from "../contexts/Web3Context/context"
 import { MockTerminus } from "../web3/contracts/types/MockTerminus"
 import queryCacheProps from "../hooks/hookCommon"
@@ -51,21 +50,19 @@ const TerminusPoolView = ({
     },
   }
 
+  useEffect(() => {
+    setNewUri("")
+    poolState.refetch()
+  }, [poolId])
+
   const setPoolURI = useMutation(
     ({ uri, poolId }: { uri: string; poolId: string }) =>
       terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
-    { ...commonProps },
+    { ...commonProps, onSettled: () => poolState.refetch() },
   )
 
   const handleNewUri = () => {
-    setPoolURI.mutate(
-      { uri: newUri, poolId: poolId },
-      {
-        onSettled: () => {
-          poolState.refetch()
-        },
-      },
-    )
+    setPoolURI.mutate({ uri: newUri, poolId: poolId })
   }
 
   const poolState = useQuery(
@@ -189,6 +186,7 @@ const TerminusPoolView = ({
       maxW="800px"
     >
       <Flex gap={2}>
+        {poolState.isFetching && <Spinner />}
         <Text
           textAlign="start"
           color="#c2c2c2"
@@ -279,6 +277,7 @@ const TerminusPoolView = ({
                 value={newUri}
                 onChange={(e) => setNewUri(e.target.value)}
                 type="url"
+                disabled={setPoolURI.isLoading}
               />
               <Button
                 bg="gray.0"
@@ -286,8 +285,9 @@ const TerminusPoolView = ({
                 fontSize="18px"
                 color="#2d2d2d"
                 onClick={handleNewUri}
+                disabled={setPoolURI.isLoading}
               >
-                Save
+                {setPoolURI.isLoading ? <Spinner /> : "Save"}
               </Button>
             </Flex>
           )}
