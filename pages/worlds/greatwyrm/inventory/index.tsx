@@ -304,7 +304,7 @@ const Inventory = () => {
   }
   const [assetType, setAssetType] = useState<AssetType>(AssetType.Characters)
   const handleChange = (value: string) => {
-    if (value == "Tokens") setAssetType(AssetType.Tokens)
+    if (value == AssetType.Tokens) setAssetType(AssetType.Tokens)
     else setAssetType(AssetType.Characters)
   }
   const setAddress = (address: string) => {
