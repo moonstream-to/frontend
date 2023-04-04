@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react"
-import { useQuery, useMutation } from "react-query"
+import { useQuery, useMutation, useQueryClient } from "react-query"
 import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react"
 import { Box, Flex, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/image"
@@ -55,10 +55,17 @@ const TerminusPoolView = ({
     poolState.refetch()
   }, [poolId])
 
+  const queryClient = useQueryClient()
   const setPoolURI = useMutation(
     ({ uri, poolId }: { uri: string; poolId: string }) =>
       terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
-    { ...commonProps, onSettled: () => poolState.refetch() },
+    {
+      ...commonProps,
+      onSuccess: () => {
+        poolState.refetch()
+        queryClient.invalidateQueries("poolsList")
+      },
+    },
   )
 
   const handleNewUri = () => {
