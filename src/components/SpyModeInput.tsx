@@ -18,11 +18,17 @@ import Web3 from "web3"
 
 const LOCAL_STORAGE_KEY = "spyWallets"
 
-const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) => {
+const _SpyModeInput = () => {
   const router = useRouter()
 
   const [showRecent, setShowRecent] = useState<boolean>(false)
   const [recentAddresses, setRecentAddresses] = useState<string[]>([])
+
+  const setAddress = (address: string) => {
+    router.replace({
+      query: { ...router.query, spyAddress: address },
+    })
+  }
 
   const addRecentAddress = (address: string) => {
     if (!recentAddresses.includes(address)) {

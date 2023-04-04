@@ -307,11 +307,6 @@ const Inventory = () => {
     if (value == AssetType.Tokens) setAssetType(AssetType.Tokens)
     else setAssetType(AssetType.Characters)
   }
-  const setAddress = (address: string) => {
-    router.replace({
-      query: { ...router.query, spyAddress: address },
-    })
-  }
 
   useEffect(() => {
     let nextAddress = ZERO_ADDRESS
@@ -334,7 +329,7 @@ const Inventory = () => {
         <Text fontSize="lg" pb={2}>
           Showing inventory for wallet {currentAccount}
         </Text>
-        <SpyModeInput setAddress={setAddress} />
+        <SpyModeInput />
         {terminusBalances.data && (
           <>
             <Text>
