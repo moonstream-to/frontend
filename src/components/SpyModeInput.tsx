@@ -101,27 +101,27 @@ const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) 
               console.log("removing all")
               removeAll()
             }}
+            cursor="pointer"
           >
             Clear all
           </Text>
         </Flex>
         {recentAddresses.map((address, index) => {
           return (
-            <Flex _hover={{ bg: "#4D4D4D" }} rounded="md" key={index}>
-              <Center px={1}>
-                <RxCounterClockwiseClock />
-              </Center>
-              <Text
-                p={1}
+            <Flex _hover={{ bg: "#4D4D4D" }} rounded="md" key={index} cursor="pointer">
+              <Center
+                px={1}
                 onClick={() => {
                   setAddress(address)
                 }}
               >
-                {address}
-              </Text>
+                <RxCounterClockwiseClock />
+                <Text p={1}>{address}</Text>
+              </Center>
               <Spacer />
               <Center>
                 <CloseIcon
+                  h="10px"
                   onClick={() => {
                     removeRecentAddress(address)
                   }}

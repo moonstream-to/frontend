@@ -308,7 +308,9 @@ const Inventory = () => {
     else setAssetType(AssetType.Characters)
   }
   const setAddress = (address: string) => {
-    setCurrentAccount(address)
+    router.replace({
+      query: { ...router.query, spyAddress: address },
+    })
   }
 
   useEffect(() => {
