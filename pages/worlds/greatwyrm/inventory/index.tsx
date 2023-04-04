@@ -22,13 +22,13 @@ import { StakedTokenInfo } from "../../../../src/types/Moonstream"
 import Link from "next/link"
 import RadioFilter from "../../../../src/components/RadioFilter"
 import TerminusList from "../../../../src/components/nft/TerminusList"
-import SpyModeInput from "../../../../src/components/SpyModeInput"
+import SpyModeInput, { SPYMODE_QUERY_PARAM } from "../../../../src/components/SpyModeInput"
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 const Inventory = () => {
   const router = useRouter()
-  const queryAddress = router.query["spyAddress"] as string
+  const spyModeQueryAddress = router.query[SPYMODE_QUERY_PARAM] as string
 
   const web3ctx = useContext(Web3Context)
   const [currentAccount, setCurrentAccount] = useState(ZERO_ADDRESS)
@@ -310,15 +310,15 @@ const Inventory = () => {
 
   useEffect(() => {
     let nextAddress = ZERO_ADDRESS
-    if (queryAddress && Web3.utils.isAddress(queryAddress)) {
-      nextAddress = queryAddress
+    if (spyModeQueryAddress && Web3.utils.isAddress(spyModeQueryAddress)) {
+      nextAddress = spyModeQueryAddress
     } else {
       nextAddress = web3ctx.account
     }
     if (Web3.utils.isAddress(nextAddress) && nextAddress != ZERO_ADDRESS) {
       setCurrentAccount(nextAddress)
     }
-  }, [web3ctx.account, queryAddress])
+  }, [web3ctx.account, spyModeQueryAddress])
 
   return (
     <Layout home={true}>

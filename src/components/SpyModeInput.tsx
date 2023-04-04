@@ -17,6 +17,7 @@ import { RxCounterClockwiseClock } from "react-icons/rx"
 import Web3 from "web3"
 
 const LOCAL_STORAGE_KEY = "spyWallets"
+export const SPYMODE_QUERY_PARAM = "spyAddress"
 
 const _SpyModeInput = () => {
   const router = useRouter()
