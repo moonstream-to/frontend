@@ -11,7 +11,7 @@ import {
   Center,
 } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import { SearchIcon } from "@chakra-ui/icons"
+import { SearchIcon, CloseIcon } from "@chakra-ui/icons"
 import { RxCounterClockwiseClock } from "react-icons/rx"
 
 import Web3 from "web3"
@@ -27,6 +27,20 @@ const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) 
       recentAddresses.push(address)
       localStorage.setItem("spyWallets", JSON.stringify(recentAddresses))
     }
+  }
+
+  const removeRecentAddress = (address: string) => {
+    const index = recentAddresses.indexOf(address)
+    console.log(index)
+    if (index >= 0) {
+      recentAddresses.splice(index, 1)
+    }
+    localStorage.setItem("spyWallets", JSON.stringify(recentAddresses))
+  }
+
+  const removeAll = () => {
+    setRecentAddresses([])
+    localStorage.setItem("spyWallets", JSON.stringify([]))
   }
 
   useEffect(() => {
@@ -79,23 +93,38 @@ const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) 
             Your recent searches
           </Text>
           <Spacer />
-          <Text fontSize={16}>Clear all</Text>
+          <Text
+            fontSize={16}
+            onClick={() => {
+              console.log("removing all")
+              removeAll()
+            }}
+          >
+            Clear all
+          </Text>
         </Flex>
-        {recentAddresses.map((addy, index) => {
+        {recentAddresses.map((address, index) => {
           return (
-            <Flex
-              _hover={{ bg: "#4D4D4D" }}
-              onClick={() => {
-                console.log("click event")
-                setAddress(addy)
-              }}
-              rounded="md"
-              key={index}
-            >
+            <Flex _hover={{ bg: "#4D4D4D" }} rounded="md" key={index}>
               <Center px={1}>
                 <RxCounterClockwiseClock />
               </Center>
-              <Text p={1}>{addy}</Text>
+              <Text
+                p={1}
+                onClick={() => {
+                  setAddress(address)
+                }}
+              >
+                {address}
+              </Text>
+              <Spacer />
+              <Center>
+                <CloseIcon
+                  onClick={() => {
+                    removeRecentAddress(address)
+                  }}
+                />
+              </Center>
             </Flex>
           )
         })}

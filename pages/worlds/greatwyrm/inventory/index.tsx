@@ -4,18 +4,7 @@ import Head from "next/head"
 import { use, useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { useRouter } from "next/router"
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Spacer,
-  Text,
-  useToast,
-} from "@chakra-ui/react"
+import { Box, Flex, Text } from "@chakra-ui/react"
 
 import Layout from "../../../../src/components/layout"
 import Web3 from "web3"
@@ -31,8 +20,6 @@ import NFTList from "../../../../src/components/nft/NFTList"
 import { NFTInfo } from "../../../../src/components/nft/types"
 import { StakedTokenInfo } from "../../../../src/types/Moonstream"
 import Link from "next/link"
-import { SearchIcon } from "@chakra-ui/icons"
-import { RxCounterClockwiseClock } from "react-icons/rx"
 import RadioFilter from "../../../../src/components/RadioFilter"
 import TerminusList from "../../../../src/components/nft/TerminusList"
 import SpyModeInput from "../../../../src/components/SpyModeInput"
