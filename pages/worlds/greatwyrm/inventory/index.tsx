@@ -35,6 +35,7 @@ import { SearchIcon } from "@chakra-ui/icons"
 import { RxCounterClockwiseClock } from "react-icons/rx"
 import RadioFilter from "../../../../src/components/RadioFilter"
 import TerminusList from "../../../../src/components/nft/TerminusList"
+import SpyModeInput from "../../../../src/components/SpyModeInput"
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
@@ -310,10 +311,6 @@ const Inventory = () => {
     return terminusBalances
   }
 
-  const [acShow, setAcShow] = useState<boolean>(false)
-  const [recentAddys, setRecentAddys] = useState<string[]>([])
-  const [inputAddy, setInputAddy] = useState<string>(ZERO_ADDRESS)
-
   enum AssetType {
     Characters = "Characters",
     Tokens = "Tokens",
@@ -323,12 +320,8 @@ const Inventory = () => {
     if (value == "Tokens") setAssetType(AssetType.Tokens)
     else setAssetType(AssetType.Characters)
   }
-
-  const addRecentAddy = (address: string) => {
-    if (!recentAddys.includes(address)) {
-      recentAddys.push(address)
-      localStorage.setItem("spyWallets", JSON.stringify(recentAddys))
-    }
+  const setAddress = (address: string) => {
+    setCurrentAccount(address)
   }
 
   useEffect(() => {
@@ -340,18 +333,8 @@ const Inventory = () => {
     }
     if (Web3.utils.isAddress(nextAddress) && nextAddress != ZERO_ADDRESS) {
       setCurrentAccount(nextAddress)
-      setInputAddy(nextAddress)
     }
   }, [web3ctx.account, queryAddress])
-
-  useEffect(() => {
-    console.log("Hitting input use effect")
-    if (Web3.utils.isAddress(inputAddy)) setCurrentAccount(inputAddy)
-  }, [inputAddy])
-
-  useEffect(() => {
-    setRecentAddys(JSON.parse(localStorage.getItem("spyWallets") ?? "[]"))
-  }, [router.asPath])
 
   return (
     <Layout home={true}>
@@ -362,74 +345,7 @@ const Inventory = () => {
         <Text fontSize="lg" pb={2}>
           Showing inventory for wallet {currentAccount}
         </Text>
-        <Box mb={6}>
-          <InputGroup w="500px">
-            <Input
-              placeholder="Emter another wallet address"
-              backgroundColor="#353535"
-              focusBorderColor="#FFFFFF"
-              border="0px"
-              type="text"
-              onFocus={() => {
-                setAcShow(true)
-              }}
-              onChange={(e) => {
-                const val = e.target.value
-                if (Web3.utils.isAddress(val)) {
-                  setCurrentAccount(val)
-                  setAcShow(false)
-                  addRecentAddy(val)
-                }
-              }}
-              onBlur={() => {
-                setTimeout(() => {
-                  setAcShow(false)
-                }, 200)
-              }}
-              mb={2}
-            />
-            <InputRightElement>
-              <SearchIcon />
-            </InputRightElement>
-          </InputGroup>
-          <Flex
-            w="500px"
-            maxH="300px"
-            border="1px"
-            borderColor="#FFFFFF"
-            backgroundColor="#2D2D2D"
-            rounded="md"
-            p={2}
-            flexDirection="column"
-            display={acShow ? undefined : "none"}
-          >
-            <Flex>
-              <Text fontSize={18} fontWeight="semibold">
-                Your recent searches
-              </Text>
-              <Spacer />
-              <Text fontSize={16}>Clear all</Text>
-            </Flex>
-            {recentAddys.map((addy, index) => {
-              return (
-                <Flex
-                  _hover={{ bg: "#4D4D4D" }}
-                  onClick={() => {
-                    console.log("click event")
-                    setCurrentAccount(addy)
-                  }}
-                  rounded="md"
-                  key={index}
-                >
-                  <Center px={1}>
-                    <RxCounterClockwiseClock />
-                  </Center>
-                  <Text p={1}>{addy}</Text>
-                </Flex>
-              )
-            })}
-          </Flex>
-        </Box>
+        <SpyModeInput setAddress={setAddress} />
         {terminusBalances.data && (
           <>
             <Text>
