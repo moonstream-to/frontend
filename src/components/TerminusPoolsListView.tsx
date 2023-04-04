@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react"
-import { useMutation } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import {
   Button,
   Checkbox,
@@ -13,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Text,
   useDisclosure,
   useToast,
@@ -44,10 +45,10 @@ const TerminusPoolsListView = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const web3ctx = useContext(Web3Context)
   const [newPoolProps, setNewPoolProps] = useState<{
-    capacity: string | undefined
+    capacity: string
     isTransferable: boolean
     isBurnable: boolean
-  }>({ capacity: undefined, isTransferable: true, isBurnable: true })
+  }>({ capacity: "", isTransferable: true, isBurnable: true })
 
   useEffect(() => {
     setQueryPoolID(
@@ -78,6 +79,7 @@ const TerminusPoolsListView = ({
     },
   }
 
+  const queryClient = useQueryClient()
   const newPool = useMutation(
     ({
       capacity,
@@ -91,7 +93,19 @@ const TerminusPoolsListView = ({
       terminusFacet.methods
         .createPoolV1(capacity, isTransferable, isBurnable)
         .send({ from: web3ctx.account }),
-    { ...commonProps },
+    {
+      ...commonProps,
+      onSuccess: () => {
+        const newPoolId = String(Number(contractState.totalPools) + 1)
+        onChange(newPoolId, undefined)
+        queryClient.invalidateQueries("poolsList")
+        queryClient.invalidateQueries("contractState")
+        const element = document.getElementById(`pool-${contractState.totalPools}`)
+        element?.scrollIntoView({ block: "center" })
+        const poolView = document.getElementById("poolView")
+        poolView?.scrollIntoView()
+      },
+    },
   )
 
   const createNewPool = () => {
@@ -112,16 +126,11 @@ const TerminusPoolsListView = ({
       })
       return
     }
-    newPool.mutate(
-      {
-        capacity: newPoolProps.capacity,
-        isTransferable: newPoolProps.isTransferable,
-        isBurnable: newPoolProps.isBurnable,
-      },
-      {
-        // onSettled: () => {}, TODO
-      },
-    )
+    newPool.mutate({
+      capacity: newPoolProps.capacity,
+      isTransferable: newPoolProps.isTransferable,
+      isBurnable: newPoolProps.isBurnable,
+    })
   }
 
   return (
@@ -162,8 +171,9 @@ const TerminusPoolsListView = ({
           fontSize="20px"
           color="#2d2d2d"
           onClick={onOpen}
+          disabled={newPool.isLoading}
         >
-          + Add new
+          {newPool.isLoading ? <Spinner /> : "+ Add new"}
         </Button>
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
