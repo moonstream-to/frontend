@@ -16,6 +16,8 @@ import { RxCounterClockwiseClock } from "react-icons/rx"
 
 import Web3 from "web3"
 
+const LOCAL_STORAGE_KEY = "spyWallets"
+
 const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) => {
   const router = useRouter()
 
@@ -25,7 +27,7 @@ const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) 
   const addRecentAddress = (address: string) => {
     if (!recentAddresses.includes(address)) {
       recentAddresses.push(address)
-      localStorage.setItem("spyWallets", JSON.stringify(recentAddresses))
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recentAddresses))
     }
   }
 
@@ -35,16 +37,16 @@ const _SpyModeInput = ({ setAddress }: { setAddress: (value: string) => void }) 
     if (index >= 0) {
       recentAddresses.splice(index, 1)
     }
-    localStorage.setItem("spyWallets", JSON.stringify(recentAddresses))
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recentAddresses))
   }
 
   const removeAll = () => {
     setRecentAddresses([])
-    localStorage.setItem("spyWallets", JSON.stringify([]))
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]))
   }
 
   useEffect(() => {
-    setRecentAddresses(JSON.parse(localStorage.getItem("spyWallets") ?? "[]"))
+    setRecentAddresses(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]"))
   }, [router.asPath])
   return (
     <Box mb={6}>
