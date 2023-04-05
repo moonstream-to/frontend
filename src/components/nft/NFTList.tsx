@@ -6,7 +6,6 @@ import NFTCard from "./NFTCard"
 const _NFTList = ({ nftList }: { nftList: NFTInfo[] }) => (
   <Flex wrap="wrap" justifyContent="left" gap="20px" mt="20px">
     {nftList.map((item: NFTInfo, idx: number) => {
-      console.log(item)
       return (
         <NFTCard
           maxW={["140px", "170px", "220px"]}
