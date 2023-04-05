@@ -62,8 +62,9 @@ const TerminusPoolView = ({
     {
       ...commonProps,
       onSuccess: () => {
-        poolState.refetch()
         queryClient.invalidateQueries("poolsList")
+        queryClient.invalidateQueries("poolState")
+        poolState.refetch()
       },
     },
   )
