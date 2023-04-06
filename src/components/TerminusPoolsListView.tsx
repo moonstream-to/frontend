@@ -98,10 +98,10 @@ const TerminusPoolsListView = ({
       onSuccess: () => {
         const newPoolId = String(Number(contractState.totalPools) + 1)
         onChange(newPoolId, undefined)
+        const element = document.getElementById(`pool-${contractState.totalPools}`)
         queryClient.invalidateQueries("poolsList")
         queryClient.invalidateQueries("contractState")
-        const element = document.getElementById(`pool-${contractState.totalPools}`)
-        element?.scrollIntoView({ block: "center" })
+        element?.scrollIntoView(true)
         const poolView = document.getElementById("poolView")
         poolView?.scrollIntoView()
       },

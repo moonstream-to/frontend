@@ -31,15 +31,6 @@ const TerminusPoolView = ({
   terminusFacet.options.address = address
   const toast = useToast()
   const commonProps = {
-    onSuccess: () => {
-      toast({
-        title: "Successfully updated contract",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      })
-      // contractState.refetch(); //TODO
-    },
     onError: () => {
       toast({
         title: "Something went wrong",
@@ -62,9 +53,16 @@ const TerminusPoolView = ({
     {
       ...commonProps,
       onSuccess: () => {
-        queryClient.invalidateQueries("poolsList")
-        queryClient.invalidateQueries("poolState")
-        poolState.refetch()
+        setTimeout(() => {
+          queryClient.invalidateQueries("poolsList")
+          queryClient.invalidateQueries("poolState")
+        }, 1000)
+        toast({
+          title: "Successfully updated contract",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        })
       },
     },
   )
