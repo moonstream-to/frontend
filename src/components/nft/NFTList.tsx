@@ -8,7 +8,7 @@ const _NFTList = ({ nftList }: { nftList: NFTInfo[] }) => (
     {nftList.map((item: NFTInfo, idx: number) => {
       return (
         <NFTCard
-          maxW={["140px", "170px", "220px"]}
+          maxW={["140px", "160px", "180px"]}
           key={idx}
           imageUrl={item.imageURI}
           name={item.metadata ? item.metadata.name : ""}

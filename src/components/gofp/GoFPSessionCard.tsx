@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Flex, Image, Text, Box, Center, Button, Spacer } from "@chakra-ui/react"
+import { Flex, Image, Text, Box, Center, Button, Spacer, Link } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import Web3 from "web3/types"
 
@@ -33,7 +33,7 @@ const SessionCard = ({
       // border="4px solid white"
       borderRadius="20px"
       w="220px"
-      h="440px"
+      h="500px"
       mx={4}
       flexDir="column"
     >
@@ -46,12 +46,23 @@ const SessionCard = ({
         src={calculatedImage}
       ></Image>
       <Box px="20px">
-        <TextWithPopup
-          text={sessionMetadata.lore}
-          image={calculatedImage}
-          title={sessionMetadata.title}
-          shortCharCount={150}
-        />
+        <Box minH="150px">
+          <TextWithPopup
+            text={sessionMetadata.lore}
+            image={calculatedImage}
+            title={sessionMetadata.title}
+            shortCharCount={150}
+          />
+        </Box>
+        {sessionMetadata.discussionUrl && (
+          <Text fontSize="sm">
+            Discuss{" "}
+            <Link color="#F56646" href={sessionMetadata.discussionUrl}>
+              here
+            </Link>{" "}
+            with fellow players.
+          </Text>
+        )}
       </Box>
       <Spacer />
       <Button

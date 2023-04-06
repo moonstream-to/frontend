@@ -34,7 +34,7 @@ const TextWithPopup = ({
 
   return (
     <>
-      <Text fontWeight="700" fontSize="18px" pb={6}>
+      <Text fontWeight="700" fontSize="18px" pb={4}>
         {title}
       </Text>
       <Center fontSize={"xs"}>

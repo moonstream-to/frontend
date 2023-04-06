@@ -10,3 +10,6 @@ export interface NFTInfo {
   imageURI: string
   metadata: NFTMetadata
 }
+
+export type GreatWyrmToken = "gamemaster" | "character_creation" | "experience"
+export type GreatWyrmTokenBalances = { [key in GreatWyrmToken]: string }

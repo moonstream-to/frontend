@@ -39,6 +39,11 @@ const AddCharPanel = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
+  const tokenIsSelected = (tokenId: number) => {
+    return selectedTokens.includes(tokenId)
+  }
+  const hasTokensSelected = ownedTokens.data?.some(tokenIsSelected)
+
   return (
     <Box py={6}>
       <Flex alignItems="center" onClick={() => setShowActive(true)}>
@@ -46,7 +51,7 @@ const AddCharPanel = ({
         <Text fontSize="md">Assign Characters</Text>
       </Flex>
       <Text fontSize="lg" fontWeight="bold" pt={4}>
-        Available Characters
+        Unassigned Characters
       </Text>
       <Text fontSize="sm" pt={4}>
         Select characters and send them into session to start playing.
@@ -61,13 +66,12 @@ const AddCharPanel = ({
       <Flex mt={6} flexDirection="column">
         <Button
           w="100%"
-          backgroundColor="#F56646"
           rounded="lg"
+          backgroundColor={hasTokensSelected ? "#F56646" : "#4D4D4D"}
+          isDisabled={!hasTokensSelected}
           onClick={async () => {
             if (isApproved?.data && ownedTokens.data) {
-              await stakeTokens.mutate(
-                ownedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId)),
-              )
+              await stakeTokens.mutate(ownedTokens.data?.filter(tokenIsSelected))
               setShowActive(true)
               unselectAll()
             } else {
@@ -75,7 +79,7 @@ const AddCharPanel = ({
             }
           }}
         >
-          Play
+          Send into session
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />

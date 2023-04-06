@@ -25,8 +25,8 @@ import remarkGfm from "remark-gfm"
 
 const MetadataPanel = () => {
   const web3ctx = useContext(Web3Context)
-  const { sessionId, selectedStage, gardenContractAddress } = useGofp()
-  const { sessionMetadata } = useGofpContract({
+  const { sessionId, selectedStage, selectedPath, gardenContractAddress } = useGofp()
+  const { sessionMetadata, currentStage } = useGofpContract({
     sessionId,
     gardenContractAddress,
     web3ctx,
@@ -35,6 +35,14 @@ const MetadataPanel = () => {
   const stage = sessionMetadata.data?.stages[selectedStage - 1]
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const showAllPaths = selectedStage != currentStage.data || selectedPath < 1
+
+  console.log("Metadata panel with: ")
+  console.log("Selected stage ", selectedStage)
+  console.log("current stage", currentStage.data)
+  console.log("selected path", selectedPath)
+  console.log(showAllPaths)
 
   return (
     <>
@@ -105,27 +113,46 @@ const MetadataPanel = () => {
             </Center>
           )}
           <Flex flexDirection="column" mb={10}>
-            {stage.paths.map((path, pathIdx) => {
-              return (
-                <Flex
-                  key={pathIdx}
-                  borderWidth="2px"
-                  borderColor="#BFBFBF"
-                  borderRadius="10px"
-                  mt={6}
-                  flexDirection="column"
-                >
-                  <Text fontWeight="semibold" p={2}>
-                    Path {pathIdx + 1} - {path.title}
-                  </Text>
-                  <Box p={2}>
-                    <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
-                      {path.lore}
-                    </ReactMarkdown>
-                  </Box>
-                </Flex>
-              )
-            })}
+            {showAllPaths &&
+              stage.paths.map((path, pathIdx) => {
+                return (
+                  <Flex
+                    key={pathIdx}
+                    borderWidth="2px"
+                    borderColor="#BFBFBF"
+                    borderRadius="10px"
+                    mt={6}
+                    flexDirection="column"
+                  >
+                    <Text fontWeight="semibold" p={2}>
+                      Path {pathIdx + 1} - {path.title}
+                    </Text>
+                    <Box p={2}>
+                      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                        {path.lore}
+                      </ReactMarkdown>
+                    </Box>
+                  </Flex>
+                )
+              })}
+            {!showAllPaths && (
+              <Flex
+                borderWidth="2px"
+                borderColor="#BFBFBF"
+                borderRadius="10px"
+                mt={6}
+                flexDirection="column"
+              >
+                <Text fontWeight="semibold" p={2}>
+                  Path {selectedPath} - {stage.paths[selectedPath - 1].title}
+                </Text>
+                <Box p={2}>
+                  <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                    {stage.paths[selectedPath - 1].lore}
+                  </ReactMarkdown>
+                </Box>
+              </Flex>
+            )}
           </Flex>
         </Flex>
       )}
