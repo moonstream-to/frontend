@@ -56,7 +56,7 @@ const _SpyModeInput = () => {
     setRecentAddresses(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]"))
   }, [router.asPath])
   return (
-    <Box mb={6}>
+    <Box mb={4}>
       <InputGroup w="500px">
         <Input
           placeholder="Emter another wallet address"

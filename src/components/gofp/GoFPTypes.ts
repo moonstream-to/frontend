@@ -1,6 +1,7 @@
 export type GoFPMetadata = {
   title: string
   imageUrl: string
+  discussionUrl?: string
   lore: string
 }
 

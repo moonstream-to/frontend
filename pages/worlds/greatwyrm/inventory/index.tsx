@@ -4,7 +4,7 @@ import Head from "next/head"
 import { use, useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { useRouter } from "next/router"
-import { Box, Flex, Text } from "@chakra-ui/react"
+import { Box, Button, Flex, Spacer, Text } from "@chakra-ui/react"
 
 import Layout from "../../../../src/components/layout"
 import Web3 from "web3"
@@ -23,6 +23,7 @@ import Link from "next/link"
 import RadioFilter from "../../../../src/components/RadioFilter"
 import TerminusList from "../../../../src/components/nft/TerminusList"
 import SpyModeInput, { SPYMODE_QUERY_PARAM } from "../../../../src/components/SpyModeInput"
+import { shortAddress } from "../../../../src/utils/wallet"
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
@@ -325,10 +326,31 @@ const Inventory = () => {
       <Head>
         <title>Moonstream portal - Inventory</title>
       </Head>
-      <Box py={10} ml="108px">
-        <Text fontSize="lg" pb={2}>
-          Showing inventory for wallet {currentAccount}
-        </Text>
+      <Box pt={6} pb={4} mx="108px">
+        <Flex flexDir="row">
+          <Text fontSize="3xl" fontWeight="bold" pb={2}>
+            {spyModeQueryAddress
+              ? `Showing inventory for wallet ${shortAddress(currentAccount)}`
+              : "Your Characters"}
+          </Text>
+          <Spacer />
+          {spyModeQueryAddress && (
+            <Button
+              h="40px"
+              backgroundColor="transparent"
+              borderWidth="1px"
+              borderColor="#BFBFBF"
+              borderRadius="5px"
+              textColor="#BFBFBF"
+              onClick={() => {
+                delete router.query[SPYMODE_QUERY_PARAM]
+                router.push(router)
+              }}
+            >
+              My Inventory
+            </Button>
+          )}
+        </Flex>
         <SpyModeInput />
         {terminusBalances.data && (
           <>
@@ -341,7 +363,7 @@ const Inventory = () => {
             <Text>Character Creation tokens: {terminusBalances.data["character_creation"]}</Text>
           </>
         )}
-        <Box py={6}>
+        <Box py={4}>
           <RadioFilter list={["Characters", "Tokens"]} handleChange={handleChange}></RadioFilter>
         </Box>
         {assetType == AssetType.Characters && (
@@ -353,7 +375,7 @@ const Inventory = () => {
               {contractOwnedCharacters.data &&
                 contractOwnedCharacters.data.map((value, index) => {
                   return (
-                    <Flex key={index} flexDirection="column" mt={6}>
+                    <Flex key={index} flexDirection="column" mt={4}>
                       <Link href="/games/garden/?sessionId=1&amp;contractId=0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b">
                         Session {value.sessionId}
                       </Link>
@@ -362,7 +384,7 @@ const Inventory = () => {
                   )
                 })}
             </Flex>
-            <Flex flexDirection="column" mt={12}>
+            <Flex flexDirection="column" mt={6}>
               <Text fontSize="lg" fontWeight="semibold">
                 Idle
               </Text>
@@ -374,7 +396,7 @@ const Inventory = () => {
           <Flex flexDirection="column">
             <TerminusList
               terminusAddress={terminusAddress}
-              poolIdList={[3]}
+              poolIdList={[2, 3]}
               balances={formatTerminusBalances(terminusBalances.data || defaultBalances)}
             ></TerminusList>
           </Flex>

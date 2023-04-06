@@ -24,6 +24,11 @@ const ActiveCharPanel = ({
   })
   const tokenUris = useTokenUris(stakedTokens.data ?? [])
 
+  const tokenIsSelected = (tokenId: number) => {
+    return selectedTokens.includes(tokenId)
+  }
+  const hasTokensSelected = stakedTokens.data?.some(tokenIsSelected)
+
   return (
     <Box py={6}>
       <Flex>
@@ -51,25 +56,28 @@ const ActiveCharPanel = ({
           borderColor="#BFBFBF"
           borderRadius="18px"
           textColor="#BFBFBF"
+          isDisabled={!hasTokensSelected}
           onClick={() => choosePath.mutate({ path: selectedPath, tokenIds: selectedTokens })}
         >
-          Choose Path {selectedPath}
+          {hasTokensSelected ? `Choose Path ${selectedPath}` : "Select characters"}
         </Button>
-        <Center>
-          <Text>or&nbsp;</Text>
-          <Text
-            color="#EE8686"
-            cursor="pointer"
-            onClick={() => {
-              unstakeTokens.mutate(
-                stakedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId)) ?? [],
-              )
-              unselectAll()
-            }}
-          >
-            remove characters from session
-          </Text>
-        </Center>
+        {hasTokensSelected && (
+          <Center>
+            <Text>or&nbsp;</Text>
+            <Text
+              color="#EE8686"
+              cursor="pointer"
+              onClick={() => {
+                unstakeTokens.mutate(
+                  stakedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId)) ?? [],
+                )
+                unselectAll()
+              }}
+            >
+              remove characters from session
+            </Text>
+          </Center>
+        )}
       </Flex>
     </Box>
   )
