@@ -38,12 +38,6 @@ const MetadataPanel = () => {
 
   const showAllPaths = selectedStage != currentStage.data || selectedPath < 1
 
-  console.log("Metadata panel with: ")
-  console.log("Selected stage ", selectedStage)
-  console.log("current stage", currentStage.data)
-  console.log("selected path", selectedPath)
-  console.log(showAllPaths)
-
   return (
     <>
       {stage && (
