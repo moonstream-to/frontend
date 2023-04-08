@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Box, Flex, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/react"
 
-import useLink from "../hooks/useLink"
+import useLink from "../../hooks/useLink"
 
 const TerminusPoolsListItem = ({
   poolId,

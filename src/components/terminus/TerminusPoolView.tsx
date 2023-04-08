@@ -5,14 +5,14 @@ import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react"
 import { Box, Flex, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/image"
 
-import PoolDetailsRow from "./PoolDetailsRow"
-import Web3Context from "../contexts/Web3Context/context"
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
-import queryCacheProps from "../hooks/hookCommon"
-import { MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
+import PoolDetailsRow from "../PoolDetailsRow"
+import Web3Context from "../../contexts/Web3Context/context"
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
+import queryCacheProps from "../../hooks/hookCommon"
+import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
 import { LinkIcon } from "@chakra-ui/icons"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-const multicallABI = require("../web3/abi/Multicall2.json")
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+const multicallABI = require("../../web3/abi/Multicall2.json")
 
 const TerminusPoolView = ({
   address,

@@ -20,11 +20,11 @@ import {
 } from "@chakra-ui/react"
 
 import TerminusPoolsList from "./TerminusPoolsList"
-import Web3Context from "../contexts/Web3Context/context"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
+import Web3Context from "../../contexts/Web3Context/context"
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
 import { useRouter } from "next/router"
-import { MAX_INT } from "../constants"
+import { MAX_INT } from "../../constants"
 
 const TerminusPoolsListView = ({
   contractAddress,

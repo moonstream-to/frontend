@@ -3,14 +3,14 @@ import { useContext } from "react"
 import { useQuery } from "react-query"
 import { Flex } from "@chakra-ui/react"
 
-import Spinner from "./Spinner/Spinner"
-import Web3Context from "../contexts/Web3Context/context"
+import Spinner from "../Spinner/Spinner"
+import Web3Context from "../../contexts/Web3Context/context"
 import TerminusPoolsListItem from "./TerminusPoolsListItem"
-import queryCacheProps from "../hooks/hookCommon"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-const multicallABI = require("../web3/abi/Multicall2.json")
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
-import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
+import queryCacheProps from "../../hooks/hookCommon"
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+const multicallABI = require("../../web3/abi/Multicall2.json")
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
+import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
 
 const TerminusPoolsList = ({
   contractAddress,
