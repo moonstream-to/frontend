@@ -10,11 +10,20 @@ const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstrea
 
 export const siteTitle = "Moonstream apps portal"
 
-export default function Layout({ children, home }: { children: React.ReactNode; home?: boolean }) {
+export default function Layout({
+  children,
+  home,
+  title,
+}: {
+  children: React.ReactNode
+  home?: boolean
+  title?: string
+}) {
   return (
     <div>
       <Head>
         <link rel="icon" href="/favicon.png" />
+        <title>{title ?? "Moonstrem portal"}</title>
         <meta
           name="description"
           content="Moonstream provides economic infrastructure for web3 games. Gather actionable data with our web3 data analytics. Act on it with our on-chain mechanics. Watch your economy flourish."

@@ -117,10 +117,7 @@ const Dropper = () => {
   }
 
   return (
-    <Layout home={true}>
-      <Head>
-        <title>Moonstream portal - Dropper</title>
-      </Head>
+    <Layout home={true} title="Moonstream portal - Dropper">
       <Center>
         <Flex gap="30px" direction="column" px="7%" py="30px" color="white">
           <Flex gap="20px">
