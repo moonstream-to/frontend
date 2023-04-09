@@ -103,7 +103,6 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
           }
           if (data.controller) {
             addRecentAddress(address, { chainId })
-            localStorage.setItem("terminusContracts3", JSON.stringify(recentAddresses))
           }
           setURI(data.contractURI)
           return data
@@ -136,7 +135,6 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
           data.name = res.data.name
         }
         addRecentAddress(address, data)
-        localStorage.setItem("terminusContracts3", JSON.stringify(recentAddresses))
         return res.data
       })
     },

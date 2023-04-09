@@ -24,20 +24,18 @@ const TerminusView = () => {
   const [poolMetadata, setPoolMetadata] = useState<unknown>({})
   const [contractState, setContractState] = useState()
   const [addressInputValue, setAddressInputValue] = useState(contractAddress)
-  // const [recent, setRecent] = useState<
-  //   { address: { name: string; image: string; chainId: number } } | undefined
-  // >(undefined)
+
   const toast = useToast()
 
   useEffect(() => {
     const addresses = JSON.parse(localStorage.getItem("terminusContracts") ?? "undefined")
-    console.log(addresses)
     setRecentAddresses(addresses)
   }, [])
 
   useEffect(() => {
-    console.log(recentAddresses)
-    localStorage.setItem("terminusContracts3", JSON.stringify(recentAddresses))
+    if (recentAddresses) {
+      localStorage.setItem("terminusContracts", JSON.stringify(recentAddresses))
+    }
   }, [recentAddresses])
 
   useEffect(() => {
