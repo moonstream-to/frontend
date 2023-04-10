@@ -43,7 +43,7 @@ const TerminusView = () => {
     } else {
       selectPool(Number(router.query.poolId))
     }
-  }, [router.query.poolId])
+  }, [router.query.contractAddress, router.query.poolId])
 
   const { chainId, web3 } = useContext(Web3Context)
 

@@ -26,7 +26,7 @@ const terminusReducer = (state: any, action: { type: string; payload: any }) => 
     case "SET_CONTRACT_STATE":
       return {
         ...state,
-        contractState: payload.contractState,
+        contractState: payload.state,
       }
     case "SET_CONTRACT_ADDRESS":
       return {

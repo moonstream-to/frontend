@@ -15,7 +15,8 @@ import useTermiminus from "../../contexts/TerminusContext"
 
 const TerminusPoolsList = () => {
   const { chainId, web3 } = useContext(Web3Context)
-  const { contractAddress, queryPoolId } = useTermiminus()
+  const { contractAddress, queryPoolId, setIsNewPoolCreated, isNewPoolCreated, selectPool } =
+    useTermiminus()
 
   const poolsList = useQuery(
     ["poolsList", contractAddress, chainId, queryPoolId],
@@ -37,10 +38,12 @@ const TerminusPoolsList = () => {
       let totalPools
       try {
         totalPools = await terminusContract.methods.totalPools().call()
-      } catch (e) {
-        console.log(e)
-        totalPools = 0
+      } catch (e: any) {
+        return new Promise((_, reject) => {
+          reject(new Error(e?.message))
+        })
       }
+
       for (let i = 1; i <= Math.min(LIMIT, Number(totalPools)); i += 1) {
         uriQueries.push({
           target: contractAddress,
@@ -73,7 +76,18 @@ const TerminusPoolsList = () => {
     },
     {
       ...queryCacheProps,
-      // onSuccess: () => {}, //TODO
+      onSuccess: () => {
+        if (isNewPoolCreated) {
+          setIsNewPoolCreated(false)
+          selectPool(poolsList.data.length + 1)
+          setTimeout(() => {
+            const element = document.getElementById(`pool-${poolsList.data.length + 1}`)
+            element?.scrollIntoView(true)
+            const poolView = document.getElementById("poolView")
+            poolView?.scrollIntoView()
+          }, 500)
+        }
+      },
     },
   )
 

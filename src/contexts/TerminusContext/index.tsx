@@ -15,6 +15,7 @@ type TerminusContextType = {
   recentAddresses: { address: ContractData } | undefined
   queryPoolId: number | undefined
   poolsFilter: string
+  isNewPoolCreated: boolean
   selectPool: (poolId: number) => void
   setSelectedPoolMetadata: (metadata: unknown) => void
   setContractState: (state: unknown) => void

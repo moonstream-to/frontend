@@ -40,7 +40,7 @@ const TerminusPoolsListItem = ({
     if (selected) {
       setSelectedPoolMetadata(metadata.data)
     }
-  }, [selected, metadata, poolId])
+  }, [selected, metadata.data, poolId])
 
   useEffect(() => {
     if (poolId === queryPoolId) {
