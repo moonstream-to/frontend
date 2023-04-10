@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Flex } from "@chakra-ui/react"
 
@@ -15,8 +15,20 @@ import useTermiminus from "../../contexts/TerminusContext"
 
 const TerminusPoolsList = () => {
   const { chainId, web3 } = useContext(Web3Context)
-  const { contractAddress, queryPoolId, setIsNewPoolCreated, isNewPoolCreated, selectPool } =
-    useTermiminus()
+  const {
+    contractAddress,
+    queryPoolId,
+    setIsNewPoolCreated,
+    isNewPoolCreated,
+    selectPool,
+    selectedPool,
+  } = useTermiminus()
+
+  const [isFirstFetch, setIsFirstFetch] = useState(true)
+
+  useEffect(() => {
+    setIsFirstFetch(true)
+  }, [contractAddress, chainId])
 
   const poolsList = useQuery(
     ["poolsList", contractAddress, chainId, queryPoolId],
@@ -71,21 +83,32 @@ const TerminusPoolsList = () => {
           })
         })
         .then((parsedResults: string[]) => {
-          return parsedResults
+          return parsedResults.reverse()
         })
     },
     {
       ...queryCacheProps,
-      onSuccess: () => {
-        if (isNewPoolCreated) {
-          setIsNewPoolCreated(false)
-          selectPool(poolsList.data.length + 1)
-          setTimeout(() => {
-            const element = document.getElementById(`pool-${poolsList.data.length + 1}`)
-            element?.scrollIntoView(true)
-            const poolView = document.getElementById("poolView")
-            poolView?.scrollIntoView()
-          }, 500)
+      onSuccess: (data: any) => {
+        if (data) {
+          if (isNewPoolCreated) {
+            setIsNewPoolCreated(false)
+            selectPool(data.length)
+            setTimeout(() => {
+              const element = document.getElementById(`pool-${data.length}`)
+              element?.scrollIntoView(true)
+              const poolView = document.getElementById("poolView")
+              poolView?.scrollIntoView()
+            }, 500)
+          }
+          if (isFirstFetch) {
+            setIsFirstFetch(false)
+            if (!queryPoolId) {
+              selectPool(data.length)
+            }
+          }
+          if (selectedPool < 1 || selectedPool > data.length) {
+            selectPool(data.length)
+          }
         }
       },
     },
@@ -98,7 +121,7 @@ const TerminusPoolsList = () => {
   return (
     <Flex direction="column" gap="15px" h="100%" overflowY="auto">
       {poolsList.data.map((uri: string, idx: number) => (
-        <TerminusPoolsListItem key={idx} poolId={idx + 1} uri={uri} />
+        <TerminusPoolsListItem key={idx} poolId={poolsList.data.length - idx} uri={uri} />
       ))}
     </Flex>
   )

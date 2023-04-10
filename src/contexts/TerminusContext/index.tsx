@@ -65,7 +65,6 @@ export const TerminusProvider = ({ children }: { children: React.ReactNode }) =>
     })
   }
   const setRecentAddresses = (addresses: { address: ContractData }) => {
-    console.log(addresses)
     dispatch({
       type: "SET_RECENT_ADDRESSES",
       payload: { addresses },

@@ -96,15 +96,10 @@ const TerminusPoolsListView = () => {
     {
       ...commonProps,
       onSuccess: () => {
-        // const newPoolId = String(Number(contractState.totalPools) + 1)
         setIsNewPoolCreated(true)
-        // onChange(newPoolId, undefined)
-        // const element = document.getElementById(`pool-${contractState.totalPools}`)
         queryClient.invalidateQueries("poolsList")
+        queryClient.invalidateQueries("poolState")
         queryClient.invalidateQueries("contractState")
-        // element?.scrollIntoView(true)
-        // const poolView = document.getElementById("poolView")
-        // poolView?.scrollIntoView()
       },
     },
   )

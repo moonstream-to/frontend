@@ -5,22 +5,7 @@ import { Image } from "@chakra-ui/react"
 import useLink from "../../hooks/useLink"
 import useTermiminus from "../../contexts/TerminusContext"
 
-const TerminusPoolsListItem = ({
-  poolId,
-  // selected,
-  // onChange,
-  uri,
-}: // filter,
-// inQuery,
-{
-  poolId: number
-  // address: string
-  // selected: boolean
-  // onChange: (id: string, metadata: unknown) => void
-  uri: string
-  // filter: string
-  // inQuery: boolean
-}) => {
+const TerminusPoolsListItem = ({ poolId, uri }: { poolId: number; uri: string }) => {
   const metadata = useLink({ link: uri })
 
   const { selectPool, setSelectedPoolMetadata, selectedPool, queryPoolId, poolsFilter } =
@@ -29,7 +14,6 @@ const TerminusPoolsListItem = ({
   const handleClick = () => {
     selectPool(poolId)
     setSelectedPoolMetadata(metadata.data)
-    // onChange(poolId, metadata.data)
   }
 
   useEffect(() => {

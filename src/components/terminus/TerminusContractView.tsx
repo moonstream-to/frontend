@@ -126,7 +126,6 @@ const TerminusContractView = () => {
     ["link", uri],
     (query: any) => {
       return queryPublic(query.queryKey[1]).then((res: any) => {
-        console.log("qq")
         const data: ContractData = {}
         if (res.data?.image) {
           data.image = res.data.image
