@@ -6,6 +6,7 @@ export const initialState = {
   recentAddresses: undefined,
   queryPoolId: undefined,
   poolsFilter: "",
+  isNewPoolCreated: false,
 }
 
 const terminusReducer = (state: any, action: { type: string; payload: any }) => {
@@ -30,7 +31,7 @@ const terminusReducer = (state: any, action: { type: string; payload: any }) => 
     case "SET_CONTRACT_ADDRESS":
       return {
         ...state,
-        contractAddress: payload.contractAddress,
+        contractAddress: payload.address,
       }
     case "ADD_RECENT_ADDRESS":
       const newRecentAddresses = { ...state.recentAddresses }
@@ -64,6 +65,11 @@ const terminusReducer = (state: any, action: { type: string; payload: any }) => 
       return {
         ...state,
         poolsFilter: payload.filter,
+      }
+    case "SET_IS_NEW_POOL_CREATED":
+      return {
+        ...state,
+        isNewPoolCreated: payload.isNewPoolCreated,
       }
     default:
       throw new Error(`No case for type ${type} found in shopReducer.`)

@@ -11,21 +11,11 @@ const terminusAbi = require("../../web3/abi/MockTerminus.json")
 const multicallABI = require("../../web3/abi/Multicall2.json")
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
 import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
+import useTermiminus from "../../contexts/TerminusContext"
 
-const TerminusPoolsList = ({
-  contractAddress,
-  selected,
-  onChange,
-  filter,
-  queryPoolId,
-}: {
-  contractAddress: string
-  selected: number
-  onChange: (id: string, metadata: unknown) => void
-  filter: string
-  queryPoolId: number | undefined
-}) => {
+const TerminusPoolsList = () => {
   const { chainId, web3 } = useContext(Web3Context)
+  const { contractAddress, queryPoolId } = useTermiminus()
 
   const poolsList = useQuery(
     ["poolsList", contractAddress, chainId, queryPoolId],
@@ -94,16 +84,7 @@ const TerminusPoolsList = ({
   return (
     <Flex direction="column" gap="15px" h="100%" overflowY="auto">
       {poolsList.data.map((uri: string, idx: number) => (
-        <TerminusPoolsListItem
-          key={idx}
-          address={contractAddress}
-          poolId={String(idx + 1)}
-          selected={idx + 1 === selected}
-          inQuery={idx + 1 === queryPoolId}
-          uri={uri}
-          onChange={onChange}
-          filter={filter}
-        />
+        <TerminusPoolsListItem key={idx} poolId={idx + 1} uri={uri} />
       ))}
     </Flex>
   )

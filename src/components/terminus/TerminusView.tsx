@@ -12,17 +12,16 @@ import ContractRow from "../ContractRow"
 import useTerminus from "../../contexts/TerminusContext"
 
 const TerminusView = () => {
-  const { recentAddresses, setRecentAddresses } = useTerminus()
+  const {
+    recentAddresses,
+    setRecentAddresses,
+    contractAddress,
+    setContractAddress,
+    selectPool,
+    setSelectedPoolMetadata,
+  } = useTerminus()
   const router = useRouter()
-  const contractAddress =
-    typeof router.query.contractAddress === "string" ? router.query.contractAddress : ""
-  const handleClick = (poolId: string, metadata: unknown) => {
-    setSelected(Number(poolId))
-    setPoolMetadata(metadata)
-  }
-  const [selected, setSelected] = useState(1)
-  const [poolMetadata, setPoolMetadata] = useState<unknown>({})
-  const [contractState, setContractState] = useState()
+
   const [addressInputValue, setAddressInputValue] = useState(contractAddress)
 
   const toast = useToast()
@@ -40,31 +39,31 @@ const TerminusView = () => {
 
   useEffect(() => {
     if (!router.query.poolId) {
-      setSelected(1)
+      selectPool(1)
     } else {
-      setSelected(Number(router.query.poolId))
+      selectPool(Number(router.query.poolId))
     }
   }, [router.query.poolId])
+
+  const { chainId, web3 } = useContext(Web3Context)
+
+  useEffect(() => {
+    setContractAddress(
+      typeof router.query.contractAddress === "string" ? router.query.contractAddress : "",
+    )
+    setSelectedPoolMetadata({})
+  }, [router.query.contractAddress, chainId])
 
   useEffect(() => {
     if (contractAddress) {
       setAddressInputValue(contractAddress)
     }
-    setPoolMetadata({})
+    setSelectedPoolMetadata({})
   }, [contractAddress])
-
-  const { chainId, web3 } = useContext(Web3Context)
-
-  useEffect(() => {
-    if (addressInputValue && web3.utils.isAddress(addressInputValue)) {
-      handleSubmit()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId])
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(addressInputValue)) {
-      setPoolMetadata({})
+      setSelectedPoolMetadata({})
       router.push({
         pathname: "/terminus",
         query: {
@@ -114,19 +113,10 @@ const TerminusView = () => {
         </Flex>
         {contractAddress && (
           <>
-            <TerminusContractView onFetch={setContractState} address={contractAddress} />
+            <TerminusContractView />
             <Flex gap="40px" maxH="700px">
-              <TerminusPoolsListView
-                contractAddress={contractAddress}
-                contractState={contractState}
-                onChange={handleClick}
-                selected={selected}
-              />
-              <TerminusPoolView
-                address={contractAddress}
-                poolId={String(selected)}
-                metadata={poolMetadata}
-              />
+              <TerminusPoolsListView />
+              <TerminusPoolView />
             </Flex>
           </>
         )}

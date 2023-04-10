@@ -9,8 +9,8 @@ export type ContractData = {
 
 type TerminusContextType = {
   selectedPool: number
-  poolMetadata: unknown
-  contractState: unknown
+  poolMetadata: any
+  contractState: any
   contractAddress: string
   recentAddresses: { address: ContractData } | undefined
   queryPoolId: number | undefined
@@ -24,6 +24,7 @@ type TerminusContextType = {
   deleteRecentAddress: (address: string) => void
   setQueryPoolId: (poolId: number) => void
   setPoolsFilter: (filter: string) => void
+  setIsNewPoolCreated: (isNewPoolCreated: boolean) => void
 }
 
 const TerminusContext = createContext<TerminusContextType | undefined>(undefined) //TODO
@@ -33,7 +34,7 @@ export const TerminusProvider = ({ children }: { children: React.ReactNode }) =>
 
   const selectPool = (poolId: number) => {
     dispatch({
-      type: "SELECT_POOL",
+      type: "SET_SELECTED_POOL",
       payload: { poolId },
     })
   }
@@ -87,6 +88,12 @@ export const TerminusProvider = ({ children }: { children: React.ReactNode }) =>
       payload: { filter },
     })
   }
+  const setIsNewPoolCreated = (isNewPoolCreated: boolean) => {
+    dispatch({
+      type: "SET_IS_NEW_POOL_CREATED",
+      payload: { isNewPoolCreated },
+    })
+  }
 
   const {
     selectedPool,
@@ -96,6 +103,7 @@ export const TerminusProvider = ({ children }: { children: React.ReactNode }) =>
     recentAddresses,
     queryPoolId,
     poolsFilter,
+    isNewPoolCreated,
   } = state
 
   const value = {
@@ -106,6 +114,7 @@ export const TerminusProvider = ({ children }: { children: React.ReactNode }) =>
     recentAddresses,
     queryPoolId,
     poolsFilter,
+    isNewPoolCreated,
     selectPool,
     setSelectedPoolMetadata,
     setContractState,
@@ -115,6 +124,7 @@ export const TerminusProvider = ({ children }: { children: React.ReactNode }) =>
     deleteRecentAddress,
     setQueryPoolId,
     setPoolsFilter,
+    setIsNewPoolCreated,
   }
 
   return <TerminusContext.Provider value={value}>{children}</TerminusContext.Provider>

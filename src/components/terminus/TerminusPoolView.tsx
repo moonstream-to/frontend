@@ -11,24 +11,18 @@ import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
 import queryCacheProps from "../../hooks/hookCommon"
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
 import { LinkIcon } from "@chakra-ui/icons"
+import useTermiminus from "../../contexts/TerminusContext"
 const terminusAbi = require("../../web3/abi/MockTerminus.json")
 const multicallABI = require("../../web3/abi/Multicall2.json")
 
-const TerminusPoolView = ({
-  address,
-  poolId,
-  metadata,
-}: {
-  address: string
-  poolId: string
-  metadata: any
-}) => {
+const TerminusPoolView = () => {
   const { chainId, web3, account } = useContext(Web3Context)
 
+  const { contractAddress, selectedPool, poolMetadata } = useTermiminus()
   const headerMeta = ["name", "description", "image", "attributes"]
   const [newUri, setNewUri] = useState("")
   const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus
-  terminusFacet.options.address = address
+  terminusFacet.options.address = contractAddress
   const toast = useToast()
   const commonProps = {
     onError: () => {
@@ -44,11 +38,11 @@ const TerminusPoolView = ({
   useEffect(() => {
     setNewUri("")
     poolState.refetch()
-  }, [poolId])
+  }, [selectedPool])
 
   const queryClient = useQueryClient()
   const setPoolURI = useMutation(
-    ({ uri, poolId }: { uri: string; poolId: string }) =>
+    ({ uri, selectedPool: poolId }: { uri: string; selectedPool: number }) =>
       terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
     {
       ...commonProps,
@@ -68,31 +62,31 @@ const TerminusPoolView = ({
   )
 
   const handleNewUri = () => {
-    setPoolURI.mutate({ uri: newUri, poolId: poolId })
+    setPoolURI.mutate({ uri: newUri, selectedPool: selectedPool })
   }
 
   const poolState = useQuery(
-    ["poolState", address, poolId, chainId],
+    ["poolState", contractAddress, selectedPool, chainId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
         return
       }
 
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
-        address,
+        contractAddress,
       ) as unknown as MockTerminus
       const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
-      const target = address
+      const target = contractAddress
       const callDatas = []
-      callDatas.push(terminusContract.methods.terminusPoolController(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.poolIsBurnable(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.poolIsTransferable(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.terminusPoolCapacity(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.terminusPoolSupply(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.uri(poolId).encodeABI())
+      callDatas.push(terminusContract.methods.terminusPoolController(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.poolIsBurnable(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.poolIsTransferable(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.terminusPoolCapacity(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.terminusPoolSupply(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.uri(selectedPool).encodeABI())
 
       const queries = callDatas.map((callData) => {
         return {
@@ -156,7 +150,7 @@ const TerminusPoolView = ({
   const copyPoolAddress = () => {
     navigator.clipboard
       .writeText(
-        `https://portal.moonstream.to/terminus/?contractAddress=${address}&poolId=${poolId}`,
+        `https://portal.moonstream.to/terminus/?contractAddress=${contractAddress}&poolId=${selectedPool}`,
       )
       .then(() => {
         toast({
@@ -203,7 +197,7 @@ const TerminusPoolView = ({
           fontSize="20px"
           mb="20px"
         >
-          {`pool ${poolId}`}
+          {`pool ${selectedPool}`}
         </Text>
         <IconButton
           bg="transparent"
@@ -216,19 +210,25 @@ const TerminusPoolView = ({
       </Flex>
       {!!poolState.data && (
         <>
-          {metadata?.name && (
+          {poolMetadata?.name && (
             <Text fontWeight="700" fontSize="24px" mb="20px">
-              {metadata.name}
+              {poolMetadata.name}
             </Text>
           )}
           <Flex direction="column" gap="20px" overflowY="auto">
             <Flex gap="20px">
-              {metadata?.image && (
-                <Image w="140px" h="140px" borderRadius="20px" src={metadata.image} alt="image" />
+              {poolMetadata?.image && (
+                <Image
+                  w="140px"
+                  h="140px"
+                  borderRadius="20px"
+                  src={poolMetadata.image}
+                  alt="image"
+                />
               )}
-              {metadata?.description && (
+              {poolMetadata?.description && (
                 <Text fontWeight="400" fontSize="18px" mb="20px">
-                  {metadata.description}
+                  {poolMetadata.description}
                 </Text>
               )}
             </Flex>
@@ -246,31 +246,35 @@ const TerminusPoolView = ({
                   value={poolState.data.isTransferable ? "true" : "false"}
                 />
                 <PoolDetailsRow type="uri" value={poolState.data.uri} />
-                {metadata && (
+                {poolMetadata && (
                   <>
                     <Text fontWeight="700" mt="20px">
                       Metadata:
                     </Text>
-                    {Object.keys(metadata)
+                    {Object.keys(poolMetadata)
                       .filter((key) => !headerMeta.includes(key))
                       .map((key) => {
-                        return <PoolDetailsRow key={key} type={key} value={String(metadata[key])} />
+                        return (
+                          <PoolDetailsRow key={key} type={key} value={String(poolMetadata[key])} />
+                        )
                       })}
                   </>
                 )}
-                {metadata?.attributes && (
+                {poolMetadata?.attributes && (
                   <>
                     <Text fontWeight="700" mt="20px">
                       Attributes:
                     </Text>
 
-                    {metadata.attributes.map((attribute: { trait_type: string; value: string }) => (
-                      <PoolDetailsRow
-                        key={attribute.trait_type}
-                        type={attribute.trait_type}
-                        value={String(attribute.value)}
-                      />
-                    ))}
+                    {poolMetadata.attributes.map(
+                      (attribute: { trait_type: string; value: string }) => (
+                        <PoolDetailsRow
+                          key={attribute.trait_type}
+                          type={attribute.trait_type}
+                          value={String(attribute.value)}
+                        />
+                      ),
+                    )}
                   </>
                 )}
               </Flex>

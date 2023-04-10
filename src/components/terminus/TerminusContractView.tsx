@@ -23,8 +23,8 @@ const multicallABI = require("../../web3/abi/Multicall2.json")
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
 import useTermiminus, { ContractData } from "../../contexts/TerminusContext"
 
-const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: any }) => {
-  const { addRecentAddress, recentAddresses } = useTermiminus()
+const TerminusContractView = () => {
+  const { addRecentAddress, setContractState, contractAddress } = useTermiminus()
   const errorDialog = [
     "Something is wrong. Is MetaMask connected properly to the right chain?",
     "Is contract address correct?",
@@ -39,19 +39,19 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
   const { web3, chainId } = useContext(Web3Context)
 
   const contractState = useQuery(
-    ["contractState", address, chainId],
+    ["contractState", contractAddress, chainId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
         return
       }
       setDialogStep(0)
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
-        address,
+        contractAddress,
       ) as unknown as MockTerminus
-      const target = address
+      const target = contractAddress
       const callDatas = []
       callDatas.push(terminusContract.methods.poolBasePrice().encodeABI())
       callDatas.push(terminusContract.methods.paymentToken().encodeABI())
@@ -102,7 +102,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
             controller: parsedResults[4],
           }
           if (data.controller) {
-            addRecentAddress(address, { chainId })
+            addRecentAddress(contractAddress, { chainId })
           }
           setURI(data.contractURI)
           return data
@@ -115,7 +115,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
   )
 
   useEffect(() => {
-    onFetch(contractState.data)
+    setContractState(contractState.data)
   }, [contractState.data])
 
   useEffect(() => {
@@ -134,7 +134,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
         if (res.data?.name) {
           data.name = res.data.name
         }
-        addRecentAddress(address, data)
+        addRecentAddress(contractAddress, data)
         return res.data
       })
     },
