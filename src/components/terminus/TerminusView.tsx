@@ -27,8 +27,15 @@ const TerminusView = () => {
   const toast = useToast()
 
   useEffect(() => {
-    const addresses = JSON.parse(localStorage.getItem("terminusContracts") ?? "undefined")
-    setRecentAddresses(addresses)
+    let addresses = undefined
+    const item = localStorage.getItem("terminusContracts")
+    if (item) {
+      try {
+        addresses = JSON.parse(item)
+      } finally {
+        setRecentAddresses(addresses)
+      }
+    }
   }, [])
 
   useEffect(() => {
