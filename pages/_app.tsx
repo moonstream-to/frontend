@@ -9,6 +9,7 @@ import theme from "../src/theme"
 import { Web3Context } from "../src/contexts"
 import "../src/styles/globals.css"
 import { GofpProvider } from "../src/contexts/GoFPContext"
+import { UserProvider } from "../src/contexts/UserContext"
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(new QueryClient())
@@ -36,13 +37,15 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
       />
       <ChakraProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <Web3Context>
-            <GofpProvider>
-              <Component {...pageProps} />
-            </GofpProvider>
-          </Web3Context>
-        </QueryClientProvider>
+        <UserProvider>
+          <QueryClientProvider client={queryClient}>
+            <Web3Context>
+              <GofpProvider>
+                <Component {...pageProps} />
+              </GofpProvider>
+            </Web3Context>
+          </QueryClientProvider>
+        </UserProvider>
       </ChakraProvider>
     </>
   )

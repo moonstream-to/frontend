@@ -5,6 +5,7 @@ import { Button, Image, Link, Flex, Badge, Skeleton, useMediaQuery } from "@chak
 
 import Web3Context from "../contexts/Web3Context/context"
 import ChainSelector from "./ChainSelector"
+import LoginButton from "./LoginButton"
 
 const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const [isMobileView] = useMediaQuery("(max-width: 767px)")
@@ -36,6 +37,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
           alt="Logo"
         />
       </RouterLink>
+      <LoginButton />
 
       {!isMobileView && (
         <Flex alignItems="center" gap="20px">
