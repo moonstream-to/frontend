@@ -1,31 +1,34 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Flex } from "@chakra-ui/react"
 
-import Spinner from "./Spinner/Spinner"
-import Web3Context from "../contexts/Web3Context/context"
+import Spinner from "../Spinner/Spinner"
+import Web3Context from "../../contexts/Web3Context/context"
 import TerminusPoolsListItem from "./TerminusPoolsListItem"
-import queryCacheProps from "../hooks/hookCommon"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-const multicallABI = require("../web3/abi/Multicall2.json")
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
-import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
+import queryCacheProps from "../../hooks/hookCommon"
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+const multicallABI = require("../../web3/abi/Multicall2.json")
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
+import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
+import useTermiminus from "../../contexts/TerminusContext"
 
-const TerminusPoolsList = ({
-  contractAddress,
-  selected,
-  onChange,
-  filter,
-  queryPoolId,
-}: {
-  contractAddress: string
-  selected: number
-  onChange: (id: string, metadata: unknown) => void
-  filter: string
-  queryPoolId: number | undefined
-}) => {
+const TerminusPoolsList = () => {
   const { chainId, web3 } = useContext(Web3Context)
+  const {
+    contractAddress,
+    queryPoolId,
+    setIsNewPoolCreated,
+    isNewPoolCreated,
+    selectPool,
+    selectedPool,
+  } = useTermiminus()
+
+  const [isFirstFetch, setIsFirstFetch] = useState(true)
+
+  useEffect(() => {
+    setIsFirstFetch(true)
+  }, [contractAddress, chainId])
 
   const poolsList = useQuery(
     ["poolsList", contractAddress, chainId, queryPoolId],
@@ -47,10 +50,12 @@ const TerminusPoolsList = ({
       let totalPools
       try {
         totalPools = await terminusContract.methods.totalPools().call()
-      } catch (e) {
-        console.log(e)
-        totalPools = 0
+      } catch (e: any) {
+        return new Promise((_, reject) => {
+          reject(new Error(e?.message))
+        })
       }
+
       for (let i = 1; i <= Math.min(LIMIT, Number(totalPools)); i += 1) {
         uriQueries.push({
           target: contractAddress,
@@ -78,12 +83,34 @@ const TerminusPoolsList = ({
           })
         })
         .then((parsedResults: string[]) => {
-          return parsedResults
+          return parsedResults.reverse()
         })
     },
     {
       ...queryCacheProps,
-      // onSuccess: () => {}, //TODO
+      onSuccess: (data: any) => {
+        if (data) {
+          if (isNewPoolCreated) {
+            setIsNewPoolCreated(false)
+            selectPool(data.length)
+            setTimeout(() => {
+              const element = document.getElementById(`pool-${data.length}`)
+              element?.scrollIntoView(true)
+              const poolView = document.getElementById("poolView")
+              poolView?.scrollIntoView()
+            }, 500)
+          }
+          if (isFirstFetch) {
+            setIsFirstFetch(false)
+            if (!queryPoolId) {
+              selectPool(data.length)
+            }
+          }
+          if (selectedPool < 1 || selectedPool > data.length) {
+            selectPool(data.length)
+          }
+        }
+      },
     },
   )
 
@@ -94,16 +121,7 @@ const TerminusPoolsList = ({
   return (
     <Flex direction="column" gap="15px" h="100%" overflowY="auto">
       {poolsList.data.map((uri: string, idx: number) => (
-        <TerminusPoolsListItem
-          key={idx}
-          address={contractAddress}
-          poolId={String(idx + 1)}
-          selected={idx + 1 === selected}
-          inQuery={idx + 1 === queryPoolId}
-          uri={uri}
-          onChange={onChange}
-          filter={filter}
-        />
+        <TerminusPoolsListItem key={idx} poolId={poolsList.data.length - idx} uri={uri} />
       ))}
     </Flex>
   )

@@ -2,52 +2,46 @@ import { useEffect, useState } from "react"
 import { Box, Flex, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/react"
 
-import useLink from "../hooks/useLink"
+import useLink from "../../hooks/useLink"
+import useTermiminus from "../../contexts/TerminusContext"
 
-const TerminusPoolsListItem = ({
-  poolId,
-  selected,
-  onChange,
-  uri,
-  filter,
-  inQuery,
-}: {
-  poolId: string
-  address: string
-  selected: boolean
-  onChange: (id: string, metadata: unknown) => void
-  uri: string
-  filter: string
-  inQuery: boolean
-}) => {
+const TerminusPoolsListItem = ({ poolId, uri }: { poolId: number; uri: string }) => {
   const metadata = useLink({ link: uri })
 
+  const { selectPool, setSelectedPoolMetadata, selectedPool, queryPoolId, poolsFilter } =
+    useTermiminus()
+  const [selected, setSelected] = useState(poolId === selectedPool)
   const handleClick = () => {
-    onChange(poolId, metadata.data)
+    selectPool(poolId)
+    setSelectedPoolMetadata(metadata.data)
   }
 
   useEffect(() => {
-    if (selected) {
-      onChange(poolId, metadata.data)
-    }
-  }, [selected, metadata, poolId, onChange])
+    setSelected(poolId === selectedPool)
+  }, [selectedPool, poolId])
 
   useEffect(() => {
-    if (inQuery) {
+    if (selected) {
+      setSelectedPoolMetadata(metadata.data)
+    }
+  }, [selected, metadata.data, poolId])
+
+  useEffect(() => {
+    if (poolId === queryPoolId) {
       const element = document.getElementById(`pool-${poolId}`)
       element?.scrollIntoView({ block: "center" })
       const poolView = document.getElementById("poolView")
       poolView?.scrollIntoView()
     }
-  }, [inQuery, poolId])
+  }, [queryPoolId, poolId])
 
   const [show, setShow] = useState(true)
   useEffect(() => {
-    if (filter === "") {
+    if (poolsFilter === "") {
       setShow(true)
       return
     }
-    const lowCaseFilter = filter.toLowerCase()
+    const lowCaseFilter = poolsFilter.toLowerCase()
     if (metadata.data?.name?.toLowerCase().includes(lowCaseFilter)) {
       setShow(true)
       return
@@ -61,7 +55,7 @@ const TerminusPoolsListItem = ({
       return
     }
     setShow(false)
-  }, [filter, metadata.data, poolId])
+  }, [poolsFilter, metadata.data, poolId])
 
   return (
     <>

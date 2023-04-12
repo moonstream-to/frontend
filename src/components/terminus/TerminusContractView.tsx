@@ -13,16 +13,18 @@ import {
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
-import PoolDetailsRow from "./PoolDetailsRow"
-import queryCacheProps from "../hooks/hookCommon"
-import Web3Context from "../contexts/Web3Context/context"
-import { queryPublic } from "../utils/http"
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-const multicallABI = require("../web3/abi/Multicall2.json")
-import { MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
+import PoolDetailsRow from "../PoolDetailsRow"
+import queryCacheProps from "../../hooks/hookCommon"
+import Web3Context from "../../contexts/Web3Context/context"
+import { queryPublic } from "../../utils/http"
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+const multicallABI = require("../../web3/abi/Multicall2.json")
+import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
+import useTermiminus, { ContractData } from "../../contexts/TerminusContext"
 
-const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: any }) => {
+const TerminusContractView = () => {
+  const { addRecentAddress, setContractState, contractAddress } = useTermiminus()
   const errorDialog = [
     "Something is wrong. Is MetaMask connected properly to the right chain?",
     "Is contract address correct?",
@@ -37,19 +39,19 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
   const { web3, chainId } = useContext(Web3Context)
 
   const contractState = useQuery(
-    ["contractState", address, chainId],
+    ["contractState", contractAddress, chainId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
         return
       }
       setDialogStep(0)
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
-        address,
+        contractAddress,
       ) as unknown as MockTerminus
-      const target = address
+      const target = contractAddress
       const callDatas = []
       callDatas.push(terminusContract.methods.poolBasePrice().encodeABI())
       callDatas.push(terminusContract.methods.paymentToken().encodeABI())
@@ -100,14 +102,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
             controller: parsedResults[4],
           }
           if (data.controller) {
-            let items
-            try {
-              items = JSON.parse(localStorage.getItem("terminusContracts") ?? "{}")
-            } catch (e) {
-              console.log(e)
-            }
-            items[address] = { ...items[address], chainId }
-            localStorage.setItem("terminusContracts", JSON.stringify(items))
+            addRecentAddress(contractAddress, { chainId })
           }
           setURI(data.contractURI)
           return data
@@ -120,7 +115,7 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
   )
 
   useEffect(() => {
-    onFetch(contractState.data)
+    setContractState(contractState.data)
   }, [contractState.data])
 
   useEffect(() => {
@@ -130,22 +125,16 @@ const TerminusContractView = ({ address, onFetch }: { address: string; onFetch: 
   const metadata = useQuery(
     ["link", uri],
     (query: any) => {
-      return queryPublic(query.queryKey[1]).then((r: any) => {
-        let items
-        try {
-          items = JSON.parse(localStorage.getItem("terminusContracts") ?? "{}")
-        } catch (e) {
-          console.log(e)
+      return queryPublic(query.queryKey[1]).then((res: any) => {
+        const data: ContractData = {}
+        if (res.data?.image) {
+          data.image = res.data.image
         }
-        if (r.data?.image) {
-          items[address] = { ...items[address], image: r.data.image }
+        if (res.data?.name) {
+          data.name = res.data.name
         }
-        if (r.data?.name) {
-          items[address] = { ...items[address], name: r.data.name }
-        }
-
-        localStorage.setItem("terminusContracts", JSON.stringify(items))
-        return r.data
+        addRecentAddress(contractAddress, data)
+        return res.data
       })
     },
     {
