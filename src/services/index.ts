@@ -1,2 +1,4 @@
 import * as AuthService from "./auth.service"
-export { AuthService }
+import * as SubscriptionsService from "./subscriptions.service"
+
+export { AuthService, SubscriptionsService }

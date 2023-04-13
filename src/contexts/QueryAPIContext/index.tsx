@@ -4,6 +4,10 @@ import { createContext, useContext, useState } from "react"
 type QueryContextType = {
   isShowContracts: boolean
   setIsShowContracts: (arg0: boolean) => void
+  filter: string
+  setFilter: (arg0: string) => void
+  selectedContract: any
+  setSelectedContract: (arg0: any) => void
 }
 
 // const initial state
@@ -12,10 +16,16 @@ const QueryAPIContext = createContext<QueryContextType | undefined>(undefined) /
 
 export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) => {
   const [isShowContracts, setIsShowContracts] = useState(true)
+  const [filter, setFilter] = useState("")
+  const [selectedContract, setSelectedContract] = useState({})
 
   const value = {
     isShowContracts,
     setIsShowContracts,
+    filter,
+    setFilter,
+    selectedContract,
+    setSelectedContract,
   }
 
   return <QueryAPIContext.Provider value={value}>{children}</QueryAPIContext.Provider>

@@ -1,23 +1,23 @@
 import { useEffect } from "react"
 import Layout from "../../src/components/layout"
-import QueryView from "../../src/components/queryAPI/queryView"
+import QueryAPIView from "../../src/components/queryAPI/QueryAPIView"
 import { QueryAPIProvider } from "../../src/contexts/QueryAPIContext"
 import { UserProvider } from "../../src/contexts/UserContext"
 
-const Terminus = () => {
+const Query = () => {
   useEffect(() => {
-    document.title = "Moonstrem portal - Terminus"
+    document.title = "Moonstrem portal - Query API"
   }, [])
 
   return (
     <UserProvider>
       <QueryAPIProvider>
         <Layout home={false}>
-          <QueryView />
+          <QueryAPIView />
         </Layout>
       </QueryAPIProvider>
     </UserProvider>
   )
 }
 
-export default Terminus
+export default Query
