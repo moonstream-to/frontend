@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Script
         strategy="afterInteractive"
         id="ga-script-1"
-        src={"https://www.googletagmanager.com/gtag/js?id=G-TRL1FFH9MG"}
+        src={"https://www.googletagmanager.com/gtag/js?id=G-09Y1CPG1HQ"}
       ></Script>
       <Script
         id="ga-script-2"
@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-TRL1FFH9MG', {
+            gtag('config', 'G-09Y1CPG1HQ', {
               page_path: window.location.pathname,
             });
           `,
