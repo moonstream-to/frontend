@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react"
-import { useMutation } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import {
   Button,
   Checkbox,
@@ -13,47 +13,48 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react"
 
 import TerminusPoolsList from "./TerminusPoolsList"
-import Web3Context from "../contexts/Web3Context/context"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
+import Web3Context from "../../contexts/Web3Context/context"
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
 import { useRouter } from "next/router"
-import { MAX_INT } from "../constants"
+import { MAX_INT } from "../../constants"
+import useTermiminus from "../../contexts/TerminusContext"
 
-const TerminusPoolsListView = ({
-  contractAddress,
-  selected,
-  onChange,
-  contractState,
-}: {
-  contractAddress: string
-  selected: number
-  onChange: (id: string, metadata: unknown) => void
-  contractState: any
-}) => {
+const TerminusPoolsListView = () => {
   const toast = useToast()
   const router = useRouter()
 
-  const [queryPoolId, setQueryPoolID] = useState<number | undefined>(undefined)
-  const [filter, setFilter] = useState("")
+  const {
+    contractAddress,
+    contractState,
+    setIsNewPoolCreated,
+    setQueryPoolId,
+    poolsFilter,
+    setPoolsFilter,
+  } = useTermiminus()
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const web3ctx = useContext(Web3Context)
   const [newPoolProps, setNewPoolProps] = useState<{
-    capacity: string | undefined
+    capacity: string
     isTransferable: boolean
     isBurnable: boolean
-  }>({ capacity: undefined, isTransferable: true, isBurnable: true })
+  }>({ capacity: "", isTransferable: true, isBurnable: true })
 
   useEffect(() => {
-    setQueryPoolID(
-      typeof router.query.poolId === "string" ? Number(router.query.poolId) : undefined,
-    )
-  }, [router.query])
+    const queryPoolId =
+      typeof router.query.poolId === "string" ? Number(router.query.poolId) : undefined
+    if (queryPoolId) {
+      setQueryPoolId(queryPoolId)
+    }
+  }, [router.query.poolId])
 
   const terminusFacet = new web3ctx.web3.eth.Contract(terminusAbi) as any as MockTerminus
   terminusFacet.options.address = contractAddress
@@ -78,6 +79,7 @@ const TerminusPoolsListView = ({
     },
   }
 
+  const queryClient = useQueryClient()
   const newPool = useMutation(
     ({
       capacity,
@@ -91,7 +93,15 @@ const TerminusPoolsListView = ({
       terminusFacet.methods
         .createPoolV1(capacity, isTransferable, isBurnable)
         .send({ from: web3ctx.account }),
-    { ...commonProps },
+    {
+      ...commonProps,
+      onSuccess: () => {
+        setIsNewPoolCreated(true)
+        queryClient.invalidateQueries("poolsList")
+        queryClient.invalidateQueries("poolState")
+        queryClient.invalidateQueries("contractState")
+      },
+    },
   )
 
   const createNewPool = () => {
@@ -112,16 +122,11 @@ const TerminusPoolsListView = ({
       })
       return
     }
-    newPool.mutate(
-      {
-        capacity: newPoolProps.capacity,
-        isTransferable: newPoolProps.isTransferable,
-        isBurnable: newPoolProps.isBurnable,
-      },
-      {
-        // onSettled: () => {}, TODO
-      },
-    )
+    newPool.mutate({
+      capacity: newPoolProps.capacity,
+      isTransferable: newPoolProps.isTransferable,
+      isBurnable: newPoolProps.isBurnable,
+    })
   }
 
   return (
@@ -139,20 +144,14 @@ const TerminusPoolsListView = ({
         pools
       </Text>
       <Input
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
+        value={poolsFilter}
+        onChange={(e) => setPoolsFilter(e.target.value)}
         placeholder="search"
         borderRadius="10px"
         p="8px 15px"
       />
 
-      <TerminusPoolsList
-        contractAddress={contractAddress}
-        onChange={onChange}
-        selected={selected}
-        filter={filter}
-        queryPoolId={queryPoolId ?? undefined}
-      />
+      <TerminusPoolsList />
 
       {contractState && contractState.controller === web3ctx.account && (
         <Button
@@ -162,8 +161,9 @@ const TerminusPoolsListView = ({
           fontSize="20px"
           color="#2d2d2d"
           onClick={onOpen}
+          disabled={newPool.isLoading}
         >
-          + Add new
+          {newPool.isLoading ? <Spinner /> : "+ Add new"}
         </Button>
       )}
       <Modal isOpen={isOpen} onClose={onClose}>

@@ -13,7 +13,7 @@ const ContractRow = ({
   address?: string
   name?: string
   image?: string
-  chainId: number
+  chainId?: number
 }) => {
   const router = useRouter()
   const handleClick = () => {
@@ -49,7 +49,7 @@ const ContractRow = ({
       <Flex direction="column">
         {name ? <Text>{name}</Text> : <Text opacity=".7">name N/A</Text>}
         <Text fontFamily="mono">{address}</Text>
-        <Text>{chainByChainId[chainId]}</Text>
+        {chainId && <Text>{chainByChainId[chainId]}</Text>}
       </Flex>
     </Flex>
   )

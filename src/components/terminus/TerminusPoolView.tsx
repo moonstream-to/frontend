@@ -1,46 +1,30 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useState } from "react"
-import { useQuery, useMutation } from "react-query"
-import { Button, IconButton, Input, useToast } from "@chakra-ui/react"
+import { useContext, useEffect, useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react"
 import { Box, Flex, Text } from "@chakra-ui/layout"
 import { Image } from "@chakra-ui/image"
 
-import PoolDetailsRow from "./PoolDetailsRow"
-import Spinner from "./Spinner/Spinner"
-import Web3Context from "../contexts/Web3Context/context"
-import { MockTerminus } from "../web3/contracts/types/MockTerminus"
-import queryCacheProps from "../hooks/hookCommon"
-import { MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
+import PoolDetailsRow from "../PoolDetailsRow"
+import Web3Context from "../../contexts/Web3Context/context"
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
+import queryCacheProps from "../../hooks/hookCommon"
+import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
 import { LinkIcon } from "@chakra-ui/icons"
-const terminusAbi = require("../web3/abi/MockTerminus.json")
-const multicallABI = require("../web3/abi/Multicall2.json")
+import useTermiminus from "../../contexts/TerminusContext"
+const terminusAbi = require("../../web3/abi/MockTerminus.json")
+const multicallABI = require("../../web3/abi/Multicall2.json")
 
-const TerminusPoolView = ({
-  address,
-  poolId,
-  metadata,
-}: {
-  address: string
-  poolId: string
-  metadata: any
-}) => {
+const TerminusPoolView = () => {
   const { chainId, web3, account } = useContext(Web3Context)
 
+  const { contractAddress, selectedPool, poolMetadata } = useTermiminus()
   const headerMeta = ["name", "description", "image", "attributes"]
   const [newUri, setNewUri] = useState("")
   const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus
-  terminusFacet.options.address = address
+  terminusFacet.options.address = contractAddress
   const toast = useToast()
   const commonProps = {
-    onSuccess: () => {
-      toast({
-        title: "Successfully updated contract",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      })
-      // contractState.refetch(); //TODO
-    },
     onError: () => {
       toast({
         title: "Something went wrong",
@@ -51,45 +35,58 @@ const TerminusPoolView = ({
     },
   }
 
+  useEffect(() => {
+    setNewUri("")
+    poolState.refetch()
+  }, [selectedPool])
+
+  const queryClient = useQueryClient()
   const setPoolURI = useMutation(
-    ({ uri, poolId }: { uri: string; poolId: string }) =>
+    ({ uri, selectedPool: poolId }: { uri: string; selectedPool: number }) =>
       terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
-    { ...commonProps },
+    {
+      ...commonProps,
+      onSuccess: () => {
+        setTimeout(() => {
+          queryClient.invalidateQueries("poolsList")
+          queryClient.invalidateQueries("poolState")
+        }, 1000)
+        toast({
+          title: "Successfully updated contract",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        })
+      },
+    },
   )
 
   const handleNewUri = () => {
-    setPoolURI.mutate(
-      { uri: newUri, poolId: poolId },
-      {
-        onSettled: () => {
-          poolState.refetch()
-        },
-      },
-    )
+    setPoolURI.mutate({ uri: newUri, selectedPool: selectedPool })
   }
 
   const poolState = useQuery(
-    ["poolState", address, poolId, chainId],
+    ["poolState", contractAddress, selectedPool, chainId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      if (!address || !MULTICALL2_CONTRACT_ADDRESS) {
+      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
         return
       }
 
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
-        address,
+        contractAddress,
       ) as unknown as MockTerminus
       const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
-      const target = address
+      const target = contractAddress
       const callDatas = []
-      callDatas.push(terminusContract.methods.terminusPoolController(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.poolIsBurnable(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.poolIsTransferable(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.terminusPoolCapacity(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.terminusPoolSupply(poolId).encodeABI())
-      callDatas.push(terminusContract.methods.uri(poolId).encodeABI())
+      callDatas.push(terminusContract.methods.terminusPoolController(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.poolIsBurnable(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.poolIsTransferable(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.terminusPoolCapacity(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.terminusPoolSupply(selectedPool).encodeABI())
+      callDatas.push(terminusContract.methods.uri(selectedPool).encodeABI())
 
       const queries = callDatas.map((callData) => {
         return {
@@ -153,7 +150,7 @@ const TerminusPoolView = ({
   const copyPoolAddress = () => {
     navigator.clipboard
       .writeText(
-        `https://portal.moonstream.to/terminus/?contractAddress=${address}&poolId=${poolId}`,
+        `https://portal.moonstream.to/terminus/?contractAddress=${contractAddress}&poolId=${selectedPool}`,
       )
       .then(() => {
         toast({
@@ -189,6 +186,7 @@ const TerminusPoolView = ({
       maxW="800px"
     >
       <Flex gap={2}>
+        {poolState.isFetching && <Spinner />}
         <Text
           textAlign="start"
           color="#c2c2c2"
@@ -199,7 +197,7 @@ const TerminusPoolView = ({
           fontSize="20px"
           mb="20px"
         >
-          {`pool ${poolId}`}
+          {`pool ${selectedPool}`}
         </Text>
         <IconButton
           bg="transparent"
@@ -212,19 +210,25 @@ const TerminusPoolView = ({
       </Flex>
       {!!poolState.data && (
         <>
-          {metadata?.name && (
+          {poolMetadata?.name && (
             <Text fontWeight="700" fontSize="24px" mb="20px">
-              {metadata.name}
+              {poolMetadata.name}
             </Text>
           )}
           <Flex direction="column" gap="20px" overflowY="auto">
             <Flex gap="20px">
-              {metadata?.image && (
-                <Image w="140px" h="140px" borderRadius="20px" src={metadata.image} alt="image" />
+              {poolMetadata?.image && (
+                <Image
+                  w="140px"
+                  h="140px"
+                  borderRadius="20px"
+                  src={poolMetadata.image}
+                  alt="image"
+                />
               )}
-              {metadata?.description && (
+              {poolMetadata?.description && (
                 <Text fontWeight="400" fontSize="18px" mb="20px">
-                  {metadata.description}
+                  {poolMetadata.description}
                 </Text>
               )}
             </Flex>
@@ -242,31 +246,35 @@ const TerminusPoolView = ({
                   value={poolState.data.isTransferable ? "true" : "false"}
                 />
                 <PoolDetailsRow type="uri" value={poolState.data.uri} />
-                {metadata && (
+                {poolMetadata && (
                   <>
                     <Text fontWeight="700" mt="20px">
                       Metadata:
                     </Text>
-                    {Object.keys(metadata)
+                    {Object.keys(poolMetadata)
                       .filter((key) => !headerMeta.includes(key))
                       .map((key) => {
-                        return <PoolDetailsRow key={key} type={key} value={String(metadata[key])} />
+                        return (
+                          <PoolDetailsRow key={key} type={key} value={String(poolMetadata[key])} />
+                        )
                       })}
                   </>
                 )}
-                {metadata?.attributes && (
+                {poolMetadata?.attributes && (
                   <>
                     <Text fontWeight="700" mt="20px">
                       Attributes:
                     </Text>
 
-                    {metadata.attributes.map((attribute: { trait_type: string; value: string }) => (
-                      <PoolDetailsRow
-                        key={attribute.trait_type}
-                        type={attribute.trait_type}
-                        value={String(attribute.value)}
-                      />
-                    ))}
+                    {poolMetadata.attributes.map(
+                      (attribute: { trait_type: string; value: string }) => (
+                        <PoolDetailsRow
+                          key={attribute.trait_type}
+                          type={attribute.trait_type}
+                          value={String(attribute.value)}
+                        />
+                      ),
+                    )}
                   </>
                 )}
               </Flex>
@@ -279,6 +287,7 @@ const TerminusPoolView = ({
                 value={newUri}
                 onChange={(e) => setNewUri(e.target.value)}
                 type="url"
+                disabled={setPoolURI.isLoading}
               />
               <Button
                 bg="gray.0"
@@ -286,8 +295,9 @@ const TerminusPoolView = ({
                 fontSize="18px"
                 color="#2d2d2d"
                 onClick={handleNewUri}
+                disabled={setPoolURI.isLoading}
               >
-                Save
+                {setPoolURI.isLoading ? <Spinner /> : "Save"}
               </Button>
             </Flex>
           )}
