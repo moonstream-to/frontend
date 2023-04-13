@@ -1,5 +1,7 @@
 import { useEffect } from "react"
 import Layout from "../../src/components/layout"
+import QueryView from "../../src/components/queryAPI/queryView"
+import { QueryAPIProvider } from "../../src/contexts/QueryAPIContext"
 import { UserProvider } from "../../src/contexts/UserContext"
 
 const Terminus = () => {
@@ -9,7 +11,11 @@ const Terminus = () => {
 
   return (
     <UserProvider>
-      <Layout home={false}></Layout>
+      <QueryAPIProvider>
+        <Layout home={false}>
+          <QueryView />
+        </Layout>
+      </QueryAPIProvider>
     </UserProvider>
   )
 }

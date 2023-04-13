@@ -53,6 +53,22 @@ const variantWyrmButton = () => {
   }
 }
 
+const variantSelector = () => {
+  return {
+    p: "0px",
+    lineHeight: "1",
+    fontSize: "24px",
+    fontWeight: "700",
+    h: "24px",
+    color: "#4d4d4d",
+    _disabled: {
+      color: "white",
+      cursor: "default",
+      opacity: "1",
+    },
+  }
+}
+
 const variantPlainOrange = () => {
   return {
     alignItems: "center",
@@ -115,6 +131,7 @@ const Button = {
     plainOrange: variantPlainOrange,
     orangeGradient: variantOrangeGradient,
     wyrmButton: variantWyrmButton,
+    selector: variantSelector,
   },
 }
 export default Button
