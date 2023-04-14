@@ -1,9 +1,9 @@
-import { Button, VisuallyHidden } from "@chakra-ui/react"
+import { Button, VisuallyHidden } from "@chakra-ui/react";
 
 interface SocialButtonProps {
-  children: React.ReactNode
-  label: string
-  href: string
+  children: React.ReactNode;
+  label: string;
+  href: string;
 }
 
 const SocialButton = ({ children, label, href }: SocialButtonProps) => {
@@ -17,7 +17,7 @@ const SocialButton = ({ children, label, href }: SocialButtonProps) => {
       // maxW='30px'
       onClick={() => {
         // buttonReport(label, 'footer', 'landing')
-        window.open(href)
+        window.open(href);
       }}
       display={"inline-flex"}
       alignItems={"center"}
@@ -30,7 +30,7 @@ const SocialButton = ({ children, label, href }: SocialButtonProps) => {
       <VisuallyHidden>{label}</VisuallyHidden>
       {children}
     </Button>
-  )
-}
+  );
+};
 
-export default SocialButton
+export default SocialButton;

@@ -1,44 +1,44 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useMutation, useQuery } from "react-query"
+import { useMutation, useQuery } from "react-query";
 import {
   claimDrop,
   getClaim,
   getState,
   getSignerForClaim,
-} from "../web3/contracts/dropper.contract"
-import queryCacheProps from "./hookCommon"
-import useToast from "./useMoonToast"
-import useURI from "./useLink"
-import { Dropper } from "../web3/contracts/types/Dropper"
-import { MoonstreamWeb3ProviderInterface } from "../types/Moonstream"
-const dropperAbi = require("../web3/abi/Dropper.json")
+} from "../web3/contracts/dropper.contract";
+import queryCacheProps from "./hookCommon";
+import useToast from "./useMoonToast";
+import useURI from "./useLink";
+import { Dropper } from "../web3/contracts/types/Dropper";
+import { MoonstreamWeb3ProviderInterface } from "../types/Moonstream";
+const dropperAbi = require("../web3/abi/Dropper.json");
 const useDropperContract = ({
   dropperAddress,
   ctx,
   claimId,
 }: {
-  dropperAddress?: string
-  ctx: MoonstreamWeb3ProviderInterface
-  claimId?: string
+  dropperAddress?: string;
+  ctx: MoonstreamWeb3ProviderInterface;
+  claimId?: string;
 }) => {
-  const toast = useToast()
+  const toast = useToast();
 
-  const dropperContract = new ctx.web3.eth.Contract(dropperAbi) as any as Dropper
-  dropperContract.options.address = dropperAddress ?? ""
+  const dropperContract = new ctx.web3.eth.Contract(dropperAbi) as any as Dropper;
+  dropperContract.options.address = dropperAddress ?? "";
 
   const _getClaim = async (
     dropperAddress: string,
     ctx: MoonstreamWeb3ProviderInterface,
     claimId: string,
   ) => {
-    let canClaim = false
-    const response = await getClaim(dropperAddress, ctx)(claimId)
+    let canClaim = false;
+    const response = await getClaim(dropperAddress, ctx)(claimId);
 
-    if (Number(response.status) > 0 || response.claim[0] == "0") canClaim = false
-    else canClaim = true
+    if (Number(response.status) > 0 || response.claim[0] == "0") canClaim = false;
+    else canClaim = true;
 
-    return { canClaim, ...response }
-  }
+    return { canClaim, ...response };
+  };
 
   const claimState = useQuery(
     ["dropperContract", "claimState", dropperAddress, ctx.targetChain?.chainId, claimId],
@@ -59,17 +59,17 @@ const useDropperContract = ({
         ctx.chainId === ctx.targetChain?.chainId &&
         !!claimId,
     },
-  )
+  );
 
   const claimWeb3Drop = useMutation(claimDrop(dropperAddress, ctx), {
     onSuccess: () => {
-      toast("Claim successful!", "success")
+      toast("Claim successful!", "success");
     },
     onError: (err: any) => {
-      console.error(err)
-      toast("Web3 call failed >_<", "error")
+      console.error(err);
+      toast("Web3 call failed >_<", "error");
     },
-  })
+  });
 
   const contractState = useQuery(
     ["dropperContract", "state", dropperAddress, ctx.targetChain?.chainId],
@@ -82,7 +82,7 @@ const useDropperContract = ({
         !!ctx.chainId &&
         ctx.chainId === ctx.targetChain?.chainId,
     },
-  )
+  );
 
   const signerForClaim = useQuery(
     ["signerForClaim", dropperAddress, ctx.targetChain?.name, claimId],
@@ -97,37 +97,37 @@ const useDropperContract = ({
         !!ctx.chainId &&
         ctx.targetChain?.chainId === ctx.chainId,
     },
-  )
+  );
 
   const commonProps = {
     onSuccess: () => {
-      toast("Successfully updated contract", "success")
-      claimState.refetch()
+      toast("Successfully updated contract", "success");
+      claimState.refetch();
     },
     onError: () => {
-      toast("Something went wrong", "error")
+      toast("Something went wrong", "error");
     },
-  }
+  };
 
   const setClaimURI = useMutation(
     ({ uri }: { uri: string }) =>
       dropperContract.methods.setClaimUri(claimId ?? "", uri).send({ from: ctx.account }),
     { ...commonProps },
-  )
+  );
 
   const setClaimSigner = useMutation(
     ({ signer }: { signer: string }) =>
       dropperContract.methods.setSignerForClaim(claimId ?? "", signer).send({ from: ctx.account }),
     { ...commonProps },
-  )
+  );
 
   const transferOwnership = useMutation(
     ({ to }: { to: string }) =>
       dropperContract.methods.transferOwnership(to).send({ from: ctx.account }),
     { ...commonProps },
-  )
+  );
 
-  const claimUri = useURI({ link: claimState.data?.claimUri })
+  const claimUri = useURI({ link: claimState.data?.claimUri });
 
   return {
     claimState,
@@ -138,7 +138,7 @@ const useDropperContract = ({
     setClaimURI,
     setClaimSigner,
     transferOwnership,
-  }
-}
+  };
+};
 
-export default useDropperContract
+export default useDropperContract;

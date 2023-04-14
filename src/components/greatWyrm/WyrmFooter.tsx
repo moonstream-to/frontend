@@ -1,12 +1,12 @@
-import React from "react"
+import React from "react";
 
-import { Text, Link, Flex, useMediaQuery } from "@chakra-ui/react"
+import { Text, Link, Flex, useMediaQuery } from "@chakra-ui/react";
 
-import SocialButtons from "../SocialButtons"
+import SocialButtons from "../SocialButtons";
 
 const Footer = ({ home }: { home?: boolean }) => {
-  const [isMobileView] = useMediaQuery("(max-width: 767px)")
-  const [is768View] = useMediaQuery("(max-width: 1023px)")
+  const [isMobileView] = useMediaQuery("(max-width: 767px)");
+  const [is768View] = useMediaQuery("(max-width: 1023px)");
 
   return (
     <>
@@ -78,7 +78,7 @@ const Footer = ({ home }: { home?: boolean }) => {
         </Flex>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

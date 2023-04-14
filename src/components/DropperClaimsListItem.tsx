@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
-import { Flex, Spacer, Text } from "@chakra-ui/layout"
-import { Image } from "@chakra-ui/react"
+import { useEffect, useState } from "react";
+import { Flex, Spacer, Text } from "@chakra-ui/layout";
+import { Image } from "@chakra-ui/react";
 
-import useLink from "../hooks/useLink"
-import { SmallCloseIcon } from "@chakra-ui/icons"
+import useLink from "../hooks/useLink";
+import { SmallCloseIcon } from "@chakra-ui/icons";
 
 const DropperClaimsListItem = ({
   claimId,
@@ -15,79 +15,79 @@ const DropperClaimsListItem = ({
   inQuery,
   dropState,
 }: {
-  claimId: string
-  address: string
-  selected: boolean
-  onChange: (id: string, metadata: unknown) => void
-  uri: string
-  filter: string
-  statusFilter: string
-  inQuery: boolean
-  dropState: { active: boolean }
+  claimId: string;
+  address: string;
+  selected: boolean;
+  onChange: (id: string, metadata: unknown) => void;
+  uri: string;
+  filter: string;
+  statusFilter: string;
+  inQuery: boolean;
+  dropState: { active: boolean };
 }) => {
-  const metadata = useLink({ link: uri })
+  const metadata = useLink({ link: uri });
 
   const handleClick = () => {
-    onChange(claimId, metadata.data)
-  }
+    onChange(claimId, metadata.data);
+  };
 
   useEffect(() => {
     if (selected) {
-      onChange(claimId, metadata.data)
+      onChange(claimId, metadata.data);
     }
-  }, [selected, metadata, claimId, onChange])
+  }, [selected, metadata, claimId, onChange]);
 
-  const [statusShow, setStatusShow] = useState(true)
+  const [statusShow, setStatusShow] = useState(true);
   useEffect(() => {
     if (!dropState) {
-      setStatusShow(true)
-      return
+      setStatusShow(true);
+      return;
     }
     if (dropState.active) {
-      setStatusShow(statusFilter !== "inactive")
+      setStatusShow(statusFilter !== "inactive");
     } else {
-      setStatusShow(statusFilter !== "active")
+      setStatusShow(statusFilter !== "active");
     }
-  }, [dropState, statusFilter])
+  }, [dropState, statusFilter]);
 
   useEffect(() => {
     if (inQuery) {
-      const element = document.getElementById(`claim-${claimId}`)
-      element?.scrollIntoView({ block: "center" })
-      const claimView = document.getElementById("claimView")
-      claimView?.scrollIntoView()
+      const element = document.getElementById(`claim-${claimId}`);
+      element?.scrollIntoView({ block: "center" });
+      const claimView = document.getElementById("claimView");
+      claimView?.scrollIntoView();
     }
-  }, [inQuery, claimId])
+  }, [inQuery, claimId]);
 
-  const [show, setShow] = useState(true)
+  const [show, setShow] = useState(true);
   useEffect(() => {
     if (filter === "") {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
-    const lowCaseFilter = filter.toLowerCase()
+    const lowCaseFilter = filter.toLowerCase();
     if (metadata.data?.name?.toLowerCase().includes(lowCaseFilter)) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
     if (metadata.data?.description?.toLowerCase().includes(lowCaseFilter)) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
     if (claimId.toString().startsWith(lowCaseFilter)) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
     if (lowCaseFilter === "inactive" && dropState?.active === false) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
     if (lowCaseFilter === "active" && dropState?.active === true) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
-    setShow(false)
-  }, [filter, metadata.data, claimId, dropState])
+    setShow(false);
+  }, [filter, metadata.data, claimId, dropState]);
 
   return (
     <>
@@ -159,7 +159,7 @@ const DropperClaimsListItem = ({
         </Flex>
       )}
     </>
-  )
-}
+  );
+};
 
-export default DropperClaimsListItem
+export default DropperClaimsListItem;

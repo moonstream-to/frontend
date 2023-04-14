@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 
 import {
   Flex,
@@ -16,33 +16,33 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from "@chakra-ui/react"
-import { BsArrowLeftShort } from "react-icons/bs"
+} from "@chakra-ui/react";
+import { BsArrowLeftShort } from "react-icons/bs";
 
-import CharacterCard from "./GoFPCharacterCard"
-import useGofp from "../../contexts/GoFPContext"
-import Web3Context from "../../contexts/Web3Context/context"
-import useGofpContract from "../../hooks/useGofpConract"
+import CharacterCard from "./GoFPCharacterCard";
+import useGofp from "../../contexts/GoFPContext";
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofpContract from "../../hooks/useGofpConract";
 
 const AddCharPanel = ({
   setShowActive,
 }: {
-  setShowActive: React.Dispatch<React.SetStateAction<boolean>>
+  setShowActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const web3ctx = useContext(Web3Context)
+  const web3ctx = useContext(Web3Context);
 
-  const { selectedTokens, unselectAll, sessionId, gardenContractAddress } = useGofp()
+  const { selectedTokens, unselectAll, sessionId, gardenContractAddress } = useGofp();
   const { ownedTokens, stakeTokens, setApproval, useTokenUris, useApprovalForAll } =
-    useGofpContract({ sessionId, gardenContractAddress, web3ctx })
-  const tokenUris = useTokenUris(ownedTokens.data ?? [])
-  const isApproved = useApprovalForAll()
+    useGofpContract({ sessionId, gardenContractAddress, web3ctx });
+  const tokenUris = useTokenUris(ownedTokens.data ?? []);
+  const isApproved = useApprovalForAll();
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const tokenIsSelected = (tokenId: number) => {
-    return selectedTokens.includes(tokenId)
-  }
-  const hasTokensSelected = ownedTokens.data?.some(tokenIsSelected)
+    return selectedTokens.includes(tokenId);
+  };
+  const hasTokensSelected = ownedTokens.data?.some(tokenIsSelected);
 
   return (
     <Box py={6}>
@@ -60,7 +60,7 @@ const AddCharPanel = ({
         {ownedTokens.data?.map((token) => {
           return (
             <CharacterCard key={token} tokenId={token} uri={tokenUris.data?.get(token) ?? ""} />
-          )
+          );
         })}
       </SimpleGrid>
       <Flex mt={6} flexDirection="column">
@@ -71,11 +71,11 @@ const AddCharPanel = ({
           isDisabled={!hasTokensSelected}
           onClick={async () => {
             if (isApproved?.data && ownedTokens.data) {
-              await stakeTokens.mutate(ownedTokens.data?.filter(tokenIsSelected))
-              setShowActive(true)
-              unselectAll()
+              await stakeTokens.mutate(ownedTokens.data?.filter(tokenIsSelected));
+              setShowActive(true);
+              unselectAll();
             } else {
-              onOpen()
+              onOpen();
             }
           }}
         >
@@ -108,8 +108,8 @@ const AddCharPanel = ({
                   bgColor="#F56646"
                   m={2}
                   onClick={async () => {
-                    setApproval.mutate()
-                    onClose()
+                    setApproval.mutate();
+                    onClose();
                   }}
                 >
                   Approve
@@ -120,7 +120,7 @@ const AddCharPanel = ({
         </Modal>
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
-export default AddCharPanel
+export default AddCharPanel;

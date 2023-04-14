@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react"
-import { useMutation, useQueryClient } from "react-query"
+import { useContext, useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import {
   Button,
   Checkbox,
@@ -17,19 +17,19 @@ import {
   Text,
   useDisclosure,
   useToast,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import TerminusPoolsList from "./TerminusPoolsList"
-import Web3Context from "../../contexts/Web3Context/context"
-const terminusAbi = require("../../web3/abi/MockTerminus.json")
-import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
-import { useRouter } from "next/router"
-import { MAX_INT } from "../../constants"
-import useTermiminus from "../../contexts/TerminusContext"
+import TerminusPoolsList from "./TerminusPoolsList";
+import Web3Context from "../../contexts/Web3Context/context";
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
+import { useRouter } from "next/router";
+import { MAX_INT } from "../../constants";
+import useTermiminus from "../../contexts/TerminusContext";
 
 const TerminusPoolsListView = () => {
-  const toast = useToast()
-  const router = useRouter()
+  const toast = useToast();
+  const router = useRouter();
 
   const {
     contractAddress,
@@ -38,26 +38,26 @@ const TerminusPoolsListView = () => {
     setQueryPoolId,
     poolsFilter,
     setPoolsFilter,
-  } = useTermiminus()
+  } = useTermiminus();
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const web3ctx = useContext(Web3Context)
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const web3ctx = useContext(Web3Context);
   const [newPoolProps, setNewPoolProps] = useState<{
-    capacity: string
-    isTransferable: boolean
-    isBurnable: boolean
-  }>({ capacity: "", isTransferable: true, isBurnable: true })
+    capacity: string;
+    isTransferable: boolean;
+    isBurnable: boolean;
+  }>({ capacity: "", isTransferable: true, isBurnable: true });
 
   useEffect(() => {
     const queryPoolId =
-      typeof router.query.poolId === "string" ? Number(router.query.poolId) : undefined
+      typeof router.query.poolId === "string" ? Number(router.query.poolId) : undefined;
     if (queryPoolId) {
-      setQueryPoolId(queryPoolId)
+      setQueryPoolId(queryPoolId);
     }
-  }, [router.query.poolId])
+  }, [router.query.poolId]);
 
-  const terminusFacet = new web3ctx.web3.eth.Contract(terminusAbi) as any as MockTerminus
-  terminusFacet.options.address = contractAddress
+  const terminusFacet = new web3ctx.web3.eth.Contract(terminusAbi) as any as MockTerminus;
+  terminusFacet.options.address = contractAddress;
 
   const commonProps = {
     onSuccess: () => {
@@ -66,7 +66,7 @@ const TerminusPoolsListView = () => {
         status: "success",
         duration: 5000,
         isClosable: true,
-      })
+      });
       // contractState.refetch(); //TODO
     },
     onError: () => {
@@ -75,20 +75,20 @@ const TerminusPoolsListView = () => {
         status: "error",
         duration: 5000,
         isClosable: true,
-      })
+      });
     },
-  }
+  };
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const newPool = useMutation(
     ({
       capacity,
       isBurnable,
       isTransferable,
     }: {
-      capacity: string
-      isBurnable: boolean
-      isTransferable: boolean
+      capacity: string;
+      isBurnable: boolean;
+      isTransferable: boolean;
     }) =>
       terminusFacet.methods
         .createPoolV1(capacity, isTransferable, isBurnable)
@@ -96,16 +96,16 @@ const TerminusPoolsListView = () => {
     {
       ...commonProps,
       onSuccess: () => {
-        setIsNewPoolCreated(true)
-        queryClient.invalidateQueries("poolsList")
-        queryClient.invalidateQueries("poolState")
-        queryClient.invalidateQueries("contractState")
+        setIsNewPoolCreated(true);
+        queryClient.invalidateQueries("poolsList");
+        queryClient.invalidateQueries("poolState");
+        queryClient.invalidateQueries("contractState");
       },
     },
-  )
+  );
 
   const createNewPool = () => {
-    const capacity = Number(newPoolProps.capacity)
+    const capacity = Number(newPoolProps.capacity);
 
     if (
       !newPoolProps.capacity ||
@@ -113,21 +113,21 @@ const TerminusPoolsListView = () => {
       !Number.isInteger(capacity) ||
       capacity < 1
     ) {
-      onOpen()
+      onOpen();
       toast({
         title: "Capacity must be a positive number",
         status: "error",
         duration: 3000,
         isClosable: true,
-      })
-      return
+      });
+      return;
     }
     newPool.mutate({
       capacity: newPoolProps.capacity,
       isTransferable: newPoolProps.isTransferable,
       isBurnable: newPoolProps.isBurnable,
-    })
-  }
+    });
+  };
 
   return (
     <Flex
@@ -176,7 +176,7 @@ const TerminusPoolsListView = () => {
               <Input
                 onChange={(e) =>
                   setNewPoolProps((prev) => {
-                    return { ...prev, capacity: e.target.value }
+                    return { ...prev, capacity: e.target.value };
                   })
                 }
                 placeholder="capacity"
@@ -188,8 +188,8 @@ const TerminusPoolsListView = () => {
                 colorScheme="purple"
                 onClick={() => {
                   setNewPoolProps((prev) => {
-                    return { ...prev, capacity: MAX_INT }
-                  })
+                    return { ...prev, capacity: MAX_INT };
+                  });
                 }}
               >
                 MAX_INT
@@ -200,7 +200,7 @@ const TerminusPoolsListView = () => {
               mr={3}
               onChange={(e) =>
                 setNewPoolProps((prev) => {
-                  return { ...prev, isBurnable: e.target.checked }
+                  return { ...prev, isBurnable: e.target.checked };
                 })
               }
               isChecked={newPoolProps.isBurnable}
@@ -211,7 +211,7 @@ const TerminusPoolsListView = () => {
               colorScheme="white"
               onChange={(e) =>
                 setNewPoolProps((prevState) => {
-                  return { ...prevState, isTransferable: e.target.checked }
+                  return { ...prevState, isTransferable: e.target.checked };
                 })
               }
               isChecked={newPoolProps.isTransferable}
@@ -227,8 +227,8 @@ const TerminusPoolsListView = () => {
             <Button
               colorScheme="teal"
               onClick={() => {
-                createNewPool()
-                onClose()
+                createNewPool();
+                onClose();
               }}
             >
               Create
@@ -237,7 +237,7 @@ const TerminusPoolsListView = () => {
         </ModalContent>
       </Modal>
     </Flex>
-  )
-}
+  );
+};
 
-export default TerminusPoolsListView
+export default TerminusPoolsListView;

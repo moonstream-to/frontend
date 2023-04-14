@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Flex, Image, Text, Box, Center } from "@chakra-ui/react"
-import { useDrop } from "react-dnd"
+import React, { useContext, useEffect, useState } from "react";
+import { Flex, Image, Text, Box, Center } from "@chakra-ui/react";
+import { useDrop } from "react-dnd";
 
-import { PathMetadata, PathStatus } from "./GoFPTypes"
-import useGofp from "../../contexts/GoFPContext"
-import Web3Context from "../../contexts/Web3Context/context"
-import useGofpContract from "../../hooks/useGofpConract"
+import { PathMetadata, PathStatus } from "./GoFPTypes";
+import useGofp from "../../contexts/GoFPContext";
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofpContract from "../../hooks/useGofpConract";
 
 const PathCard = ({
   pathIdx,
@@ -14,53 +14,53 @@ const PathCard = ({
   accept,
   stageIdx,
 }: {
-  pathIdx: number
-  pathMetadata: PathMetadata
-  pathId: string
-  accept: string
-  stageIdx: number
+  pathIdx: number;
+  pathMetadata: PathMetadata;
+  pathId: string;
+  accept: string;
+  stageIdx: number;
 }) => {
-  const correctPathColor = "#3BB563"
-  const incorrectPathColor = "#E85858"
-  const undecidedPathColor = "#4C4C4C"
+  const correctPathColor = "#3BB563";
+  const incorrectPathColor = "#E85858";
+  const undecidedPathColor = "#4C4C4C";
 
-  const { selectedPath, selectPath, sessionId, gardenContractAddress } = useGofp()
-  const web3ctx = useContext(Web3Context)
+  const { selectedPath, selectPath, sessionId, gardenContractAddress } = useGofp();
+  const web3ctx = useContext(Web3Context);
 
   const { choosePath, correctPaths, currentStage } = useGofpContract({
     sessionId,
     gardenContractAddress,
     web3ctx,
-  })
+  });
 
   const handleDrop = (item: { id: number }) => {
-    const pathNumber = Number(pathId.split("_").slice(-1)[0]) + 1
-    choosePath.mutate({ tokenIds: [item.id], path: pathNumber })
-  }
+    const pathNumber = Number(pathId.split("_").slice(-1)[0]) + 1;
+    choosePath.mutate({ tokenIds: [item.id], path: pathNumber });
+  };
 
-  const [status, setStatus] = useState(PathStatus.undecided)
-  const [isSelected, setIsSelected] = useState<boolean>(false)
+  const [status, setStatus] = useState(PathStatus.undecided);
+  const [isSelected, setIsSelected] = useState<boolean>(false);
 
   useEffect(() => {
     if (!correctPaths.data) {
-      return
+      return;
     }
     if (stageIdx < correctPaths.data?.length) {
       setStatus(
         correctPaths.data[stageIdx] === pathIdx + 1 ? PathStatus.correct : PathStatus.incorrect,
-      )
+      );
     } else {
-      setStatus(PathStatus.undecided)
+      setStatus(PathStatus.undecided);
     }
-  }, [correctPaths.data, pathIdx, stageIdx])
+  }, [correctPaths.data, pathIdx, stageIdx]);
 
   useEffect(() => {
     if (stageIdx + 1 === currentStage.data && pathIdx + 1 === selectedPath) {
-      setIsSelected(true)
+      setIsSelected(true);
     } else {
-      setIsSelected(false)
+      setIsSelected(false);
     }
-  }, [selectedPath, pathIdx, stageIdx, currentStage.data])
+  }, [selectedPath, pathIdx, stageIdx, currentStage.data]);
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept,
@@ -69,29 +69,29 @@ const PathCard = ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
-  })
+  });
 
   const assets = {
     trophy: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/trophy.png",
     skull: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/skull.png",
     path_into_fog: "https://s3.amazonaws.com/static.simiotics.com/play/minigames/path_into_fog.png",
-  }
+  };
 
-  let cardFill = ""
+  let cardFill = "";
 
   switch (status) {
     case PathStatus.correct:
-      cardFill = correctPathColor
-      break
+      cardFill = correctPathColor;
+      break;
     case PathStatus.incorrect:
-      cardFill = incorrectPathColor
-      break
+      cardFill = incorrectPathColor;
+      break;
     case PathStatus.undecided:
-      cardFill = undecidedPathColor
-      break
+      cardFill = undecidedPathColor;
+      break;
     default:
-      cardFill = undecidedPathColor
-      break
+      cardFill = undecidedPathColor;
+      break;
   }
 
   return (
@@ -101,7 +101,7 @@ const PathCard = ({
       px={2}
       onClick={() => {
         if (stageIdx + 1 === currentStage.data) {
-          selectPath(pathIdx + 1)
+          selectPath(pathIdx + 1);
         }
       }}
       fontWeight={canDrop ? "700" : "400"}
@@ -176,7 +176,7 @@ const PathCard = ({
         </Box>
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
-export default PathCard
+export default PathCard;

@@ -1,8 +1,8 @@
-import { Box, useToast } from "@chakra-ui/react"
-import { useCallback } from "react"
+import { Box, useToast } from "@chakra-ui/react";
+import { useCallback } from "react";
 
 const useMoonToast = () => {
-  const chakraToast = useToast()
+  const chakraToast = useToast();
 
   const toast = useCallback(
     (
@@ -17,16 +17,16 @@ const useMoonToast = () => {
         success: "white",
         error: "#F56646",
         loading: "white",
-      }
-      const userTitle = title ?? message?.response?.statusText ?? type
+      };
+      const userTitle = title ?? message?.response?.statusText ?? type;
 
       const userMessage =
         message?.response?.data?.detail ?? typeof message === "string"
           ? message
           : userTitle === type
           ? ""
-          : type
-      const id = `${userTitle}-${userMessage}-${type}`
+          : type;
+      const id = `${userTitle}-${userMessage}-${type}`;
       if (!chakraToast.isActive(id)) {
         chakraToast({
           id: id,
@@ -46,13 +46,13 @@ const useMoonToast = () => {
               {message}
             </Box>
           ),
-        })
+        });
       }
     },
     [chakraToast],
-  )
+  );
 
-  return toast
-}
+  return toast;
+};
 
-export default useMoonToast
+export default useMoonToast;

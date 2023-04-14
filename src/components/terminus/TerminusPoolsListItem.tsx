@@ -1,61 +1,61 @@
-import { useEffect, useState } from "react"
-import { Box, Flex, Text } from "@chakra-ui/layout"
-import { Image } from "@chakra-ui/react"
+import { useEffect, useState } from "react";
+import { Box, Flex, Text } from "@chakra-ui/layout";
+import { Image } from "@chakra-ui/react";
 
-import useLink from "../../hooks/useLink"
-import useTermiminus from "../../contexts/TerminusContext"
+import useLink from "../../hooks/useLink";
+import useTermiminus from "../../contexts/TerminusContext";
 
 const TerminusPoolsListItem = ({ poolId, uri }: { poolId: number; uri: string }) => {
-  const metadata = useLink({ link: uri })
+  const metadata = useLink({ link: uri });
 
   const { selectPool, setSelectedPoolMetadata, selectedPool, queryPoolId, poolsFilter } =
-    useTermiminus()
-  const [selected, setSelected] = useState(poolId === selectedPool)
+    useTermiminus();
+  const [selected, setSelected] = useState(poolId === selectedPool);
   const handleClick = () => {
-    selectPool(poolId)
-    setSelectedPoolMetadata(metadata.data)
-  }
+    selectPool(poolId);
+    setSelectedPoolMetadata(metadata.data);
+  };
 
   useEffect(() => {
-    setSelected(poolId === selectedPool)
-  }, [selectedPool, poolId])
+    setSelected(poolId === selectedPool);
+  }, [selectedPool, poolId]);
 
   useEffect(() => {
     if (selected) {
-      setSelectedPoolMetadata(metadata.data)
+      setSelectedPoolMetadata(metadata.data);
     }
-  }, [selected, metadata.data, poolId])
+  }, [selected, metadata.data, poolId]);
 
   useEffect(() => {
     if (poolId === queryPoolId) {
-      const element = document.getElementById(`pool-${poolId}`)
-      element?.scrollIntoView({ block: "center" })
-      const poolView = document.getElementById("poolView")
-      poolView?.scrollIntoView()
+      const element = document.getElementById(`pool-${poolId}`);
+      element?.scrollIntoView({ block: "center" });
+      const poolView = document.getElementById("poolView");
+      poolView?.scrollIntoView();
     }
-  }, [queryPoolId, poolId])
+  }, [queryPoolId, poolId]);
 
-  const [show, setShow] = useState(true)
+  const [show, setShow] = useState(true);
   useEffect(() => {
     if (poolsFilter === "") {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
-    const lowCaseFilter = poolsFilter.toLowerCase()
+    const lowCaseFilter = poolsFilter.toLowerCase();
     if (metadata.data?.name?.toLowerCase().includes(lowCaseFilter)) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
     if (metadata.data?.description?.toLowerCase().includes(lowCaseFilter)) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
     if (poolId.toString().startsWith(lowCaseFilter)) {
-      setShow(true)
-      return
+      setShow(true);
+      return;
     }
-    setShow(false)
-  }, [poolsFilter, metadata.data, poolId])
+    setShow(false);
+  }, [poolsFilter, metadata.data, poolId]);
 
   return (
     <>
@@ -100,7 +100,7 @@ const TerminusPoolsListItem = ({ poolId, uri }: { poolId: number; uri: string })
         </Flex>
       )}
     </>
-  )
-}
+  );
+};
 
-export default TerminusPoolsListItem
+export default TerminusPoolsListItem;

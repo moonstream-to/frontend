@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useContext } from "react"
-import { Flex, Image, Text, chakra, Spacer, VStack, Box, HStack } from "@chakra-ui/react"
-import { useQuery } from "react-query"
+import React, { useContext } from "react";
+import { Flex, Image, Text, chakra, Spacer, VStack, Box, HStack } from "@chakra-ui/react";
+import { useQuery } from "react-query";
 
-import Web3Context from "../../contexts/Web3Context/context"
-const terminusAbi = require("../../../src/web3/abi/MockTerminus.json")
-import { MockTerminus as TerminusFacet } from "../../web3/contracts/types/MockTerminus"
-import { hookCommon } from "../../hooks"
+import Web3Context from "../../contexts/Web3Context/context";
+const terminusAbi = require("../../../src/web3/abi/MockTerminus.json");
+import { MockTerminus as TerminusFacet } from "../../web3/contracts/types/MockTerminus";
+import { hookCommon } from "../../hooks";
 
-import TextWithPopup from "../TextWithPopup"
-import { NFTInfo } from "./types"
-import NFTList from "./NFTList"
+import TextWithPopup from "../TextWithPopup";
+import { NFTInfo } from "./types";
+import NFTList from "./NFTList";
 
 const _TerminusList = ({
   terminusAddress,
@@ -18,53 +18,53 @@ const _TerminusList = ({
   balances,
   ...props
 }: {
-  terminusAddress: string
-  poolIdList: number[]
-  balances: { [key: string]: number }
+  terminusAddress: string;
+  poolIdList: number[];
+  balances: { [key: string]: number };
 }) => {
-  const web3ctx = useContext(Web3Context)
+  const web3ctx = useContext(Web3Context);
 
   const fetchMetdata = async (tokenURI: string) => {
     if (tokenURI && tokenURI.trim() != "") {
-      return fetch(tokenURI, { cache: "no-cache" }).then((response) => response.json())
+      return fetch(tokenURI, { cache: "no-cache" }).then((response) => response.json());
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // TODO: Refactor this method for reuse. Use multicall.
   const getTokenURIs = async (terminusContract: TerminusFacet, poolIDs: number[]) => {
-    const tokenURIPromises = poolIDs.map((poolID) => terminusContract.methods.uri(poolID).call())
-    return await Promise.all(tokenURIPromises)
-  }
+    const tokenURIPromises = poolIDs.map((poolID) => terminusContract.methods.uri(poolID).call());
+    return await Promise.all(tokenURIPromises);
+  };
 
   const getAllMetadata = async (uriList: string[]) => {
     const metadataPromises = uriList.map((uri) => {
-      return fetchMetdata(uri)
-    })
-    return await Promise.all(metadataPromises)
-  }
+      return fetchMetdata(uri);
+    });
+    return await Promise.all(metadataPromises);
+  };
 
   const badges = useQuery<NFTInfo[]>(
     ["badges", terminusAddress, poolIdList],
     async () => {
-      const inventory: NFTInfo[] = []
+      const inventory: NFTInfo[] = [];
 
       if (terminusAddress == "0x0000000000000000000000000000000000000000") {
-        return inventory
+        return inventory;
       }
 
       try {
         const terminusContract = new web3ctx.wyrmClient.eth.Contract(
           terminusAbi,
-        ) as any as TerminusFacet
-        terminusContract.options.address = terminusAddress
+        ) as any as TerminusFacet;
+        terminusContract.options.address = terminusAddress;
 
-        const tokenURIs = await getTokenURIs(terminusContract, poolIdList)
+        const tokenURIs = await getTokenURIs(terminusContract, poolIdList);
 
-        const tokenMetadata = await getAllMetadata(tokenURIs)
+        const tokenMetadata = await getAllMetadata(tokenURIs);
 
-        const imageURIs = tokenMetadata.map((metadata) => (metadata ? metadata.image : null))
+        const imageURIs = tokenMetadata.map((metadata) => (metadata ? metadata.image : null));
 
         poolIdList.forEach((poolId, index) => {
           const poolInfo: NFTInfo = {
@@ -72,20 +72,20 @@ const _TerminusList = ({
             tokenURI: tokenURIs[index],
             imageURI: tokenMetadata[index].image,
             metadata: tokenMetadata[index],
-          }
-          inventory.push(poolInfo)
-        })
+          };
+          inventory.push(poolInfo);
+        });
       } catch (e) {
-        console.error("There was an issue retrieving information about user's characters: ")
-        console.error(e)
+        console.error("There was an issue retrieving information about user's characters: ");
+        console.error(e);
       }
 
-      return inventory
+      return inventory;
     },
     {
       ...hookCommon,
     },
-  )
+  );
 
   return (
     <Flex {...props}>
@@ -99,11 +99,11 @@ const _TerminusList = ({
                 <Text>Quantity: {balances[item.tokenID]}</Text>
               </VStack>
             </HStack>
-          )
+          );
         })}
     </Flex>
-  )
-}
+  );
+};
 
-const TerminusList = chakra(_TerminusList)
-export default TerminusList
+const TerminusList = chakra(_TerminusList);
+export default TerminusList;

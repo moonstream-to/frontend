@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, useQueryClient } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
   Accordion,
   AccordionButton,
@@ -12,65 +12,65 @@ import {
   useToast,
   Spinner,
   Button,
-} from "@chakra-ui/react"
-import { LinkIcon } from "@chakra-ui/icons"
-import { Box, Flex, Spacer, Text } from "@chakra-ui/layout"
-import { Image } from "@chakra-ui/image"
-import { ReactMarkdown } from "react-markdown/lib/react-markdown"
-import remarkGfm from "remark-gfm"
+} from "@chakra-ui/react";
+import { LinkIcon } from "@chakra-ui/icons";
+import { Box, Flex, Spacer, Text } from "@chakra-ui/layout";
+import { Image } from "@chakra-ui/image";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import remarkGfm from "remark-gfm";
 
-import ClaimantsView from "./ClaimantsView"
-import PoolDetailsRow from "./PoolDetailsRow"
-import Web3Context from "../contexts/Web3Context/context"
-import useDrops from "../hooks/useDrops"
-import queryCacheProps from "../hooks/hookCommon"
-import { PORTAL_PATH } from "../constants"
-const dropperAbi = require("../web3/abi/Dropper.json")
-import { Dropper } from "../web3/contracts/types/Dropper"
-import http from "../utils/http"
+import ClaimantsView from "./ClaimantsView";
+import PoolDetailsRow from "./PoolDetailsRow";
+import Web3Context from "../contexts/Web3Context/context";
+import useDrops from "../hooks/useDrops";
+import queryCacheProps from "../hooks/hookCommon";
+import { PORTAL_PATH } from "../constants";
+const dropperAbi = require("../web3/abi/Dropper.json");
+import { Dropper } from "../web3/contracts/types/Dropper";
+import http from "../utils/http";
 
 const DropperClaimView = ({
   address,
   claimId,
   metadata,
 }: {
-  address: string
-  claimId: string
+  address: string;
+  claimId: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metadata: any
+  metadata: any;
 }) => {
-  const { chainId, web3 } = useContext(Web3Context)
+  const { chainId, web3 } = useContext(Web3Context);
 
-  const headerMeta = ["name", "description", "image", "attributes"]
-  const web3ctx = useContext(Web3Context)
+  const headerMeta = ["name", "description", "image", "attributes"];
+  const web3ctx = useContext(Web3Context);
 
-  const toast = useToast()
+  const toast = useToast();
 
   const { adminClaims } = useDrops({
     dropperAddress: address,
     ctx: web3ctx,
-  })
+  });
 
   useEffect(() => {
-    adminClaims.refetch()
-  }, [address, web3ctx.account])
+    adminClaims.refetch();
+  }, [address, web3ctx.account]);
 
   const [dropState, setDropState] = useState<
     | {
-        deadline: string
-        id: string
-        terminusAddress: string
-        terminusPoolId: string
-        active: boolean
+        deadline: string;
+        id: string;
+        terminusAddress: string;
+        terminusPoolId: string;
+        active: boolean;
       }
     | undefined
-  >(undefined)
+  >(undefined);
 
   useEffect(() => {
     if (adminClaims.data) {
       const claimState = adminClaims.data.find(
         (claim: { drop_number: number }) => claim.drop_number === Number(claimId),
-      )
+      );
       if (claimState) {
         const {
           id,
@@ -78,45 +78,45 @@ const DropperClaimView = ({
           terminus_address: terminusAddress,
           terminus_pool_id: terminusPoolId,
           active,
-        } = claimState
+        } = claimState;
         setDropState({
           id,
           terminusAddress,
           terminusPoolId,
           deadline,
           active,
-        })
+        });
       } else {
-        setDropState(undefined)
+        setDropState(undefined);
       }
     }
-  }, [adminClaims.data, claimId])
+  }, [adminClaims.data, claimId]);
 
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
     ["721", "ERC721"],
     ["1155", "ERC1155"],
     ["1", "Mint Terminus"],
-  ])
+  ]);
 
   const claimState = useQuery(
     ["claimState", address, claimId, chainId],
     async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const dropperContract = new web3.eth.Contract(dropperAbi) as any as Dropper
-      dropperContract.options.address = address ?? ""
-      const claim = await dropperContract.methods.getClaim(claimId).call()
-      const claimUri = await dropperContract.methods.claimUri(claimId).call() //TODO take from ClaimsList
-      const signer = await dropperContract.methods.getSignerForClaim(claimId).call() //TODO MULTICALL?
-      const dropType = dropTypes.get(claim[3]) ?? "undefined"
-      return { claim, claimUri, signer, dropType }
+      const dropperContract = new web3.eth.Contract(dropperAbi) as any as Dropper;
+      dropperContract.options.address = address ?? "";
+      const claim = await dropperContract.methods.getClaim(claimId).call();
+      const claimUri = await dropperContract.methods.claimUri(claimId).call(); //TODO take from ClaimsList
+      const signer = await dropperContract.methods.getSignerForClaim(claimId).call(); //TODO MULTICALL?
+      const dropType = dropTypes.get(claim[3]) ?? "undefined";
+      return { claim, claimUri, signer, dropType };
     },
     {
       ...queryCacheProps,
       enabled: Number(claimId) > 0 && !!address,
       // onSuccess: () => {}, //TODO
     },
-  )
+  );
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard
@@ -129,7 +129,7 @@ const DropperClaimView = ({
               Copied to clipboard
             </Box>
           ),
-        })
+        });
       })
       .catch((e) => {
         toast({
@@ -139,36 +139,36 @@ const DropperClaimView = ({
               {e}
             </Box>
           ),
-        })
-      })
-  }
+        });
+      });
+  };
 
-  const [tempCaption, setTempCaption] = useState("")
-  const queryClient = useQueryClient()
-  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL
+  const [tempCaption, setTempCaption] = useState("");
+  const queryClient = useQueryClient();
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL;
 
-  const ADMIN_API = `${API}/admin`
+  const ADMIN_API = `${API}/admin`;
 
   const setActive = useMutation(
     (active: boolean) => {
       if (!dropState) {
-        return
+        return;
       } //TODO
       return http({
         method: "PUT",
         url: `${ADMIN_API}/drops/${dropState?.id}/${active ? "" : "de"}activate`,
-      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"))
+      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"));
     },
     {
       onSuccess: () => {
-        setTimeout(() => setTempCaption(""), 5000)
-        queryClient.invalidateQueries("claimAdmin")
+        setTimeout(() => setTempCaption(""), 5000);
+        queryClient.invalidateQueries("claimAdmin");
       },
     },
-  )
+  );
 
   if (Number(claimId) < 1) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -320,7 +320,7 @@ const DropperClaimView = ({
                           .map((key) => {
                             return (
                               <PoolDetailsRow key={key} type={key} value={String(metadata[key])} />
-                            )
+                            );
                           })}
                         {metadata?.attributes && (
                           <>
@@ -356,7 +356,7 @@ const DropperClaimView = ({
         </Flex>
       )}
     </Flex>
-  )
-}
+  );
+};
 
-export default DropperClaimView
+export default DropperClaimView;

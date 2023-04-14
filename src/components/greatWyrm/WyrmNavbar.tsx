@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react";
 
 const WyrmNavbar = ({ ...props }: { [x: string]: any }) => {
   return (
@@ -13,7 +13,7 @@ const WyrmNavbar = ({ ...props }: { [x: string]: any }) => {
     >
       great wyrm
     </Text>
-  )
-}
+  );
+};
 
-export default WyrmNavbar
+export default WyrmNavbar;

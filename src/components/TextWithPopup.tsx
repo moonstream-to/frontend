@@ -12,10 +12,10 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const TextWithPopup = ({
   text,
@@ -23,14 +23,14 @@ const TextWithPopup = ({
   title,
   shortCharCount,
 }: {
-  text: string
-  title: string
-  image?: string
-  shortCharCount?: number
+  text: string;
+  title: string;
+  image?: string;
+  shortCharCount?: number;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const textCut = shortCharCount || 80
+  const textCut = shortCharCount || 80;
 
   return (
     <>
@@ -96,7 +96,7 @@ const TextWithPopup = ({
         </ModalContent>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default TextWithPopup
+export default TextWithPopup;

@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react"
-import { useQuery } from "react-query"
-import { Flex, Select, Text } from "@chakra-ui/react"
+import { useContext, useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { Flex, Select, Text } from "@chakra-ui/react";
 
-import Spinner from "./Spinner/Spinner"
-import Web3Context from "../contexts/Web3Context/context"
-import queryCacheProps from "../hooks/hookCommon"
-const multicallABI = require("../web3/abi/Multicall2.json")
-import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../constants"
-const dropperAbi = require("../web3/abi/Dropper.json")
-import { Dropper } from "../web3/contracts/types/Dropper"
-import DropperClaimsListItem from "./DropperClaimsListItem"
-import useDrops from "../hooks/useDrops"
+import Spinner from "./Spinner/Spinner";
+import Web3Context from "../contexts/Web3Context/context";
+import queryCacheProps from "../hooks/hookCommon";
+const multicallABI = require("../web3/abi/Multicall2.json");
+import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../constants";
+const dropperAbi = require("../web3/abi/Dropper.json");
+import { Dropper } from "../web3/contracts/types/Dropper";
+import DropperClaimsListItem from "./DropperClaimsListItem";
+import useDrops from "../hooks/useDrops";
 
 const DropperClaimsList = ({
   contractAddress,
@@ -21,44 +21,46 @@ const DropperClaimsList = ({
   filter,
   queryClaimId,
 }: {
-  contractAddress: string
-  selected: number
-  setSelected: (arg0: number) => void
-  onChange: (id: string, metadata: unknown) => void
-  filter: string
-  queryClaimId: number | undefined
+  contractAddress: string;
+  selected: number;
+  setSelected: (arg0: number) => void;
+  onChange: (id: string, metadata: unknown) => void;
+  filter: string;
+  queryClaimId: number | undefined;
 }) => {
-  const { chainId, web3 } = useContext(Web3Context)
-  const web3ctx = useContext(Web3Context)
-  const [statusFilter, setStatusFilter] = useState("All")
+  const { chainId, web3 } = useContext(Web3Context);
+  const web3ctx = useContext(Web3Context);
+  const [statusFilter, setStatusFilter] = useState("All");
 
-  const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress })
+  const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress });
 
   const claimsList = useQuery(
     ["claimsList", contractAddress, chainId, queryClaimId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
-        MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
-      const dropperContract = new web3.eth.Contract(dropperAbi) as unknown as Dropper
-      dropperContract.options.address = contractAddress ?? ""
+        MULTICALL2_CONTRACT_ADDRESSES[
+          String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
+        ];
+      const dropperContract = new web3.eth.Contract(dropperAbi) as unknown as Dropper;
+      dropperContract.options.address = contractAddress ?? "";
 
-      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
+      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
 
-      const uriQueries = []
+      const uriQueries = [];
 
-      const LIMIT = Number(MAX_INT)
-      let totalClaims
+      const LIMIT = Number(MAX_INT);
+      let totalClaims;
       try {
-        totalClaims = await dropperContract.methods.numClaims().call()
+        totalClaims = await dropperContract.methods.numClaims().call();
       } catch (e) {
-        console.log(e)
-        totalClaims = 0
+        console.log(e);
+        totalClaims = 0;
       }
       for (let i = 1; i <= Math.min(LIMIT, Number(totalClaims)); i += 1) {
         uriQueries.push({
           target: contractAddress,
           callData: dropperContract.methods.claimUri(i).encodeABI(),
-        })
+        });
       }
 
       return multicallContract.methods
@@ -66,23 +68,23 @@ const DropperClaimsList = ({
         .call()
         .then((results: string[]) => {
           return results.map((result, idx) => {
-            let parsed
+            let parsed;
             try {
-              parsed = web3.utils.hexToUtf8(result[1]).split("https://")[1]
+              parsed = web3.utils.hexToUtf8(result[1]).split("https://")[1];
               if (!parsed) {
-                throw "not an address"
+                throw "not an address";
               }
-              parsed = "https://" + parsed
+              parsed = "https://" + parsed;
             } catch (e) {
-              console.log(e)
-              parsed = undefined
+              console.log(e);
+              parsed = undefined;
             }
-            return { uri: parsed, id: idx + 1 }
-          })
+            return { uri: parsed, id: idx + 1 };
+          });
         })
         .then((parsedResults: string[]) => {
-          return parsedResults.reverse()
-        })
+          return parsedResults.reverse();
+        });
     },
     {
       ...queryCacheProps,
@@ -93,17 +95,17 @@ const DropperClaimsList = ({
         ],
       // onSuccess: () => {}, //TODO
     },
-  )
+  );
 
   useEffect(() => {
     if (selected < 1 && claimsList.data) {
-      setSelected(claimsList.data.length)
+      setSelected(claimsList.data.length);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claimsList.data, selected])
+  }, [claimsList.data, selected]);
 
   if (claimsList.isLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (
@@ -150,7 +152,7 @@ const DropperClaimsList = ({
         </Flex>
       )}
     </>
-  )
-}
+  );
+};
 
-export default DropperClaimsList
+export default DropperClaimsList;

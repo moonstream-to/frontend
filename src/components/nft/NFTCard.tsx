@@ -1,8 +1,8 @@
-import React from "react"
-import { Flex, Image, Text, chakra, Spacer, VStack, Box } from "@chakra-ui/react"
-import TextWithPopup from "../TextWithPopup"
+import React from "react";
+import { Flex, Image, Text, chakra, Spacer, VStack, Box } from "@chakra-ui/react";
+import TextWithPopup from "../TextWithPopup";
 
-const defaultImageUrl = "https://s3.amazonaws.com/static.greatwyrm.xyz/anonymous_person.jpg"
+const defaultImageUrl = "https://s3.amazonaws.com/static.greatwyrm.xyz/anonymous_person.jpg";
 
 const _NFTCard = ({
   name,
@@ -14,15 +14,15 @@ const _NFTCard = ({
   grayedOut = false,
   ...props
 }: {
-  name: string
-  imageUrl: string
-  balance: number
-  description?: string
-  showQuantity?: boolean
-  isVideo?: boolean
-  grayedOut?: boolean
+  name: string;
+  imageUrl: string;
+  balance: number;
+  description?: string;
+  showQuantity?: boolean;
+  isVideo?: boolean;
+  grayedOut?: boolean;
 }) => {
-  const calculatedImage = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl
+  const calculatedImage = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl;
   return (
     <Flex {...props} backgroundColor="#353535">
       <VStack border="solid" borderColor="white" borderRadius="lg">
@@ -61,8 +61,8 @@ const _NFTCard = ({
         </Box>
       </VStack>
     </Flex>
-  )
-}
+  );
+};
 
-const NFTCard = chakra(_NFTCard)
-export default NFTCard
+const NFTCard = chakra(_NFTCard);
+export default NFTCard;
