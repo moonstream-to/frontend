@@ -1,24 +1,24 @@
-import { EditIcon } from "@chakra-ui/icons"
-import { Flex, Spacer, Spinner, Text } from "@chakra-ui/react"
-import { useEffect } from "react"
-import { useQuery } from "react-query"
-import useQueryAPI from "../../contexts/QueryAPIContext"
-import queryCacheProps from "../../hooks/hookCommon"
-import useMoonToast from "../../hooks/useMoonToast"
-import { SubscriptionsService } from "../../services"
-import ChainTag from "../ChainTag"
-import Tag from "../Tag"
-import PoolDetailsRow from "../PoolDetailsRow"
-import usePresignedURL from "../../hooks/usePresignedURL"
-import MyJsonComponent from "../JSONEdit"
+import { EditIcon } from "@chakra-ui/icons";
+import { Flex, Spacer, Spinner, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { useQuery } from "react-query";
+import useQueryAPI from "../../contexts/QueryAPIContext";
+import queryCacheProps from "../../hooks/hookCommon";
+import useMoonToast from "../../hooks/useMoonToast";
+import { SubscriptionsService } from "../../services";
+import ChainTag from "../ChainTag";
+import Tag from "../Tag";
+import PoolDetailsRow from "../PoolDetailsRow";
+import usePresignedURL from "../../hooks/usePresignedURL";
+import MyJsonComponent from "../JSONEdit";
 
 const formatDate = (dateTimeOffsetString: string) => {
-  return dateTimeOffsetString.slice(0, 10).split("-").reverse().join("/")
-}
+  return dateTimeOffsetString.slice(0, 10).split("-").reverse().join("/");
+};
 
 const QueryContractView = () => {
-  const toast = useMoonToast()
-  const { selectedContract: contract } = useQueryAPI()
+  const toast = useMoonToast();
+  const { selectedContract: contract } = useQueryAPI();
 
   // const getSubscriptionABI = async () => {
   //   const response = await SubscriptionsService.getSubscriptionABI(contract.id)
@@ -32,34 +32,34 @@ const QueryContractView = () => {
     {
       ...queryCacheProps,
       onError: (error) => {
-        toast(error, "error")
+        toast(error, "error");
       },
       onSettled: (data: any) => {
-        console.log(data)
+        console.log(data);
       },
       enabled: !!contract.id,
     },
-  )
+  );
 
-  useEffect(() => {
-    console.log(contract)
-  }, [contract])
+  // useEffect(() => {
+  //   console.log(contract);
+  // }, [contract]);
 
-  useEffect(() => {
-    console.log(ABI.data)
-  }, [ABI.data])
+  // useEffect(() => {
+  //   console.log(ABI.data);
+  // }, [ABI.data]);
 
-  const { data, isLoading } = usePresignedURL({
+  const { data, isLoading, isFetching } = usePresignedURL({
     url: ABI.data?.data?.url,
     isEnabled: true,
     id: contract.id,
     cacheType: "abi",
     requestNewURLCallback: ABI.refetch,
-  })
+  });
 
-  useEffect(() => {
-    console.log(JSON.stringify(data, null, "\t"))
-  }, [data])
+  // useEffect(() => {
+  //   console.log(JSON.stringify(data, null, "\t"));
+  // }, [data]);
 
   return (
     <>
@@ -112,13 +112,13 @@ const QueryContractView = () => {
             <Text pl="20px" fontSize="18px" fontWeight="700">
               Contract ABI
             </Text>
-            {isLoading && <Spinner />}
-            {data && !isLoading && <MyJsonComponent json={JSON.stringify(data, null, "\t")} />}
+            {(ABI.isLoading || isFetching) && <Spinner />}
+            {data && !ABI.isLoading && <MyJsonComponent json={JSON.stringify(data, null, "\t")} />}
           </Flex>
         </Flex>
       )}
     </>
-  )
-}
+  );
+};
 
-export default QueryContractView
+export default QueryContractView;

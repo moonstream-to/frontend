@@ -1,7 +1,7 @@
-import { useQuery } from "react-query"
-import { queryCacheProps } from "./hookCommon"
-import { useToast } from "."
-import axios from "axios"
+import { useQuery } from "react-query";
+import { queryCacheProps } from "./hookCommon";
+import { useToast } from ".";
+import axios from "axios";
 
 const usePresignedURL = ({
   url,
@@ -13,7 +13,7 @@ const usePresignedURL = ({
   hideToastOn404,
   retryCallbackFn,
 }) => {
-  const toast = useToast()
+  const toast = useToast();
 
   const getFromPresignedURL = async () => {
     let requestParameters = {
@@ -22,17 +22,17 @@ const usePresignedURL = ({
       // url: `https://example.com/s3`,
       headers: {},
       method: "GET",
-    }
+    };
 
     if (headers) {
       Object.keys(headers).map((key) => {
-        requestParameters["headers"][key] = headers[key]
-      })
+        requestParameters["headers"][key] = headers[key];
+      });
     }
 
-    const response = await axios(requestParameters)
-    return response.data
-  }
+    const response = await axios(requestParameters);
+    return response.data;
+  };
 
   const { data, isLoading, error, failureCount, isFetching } = useQuery(
     ["presignedURL", cacheType, id, url],
@@ -44,19 +44,19 @@ const usePresignedURL = ({
       refetchOnReconnect: false,
       staleTime: Infinity,
       enabled: isEnabled && url ? true : false,
-      keepPreviousData: true,
+      keepPreviousData: false,
       retry: (attempts, e) => {
-        return retryCallbackFn(attempts, e?.response?.status)
+        return retryCallbackFn(attempts, e?.response?.status);
       },
       onError: (e) => {
         if (e?.response?.data?.includes("Request has expired") || e?.response?.status === 403) {
-          requestNewURLCallback()
+          requestNewURLCallback();
         } else {
-          !hideToastOn404 && e?.response?.status !== 304 && toast(error, "error")
+          !hideToastOn404 && e?.response?.status !== 304 && toast(error, "error");
         }
       },
     },
-  )
+  );
 
   return {
     data,
@@ -64,7 +64,7 @@ const usePresignedURL = ({
     error,
     failureCount,
     isFetching,
-  }
-}
+  };
+};
 
-export default usePresignedURL
+export default usePresignedURL;
