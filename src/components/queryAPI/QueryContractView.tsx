@@ -1,6 +1,6 @@
 import { EditIcon } from "@chakra-ui/icons";
-import { Flex, Spacer, Spinner, Text } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { Button, Flex, Spacer, Spinner, Text, Textarea } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import queryCacheProps from "../../hooks/hookCommon";
@@ -10,7 +10,11 @@ import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import PoolDetailsRow from "../PoolDetailsRow";
 import usePresignedURL from "../../hooks/usePresignedURL";
-import MyJsonComponent from "../JSONEdit";
+import dynamic from "next/dynamic";
+// import MyJsonComponent from "../JSONEdit";
+
+const MyJsonComponent = dynamic(() => import("../JSONEdit2"), { ssr: false });
+// MyJsonComponent.
 
 const formatDate = (dateTimeOffsetString: string) => {
   return dateTimeOffsetString.slice(0, 10).split("-").reverse().join("/");
@@ -19,7 +23,8 @@ const formatDate = (dateTimeOffsetString: string) => {
 const QueryContractView = () => {
   const toast = useMoonToast();
   const { selectedContract: contract } = useQueryAPI();
-
+  const [editABI, setEditABI] = useState(false);
+  const [JSONForEdit, setJSONForEdit] = useState("");
   // const getSubscriptionABI = async () => {
   //   const response = await SubscriptionsService.getSubscriptionABI(contract.id)
   //   console.log(response)
@@ -57,9 +62,9 @@ const QueryContractView = () => {
     requestNewURLCallback: ABI.refetch,
   });
 
-  // useEffect(() => {
-  //   console.log(JSON.stringify(data, null, "\t"));
-  // }, [data]);
+  useEffect(() => {
+    setJSONForEdit(JSON.stringify(data, null, "\t"));
+  }, [data]);
 
   return (
     <>
@@ -108,12 +113,38 @@ const QueryContractView = () => {
             direction="column"
             overflowY="auto"
             gap="15px"
+            h="100%"
+            position="relative"
           >
-            <Text pl="20px" fontSize="18px" fontWeight="700">
-              Contract ABI
-            </Text>
+            {editABI && (
+              <Button
+                position="absolute"
+                bottom="15px"
+                right="15px"
+                variant="cancelButton"
+                onClick={() => setEditABI(false)}
+                zIndex="2"
+              >
+                Cancel
+              </Button>
+            )}
+            <Flex justifyContent="space-between">
+              <Text pl="20px" fontSize="18px" fontWeight="700">
+                Contract ABI
+              </Text>
+              {!editABI && <EditIcon cursor="pointer" onClick={() => setEditABI(true)} />}
+            </Flex>
             {(ABI.isLoading || isFetching) && <Spinner />}
-            {data && !ABI.isLoading && <MyJsonComponent json={JSON.stringify(data, null, "\t")} />}
+            {data && !ABI.isLoading && !editABI && (
+              <MyJsonComponent json={JSONForEdit} onChange={setJSONForEdit} />
+            )}
+            {data && !ABI.isLoading && editABI && (
+              <Textarea
+                h="100%"
+                value={JSONForEdit}
+                onChange={(e) => setJSONForEdit(e.target.value)}
+              />
+            )}
           </Flex>
         </Flex>
       )}
