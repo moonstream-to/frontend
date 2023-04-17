@@ -1,4 +1,4 @@
-import { Flex, Image, Text } from "@chakra-ui/react"
+import { Flex, Image, Text } from "@chakra-ui/react";
 
 const ImageFallback = ({ text = "", image = "", ...props }) => {
   return (
@@ -19,7 +19,7 @@ const ImageFallback = ({ text = "", image = "", ...props }) => {
       )}
       {!image && text && <Text fontSize="18px">{text}</Text>}
     </Flex>
-  )
-}
+  );
+};
 
-export default ImageFallback
+export default ImageFallback;

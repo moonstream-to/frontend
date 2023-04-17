@@ -1,17 +1,17 @@
-import React from "react"
-import { useRadio, useRadioGroup, Stack, HStack, Box, Text, chakra } from "@chakra-ui/react"
+import React from "react";
+import { useRadio, useRadioGroup, Stack, HStack, Box, Text, chakra } from "@chakra-ui/react";
 
 const RadioFilter = ({
   list,
   handleChange,
 }: {
-  list: string[]
-  handleChange: (value: string) => void
+  list: string[];
+  handleChange: (value: string) => void;
 }) => {
   function CustomRadio(props: any) {
-    const { label, ...radioProps } = props
+    const { label, ...radioProps } = props;
     const { state, getInputProps, getCheckboxProps, htmlProps, getLabelProps } =
-      useRadio(radioProps)
+      useRadio(radioProps);
 
     return (
       <chakra.label {...htmlProps} cursor="pointer">
@@ -28,22 +28,22 @@ const RadioFilter = ({
           <Text {...getLabelProps()}>{label}</Text>
         </Box>
       </chakra.label>
-    )
+    );
   }
   const { getRadioProps, getRootProps } = useRadioGroup({
     defaultValue: list[0],
     onChange: handleChange,
-  })
+  });
 
   return (
     <Stack mt={5} {...getRootProps()}>
       <HStack>
         {list.map((item) => {
-          return <CustomRadio key={item} label={item} {...getRadioProps({ value: item })} />
+          return <CustomRadio key={item} label={item} {...getRadioProps({ value: item })} />;
         })}
       </HStack>
     </Stack>
-  )
-}
+  );
+};
 
-export default RadioFilter
+export default RadioFilter;

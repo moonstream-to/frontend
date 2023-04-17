@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
   Flex,
   Text,
@@ -9,52 +9,52 @@ import {
   InputGroup,
   InputRightElement,
   Center,
-} from "@chakra-ui/react"
-import { useRouter } from "next/router"
-import { SearchIcon, CloseIcon } from "@chakra-ui/icons"
-import { RxCounterClockwiseClock } from "react-icons/rx"
+} from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { SearchIcon, CloseIcon } from "@chakra-ui/icons";
+import { RxCounterClockwiseClock } from "react-icons/rx";
 
-import Web3 from "web3"
+import Web3 from "web3";
 
-const LOCAL_STORAGE_KEY = "spyWallets"
-export const SPYMODE_QUERY_PARAM = "spyAddress"
+const LOCAL_STORAGE_KEY = "spyWallets";
+export const SPYMODE_QUERY_PARAM = "spyAddress";
 
 const _SpyModeInput = () => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [showRecent, setShowRecent] = useState<boolean>(false)
-  const [recentAddresses, setRecentAddresses] = useState<string[]>([])
+  const [showRecent, setShowRecent] = useState<boolean>(false);
+  const [recentAddresses, setRecentAddresses] = useState<string[]>([]);
 
   const setAddress = (address: string) => {
     router.replace({
       query: { ...router.query, spyAddress: address },
-    })
-  }
+    });
+  };
 
   const addRecentAddress = (address: string) => {
     if (!recentAddresses.includes(address)) {
-      recentAddresses.push(address)
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recentAddresses))
+      recentAddresses.push(address);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recentAddresses));
     }
-  }
+  };
 
   const removeRecentAddress = (address: string) => {
-    const index = recentAddresses.indexOf(address)
-    console.log(index)
+    const index = recentAddresses.indexOf(address);
+    console.log(index);
     if (index >= 0) {
-      recentAddresses.splice(index, 1)
+      recentAddresses.splice(index, 1);
     }
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recentAddresses))
-  }
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recentAddresses));
+  };
 
   const removeAll = () => {
-    setRecentAddresses([])
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]))
-  }
+    setRecentAddresses([]);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]));
+  };
 
   useEffect(() => {
-    setRecentAddresses(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]"))
-  }, [router.asPath])
+    setRecentAddresses(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]"));
+  }, [router.asPath]);
   return (
     <Box mb={4}>
       <InputGroup w="500px">
@@ -65,20 +65,20 @@ const _SpyModeInput = () => {
           border="0px"
           type="text"
           onFocus={() => {
-            setShowRecent(true)
+            setShowRecent(true);
           }}
           onChange={(e) => {
-            const val = e.target.value
+            const val = e.target.value;
             if (Web3.utils.isAddress(val)) {
-              setAddress(val)
-              setShowRecent(false)
-              addRecentAddress(val)
+              setAddress(val);
+              setShowRecent(false);
+              addRecentAddress(val);
             }
           }}
           onBlur={() => {
             setTimeout(() => {
-              setShowRecent(false)
-            }, 200)
+              setShowRecent(false);
+            }, 200);
           }}
           mb={2}
         />
@@ -105,8 +105,8 @@ const _SpyModeInput = () => {
           <Text
             fontSize={16}
             onClick={() => {
-              console.log("removing all")
-              removeAll()
+              console.log("removing all");
+              removeAll();
             }}
             cursor="pointer"
           >
@@ -119,7 +119,7 @@ const _SpyModeInput = () => {
               <Center
                 px={1}
                 onClick={() => {
-                  setAddress(address)
+                  setAddress(address);
                 }}
               >
                 <RxCounterClockwiseClock />
@@ -130,17 +130,17 @@ const _SpyModeInput = () => {
                 <CloseIcon
                   h="10px"
                   onClick={() => {
-                    removeRecentAddress(address)
+                    removeRecentAddress(address);
                   }}
                 />
               </Center>
             </Flex>
-          )
+          );
         })}
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
-const SpyModeInput = chakra(_SpyModeInput)
-export default SpyModeInput
+const SpyModeInput = chakra(_SpyModeInput);
+export default SpyModeInput;

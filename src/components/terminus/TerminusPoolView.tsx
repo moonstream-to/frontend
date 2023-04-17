@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react"
-import { Box, Flex, Text } from "@chakra-ui/layout"
-import { Image } from "@chakra-ui/image"
+import { useContext, useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/layout";
+import { Image } from "@chakra-ui/image";
 
-import PoolDetailsRow from "../PoolDetailsRow"
-import Web3Context from "../../contexts/Web3Context/context"
-import { MockTerminus } from "../../web3/contracts/types/MockTerminus"
-import queryCacheProps from "../../hooks/hookCommon"
-import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants"
-import { LinkIcon } from "@chakra-ui/icons"
-import useTermiminus from "../../contexts/TerminusContext"
-const terminusAbi = require("../../web3/abi/MockTerminus.json")
-const multicallABI = require("../../web3/abi/Multicall2.json")
+import PoolDetailsRow from "../PoolDetailsRow";
+import Web3Context from "../../contexts/Web3Context/context";
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
+import queryCacheProps from "../../hooks/hookCommon";
+import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
+import { LinkIcon } from "@chakra-ui/icons";
+import useTermiminus from "../../contexts/TerminusContext";
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+const multicallABI = require("../../web3/abi/Multicall2.json");
 
 const TerminusPoolView = () => {
-  const { chainId, web3, account } = useContext(Web3Context)
+  const { chainId, web3, account } = useContext(Web3Context);
 
-  const { contractAddress, selectedPool, poolMetadata } = useTermiminus()
-  const headerMeta = ["name", "description", "image", "attributes"]
-  const [newUri, setNewUri] = useState("")
-  const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus
-  terminusFacet.options.address = contractAddress
-  const toast = useToast()
+  const { contractAddress, selectedPool, poolMetadata } = useTermiminus();
+  const headerMeta = ["name", "description", "image", "attributes"];
+  const [newUri, setNewUri] = useState("");
+  const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
+  terminusFacet.options.address = contractAddress;
+  const toast = useToast();
   const commonProps = {
     onError: () => {
       toast({
@@ -31,16 +31,16 @@ const TerminusPoolView = () => {
         status: "error",
         duration: 5000,
         isClosable: true,
-      })
+      });
     },
-  }
+  };
 
   useEffect(() => {
-    setNewUri("")
-    poolState.refetch()
-  }, [selectedPool])
+    setNewUri("");
+    poolState.refetch();
+  }, [selectedPool]);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const setPoolURI = useMutation(
     ({ uri, selectedPool: poolId }: { uri: string; selectedPool: number }) =>
       terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
@@ -48,85 +48,87 @@ const TerminusPoolView = () => {
       ...commonProps,
       onSuccess: () => {
         setTimeout(() => {
-          queryClient.invalidateQueries("poolsList")
-          queryClient.invalidateQueries("poolState")
-        }, 1000)
+          queryClient.invalidateQueries("poolsList");
+          queryClient.invalidateQueries("poolState");
+        }, 1000);
         toast({
           title: "Successfully updated contract",
           status: "success",
           duration: 5000,
           isClosable: true,
-        })
+        });
       },
     },
-  )
+  );
 
   const handleNewUri = () => {
-    setPoolURI.mutate({ uri: newUri, selectedPool: selectedPool })
-  }
+    setPoolURI.mutate({ uri: newUri, selectedPool: selectedPool });
+  };
 
   const poolState = useQuery(
     ["poolState", contractAddress, selectedPool, chainId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
-        MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES]
+        MULTICALL2_CONTRACT_ADDRESSES[
+          String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
+        ];
       if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
-        return
+        return;
       }
 
       const terminusContract = new web3.eth.Contract(
         terminusAbi,
         contractAddress,
-      ) as unknown as MockTerminus
-      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS)
-      const target = contractAddress
-      const callDatas = []
-      callDatas.push(terminusContract.methods.terminusPoolController(selectedPool).encodeABI())
-      callDatas.push(terminusContract.methods.poolIsBurnable(selectedPool).encodeABI())
-      callDatas.push(terminusContract.methods.poolIsTransferable(selectedPool).encodeABI())
-      callDatas.push(terminusContract.methods.terminusPoolCapacity(selectedPool).encodeABI())
-      callDatas.push(terminusContract.methods.terminusPoolSupply(selectedPool).encodeABI())
-      callDatas.push(terminusContract.methods.uri(selectedPool).encodeABI())
+      ) as unknown as MockTerminus;
+      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
+      const target = contractAddress;
+      const callDatas = [];
+      callDatas.push(terminusContract.methods.terminusPoolController(selectedPool).encodeABI());
+      callDatas.push(terminusContract.methods.poolIsBurnable(selectedPool).encodeABI());
+      callDatas.push(terminusContract.methods.poolIsTransferable(selectedPool).encodeABI());
+      callDatas.push(terminusContract.methods.terminusPoolCapacity(selectedPool).encodeABI());
+      callDatas.push(terminusContract.methods.terminusPoolSupply(selectedPool).encodeABI());
+      callDatas.push(terminusContract.methods.uri(selectedPool).encodeABI());
 
       const queries = callDatas.map((callData) => {
         return {
           target,
           callData,
-        }
-      })
+        };
+      });
       return multicallContract.methods
         .tryAggregate(false, queries)
         .call()
         .then((results: string[][]) => {
           const parsedResults = results.map((result: string[], idx: number) => {
             if (result[1] === "0x") {
-              return undefined
+              return undefined;
             }
-            let parsed
+            let parsed;
             try {
-              parsed = web3.utils.hexToNumberString(result[1])
+              parsed = web3.utils.hexToNumberString(result[1]);
               if (idx === 0) {
-                const adr = "0x" + result[1].slice(-40)
-                parsed = web3.utils.toChecksumAddress(adr)
+                const adr = "0x" + result[1].slice(-40);
+                parsed = web3.utils.toChecksumAddress(adr);
               }
               if (idx === 1 || idx === 2) {
                 if (Number(parsed) === 1 || Number(parsed) === 0) {
-                  parsed = !!Number(parsed)
+                  parsed = !!Number(parsed);
                 } else {
-                  parsed = undefined
+                  parsed = undefined;
                 }
               }
               if (idx === 5) {
                 if (!web3.utils.hexToUtf8(result[1]).split("https://")[1]) {
-                  return undefined
+                  return undefined;
                 }
-                parsed = "https://" + web3.utils.hexToUtf8(result[1]).split("https://")[1]
+                parsed = "https://" + web3.utils.hexToUtf8(result[1]).split("https://")[1];
               }
             } catch (e) {
-              parsed = undefined
+              parsed = undefined;
             }
-            return parsed
-          })
+            return parsed;
+          });
           const data = {
             controller: parsedResults[0],
             isBurnable: parsedResults[1],
@@ -134,18 +136,18 @@ const TerminusPoolView = () => {
             capacity: parsedResults[3],
             supply: parsedResults[4],
             uri: parsedResults[5],
-          }
-          return data
+          };
+          return data;
         })
         .catch((e: any) => {
-          console.log(e)
-        })
+          console.log(e);
+        });
     },
     {
       ...queryCacheProps,
       // onSuccess: () => {}, //TODO
     },
-  )
+  );
 
   const copyPoolAddress = () => {
     navigator.clipboard
@@ -160,7 +162,7 @@ const TerminusPoolView = () => {
               Copied to clipboard
             </Box>
           ),
-        })
+        });
       })
       .catch((e) => {
         toast({
@@ -170,9 +172,9 @@ const TerminusPoolView = () => {
               {e}
             </Box>
           ),
-        })
-      })
-  }
+        });
+      });
+  };
 
   return (
     <Flex
@@ -256,7 +258,7 @@ const TerminusPoolView = () => {
                       .map((key) => {
                         return (
                           <PoolDetailsRow key={key} type={key} value={String(poolMetadata[key])} />
-                        )
+                        );
                       })}
                   </>
                 )}
@@ -309,7 +311,7 @@ const TerminusPoolView = () => {
         </Flex>
       )}
     </Flex>
-  )
-}
+  );
+};
 
-export default TerminusPoolView
+export default TerminusPoolView;

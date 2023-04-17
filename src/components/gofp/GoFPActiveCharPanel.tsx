@@ -1,33 +1,33 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 
-import { Flex, Box, SimpleGrid, Text, Button, Spacer, Center } from "@chakra-ui/react"
-import { AiOutlinePlus } from "react-icons/ai"
+import { Flex, Box, SimpleGrid, Text, Button, Spacer, Center } from "@chakra-ui/react";
+import { AiOutlinePlus } from "react-icons/ai";
 
-import CharacterCard from "./GoFPCharacterCard"
-import useGofp from "../../contexts/GoFPContext"
-import useGofpContract from "../../hooks/useGofpConract"
-import Web3Context from "../../contexts/Web3Context/context"
-import { unlinkSync } from "fs"
+import CharacterCard from "./GoFPCharacterCard";
+import useGofp from "../../contexts/GoFPContext";
+import useGofpContract from "../../hooks/useGofpConract";
+import Web3Context from "../../contexts/Web3Context/context";
+import { unlinkSync } from "fs";
 
 const ActiveCharPanel = ({
   setShowActive,
 }: {
-  setShowActive: React.Dispatch<React.SetStateAction<boolean>>
+  setShowActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { selectedPath, selectedTokens, unselectAll, gardenContractAddress, sessionId } = useGofp()
-  const web3ctx = useContext(Web3Context)
+  const { selectedPath, selectedTokens, unselectAll, gardenContractAddress, sessionId } = useGofp();
+  const web3ctx = useContext(Web3Context);
 
   const { unstakeTokens, useTokenUris, stakedTokens, choosePath } = useGofpContract({
     sessionId,
     gardenContractAddress,
     web3ctx,
-  })
-  const tokenUris = useTokenUris(stakedTokens.data ?? [])
+  });
+  const tokenUris = useTokenUris(stakedTokens.data ?? []);
 
   const tokenIsSelected = (tokenId: number) => {
-    return selectedTokens.includes(tokenId)
-  }
-  const hasTokensSelected = stakedTokens.data?.some(tokenIsSelected)
+    return selectedTokens.includes(tokenId);
+  };
+  const hasTokensSelected = stakedTokens.data?.some(tokenIsSelected);
 
   return (
     <Box py={6}>
@@ -45,7 +45,7 @@ const ActiveCharPanel = ({
         {stakedTokens.data?.map((token) => {
           return (
             <CharacterCard key={token} tokenId={token} uri={tokenUris.data?.get(token) ?? ""} />
-          )
+          );
         })}
       </SimpleGrid>
       <Flex mt={6} flexDirection="column">
@@ -70,8 +70,8 @@ const ActiveCharPanel = ({
               onClick={() => {
                 unstakeTokens.mutate(
                   stakedTokens.data?.filter((tokenId) => selectedTokens.includes(tokenId)) ?? [],
-                )
-                unselectAll()
+                );
+                unselectAll();
               }}
             >
               remove characters from session
@@ -80,7 +80,7 @@ const ActiveCharPanel = ({
         )}
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
-export default ActiveCharPanel
+export default ActiveCharPanel;

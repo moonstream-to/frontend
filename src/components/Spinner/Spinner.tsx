@@ -1,6 +1,6 @@
-import { Image } from "@chakra-ui/react"
+import { Image } from "@chakra-ui/react";
 
-import styles from "./Spinner.module.css"
+import styles from "./Spinner.module.css";
 
 const Spinner = ({ progress, ...props }: { progress?: number; [props: string]: unknown }) => {
   return (
@@ -13,7 +13,7 @@ const Spinner = ({ progress, ...props }: { progress?: number; [props: string]: u
       opacity={progress ? progress : 1}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default Spinner
+export default Spinner;

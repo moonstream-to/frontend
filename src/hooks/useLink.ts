@@ -1,20 +1,20 @@
-import { useQuery } from "react-query"
+import { useQuery } from "react-query";
 
-import { queryPublic } from "../utils/http"
-import hookCommon from "./hookCommon"
+import { queryPublic } from "../utils/http";
+import hookCommon from "./hookCommon";
 
 const useURI = ({ link }: { link: string | undefined }) => {
   const contents = useQuery(
     ["link", link],
     (query: any) => {
-      return queryPublic(query.queryKey[1]).then((r: any) => r.data)
+      return queryPublic(query.queryKey[1]).then((r: any) => r.data);
     },
     {
       ...hookCommon,
       enabled: !!link,
     },
-  )
-  return contents
-}
+  );
+  return contents;
+};
 
-export default useURI
+export default useURI;

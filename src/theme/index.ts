@@ -1,14 +1,14 @@
-import { extendTheme } from "@chakra-ui/react"
+import { extendTheme } from "@chakra-ui/react";
 
 // Global style overrides
-import breakpoints from "./breakpoints"
+import breakpoints from "./breakpoints";
 
 // Foundational style overrides
-import colors from "./foundations/colors"
+import colors from "./foundations/colors";
 
 // Component style overrides
-import Button from "./components/button"
-import Menu from "./components/menu"
+import Button from "./components/button";
+import Menu from "./components/menu";
 
 const overrides = {
   breakpoints,
@@ -58,6 +58,6 @@ const overrides = {
     "6xl": "3.75rem", //60px
     "7xl": "4.5rem", //72px
   },
-}
+};
 
-export default extendTheme(overrides)
+export default extendTheme(overrides);

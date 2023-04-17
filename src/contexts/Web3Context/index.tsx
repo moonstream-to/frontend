@@ -269,7 +269,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
       window?.ethereum?.removeListener("accountsChanged", handleProviderAccountChanged);
     };
     //eslint-disable-next-line
-  }, [chainId, targetChain?.chainId])
+  }, [chainId, targetChain?.chainId]);
 
   // When chainId or web3 or targetChain changes -> update button state
   React.useEffect(() => {
@@ -304,7 +304,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
       //  ÷
     }
     //eslint-disable-next-line
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     if (REQUEST_SIGNATURE == "false") return;
@@ -325,7 +325,7 @@ const Web3Provider = ({ children }: { children: JSX.Element }) => {
       }
     }
     //eslint-disable-next-line
-  }, [account])
+  }, [account]);
 
   const defaultTxConfig = { from: account };
 

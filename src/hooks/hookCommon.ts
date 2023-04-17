@@ -6,12 +6,12 @@ export const queryCacheProps = {
   refetchOnMount: false,
   refetchOnReconnect: false,
   retry: (failureCount: number, error: any) => {
-    const status = error?.response?.status
-    return status === 404 || status === 403 ? false : true
+    const status = error?.response?.status;
+    return status === 404 || status === 403 ? false : true;
   },
-}
-export default queryCacheProps
+};
+export default queryCacheProps;
 
 export interface ErrorAPI extends Error {
-  request: any
+  request: any;
 }

@@ -1,8 +1,8 @@
-import { Flex, Text, Image as ChakraImage } from "@chakra-ui/react"
-import SocialButton from "./SocialButton"
+import { Flex, Text, Image as ChakraImage } from "@chakra-ui/react";
+import SocialButton from "./SocialButton";
 
 const SocialButtons = ({ ...props }) => {
-  const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
+  const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
 
   return (
     <Flex direction="column" gap="20px" fontSize="16px" fontWeight="700" {...props}>
@@ -24,7 +24,7 @@ const SocialButtons = ({ ...props }) => {
         </SocialButton>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default SocialButtons
+export default SocialButtons;

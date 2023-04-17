@@ -1,4 +1,4 @@
-import { useRouter as useNextRouter } from "next/router"
+import { useRouter as useNextRouter } from "next/router";
 
 /**
  * Given a string such as:
@@ -13,16 +13,16 @@ import { useRouter as useNextRouter } from "next/router"
  * }
  */
 const queryFromUrl = (url: string) => {
-  const [, ...queryStrings] = url.split("?")
-  const queryString = queryStrings.join("?")
-  const query: { [key: string]: string } = {}
+  const [, ...queryStrings] = url.split("?");
+  const queryString = queryStrings.join("?");
+  const query: { [key: string]: string } = {};
 
   for (const [key, value] of new URLSearchParams(queryString).entries()) {
-    query[key] = value
+    query[key] = value;
   }
 
-  return query
-}
+  return query;
+};
 
 /**
  * Given a string such as:
@@ -43,16 +43,16 @@ const queryFromUrl = (url: string) => {
  */
 
 const extractPathParams = (router: any, query: any) => {
-  const queryKeys = Object.keys(query ?? {})
+  const queryKeys = Object.keys(query ?? {});
   const params = Object.keys(router.query)
     .filter((key) => !queryKeys.includes(key))
     .reduce((obj: any, key) => {
-      obj[key] = router.query[key]
-      return obj
-    }, {})
+      obj[key] = router.query[key];
+      return obj;
+    }, {});
 
-  return params
-}
+  return params;
+};
 
 /**
  * Wraps Next/Router
@@ -91,50 +91,50 @@ const extractPathParams = (router: any, query: any) => {
  */
 
 const useRouter = () => {
-  const router = useNextRouter()
-  const query = queryFromUrl(router.asPath) as any
+  const router = useNextRouter();
+  const query = queryFromUrl(router.asPath) as any;
 
-  const params = extractPathParams(router, query)
+  const params = extractPathParams(router, query);
 
   const appendQueries = (items: any, push?: any, shallow?: boolean) => {
-    const newQuery: any = { ...router.query } //
+    const newQuery: any = { ...router.query }; //
     for (const [key, value] of Object.entries(items)) {
-      newQuery[key] = value
+      newQuery[key] = value;
     }
     if (push) {
       router.push({ pathname: router.pathname, query: newQuery }, undefined, {
         shallow: !!shallow,
-      })
+      });
     } else {
       router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
         shallow: !!shallow,
-      })
+      });
     }
-  }
+  };
 
   const appendQuery = (key: string, value: string, push: any, shallow: any) => {
-    const newQuery = { ...router.query }
-    newQuery[key] = value
+    const newQuery = { ...router.query };
+    newQuery[key] = value;
     if (push) {
       router.push({ pathname: router.pathname, query: newQuery }, undefined, {
         shallow: !!shallow,
-      })
+      });
     } else {
       router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
         shallow: !!shallow,
-      })
+      });
     }
-  }
+  };
 
   const drop = (item: string) => {
-    const newQuery = { ...router.query }
-    delete newQuery[`${item}`]
+    const newQuery = { ...router.query };
+    delete newQuery[`${item}`];
 
     router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
       shallow: true,
-    })
-    return null
-  }
+    });
+    return null;
+  };
 
   return {
     query,
@@ -145,7 +145,7 @@ const useRouter = () => {
     drop,
     appendQuery,
     appendQueries,
-  }
-}
+  };
+};
 
-export default useRouter
+export default useRouter;

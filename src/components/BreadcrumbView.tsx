@@ -1,18 +1,18 @@
-import NextLink from "next/link"
+import NextLink from "next/link";
 
-import React, { useState, useEffect } from "react"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from "@chakra-ui/react"
+import React, { useState, useEffect } from "react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Text } from "@chakra-ui/react";
 
-import useRouter from "../hooks/useRouter"
-import { ChevronRightIcon } from "@chakra-ui/icons"
+import useRouter from "../hooks/useRouter";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 
 const BreadcrumbView = () => {
-  const [path, setPath] = useState<string[]>([])
-  const router = useRouter()
+  const [path, setPath] = useState<string[]>([]);
+  const router = useRouter();
   useEffect(() => {
-    const newPath = router.nextRouter.pathname.split("/").slice(1)
-    setPath(newPath)
-  }, [router.nextRouter.pathname, router.query.contractAddress])
+    const newPath = router.nextRouter.pathname.split("/").slice(1);
+    setPath(newPath);
+  }, [router.nextRouter.pathname, router.query.contractAddress]);
   return (
     <Breadcrumb
       spacing="8px"
@@ -29,10 +29,10 @@ const BreadcrumbView = () => {
         </BreadcrumbItem>
       )}
       {path?.map((element, idx) => {
-        let linkPath = "/"
+        let linkPath = "/";
         path.forEach((value, index) => {
-          if (index <= idx) linkPath += value + "/"
-        })
+          if (index <= idx) linkPath += value + "/";
+        });
 
         return (
           <BreadcrumbItem key={`bcl-${element}-${idx}`}>
@@ -45,10 +45,10 @@ const BreadcrumbView = () => {
               {element}
             </BreadcrumbLink>
           </BreadcrumbItem>
-        )
+        );
       })}
     </Breadcrumb>
-  )
-}
+  );
+};
 
-export default BreadcrumbView
+export default BreadcrumbView;

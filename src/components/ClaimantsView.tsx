@@ -1,5 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 
 import {
   ChevronDownIcon,
@@ -7,7 +7,7 @@ import {
   SearchIcon,
   SmallAddIcon,
   SmallCloseIcon,
-} from "@chakra-ui/icons"
+} from "@chakra-ui/icons";
 import {
   Collapse,
   Flex,
@@ -22,78 +22,78 @@ import {
   Select,
   Button,
   Spacer,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 import {
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
   AiOutlineCloudUpload,
   AiOutlineVerticalRight,
-} from "react-icons/ai"
+} from "react-icons/ai";
 
-import Web3Context from "../contexts/Web3Context/context"
-import useDrop from "../hooks/useDrop"
-import useMoonToast from "../hooks/useMoonToast"
-import http from "../utils/http"
+import Web3Context from "../contexts/Web3Context/context";
+import useDrop from "../hooks/useDrop";
+import useMoonToast from "../hooks/useMoonToast";
+import http from "../utils/http";
 
-import NewClaimantView from "./NewClaimantView"
-import ClaimantsUpload from "./ClaimantsUpload"
+import NewClaimantView from "./NewClaimantView";
+import ClaimantsUpload from "./ClaimantsUpload";
 
 const ClaimantsView = ({ claimId }: { claimId: string }) => {
-  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL; //TODO
 
-  const [searchString, setSearchString] = useState("")
+  const [searchString, setSearchString] = useState("");
 
-  const toast = useMoonToast()
-  const web3ctx = useContext(Web3Context)
+  const toast = useMoonToast();
+  const web3ctx = useContext(Web3Context);
   const { claimants, setClaimantsPage, claimantsPage, setClaimantsPageSize, claimantsPageSize } =
     useDrop({
       ctx: web3ctx,
       claimId: claimId,
-    })
-  const [displayingPages, setDisplayingPages] = useState("")
+    });
+  const [displayingPages, setDisplayingPages] = useState("");
 
-  const _pageOptions = ["10", "25", "50", "500"]
+  const _pageOptions = ["10", "25", "50", "500"];
 
   useEffect(() => {
-    setClaimantsPageSize(Number(_pageOptions[0]))
+    setClaimantsPageSize(Number(_pageOptions[0]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!claimants.data) {
-      return
+      return;
     }
-    const length = Math.min(claimants.data.length, claimantsPageSize)
+    const length = Math.min(claimants.data.length, claimantsPageSize);
     if (length === 0) {
-      setDisplayingPages("no more claimants")
+      setDisplayingPages("no more claimants");
     } else {
       setDisplayingPages(
         `showing ${claimantsPage * claimantsPageSize + 1} to ${
           claimantsPage * claimantsPageSize + length
         }`,
-      )
+      );
     }
-  }, [claimantsPage, claimantsPageSize, claimants.data])
+  }, [claimantsPage, claimantsPageSize, claimants.data]);
 
   useEffect(() => {
-    setClaimantsPage(0)
+    setClaimantsPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claimId])
+  }, [claimId]);
 
   const [searchResult, setSearchResult] = useState<{
-    result?: string | undefined
-    isSearching: boolean
-  }>({ isSearching: false })
+    result?: string | undefined;
+    isSearching: boolean;
+  }>({ isSearching: false });
 
   type responseWithDetails = {
-    response: { data: { detail: string } }
-    message: string
-  }
+    response: { data: { detail: string } };
+    message: string;
+  };
 
   const searchForAddress = async (address: string) => {
     setSearchResult((prev) => {
-      return { ...prev, isSearching: true }
-    })
+      return { ...prev, isSearching: true };
+    });
 
     http({
       method: "GET",
@@ -102,39 +102,45 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
     })
       .then((res: { data: { address: string; raw_amount: string } }) => {
         if (!res.data?.address) {
-          throw new Error("Not found")
+          throw new Error("Not found");
         }
-        setSearchResult({ result: `Amount: ${res.data.raw_amount}`, isSearching: false })
+        setSearchResult({ result: `Amount: ${res.data.raw_amount}`, isSearching: false });
       })
       .catch((e: responseWithDetails) => {
         const result =
-          e.response?.data?.detail === "Address not present in that drop." ? "Not found" : e.message
-        setSearchResult({ result, isSearching: false })
-      })
-  }
+          e.response?.data?.detail === "Address not present in that drop."
+            ? "Not found"
+            : e.message;
+        setSearchResult({ result, isSearching: false });
+      });
+  };
 
-  const { onOpen, onClose, isOpen } = useDisclosure()
-  const { onToggle: onToggleContent, isOpen: isOpenContent } = useDisclosure()
-  const { onToggle: onToggleUpload, isOpen: isOpenUpload, onClose: onCloseUpload } = useDisclosure()
-  const { onToggle: onToggleAdd, isOpen: isOpenAdd, onClose: onCloseAdd } = useDisclosure()
+  const { onOpen, onClose, isOpen } = useDisclosure();
+  const { onToggle: onToggleContent, isOpen: isOpenContent } = useDisclosure();
+  const {
+    onToggle: onToggleUpload,
+    isOpen: isOpenUpload,
+    onClose: onCloseUpload,
+  } = useDisclosure();
+  const { onToggle: onToggleAdd, isOpen: isOpenAdd, onClose: onCloseAdd } = useDisclosure();
 
   const handleSearchClick = () => {
     if (web3ctx.web3.utils.isAddress(searchString)) {
-      searchForAddress(searchString)
-      onOpen()
+      searchForAddress(searchString);
+      onOpen();
     } else {
-      toast("invalid address", "error")
+      toast("invalid address", "error");
     }
-  }
+  };
 
   useEffect(() => {
     if (isOpenContent) {
       setTimeout(() => {
-        const element = document.getElementById("claimants-view")
-        element?.scrollIntoView({ behavior: "smooth" })
-      }, 400)
+        const element = document.getElementById("claimants-view");
+        element?.scrollIntoView({ behavior: "smooth" });
+      }, 400);
     }
-  }, [isOpenContent])
+  }, [isOpenContent]);
 
   return (
     <Flex
@@ -235,8 +241,8 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                   aria-label="close"
                   icon={<SmallCloseIcon />}
                   onClick={() => {
-                    setSearchString("")
-                    onClose()
+                    setSearchString("");
+                    onClose();
                   }}
                   _hover={{ bg: "#3f3f3f" }}
                 />
@@ -332,7 +338,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 size="sm"
                 w="fit-content"
                 onChange={(e) => {
-                  setClaimantsPageSize(Number(e.target.value))
+                  setClaimantsPageSize(Number(e.target.value));
                 }}
                 value={claimantsPageSize}
               >
@@ -341,7 +347,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                     <option key={`paginator-options-pagesize-${pageSize}`} value={pageSize}>
                       {pageSize}
                     </option>
-                  )
+                  );
                 })}
               </Select>
               <Text>per page</Text>
@@ -350,7 +356,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
         </Flex>
       </Collapse>
     </Flex>
-  )
-}
+  );
+};
 
-export default ClaimantsView
+export default ClaimantsView;

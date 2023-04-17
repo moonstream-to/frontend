@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 import {
   Button,
   Checkbox,
@@ -14,12 +14,12 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import Web3Context from "../contexts/Web3Context/context"
-import { useRouter } from "next/router"
-import { MAX_INT } from "../constants"
-import DropperClaimsList from "./DropperClaimsList"
+import Web3Context from "../contexts/Web3Context/context";
+import { useRouter } from "next/router";
+import { MAX_INT } from "../constants";
+import DropperClaimsList from "./DropperClaimsList";
 
 const DropperClaimsListView = ({
   contractAddress,
@@ -28,29 +28,29 @@ const DropperClaimsListView = ({
   onChange,
   contractState,
 }: {
-  contractAddress: string
-  selected: number
-  setSelected: (arg0: number) => void
-  onChange: (id: string, metadata: unknown) => void
-  contractState: any
+  contractAddress: string;
+  selected: number;
+  setSelected: (arg0: number) => void;
+  onChange: (id: string, metadata: unknown) => void;
+  contractState: any;
 }) => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [queryClaimId, setQueryClaimId] = useState<number | undefined>(undefined)
-  const [filter, setFilter] = useState("")
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const web3ctx = useContext(Web3Context)
+  const [queryClaimId, setQueryClaimId] = useState<number | undefined>(undefined);
+  const [filter, setFilter] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const web3ctx = useContext(Web3Context);
   const [newClaimProps, setNewClaimProps] = useState<{
-    capacity: string | undefined
-    isTransferable: boolean
-    isBurnable: boolean
-  }>({ capacity: undefined, isTransferable: true, isBurnable: true })
+    capacity: string | undefined;
+    isTransferable: boolean;
+    isBurnable: boolean;
+  }>({ capacity: undefined, isTransferable: true, isBurnable: true });
 
   useEffect(() => {
     setQueryClaimId(
       typeof router.query.claimId === "string" ? Number(router.query.claimId) : undefined,
-    )
-  }, [router.query.claimId])
+    );
+  }, [router.query.claimId]);
 
   return (
     <Flex
@@ -105,7 +105,7 @@ const DropperClaimsListView = ({
               <Input
                 onChange={(e) =>
                   setNewClaimProps((prev) => {
-                    return { ...prev, capacity: e.target.value }
+                    return { ...prev, capacity: e.target.value };
                   })
                 }
                 placeholder="capacity"
@@ -117,8 +117,8 @@ const DropperClaimsListView = ({
                 colorScheme="purple"
                 onClick={() => {
                   setNewClaimProps((prev) => {
-                    return { ...prev, capacity: MAX_INT }
-                  })
+                    return { ...prev, capacity: MAX_INT };
+                  });
                 }}
               >
                 MAX_INT
@@ -129,7 +129,7 @@ const DropperClaimsListView = ({
               mr={3}
               onChange={(e) =>
                 setNewClaimProps((prev) => {
-                  return { ...prev, isBurnable: e.target.checked }
+                  return { ...prev, isBurnable: e.target.checked };
                 })
               }
               isChecked={newClaimProps.isBurnable}
@@ -140,7 +140,7 @@ const DropperClaimsListView = ({
               colorScheme="white"
               onChange={(e) =>
                 setNewClaimProps((prevState) => {
-                  return { ...prevState, isTransferable: e.target.checked }
+                  return { ...prevState, isTransferable: e.target.checked };
                 })
               }
               isChecked={newClaimProps.isTransferable}
@@ -156,7 +156,7 @@ const DropperClaimsListView = ({
             <Button
               colorScheme="teal"
               onClick={() => {
-                onClose()
+                onClose();
               }}
             >
               Create
@@ -165,7 +165,7 @@ const DropperClaimsListView = ({
         </ModalContent>
       </Modal>
     </Flex>
-  )
-}
+  );
+};
 
-export default DropperClaimsListView
+export default DropperClaimsListView;

@@ -1,9 +1,9 @@
-import React from "react"
-import { Box, Spinner, chakra, Container, Text, Flex, Icon, Image } from "@chakra-ui/react"
-import { useDropzone } from "react-dropzone"
-import { AiOutlineCloudUpload } from "react-icons/ai"
+import React from "react";
+import { Box, Spinner, chakra, Container, Text, Flex, Icon, Image } from "@chakra-ui/react";
+import { useDropzone } from "react-dropzone";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 
-import { AWS_ASSETS_PATH } from "../constants"
+import { AWS_ASSETS_PATH } from "../constants";
 
 const baseStyle = {
   flex: 1,
@@ -20,20 +20,20 @@ const baseStyle = {
   outline: "none",
   transition: "border .24s ease-in-out",
   cursor: "pointer",
-}
+};
 
 const focusedStyle = {
   // borderColor: "#219aa3",
-}
+};
 
 const acceptStyle = {
   borderColor: "#f56646",
   backgroundColor: "#90574a",
-}
+};
 
 const rejectStyle = {
   borderColor: "#ff1744",
-}
+};
 
 function FileUpload({ isUploading, onDrop, ...props }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
@@ -41,7 +41,7 @@ function FileUpload({ isUploading, onDrop, ...props }) {
       "text/csv": [".csv"],
     },
     onDrop,
-  })
+  });
 
   const style = React.useMemo(
     () => ({
@@ -51,7 +51,7 @@ function FileUpload({ isUploading, onDrop, ...props }) {
       ...(isDragReject ? rejectStyle : {}),
     }),
     [isFocused, isDragAccept, isDragReject],
-  )
+  );
 
   return (
     <Container
@@ -78,7 +78,7 @@ function FileUpload({ isUploading, onDrop, ...props }) {
         )}
       </Box>
     </Container>
-  )
+  );
 }
 
-export default chakra(FileUpload)
+export default chakra(FileUpload);

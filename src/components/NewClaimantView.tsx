@@ -1,88 +1,88 @@
 /* eslint-disable react/no-children-prop */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQueryClient } from "react-query"
-import { SmallCloseIcon } from "@chakra-ui/icons"
-import { Flex, IconButton, Input, Spinner, Text, Icon, Button, Spacer } from "@chakra-ui/react"
-import { AiOutlineCheck, AiOutlineExclamationCircle, AiOutlineSave } from "react-icons/ai"
+import { useMutation, useQueryClient } from "react-query";
+import { SmallCloseIcon } from "@chakra-ui/icons";
+import { Flex, IconButton, Input, Spinner, Text, Icon, Button, Spacer } from "@chakra-ui/react";
+import { AiOutlineCheck, AiOutlineExclamationCircle, AiOutlineSave } from "react-icons/ai";
 
-import Web3Context from "../contexts/Web3Context/context"
-import useMoonToast from "../hooks/useMoonToast"
-import http from "../utils/http"
+import Web3Context from "../contexts/Web3Context/context";
+import useMoonToast from "../hooks/useMoonToast";
+import http from "../utils/http";
 
 const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () => void }) => {
-  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL //TODO
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL; //TODO
 
-  const toast = useMoonToast()
+  const toast = useMoonToast();
 
-  const [newAddress, setNewAddress] = useState("")
-  const [newAmount, setNewAmount] = useState("")
-  const [inputIsCorrect, setInputIsCorrect] = useState(false)
+  const [newAddress, setNewAddress] = useState("");
+  const [newAmount, setNewAmount] = useState("");
+  const [inputIsCorrect, setInputIsCorrect] = useState(false);
   const [existingClaimant, setExistingClaimant] = useState<
     { address: string; amount: string } | undefined
-  >(undefined)
-  const queryClient = useQueryClient()
-  const web3ctx = useContext(Web3Context)
+  >(undefined);
+  const queryClient = useQueryClient();
+  const web3ctx = useContext(Web3Context);
 
   useEffect(() => {
     setInputIsCorrect(
       web3ctx.web3.utils.isAddress(newAddress) && !!Number(newAmount) && Number(newAmount) > 0,
-    )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newAddress, newAmount])
+  }, [newAddress, newAmount]);
 
   useEffect(() => {
     if (existingClaimant && newAddress !== existingClaimant.address) {
-      setExistingClaimant(undefined)
+      setExistingClaimant(undefined);
     }
-  }, [newAddress])
+  }, [newAddress]);
 
   const onDoneAdding = (justClean = false) => {
-    setNewAddress("")
-    setNewAmount("")
+    setNewAddress("");
+    setNewAmount("");
     if (!justClean) {
-      onClose()
+      onClose();
     }
-    setExistingClaimant(undefined)
-  }
+    setExistingClaimant(undefined);
+  };
 
-  const [inputColor, setInputColor] = useState("white")
+  const [inputColor, setInputColor] = useState("white");
   useEffect(() => {
     if (existingClaimant) {
-      setInputColor("#F5C841")
+      setInputColor("#F5C841");
     } else {
       if (web3ctx.web3.utils.isAddress(newAddress) || newAddress.length === 0) {
-        setInputColor("white")
+        setInputColor("white");
       } else {
-        setInputColor("red")
+        setInputColor("red");
       }
     }
-  }, [newAddress, existingClaimant])
+  }, [newAddress, existingClaimant]);
 
   const addClaimants = useMutation(
     async ({ claimants }: { claimants: { address: string; amount: number }[] }) => {
       const wrongAddressClaimant = claimants.find(
         (claimant) => !web3ctx.web3.utils.isAddress(claimant.address),
-      )
+      );
       if (wrongAddressClaimant) {
         return new Promise((_, reject) => {
-          reject(new Error(`${wrongAddressClaimant.address} is not valid address`))
-        })
+          reject(new Error(`${wrongAddressClaimant.address} is not valid address`));
+        });
       }
 
       const wrongAmountClaimant = claimants.find(
         (claimant) => !claimant.amount || claimant.amount < 1,
-      )
+      );
       if (wrongAmountClaimant) {
         return new Promise((_, reject) => {
           reject(
             new Error(
               `Wrong amount - ${wrongAmountClaimant.amount} - for ${wrongAmountClaimant.address}`,
             ),
-          )
-        })
+          );
+        });
       }
-      const data = { dropper_claim_id: claimId, claimants: claimants }
+      const data = { dropper_claim_id: claimId, claimants: claimants };
 
       if (claimants.length === 1 && !existingClaimant) {
         try {
@@ -90,40 +90,40 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
             method: "GET",
             url: `${API}/admin/drops/${claimId}/claimants/search`,
             params: { address: claimants[0].address },
-          })
+          });
           if (res.data?.address) {
             setExistingClaimant({
               address: res.data.address,
               amount: res.data.raw_amount,
-            })
+            });
             return new Promise((_, reject) => {
-              reject(new Error("address already exists"))
-            })
+              reject(new Error("address already exists"));
+            });
           }
         } catch (e) {
-          console.log(e)
+          console.log(e);
         }
       }
       return http({
         method: "POST",
         url: `${API}/drops/claimants`,
         data: data,
-      })
+      });
     },
     {
       onSuccess: () => {
-        setExistingClaimant(undefined)
-        queryClient.invalidateQueries("claimants")
-        toast("Claimant updated", "success")
-        onDoneAdding()
+        setExistingClaimant(undefined);
+        queryClient.invalidateQueries("claimants");
+        toast("Claimant updated", "success");
+        onDoneAdding();
       },
       onError: (e: Error) => {
         if (e.message !== "address already exists") {
-          toast(e.message, "error")
+          toast(e.message, "error");
         }
       },
     },
-  )
+  );
 
   return (
     <>
@@ -277,7 +277,7 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
     //     </Flex>
     //   )}
     // </>
-  )
-}
+  );
+};
 
-export default NewClaimantView
+export default NewClaimantView;

@@ -1,27 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect } from "react"
+import React, { useEffect } from "react";
 
-import { DndProvider } from "react-dnd"
-import { HTML5Backend } from "react-dnd-html5-backend"
-import { Box, Heading, HStack, Spacer } from "@chakra-ui/react"
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { Box, Heading, HStack, Spacer } from "@chakra-ui/react";
 
-import SessionPanel from "../../../src/components/gofp/GoFPSessionPanel"
-import MetadataPanel from "../../../src/components/gofp/GoFPMetadataPanel"
-import CharacterPanel from "../../../src/components/gofp/GoFPCharacterPanel"
-import { useRouter } from "../../../src/hooks"
-import Layout from "../../../src/components/layout"
-import useGofp from "../../../src/contexts/GoFPContext"
+import SessionPanel from "../../../src/components/gofp/GoFPSessionPanel";
+import MetadataPanel from "../../../src/components/gofp/GoFPMetadataPanel";
+import CharacterPanel from "../../../src/components/gofp/GoFPCharacterPanel";
+import { useRouter } from "../../../src/hooks";
+import Layout from "../../../src/components/layout";
+import useGofp from "../../../src/contexts/GoFPContext";
 
 const Garden = () => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const { setSessionId, setGardenContractAddress } = useGofp()
+  const { setSessionId, setGardenContractAddress } = useGofp();
 
   useEffect(() => {
-    setSessionId(router.query["sessionId"])
-    setGardenContractAddress(router.query["contractId"])
-  }, [])
+    setSessionId(router.query["sessionId"]);
+    setGardenContractAddress(router.query["contractId"]);
+  }, []);
 
   return (
     <Layout home={false}>
@@ -46,7 +46,7 @@ const Garden = () => {
         </DndProvider>
       </Box>
     </Layout>
-  )
-}
+  );
+};
 
-export default Garden
+export default Garden;

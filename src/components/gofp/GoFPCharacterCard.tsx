@@ -1,35 +1,35 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react";
 
-import { Flex, Box, Text } from "@chakra-ui/react"
-import { useDrag } from "react-dnd"
+import { Flex, Box, Text } from "@chakra-ui/react";
+import { useDrag } from "react-dnd";
 
-import Web3Context from "../../contexts/Web3Context/context"
-import useGofp from "../../contexts/GoFPContext"
-import useGofpContract from "../../hooks/useGofpConract"
-import useURI from "../../hooks/useLink"
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofp from "../../contexts/GoFPContext";
+import useGofpContract from "../../hooks/useGofpConract";
+import useURI from "../../hooks/useLink";
 
 const CharacterCard = ({ tokenId, uri }: { tokenId: number; uri: string }) => {
-  const web3ctx = useContext(Web3Context)
-  const { selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress } = useGofp()
+  const web3ctx = useContext(Web3Context);
+  const { selectedTokens, toggleTokenSelect, sessionId, gardenContractAddress } = useGofp();
 
   const { usePath, useGuard, ownedTokens } = useGofpContract({
     sessionId,
     gardenContractAddress,
     web3ctx,
-  })
-  const path = usePath(tokenId)
-  const guard = useGuard(tokenId)
-  const [status, setStatus] = useState<string | undefined>(undefined)
+  });
+  const path = usePath(tokenId);
+  const guard = useGuard(tokenId);
+  const [status, setStatus] = useState<string | undefined>(undefined);
   useEffect(() => {
     if (ownedTokens.data?.includes(tokenId)) {
-      setStatus(guard.data ? "Already played" : "Available")
+      setStatus(guard.data ? "Already played" : "Available");
     } else {
-      setStatus(path.data ? `Assigned to path ${path.data}` : "Choose path")
+      setStatus(path.data ? `Assigned to path ${path.data}` : "Choose path");
     }
-  }, [path.data, guard.data, tokenId, ownedTokens.data])
+  }, [path.data, guard.data, tokenId, ownedTokens.data]);
 
-  const metadata = useURI({ link: uri })
+  const metadata = useURI({ link: uri });
 
   const [{ isDragging }, drag] = useDrag({
     item: { id: tokenId },
@@ -37,9 +37,9 @@ const CharacterCard = ({ tokenId, uri }: { tokenId: number; uri: string }) => {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-  })
+  });
 
-  const opacity = isDragging ? 0.3 : 1
+  const opacity = isDragging ? 0.3 : 1;
 
   return (
     <Flex
@@ -84,7 +84,7 @@ const CharacterCard = ({ tokenId, uri }: { tokenId: number; uri: string }) => {
         </Text>
       )}
     </Flex>
-  )
-}
+  );
+};
 
-export default CharacterCard
+export default CharacterCard;
