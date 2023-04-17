@@ -1,9 +1,9 @@
-import { Button, Flex, Input } from "@chakra-ui/react"
-import useQueryAPI from "../../contexts/QueryAPIContext"
-import QueryContractsList from "./QueryContractsList"
+import { Button, Flex, Input } from "@chakra-ui/react";
+import useQueryAPI from "../../contexts/QueryAPIContext";
+import QueryContractsList from "./QueryContractsList";
 
 const QueryListView = () => {
-  const { isShowContracts, setIsShowContracts, filter, setFilter } = useQueryAPI()
+  const { isShowContracts, setIsShowContracts, filter, setFilter } = useQueryAPI();
   return (
     <Flex minW="400px" borderRadius="20px" p="30px" bg="#2d2d2d" gap="30px" flexDirection="column">
       <Flex gap="20px" justifyContent="start" fontSize="24px" lineHeight="24px" p="0">
@@ -42,7 +42,7 @@ const QueryListView = () => {
         + Add new
       </Button>
     </Flex>
-  )
-}
+  );
+};
 
-export default QueryListView
+export default QueryListView;

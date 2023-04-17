@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react";
 
 const ChainTag = ({ name }: { name: string }) => {
   return (
@@ -15,7 +15,7 @@ const ChainTag = ({ name }: { name: string }) => {
     >
       {name}
     </Box>
-  )
-}
+  );
+};
 
-export default ChainTag
+export default ChainTag;

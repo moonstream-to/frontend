@@ -1,22 +1,22 @@
-import React, { useState } from "react"
-import { Button, Text } from "@chakra-ui/react"
-import SignIn from "./SignIn"
-import useUser from "../contexts/UserContext"
-import useLogout from "../hooks/useLogout"
+import React, { useState } from "react";
+import { Button, Text } from "@chakra-ui/react";
+import SignIn from "./SignIn";
+import useUser from "../contexts/UserContext";
+import useLogout from "../hooks/useLogout";
 
 const LoginButton: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const { user } = useUser()
+  const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUser();
 
   const handleOpen = () => {
-    setIsOpen(true)
-  }
+    setIsOpen(true);
+  };
 
   const handleClose = () => {
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
-  const { logout } = useLogout()
+  const { logout } = useLogout();
   return (
     <>
       {!user && (
@@ -32,7 +32,7 @@ const LoginButton: React.FC = () => {
       )}
       <SignIn isOpen={isOpen} onClose={handleClose} />
     </>
-  )
-}
+  );
+};
 
-export default LoginButton
+export default LoginButton;

@@ -1,13 +1,13 @@
-import { useEffect } from "react"
-import Layout from "../../src/components/layout"
-import QueryAPIView from "../../src/components/queryAPI/QueryAPIView"
-import { QueryAPIProvider } from "../../src/contexts/QueryAPIContext"
-import { UserProvider } from "../../src/contexts/UserContext"
+import { useEffect } from "react";
+import Layout from "../../src/components/layout";
+import QueryAPIView from "../../src/components/queryAPI/QueryAPIView";
+import { QueryAPIProvider } from "../../src/contexts/QueryAPIContext";
+import { UserProvider } from "../../src/contexts/UserContext";
 
 const Query = () => {
   useEffect(() => {
-    document.title = "Moonstrem portal - Query API"
-  }, [])
+    document.title = "Moonstrem portal - Query API";
+  }, []);
 
   return (
     <UserProvider>
@@ -17,7 +17,7 @@ const Query = () => {
         </Layout>
       </QueryAPIProvider>
     </UserProvider>
-  )
-}
+  );
+};
 
-export default Query
+export default Query;

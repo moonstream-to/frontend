@@ -1,23 +1,23 @@
-import { useMutation, useQueryClient } from "react-query"
-import useUser from "../contexts/UserContext"
-import { AuthService } from "../services"
+import { useMutation, useQueryClient } from "react-query";
+import useUser from "../contexts/UserContext";
+import { AuthService } from "../services";
 
 const useLogout = () => {
   // const router = useRouter()
-  const cache = useQueryClient()
+  const cache = useQueryClient();
   const { mutate: logout } = useMutation(AuthService.revoke, {
     onSuccess: () => {
       // router.push("/")
-      setUser(null)
-      localStorage.removeItem("MOONSTREAM_ACCESS_TOKEN")
-      cache.clear()
+      setUser(null);
+      localStorage.removeItem("MOONSTREAM_ACCESS_TOKEN");
+      cache.clear();
     },
-  })
-  const { setUser } = useUser()
+  });
+  const { setUser } = useUser();
 
   return {
     logout,
-  }
-}
+  };
+};
 
-export default useLogout
+export default useLogout;

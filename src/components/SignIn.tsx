@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import {
   Button,
   Modal,
@@ -10,24 +10,24 @@ import {
   FormControl,
   FormLabel,
   Input,
-} from "@chakra-ui/react"
-import useLogin from "../hooks/useLogin"
+} from "@chakra-ui/react";
+import useLogin from "../hooks/useLogin";
 
 interface LoginModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const { login, isLoading, data } = useLogin()
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, isLoading, data } = useLogin();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    login({ username, password })
-  }
+    login({ username, password });
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -68,7 +68,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         </ModalContent>
       </form>
     </Modal>
-  )
-}
+  );
+};
 
-export default SignIn
+export default SignIn;

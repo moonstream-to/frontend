@@ -1,6 +1,6 @@
-import { Center, Flex } from "@chakra-ui/react"
-import QueryContractView from "./QueryContractView"
-import QueryListView from "./QueryListView"
+import { Center, Flex } from "@chakra-ui/react";
+import QueryContractView from "./QueryContractView";
+import QueryListView from "./QueryListView";
 
 const QueryAPIView = () => {
   return (
@@ -10,7 +10,7 @@ const QueryAPIView = () => {
         <QueryContractView />
       </Flex>
     </Center>
-  )
-}
+  );
+};
 
-export default QueryAPIView
+export default QueryAPIView;

@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react";
 
 const Tag = ({ name }: { name: string }) => {
   return (
@@ -15,7 +15,7 @@ const Tag = ({ name }: { name: string }) => {
     >
       {name}
     </Box>
-  )
-}
+  );
+};
 
-export default Tag
+export default Tag;

@@ -1,6 +1,6 @@
-import { Flex, Text } from "@chakra-ui/react"
-import QueryContractView from "./QueryContractView"
-import QueryListView from "./QueryListView"
+import { Flex, Text } from "@chakra-ui/react";
+import QueryContractView from "./QueryContractView";
+import QueryListView from "./QueryListView";
 
 const QueryView = () => {
   return (
@@ -8,7 +8,7 @@ const QueryView = () => {
       <QueryListView />
       <QueryContractView />
     </Flex>
-  )
-}
+  );
+};
 
-export default QueryView
+export default QueryView;

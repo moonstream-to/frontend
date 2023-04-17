@@ -1,6 +1,6 @@
-import React, { useState } from "react"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { atomDark as SHStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
+import React, { useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { atomDark as SHStyle } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 const MyJsonComponent = ({ json }: { json: string }) => {
   const [jsonString, setJsonString] = useState(
@@ -14,11 +14,11 @@ const MyJsonComponent = ({ json }: { json: string }) => {
     "zip": "12345"
   }
 }`,
-  )
+  );
 
   const handleJsonChange = (event) => {
-    setJsonString(event.target.value)
-  }
+    setJsonString(event.target.value);
+  };
 
   return (
     <SyntaxHighlighter
@@ -33,7 +33,7 @@ const MyJsonComponent = ({ json }: { json: string }) => {
     >
       {json}
     </SyntaxHighlighter>
-  )
-}
+  );
+};
 
-export default MyJsonComponent
+export default MyJsonComponent;
