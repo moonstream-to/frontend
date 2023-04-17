@@ -111,6 +111,23 @@ const variantCancel = () => {
   };
 };
 
+const variantSave = () => {
+  return {
+    padding: "10px 80px",
+    backgroundColor: "#F56646",
+    _hover: {
+      backgroundColor: "#F56646",
+      textDecoration: "none",
+    },
+    _focus: {
+      backgroundColor: "#F56646",
+    },
+    _active: {
+      backgroundColor: "#F56646",
+    },
+  };
+};
+
 const Button = {
   // 1. We can update the base styles
   baseStyle: () => ({
@@ -150,6 +167,7 @@ const Button = {
     wyrmButton: variantWyrmButton,
     selector: variantSelector,
     cancelButton: variantCancel,
+    saveButton: variantSave,
   },
 };
 export default Button;

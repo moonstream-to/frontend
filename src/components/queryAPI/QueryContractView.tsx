@@ -11,6 +11,7 @@ import Tag from "../Tag";
 import PoolDetailsRow from "../PoolDetailsRow";
 import usePresignedURL from "../../hooks/usePresignedURL";
 import dynamic from "next/dynamic";
+import axios from "axios";
 // import MyJsonComponent from "../JSONEdit";
 
 const MyJsonComponent = dynamic(() => import("../JSONEdit2"), { ssr: false });
@@ -25,6 +26,7 @@ const QueryContractView = () => {
   const { selectedContract: contract } = useQueryAPI();
   const [editABI, setEditABI] = useState(false);
   const [JSONForEdit, setJSONForEdit] = useState("");
+  const [isABIChanged, setIsABIChanged] = useState(false);
   // const getSubscriptionABI = async () => {
   //   const response = await SubscriptionsService.getSubscriptionABI(contract.id)
   //   console.log(response)
@@ -43,6 +45,21 @@ const QueryContractView = () => {
         console.log(data);
       },
       enabled: !!contract.id,
+    },
+  );
+
+  const ABIfromScan = useQuery(
+    ["abiScan", contract.address],
+    async () => {
+      const address = "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359";
+      const response = await axios({
+        method: "GET",
+        url: `http://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+      });
+      console.log(JSON.stringify(JSON.parse(response.data.result), null, "\t"));
+    },
+    {
+      enabled: false,
     },
   );
 
@@ -65,6 +82,10 @@ const QueryContractView = () => {
   useEffect(() => {
     setJSONForEdit(JSON.stringify(data, null, "\t"));
   }, [data]);
+
+  useEffect(() => {
+    setIsABIChanged(JSONForEdit !== JSON.stringify(data, null, "\t"));
+  }, [JSONForEdit]);
 
   return (
     <>
@@ -116,23 +137,26 @@ const QueryContractView = () => {
             h="100%"
             position="relative"
           >
-            {editABI && (
-              <Button
-                position="absolute"
-                bottom="15px"
-                right="15px"
-                variant="cancelButton"
-                onClick={() => setEditABI(false)}
-                zIndex="2"
-              >
-                Cancel
-              </Button>
+            {isABIChanged && (
+              <Flex gap="20px" position="absolute" zIndex="2" bottom="15px" right="15px">
+                <Button
+                  variant="cancelButton"
+                  onClick={() => {
+                    setJSONForEdit(JSON.stringify(data, null, "\t"));
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button variant="saveButton" onClick={() => setEditABI(false)}>
+                  Save
+                </Button>
+              </Flex>
             )}
             <Flex justifyContent="space-between">
               <Text pl="20px" fontSize="18px" fontWeight="700">
                 Contract ABI
               </Text>
-              {!editABI && <EditIcon cursor="pointer" onClick={() => setEditABI(true)} />}
+              {/* {!editABI && <EditIcon cursor="pointer" onClick={() => setEditABI(true)} />} */}
             </Flex>
             {(ABI.isLoading || isFetching) && <Spinner />}
             {data && !ABI.isLoading && !editABI && (
