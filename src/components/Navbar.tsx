@@ -1,17 +1,17 @@
-import RouterLink from "next/link"
+import RouterLink from "next/link";
 
-import React, { useContext } from "react"
-import { Button, Image, Link, Flex, Badge, Skeleton, useMediaQuery } from "@chakra-ui/react"
+import React, { useContext } from "react";
+import { Button, Image, Link, Flex, Badge, Skeleton, useMediaQuery } from "@chakra-ui/react";
 
-import Web3Context from "../contexts/Web3Context/context"
-import ChainSelector from "./ChainSelector"
-import LoginButton from "./LoginButton"
+import Web3Context from "../contexts/Web3Context/context";
+import ChainSelector from "./ChainSelector";
+import LoginButton from "./LoginButton";
 
 const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
-  const [isMobileView] = useMediaQuery("(max-width: 767px)")
-  const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
-  const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`
-  const web3Provider = useContext(Web3Context)
+  const [isMobileView] = useMediaQuery("(max-width: 767px)");
+  const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
+  const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`;
+  const web3Provider = useContext(Web3Context);
 
   return (
     <Flex
@@ -86,7 +86,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
         </Flex>
       )}
     </Flex>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
