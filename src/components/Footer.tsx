@@ -1,6 +1,6 @@
-import RouterLink from "next/link"
+import RouterLink from "next/link";
 
-import React from "react"
+import React from "react";
 import {
   Text,
   Link,
@@ -11,21 +11,21 @@ import {
   Flex,
   Spacer,
   useMediaQuery,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import SocialButton from "./SocialButton"
-import { SITEMAP } from "../constants"
+import SocialButton from "./SocialButton";
+import { SITEMAP } from "../constants";
 
 const LINKS_SIZES = {
   fontWeight: "300",
   fontSize: "md",
-}
+};
 
-const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
-const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`
+const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
+const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`;
 
 const Footer = ({ home }: { home?: boolean }) => {
-  const [isMobileView] = useMediaQuery("(max-width: 767px)")
+  const [isMobileView] = useMediaQuery("(max-width: 767px)");
   return (
     <Box textColor="white" borderTop="1px" borderColor="white" px="7%" mx="auto" minW="100vw">
       <Container as={Stack} py={10} px="0px" maxW="1238px">
@@ -110,11 +110,11 @@ const Footer = ({ home }: { home?: boolean }) => {
                         >
                           <Text {...LINKS_SIZES}>{linkItem.title}</Text>
                         </RouterLink>
-                      )
+                      );
                     })}
                   </>
                 </Stack>
-              )
+              );
             })}
           </Flex>
           {isMobileView && (
@@ -125,7 +125,7 @@ const Footer = ({ home }: { home?: boolean }) => {
         </Flex>
       </Container>
     </Box>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

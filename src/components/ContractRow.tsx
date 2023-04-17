@@ -1,8 +1,8 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 
-import { Flex, Image, Text } from "@chakra-ui/react"
+import { Flex, Image, Text } from "@chakra-ui/react";
 
-import { chainByChainId } from "../contexts/Web3Context"
+import { chainByChainId } from "../contexts/Web3Context";
 
 const ContractRow = ({
   address,
@@ -10,20 +10,20 @@ const ContractRow = ({
   image,
   chainId,
 }: {
-  address?: string
-  name?: string
-  image?: string
-  chainId?: number
+  address?: string;
+  name?: string;
+  image?: string;
+  chainId?: number;
 }) => {
-  const router = useRouter()
+  const router = useRouter();
   const handleClick = () => {
     router.push({
       pathname: "/terminus",
       query: {
         contractAddress: address,
       },
-    })
-  }
+    });
+  };
   return (
     <Flex
       gap="15px"
@@ -52,7 +52,7 @@ const ContractRow = ({
         {chainId && <Text>{chainByChainId[chainId]}</Text>}
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default ContractRow
+export default ContractRow;

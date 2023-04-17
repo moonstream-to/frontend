@@ -1,31 +1,31 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Flex, Image, Text, Box, Center, Button, Spacer, Link } from "@chakra-ui/react"
-import { useRouter } from "next/router"
-import Web3 from "web3/types"
+import React, { useContext, useEffect, useState } from "react";
+import { Flex, Image, Text, Box, Center, Button, Spacer, Link } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import Web3 from "web3/types";
 
-import { SessionMetadata } from "./GoFPTypes"
-import useGofp from "../../contexts/GoFPContext"
-import Web3Context from "../../contexts/Web3Context/context"
-import useGofpContract from "../../hooks/useGofpConract"
-import TextWithPopup from "../TextWithPopup"
+import { SessionMetadata } from "./GoFPTypes";
+import useGofp from "../../contexts/GoFPContext";
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofpContract from "../../hooks/useGofpConract";
+import TextWithPopup from "../TextWithPopup";
 
 const SessionCard = ({
   sessionId,
   sessionMetadata,
   contractAddress,
 }: {
-  sessionId: number
-  sessionMetadata: SessionMetadata
-  contractAddress: string
+  sessionId: number;
+  sessionMetadata: SessionMetadata;
+  contractAddress: string;
 }) => {
-  const correctPathColor = "#3BB563"
-  const incorrectPathColor = "#E85858"
-  const undecidedPathColor = "#4C4C4C"
+  const correctPathColor = "#3BB563";
+  const incorrectPathColor = "#E85858";
+  const undecidedPathColor = "#4C4C4C";
 
-  const router = useRouter()
-  const imageUrl = sessionMetadata.imageUrl
-  const defaultImageUrl = "https://static.greatwyrm.xyz/default-session-image.png"
-  const calculatedImage = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl
+  const router = useRouter();
+  const imageUrl = sessionMetadata.imageUrl;
+  const defaultImageUrl = "https://static.greatwyrm.xyz/default-session-image.png";
+  const calculatedImage = imageUrl && imageUrl.trim() != "" ? imageUrl : defaultImageUrl;
 
   return (
     <Flex
@@ -72,13 +72,13 @@ const SessionCard = ({
         backgroundColor="#F56646"
         textColor="white"
         onClick={() => {
-          router.push(`/games/garden/?contractId=${contractAddress}&&sessionId=${sessionId}`)
+          router.push(`/games/garden/?contractId=${contractAddress}&&sessionId=${sessionId}`);
         }}
       >
         Play
       </Button>
     </Flex>
-  )
-}
+  );
+};
 
-export default SessionCard
+export default SessionCard;

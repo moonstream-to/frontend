@@ -1,32 +1,32 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import moment from "moment"
-const MOCK_API = process.env.NEXT_PUBLIC_SIMIOTICS_AUTH_URL
-var MockAdapter = require("axios-mock-adapter")
+import moment from "moment";
+const MOCK_API = process.env.NEXT_PUBLIC_SIMIOTICS_AUTH_URL;
+var MockAdapter = require("axios-mock-adapter");
 export const makeid = (length) => {
-  var result = ""
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-  var charactersLength = characters.length
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return result
-}
+  return result;
+};
 
 export const makenum = (length) => {
-  var result = ""
-  var characters = "0123456789"
-  var charactersLength = characters.length
+  var result = "";
+  var characters = "0123456789";
+  var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return result
-}
+  return result;
+};
 
 const randDate = () => {
   return moment(new Date(+new Date() - Math.floor(Math.random() * 10000000000))).format(
     "MM/DD/YYYY",
-  )
-}
+  );
+};
 let MockSubscriptions = [
   {
     label: "Bobs wallet",
@@ -68,9 +68,9 @@ let MockSubscriptions = [
     created_at: randDate(),
     subscription_type: "ethereum_blockchain",
   },
-]
+];
 const enableMockupRequests = (axiosInstance) => {
-  let mock = new MockAdapter(axiosInstance, { onNoMatch: "passthrough" })
+  let mock = new MockAdapter(axiosInstance, { onNoMatch: "passthrough" });
 
   mock.onGet(`${MOCK_API}/subscription_types/`).reply(200, {
     data: [
@@ -103,7 +103,7 @@ const enableMockupRequests = (axiosInstance) => {
         subscription_plan_id: null,
       },
     ],
-  })
+  });
 
   mock.onGet(`${MOCK_API}/stream`).reply(200, {
     stream: [
@@ -233,14 +233,14 @@ const enableMockupRequests = (axiosInstance) => {
       total_results: 4,
       offset: 0,
     },
-  })
+  });
 
   mock.onGet(`${MOCK_API}/subscriptions/`).reply(200, {
     data: {
       is_free_subscription_availible: true,
       subscriptions: MockSubscriptions,
     },
-  })
+  });
 
   mock.onGet(`https://example.com/s3`).reply(200, {
     web3_metric: [
@@ -2856,22 +2856,22 @@ const enableMockupRequests = (axiosInstance) => {
         { date: "2021-10-19 15", count: 0 },
       ],
     },
-  })
+  });
 
   mock.onPost(`${MOCK_API}/subscriptions/`).reply((config) => {
-    const params = config.data // FormData of {name: ..., file: ...}
-    const id = params.get("id")
-    const label = params.get("label")
-    const address = params.get("address")
-    const subscription_type = params.get("subscription_type")
+    const params = config.data; // FormData of {name: ..., file: ...}
+    const id = params.get("id");
+    const label = params.get("label");
+    const address = params.get("address");
+    const subscription_type = params.get("subscription_type");
 
     return new Promise(function (resolve) {
       setTimeout(function () {
-        const data = { id, label, address, subscription_type }
-        MockSubscriptions.push({ ...data })
-        resolve([200, { message: "OK", result: true }])
-      }, 1000)
-    })
-  })
-}
-export default enableMockupRequests
+        const data = { id, label, address, subscription_type };
+        MockSubscriptions.push({ ...data });
+        resolve([200, { message: "OK", result: true }]);
+      }, 1000);
+    });
+  });
+};
+export default enableMockupRequests;

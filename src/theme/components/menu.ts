@@ -30,8 +30,8 @@ const Menu = {
         bg: "transparent",
         borderWidth: 0,
       },
-    }
+    };
   },
-}
+};
 
-export default Menu
+export default Menu;

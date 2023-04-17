@@ -1,35 +1,35 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 
-import { Flex, Text } from "@chakra-ui/layout"
+import { Flex, Text } from "@chakra-ui/layout";
 
-import PoolDetailsRow from "./PoolDetailsRow"
-import Web3Context from "../contexts/Web3Context/context"
+import PoolDetailsRow from "./PoolDetailsRow";
+import Web3Context from "../contexts/Web3Context/context";
 
-import useDropperContract from "../hooks/useDropper.sol"
+import useDropperContract from "../hooks/useDropper.sol";
 
 const DropperContractView = ({ address }: { address: string }) => {
   const errorDialog = [
     "Something is wrong. Is MetaMask connected properly to the right chain?",
     "Is contract address correct?",
     `Then I don't know. Maybe you should try later`,
-  ]
-  const [dialogStep, setDialogStep] = useState(0)
+  ];
+  const [dialogStep, setDialogStep] = useState(0);
   const nextStep = () => {
-    setDialogStep((prev) => Math.min(prev + 1, errorDialog.length - 1))
-  }
-  const web3ctx = useContext(Web3Context)
-  const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address })
-  const [isTimeout, setIsTimeout] = useState(false)
+    setDialogStep((prev) => Math.min(prev + 1, errorDialog.length - 1));
+  };
+  const web3ctx = useContext(Web3Context);
+  const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address });
+  const [isTimeout, setIsTimeout] = useState(false);
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => setIsTimeout(true), 9000)
-    return () => clearTimeout(timeOutId)
-  }, [address])
+    const timeOutId = setTimeout(() => setIsTimeout(true), 9000);
+    return () => clearTimeout(timeOutId);
+  }, [address]);
 
   useEffect(() => {
-    setIsTimeout(false)
-  }, [address])
+    setIsTimeout(false);
+  }, [address]);
 
   return (
     <>
@@ -80,7 +80,7 @@ const DropperContractView = ({ address }: { address: string }) => {
         </Flex>
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default DropperContractView
+export default DropperContractView;

@@ -1,13 +1,13 @@
-import Head from "next/head"
+import Head from "next/head";
 
-import { Flex } from "@chakra-ui/react"
+import { Flex } from "@chakra-ui/react";
 
-import WyrmFooter from "./WyrmFooter"
-import WyrmNavbar from "./WyrmNavbar"
+import WyrmFooter from "./WyrmFooter";
+import WyrmNavbar from "./WyrmNavbar";
 
-const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
+const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
 
-export const siteTitle = "great wyrml"
+export const siteTitle = "great wyrml";
 
 export default function Layout({ children, home }: { children: React.ReactNode; home?: boolean }) {
   return (
@@ -39,5 +39,5 @@ export default function Layout({ children, home }: { children: React.ReactNode; 
         <WyrmFooter home={home} />
       </Flex>
     </div>
-  )
+  );
 }

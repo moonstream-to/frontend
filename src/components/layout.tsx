@@ -1,29 +1,29 @@
-import Head from "next/head"
+import Head from "next/head";
 
-import { Flex, Spacer } from "@chakra-ui/react"
+import { Flex, Spacer } from "@chakra-ui/react";
 
-import BreadcrumbView from "./BreadcrumbView"
-import Footer from "./Footer"
-import Navbar from "./Navbar"
+import BreadcrumbView from "./BreadcrumbView";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
 
-const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`
+const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
 
-export const siteTitle = "Moonstream apps portal"
+export const siteTitle = "Moonstream apps portal";
 
 export default function Layout({
   children,
   home,
   title,
 }: {
-  children: React.ReactNode
-  home?: boolean
-  title?: string
+  children: React.ReactNode;
+  home?: boolean;
+  title?: string;
 }) {
   return (
     <div>
       <Head>
         <link rel="icon" href="/favicon.png" />
-        <title>{title ?? "Moonstrem portal"}</title>
+        <title>{title ?? "Moonstream portal"}</title>
         <meta
           name="description"
           content="Moonstream provides economic infrastructure for web3 games. Gather actionable data with our web3 data analytics. Act on it with our on-chain mechanics. Watch your economy flourish."
@@ -45,5 +45,5 @@ export default function Layout({
         <Footer home={home} />
       </Flex>
     </div>
-  )
+  );
 }

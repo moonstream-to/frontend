@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 
 import {
   Flex,
@@ -15,28 +15,28 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import Web3Context from "../../contexts/Web3Context/context"
-import useGofp from "../../contexts/GoFPContext"
-import useGofpContract from "../../hooks/useGofpConract"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
+import Web3Context from "../../contexts/Web3Context/context";
+import useGofp from "../../contexts/GoFPContext";
+import useGofpContract from "../../hooks/useGofpConract";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const MetadataPanel = () => {
-  const web3ctx = useContext(Web3Context)
-  const { sessionId, selectedStage, selectedPath, gardenContractAddress } = useGofp()
+  const web3ctx = useContext(Web3Context);
+  const { sessionId, selectedStage, selectedPath, gardenContractAddress } = useGofp();
   const { sessionMetadata, currentStage } = useGofpContract({
     sessionId,
     gardenContractAddress,
     web3ctx,
-  })
+  });
 
-  const stage = sessionMetadata.data?.stages[selectedStage - 1]
+  const stage = sessionMetadata.data?.stages[selectedStage - 1];
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const showAllPaths = selectedStage != currentStage.data || selectedPath < 1
+  const showAllPaths = selectedStage != currentStage.data || selectedPath < 1;
 
   return (
     <>
@@ -127,7 +127,7 @@ const MetadataPanel = () => {
                       </ReactMarkdown>
                     </Box>
                   </Flex>
-                )
+                );
               })}
             {!showAllPaths && (
               <Flex
@@ -151,7 +151,7 @@ const MetadataPanel = () => {
         </Flex>
       )}
     </>
-  )
-}
+  );
+};
 
-export default MetadataPanel
+export default MetadataPanel;

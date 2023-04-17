@@ -1,8 +1,8 @@
 // import { Buffer } from 'buffer';
 interface TokenInterface {
-  address: string
-  deadline: number
-  signed_message: string
+  address: string;
+  deadline: number;
+  signed_message: string;
 }
 
 /**
@@ -18,9 +18,9 @@ export async function signAccessToken(
   duration: number,
 ): Promise<string> {
   if (duration <= 0 || duration == undefined)
-    throw new Error("signAccessToken: duration must be defined")
-  if (!provider) throw new Error("signAccessToken: provider must be defined")
-  if (!account) throw new Error("signAccessToken: account must be defined")
+    throw new Error("signAccessToken: duration must be defined");
+  if (!provider) throw new Error("signAccessToken: provider must be defined");
+  if (!account) throw new Error("signAccessToken: account must be defined");
 
   const msgParams = JSON.stringify({
     domain: {
@@ -55,13 +55,13 @@ export async function signAccessToken(
         },
       ],
     },
-  })
+  });
 
   const result = await provider.request({
     method: "eth_signTypedData_v4",
     params: [account, msgParams],
     from: account,
-  })
+  });
 
   const retval = Buffer.from(
     JSON.stringify({
@@ -70,23 +70,23 @@ export async function signAccessToken(
       signed_message: result,
     }),
     "utf-8",
-  ).toString("base64")
+  ).toString("base64");
 
-  return retval
+  return retval;
 }
 
 export function parseToken(token: string) {
-  const stringToken = Buffer.from(token, "base64").toString("ascii")
+  const stringToken = Buffer.from(token, "base64").toString("ascii");
   const objectToken: TokenInterface =
     stringToken !== ""
       ? JSON.parse(`${stringToken}`)
-      : { address: null, deadline: null, signed_message: null }
+      : { address: null, deadline: null, signed_message: null };
 
-  return objectToken
+  return objectToken;
 }
 
 export function isOutdated(deadline: number | string) {
-  if (!deadline) return true
-  if (Number(deadline) <= Math.floor(new Date().getTime() / 1000)) return true
-  return false
+  if (!deadline) return true;
+  if (Number(deadline) <= Math.floor(new Date().getTime() / 1000)) return true;
+  return false;
 }

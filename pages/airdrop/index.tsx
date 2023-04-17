@@ -1,57 +1,57 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useRouter } from "next/router"
-import { useContext, useEffect, useState } from "react"
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery } from "react-query"
-import axios from "axios"
-import { Button, Center, Flex, Input, Spacer, Text } from "@chakra-ui/react"
+import { useMutation, useQuery } from "react-query";
+import axios from "axios";
+import { Button, Center, Flex, Input, Spacer, Text } from "@chakra-ui/react";
 
-import Layout from "../../src/components/layout"
-import Spinner from "../../src/components/Spinner/Spinner"
-import Web3Context from "../../src/contexts/Web3Context/context"
-import { ENTITY_API } from "../../src/constants"
-import useMoonToast from "../../src/hooks/useMoonToast"
-import hookCommon from "../../src/hooks/hookCommon"
-import CollectionRow from "../../src/components/CollectionRow"
-import { ErrorAPI } from "../../src/hooks/hookCommon"
+import Layout from "../../src/components/layout";
+import Spinner from "../../src/components/Spinner/Spinner";
+import Web3Context from "../../src/contexts/Web3Context/context";
+import { ENTITY_API } from "../../src/constants";
+import useMoonToast from "../../src/hooks/useMoonToast";
+import hookCommon from "../../src/hooks/hookCommon";
+import CollectionRow from "../../src/components/CollectionRow";
+import { ErrorAPI } from "../../src/hooks/hookCommon";
 
 const Airdrop = () => {
-  const toast = useMoonToast()
-  const [claimantAddress, setClaimantAddress] = useState("")
-  const [claimantEmail, setClaimantEmail] = useState("")
-  const [claimantDiscord, setClaimantDiscord] = useState("")
-  const [claimantPassword, setClaimantPassword] = useState("")
-  const [collectionName, setCollectionName] = useState("")
-  const [collectionId, setCollectionId] = useState("")
-  const router = useRouter()
+  const toast = useMoonToast();
+  const [claimantAddress, setClaimantAddress] = useState("");
+  const [claimantEmail, setClaimantEmail] = useState("");
+  const [claimantDiscord, setClaimantDiscord] = useState("");
+  const [claimantPassword, setClaimantPassword] = useState("");
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionId, setCollectionId] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (router.isReady) {
-      setCollectionId(typeof router.query.eventId === "string" ? router.query.eventId : "")
-      setCollectionName(typeof router.query.name === "string" ? router.query.name : "")
+      setCollectionId(typeof router.query.eventId === "string" ? router.query.eventId : "");
+      setCollectionName(typeof router.query.name === "string" ? router.query.name : "");
     }
-  }, [router.isReady, router.query])
+  }, [router.isReady, router.query]);
 
-  const { web3 } = useContext(Web3Context)
+  const { web3 } = useContext(Web3Context);
 
   const onError = (error: { message: string }) => {
-    toast(error?.message ?? "Error", "error", 5000)
-  }
+    toast(error?.message ?? "Error", "error", 5000);
+  };
 
   const getCollections = async (userId: string) => {
     return axios
       .get(`${ENTITY_API}/public/collections?user_id=${userId}`)
-      .then((res: any) => res.data?.collections)
-  }
+      .then((res: any) => res.data?.collections);
+  };
 
   function useCollections(userId: string) {
     return useQuery(["get_collections", userId], () => getCollections(userId), {
       ...hookCommon,
       onError: (e: Error) => onError(e),
-    })
+    });
   }
 
-  const events = useCollections(process.env.NEXT_PUBLIC_PUBLIC_USER_ETHDENVER_ID ?? "")
+  const events = useCollections(process.env.NEXT_PUBLIC_PUBLIC_USER_ETHDENVER_ID ?? "");
 
   const createPublicEntryMutation = useMutation(
     ({
@@ -60,10 +60,10 @@ const Airdrop = () => {
       discord,
       password,
     }: {
-      address: string
-      email: string
-      discord: string
-      password: string
+      address: string;
+      email: string;
+      discord: string;
+      password: string;
     }) => {
       return axios
         .get(
@@ -72,41 +72,41 @@ const Airdrop = () => {
         .then((res) => {
           if (res.data?.total_results >= 1) {
             return new Promise((_, reject) => {
-              reject(new Error("already claimed"))
-            })
+              reject(new Error("already claimed"));
+            });
           }
 
-          const data = new FormData()
-          data.append("address", address)
-          data.append("blockchain", "polygon")
-          data.append("name", "Public claimant protected")
-          data.append("password", password)
-          data.append("email", email)
-          data.append("discord", discord)
+          const data = new FormData();
+          data.append("address", address);
+          data.append("blockchain", "polygon");
+          data.append("name", "Public claimant protected");
+          data.append("password", password);
+          data.append("email", email);
+          data.append("discord", discord);
 
           return axios.post(
             `${ENTITY_API}/public/collections/${collectionId}/entities/protected`,
             data,
-          )
-        })
+          );
+        });
     },
     {
       onError: (error: ErrorAPI) => {
         if (error?.request?.response) {
           try {
-            const errorMsg = JSON.parse(error?.request?.response)
-            onError({ message: errorMsg.detail })
+            const errorMsg = JSON.parse(error?.request?.response);
+            onError({ message: errorMsg.detail });
           } catch {
-            onError(error)
+            onError(error);
           }
         } else {
-          onError(error)
+          onError(error);
         }
       },
       onSuccess: (data: any) =>
         toast(`succesfully claimed for ${data?.data?.address}`, "success", 5000),
     },
-  )
+  );
 
   const handleSubmit = () => {
     if (
@@ -115,26 +115,26 @@ const Airdrop = () => {
       claimantDiscord === "" ||
       claimantPassword === ""
     ) {
-      onError({ message: "please fill all fields" })
-      return
+      onError({ message: "please fill all fields" });
+      return;
     }
     if (!web3.utils.isAddress(claimantAddress)) {
-      onError({ message: "address is not valid" })
-      return
+      onError({ message: "address is not valid" });
+      return;
     }
     createPublicEntryMutation.mutate({
       address: claimantAddress,
       email: claimantEmail,
       discord: claimantDiscord,
       password: claimantPassword,
-    })
-  }
+    });
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.code === "Enter") {
-      handleSubmit()
+      handleSubmit();
     }
-  }
+  };
 
   return (
     <Layout home={false}>
@@ -163,7 +163,7 @@ const Airdrop = () => {
                     type="text"
                     value={claimantAddress}
                     onChange={(e) => {
-                      setClaimantAddress(e.target.value)
+                      setClaimantAddress(e.target.value);
                     }}
                   />
                   <Text>Email</Text>
@@ -224,7 +224,7 @@ const Airdrop = () => {
         <Spacer />
       </Flex>
     </Layout>
-  )
-}
+  );
+};
 
-export default Airdrop
+export default Airdrop;

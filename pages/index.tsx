@@ -1,17 +1,17 @@
-import Head from "next/head"
+import Head from "next/head";
 
-import { Center, Flex } from "@chakra-ui/react"
+import { Center, Flex } from "@chakra-ui/react";
 
-import FeatureCard from "../src/components/FeatureCard"
-import Layout from "../src/components/layout"
-import { AWS_ASSETS_PATH } from "../src/constants"
+import FeatureCard from "../src/components/FeatureCard";
+import Layout from "../src/components/layout";
+import { AWS_ASSETS_PATH } from "../src/constants";
 
 const assets = {
   airdrop: `${AWS_ASSETS_PATH}/open-lootbox.png`,
   dropper: `${AWS_ASSETS_PATH}/airdrop.png`,
   terminus: `${AWS_ASSETS_PATH}/Terminus.png`,
   games: `${AWS_ASSETS_PATH}/minigames-card.png`,
-}
+};
 
 const features = [
   {
@@ -38,7 +38,7 @@ const features = [
     image: assets.games,
     href: "/games/garden/sessions/?contractId=0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b",
   },
-]
+];
 
 export default function Home() {
   return (
@@ -56,5 +56,5 @@ export default function Home() {
         </Flex>
       </Center>
     </Layout>
-  )
+  );
 }

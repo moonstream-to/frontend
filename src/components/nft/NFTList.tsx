@@ -1,7 +1,7 @@
-import React from "react"
-import { Flex } from "@chakra-ui/react"
-import { NFTInfo } from "./types"
-import NFTCard from "./NFTCard"
+import React from "react";
+import { Flex } from "@chakra-ui/react";
+import { NFTInfo } from "./types";
+import NFTCard from "./NFTCard";
 
 const _NFTList = ({ nftList }: { nftList: NFTInfo[] }) => (
   <Flex wrap="wrap" justifyContent="left" gap="20px" mt="20px">
@@ -16,9 +16,9 @@ const _NFTList = ({ nftList }: { nftList: NFTInfo[] }) => (
           balance={1}
           showQuantity={false}
         />
-      )
+      );
     })}
   </Flex>
-)
+);
 
-export default _NFTList
+export default _NFTList;

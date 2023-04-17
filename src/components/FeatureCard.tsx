@@ -1,11 +1,11 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { Flex, Image, Text } from "@chakra-ui/react"
+import { Flex, Image, Text } from "@chakra-ui/react";
 
 const FeatureCard = ({
   feature,
 }: {
-  feature: { name: string; description: string; image: string; href: string }
+  feature: { name: string; description: string; image: string; href: string };
 }) => {
   return (
     <Link href={feature.href}>
@@ -30,7 +30,7 @@ const FeatureCard = ({
         </Text>
       </Flex>
     </Link>
-  )
-}
+  );
+};
 
-export default FeatureCard
+export default FeatureCard;

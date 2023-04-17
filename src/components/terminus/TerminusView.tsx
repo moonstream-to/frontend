@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 
-import { useContext, useEffect, useState } from "react"
-import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react"
+import { useContext, useEffect, useState } from "react";
+import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
 
-import TerminusPoolsListView from "./TerminusPoolsListView"
-import TerminusPoolView from "./TerminusPoolView"
-import TerminusContractView from "./TerminusContractView"
-import Web3Context from "../../contexts/Web3Context/context"
-import ContractRow from "../ContractRow"
-import useTerminus from "../../contexts/TerminusContext"
+import TerminusPoolsListView from "./TerminusPoolsListView";
+import TerminusPoolView from "./TerminusPoolView";
+import TerminusContractView from "./TerminusContractView";
+import Web3Context from "../../contexts/Web3Context/context";
+import ContractRow from "../ContractRow";
+import useTerminus from "../../contexts/TerminusContext";
 
 const TerminusView = () => {
   const {
@@ -19,65 +19,65 @@ const TerminusView = () => {
     setContractAddress,
     selectPool,
     setSelectedPoolMetadata,
-  } = useTerminus()
-  const router = useRouter()
+  } = useTerminus();
+  const router = useRouter();
 
-  const [addressInputValue, setAddressInputValue] = useState(contractAddress)
+  const [addressInputValue, setAddressInputValue] = useState(contractAddress);
 
-  const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
-    let addresses = undefined
-    const item = localStorage.getItem("terminusContracts")
+    let addresses = undefined;
+    const item = localStorage.getItem("terminusContracts");
     if (item) {
       try {
-        addresses = JSON.parse(item)
+        addresses = JSON.parse(item);
       } finally {
-        setRecentAddresses(addresses)
+        setRecentAddresses(addresses);
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (recentAddresses) {
-      localStorage.setItem("terminusContracts", JSON.stringify(recentAddresses))
+      localStorage.setItem("terminusContracts", JSON.stringify(recentAddresses));
     }
-  }, [recentAddresses])
+  }, [recentAddresses]);
 
   useEffect(() => {
     if (!router.query.poolId) {
-      selectPool(1)
+      selectPool(1);
     } else {
-      selectPool(Number(router.query.poolId))
+      selectPool(Number(router.query.poolId));
     }
-  }, [router.query.contractAddress, router.query.poolId])
+  }, [router.query.contractAddress, router.query.poolId]);
 
-  const { chainId, web3 } = useContext(Web3Context)
+  const { chainId, web3 } = useContext(Web3Context);
 
   useEffect(() => {
     setContractAddress(
       typeof router.query.contractAddress === "string" ? router.query.contractAddress : "",
-    )
-    setSelectedPoolMetadata({})
-  }, [router.query.contractAddress, chainId])
+    );
+    setSelectedPoolMetadata({});
+  }, [router.query.contractAddress, chainId]);
 
   useEffect(() => {
     if (contractAddress) {
-      setAddressInputValue(contractAddress)
+      setAddressInputValue(contractAddress);
     }
-    setSelectedPoolMetadata({})
-  }, [contractAddress])
+    setSelectedPoolMetadata({});
+  }, [contractAddress]);
 
   const handleSubmit = () => {
     if (web3.utils.isAddress(addressInputValue)) {
-      setSelectedPoolMetadata({})
+      setSelectedPoolMetadata({});
       router.push({
         pathname: "/terminus",
         query: {
           contractAddress: addressInputValue,
           poolId: router.query.poolId,
         },
-      })
+      });
     } else {
       toast({
         render: () => (
@@ -86,15 +86,15 @@ const TerminusView = () => {
           </Box>
         ),
         isClosable: true,
-      })
+      });
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.code === "Enter") {
-      handleSubmit()
+      handleSubmit();
     }
-  }
+  };
 
   return (
     <Center>
@@ -132,7 +132,7 @@ const TerminusView = () => {
             <Text>Recent</Text>
             {Object.keys(recentAddresses).map((address) => {
               const { chainId, name, image } =
-                recentAddresses[address as keyof typeof recentAddresses]
+                recentAddresses[address as keyof typeof recentAddresses];
               return (
                 <ContractRow
                   key={address}
@@ -141,13 +141,13 @@ const TerminusView = () => {
                   name={name}
                   image={image}
                 />
-              )
+              );
             })}
           </Flex>
         )}
       </Flex>
     </Center>
-  )
-}
+  );
+};
 
-export default TerminusView
+export default TerminusView;

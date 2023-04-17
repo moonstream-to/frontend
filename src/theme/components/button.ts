@@ -1,5 +1,5 @@
 function variantMenuButton() {
-  const c = "orange"
+  const c = "orange";
   return {
     _focus: {
       textDecoration: "underline",
@@ -14,7 +14,7 @@ function variantMenuButton() {
         bg: `${c}.100`,
       },
     },
-  }
+  };
   // _hover={{
   //   backgroundColor: 'transparent',
   //   color: '#F56646',
@@ -40,8 +40,8 @@ const variantOrangeGradient = () => {
     _hover: {
       bg: "linear-gradient(264.06deg, #F56646 -6.89%, #FFFFFF 335.28%)",
     },
-  }
-}
+  };
+};
 
 const variantWyrmButton = () => {
   return {
@@ -50,8 +50,8 @@ const variantWyrmButton = () => {
     fontSize: ["16px", "20px", "20px"],
     h: ["40px", "46px", "46px"],
     borderRadius: "30px",
-  }
-}
+  };
+};
 
 const variantPlainOrange = () => {
   return {
@@ -75,8 +75,8 @@ const variantPlainOrange = () => {
     _active: {
       backgroundColor: "#F4532F",
     },
-  }
-}
+  };
+};
 
 const Button = {
   // 1. We can update the base styles
@@ -116,5 +116,5 @@ const Button = {
     orangeGradient: variantOrangeGradient,
     wyrmButton: variantWyrmButton,
   },
-}
-export default Button
+};
+export default Button;

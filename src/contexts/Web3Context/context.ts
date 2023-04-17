@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext } from "react"
-import Web3 from "web3"
+import { createContext } from "react";
+import Web3 from "web3";
 
-import { WalletStatesInterface, MoonstreamWeb3ProviderInterface } from "../../types/Moonstream"
+import { WalletStatesInterface, MoonstreamWeb3ProviderInterface } from "../../types/Moonstream";
 
 export enum txStatus {
   READY = 0,
@@ -12,9 +12,9 @@ export enum txStatus {
 }
 
 export interface web3MethodCall {
-  status: txStatus
-  send: (...args: Array<any>) => void
-  data: any
+  status: txStatus;
+  send: (...args: Array<any>) => void;
+  data: any;
 }
 
 export const WALLET_STATES: WalletStatesInterface = {
@@ -22,7 +22,7 @@ export const WALLET_STATES: WalletStatesInterface = {
   CONNECT: "Connect with Metamask",
   CONNECTED: "Connected",
   UNKNOWN_CHAIN: "Unsupported chain",
-}
+};
 
 const Web3Context = createContext<MoonstreamWeb3ProviderInterface>({
   web3: new Web3(null),
@@ -37,16 +37,16 @@ const Web3Context = createContext<MoonstreamWeb3ProviderInterface>({
   defaultTxConfig: {},
   signAccessToken: () => console.error("not intied"),
   getMethodsABI: (abi, name) => {
-    const index = abi.findIndex((item) => item.name === name && item.type == "function")
+    const index = abi.findIndex((item) => item.name === name && item.type == "function");
     if (index !== -1) {
-      const item = abi[index]
-      return item
-    } else throw "accesing wrong abi element"
+      const item = abi[index];
+      return item;
+    } else throw "accesing wrong abi element";
   },
   changeChain: () => {
-    console.error("not intied")
+    console.error("not intied");
   },
   targetChain: undefined,
-})
+});
 
-export default Web3Context
+export default Web3Context;

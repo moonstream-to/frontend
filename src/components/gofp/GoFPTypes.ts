@@ -1,19 +1,19 @@
 export type GoFPMetadata = {
-  title: string
-  imageUrl: string
-  discussionUrl?: string
-  lore: string
-}
+  title: string;
+  imageUrl: string;
+  discussionUrl?: string;
+  lore: string;
+};
 
-export type PathMetadata = GoFPMetadata & object
+export type PathMetadata = GoFPMetadata & object;
 
 export type StageMetadata = GoFPMetadata & {
-  paths: PathMetadata[]
-}
+  paths: PathMetadata[];
+};
 
 export type SessionMetadata = GoFPMetadata & {
-  stages: StageMetadata[]
-}
+  stages: StageMetadata[];
+};
 
 export enum PathStatus {
   correct,
@@ -22,6 +22,6 @@ export enum PathStatus {
 }
 
 export type ChoosePathData = {
-  path: number
-  tokenIds: number[]
-}
+  path: number;
+  tokenIds: number[];
+};

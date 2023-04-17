@@ -211,3 +211,4 @@ sketch
 prod.env
 dev.env
 test.env
+.vscode/
