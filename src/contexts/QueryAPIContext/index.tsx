@@ -1,23 +1,32 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react";
 // import terminusReducer, { initialState } from "./queryReducer"
 
 type QueryContextType = {
-  isShowContracts: boolean
-  setIsShowContracts: (arg0: boolean) => void
-  filter: string
-  setFilter: (arg0: string) => void
-  selectedContract: any
-  setSelectedContract: (arg0: any) => void
-}
+  isShowContracts: boolean;
+  setIsShowContracts: (arg0: boolean) => void;
+  filter: string;
+  setFilter: (arg0: string) => void;
+  selectedContract: any;
+  setSelectedContract: (arg0: any) => void;
+  types: any;
+  setTypes: (arg0: any) => void;
+  isCreatingContract: boolean;
+  setIsCreatingContract: (arg0: boolean) => void;
+  isEditingContract: boolean;
+  setIsEditingContract: (arg0: boolean) => void;
+};
 
 // const initial state
 
-const QueryAPIContext = createContext<QueryContextType | undefined>(undefined) //TODO
+const QueryAPIContext = createContext<QueryContextType | undefined>(undefined); //TODO
 
 export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isShowContracts, setIsShowContracts] = useState(true)
-  const [filter, setFilter] = useState("")
-  const [selectedContract, setSelectedContract] = useState({})
+  const [isShowContracts, setIsShowContracts] = useState(true);
+  const [filter, setFilter] = useState("");
+  const [selectedContract, setSelectedContract] = useState({});
+  const [types, setTypes] = useState([]);
+  const [isCreatingContract, setIsCreatingContract] = useState(true);
+  const [isEditingContract, setIsEditingContract] = useState(true);
 
   const value = {
     isShowContracts,
@@ -26,19 +35,25 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
     setFilter,
     selectedContract,
     setSelectedContract,
-  }
+    types,
+    setTypes,
+    isCreatingContract,
+    setIsCreatingContract,
+    isEditingContract,
+    setIsEditingContract,
+  };
 
-  return <QueryAPIContext.Provider value={value}>{children}</QueryAPIContext.Provider>
-}
+  return <QueryAPIContext.Provider value={value}>{children}</QueryAPIContext.Provider>;
+};
 
 const useQueryAPI = () => {
-  const context = useContext(QueryAPIContext)
+  const context = useContext(QueryAPIContext);
 
   if (context === undefined) {
-    throw new Error("useTerminus must be used within TerminusContext")
+    throw new Error("useTerminus must be used within TerminusContext");
   }
 
-  return context
-}
+  return context;
+};
 
-export default useQueryAPI
+export default useQueryAPI;
