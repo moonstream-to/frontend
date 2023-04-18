@@ -229,7 +229,12 @@ const QueryContractView = () => {
                 </Text>
               </Flex>
               {!ABIfromScan.isFetching ? (
-                <Button variant="transparent" onClick={() => ABIfromScan.refetch()}>
+                <Button
+                  variant="transparent"
+                  fontSize="16px"
+                  fontWeight="400"
+                  onClick={() => ABIfromScan.refetch()}
+                >
                   {"Load from etherscan"}
                   <Image ml="10px" alt="" src={icons.ethScan} w="16px" h="16px" />
                   {/* <Icon ml="5px" as={TbDatabaseExport} /> */}
