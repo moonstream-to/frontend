@@ -19,15 +19,23 @@ function compare(a: { created_at: string }, b: { created_at: string }) {
 const QueryContractsList = () => {
   const { setTypes } = useQueryAPI();
   const toast = useMoonToast();
-  const getSubscriptions = async () => {
-    const response = await SubscriptionsService.getSubscriptions();
-    return response.data;
+  const { selectedContract, setSelectedContract } = useQueryAPI();
+
+  const getSubscriptions = () => {
+    return SubscriptionsService.getSubscriptions().then((res) =>
+      res.data.subscriptions.sort(compare),
+    );
   };
 
   const subscriptions = useQuery(["subscriptions"], getSubscriptions, {
     ...queryCacheProps,
     onError: (error) => {
       toast(error, "error");
+    },
+    onSuccess: (data: any) => {
+      if (!selectedContract.id) {
+        setSelectedContract(data[0]);
+      }
     },
   });
 
@@ -47,9 +55,8 @@ const QueryContractsList = () => {
     <>
       {subscriptions.data && (
         <Flex flexDirection="column" overflowY="auto">
-          {subscriptions.data.subscriptions
-            .sort(compare)
-            .slice(5, 55)
+          {subscriptions.data
+            // .slice(5, 55)
             .map((contract: any) => (
               <QueryContractsListItem
                 key={contract.id}
