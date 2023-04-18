@@ -8,7 +8,7 @@ const QueryAPIView = () => {
   const { isCreatingContract } = useQueryAPI();
   return (
     <Center>
-      <Flex gap="30px" py="30px" px="7%" maxH="700px" minH="700px" maxW="1600px" minW="1600px">
+      <Flex gap="30px" py="30px" px="7%" maxH="760px" minH="760px" maxW="1600px" minW="1600px">
         <QueryListView />
         {!isCreatingContract ? <QueryContractView /> : <QueryAPINewContractView />}
       </Flex>
