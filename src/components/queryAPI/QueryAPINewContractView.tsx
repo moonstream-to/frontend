@@ -1,5 +1,5 @@
 import { CloseIcon } from "@chakra-ui/icons";
-import { Button, Flex, Image, Input, Select, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Input, Select, Spinner, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import useQueryAPI from "../../contexts/QueryAPIContext";
@@ -8,14 +8,16 @@ import { SubscriptionsService } from "../../services";
 
 const QueryAPINewContractView = () => {
   const toast = useMoonToast();
-  const { types, setIsCreatingContract } = useQueryAPI();
+  const { types, setIsCreatingContract, setSelectedContract } = useQueryAPI();
   const [type, setType] = useState("");
   const [address, setAddress] = useState("");
   const [title, setTitle] = useState("");
   const queryClient = useQueryClient();
   const createSubscription = useMutation(SubscriptionsService.createSubscription(), {
-    onError: (error) => toast(error, "error"),
+    onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
+      setSelectedContract({});
+      setIsCreatingContract(false);
       queryClient.invalidateQueries("subscriptions");
     },
     // onSuccess: (response) => {
@@ -40,11 +42,13 @@ const QueryAPINewContractView = () => {
       bg="#2d2d2d"
       w="100%"
       minH="100%"
+      maxW="800px"
       position="relative"
     >
       <Flex gap="20px" position="absolute" zIndex="2" bottom="15px" right="15px">
         <Button
           variant="cancelButton"
+          disabled={createSubscription.isLoading}
           onClick={() => {
             setIsCreatingContract(false);
           }}
@@ -53,12 +57,12 @@ const QueryAPINewContractView = () => {
         </Button>
         <Button
           variant="saveButton"
+          disabled={createSubscription.isLoading}
           onClick={() => {
-            console.log({ type, address, label: title, color: "#000000" });
             createSubscription.mutate({ type, address, label: title, color: "#000000" });
           }}
         >
-          Create
+          {createSubscription.isLoading ? <Spinner /> : "Create"}
         </Button>
       </Flex>
       <Flex justifyContent="space-between" alignItems="center" mb="10px">
@@ -71,7 +75,7 @@ const QueryAPINewContractView = () => {
       <Select placeholder="Select type" value={type} onChange={(e) => setType(e.target.value)}>
         {types.map(({ id }: { id: string }) => (
           <option key={id} value={id}>
-            {id}
+            {id.split("_").join(" ")}
           </option>
         ))}
       </Select>
