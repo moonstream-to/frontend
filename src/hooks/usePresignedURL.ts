@@ -61,7 +61,10 @@ const usePresignedURL = ({
       enabled: isEnabled && url ? true : false,
       keepPreviousData: false,
       retry: (attempts, e: any) => {
-        return retryCallbackFn(attempts, e?.response?.status);
+        if (retryCallbackFn) return retryCallbackFn(attempts, e?.response?.status);
+        else {
+          return queryCacheProps.retry(attempts, e?.response?.status);
+        }
       },
       onError: (e) => {
         if (e?.response?.data?.includes("Request has expired") || e?.response?.status === 403) {
