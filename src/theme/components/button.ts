@@ -94,6 +94,22 @@ const variantPlainOrange = () => {
   };
 };
 
+const variantTransparent = () => {
+  return {
+    backgroundColor: "transparent",
+    _hover: {
+      backgroundColor: "transparent",
+      textDecoration: "none",
+    },
+    _focus: {
+      backgroundColor: "transparent",
+    },
+    _active: {
+      backgroundColor: "transparent",
+    },
+  };
+};
+
 const variantCancel = () => {
   return {
     padding: "10px 40px",
@@ -168,6 +184,7 @@ const Button = {
     selector: variantSelector,
     cancelButton: variantCancel,
     saveButton: variantSave,
+    transparent: variantTransparent,
   },
 };
 export default Button;
