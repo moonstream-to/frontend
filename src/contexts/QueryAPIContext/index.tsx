@@ -25,8 +25,8 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
   const [filter, setFilter] = useState("");
   const [selectedContract, setSelectedContract] = useState({});
   const [types, setTypes] = useState([]);
-  const [isCreatingContract, setIsCreatingContract] = useState(true);
-  const [isEditingContract, setIsEditingContract] = useState(true);
+  const [isCreatingContract, setIsCreatingContract] = useState(false);
+  const [isEditingContract, setIsEditingContract] = useState(false);
 
   const value = {
     isShowContracts,
