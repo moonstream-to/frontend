@@ -1,7 +1,7 @@
-import { EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, DownloadIcon, EditIcon } from "@chakra-ui/icons";
 import { Button, Flex, Spacer, Spinner, Text, Textarea } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
@@ -18,15 +18,18 @@ const MyJsonComponent = dynamic(() => import("../JSONEdit2"), { ssr: false });
 // MyJsonComponent.
 
 const formatDate = (dateTimeOffsetString: string) => {
-  return dateTimeOffsetString.slice(0, 10).split("-").reverse().join("/");
+  const date = new Date(dateTimeOffsetString);
+
+  return date.toLocaleDateString();
 };
 
 const QueryContractView = () => {
   const toast = useMoonToast();
-  const { selectedContract: contract } = useQueryAPI();
+  const { selectedContract: contract, setSelectedContract } = useQueryAPI();
   const [editABI, setEditABI] = useState(false);
   const [JSONForEdit, setJSONForEdit] = useState("");
   const [isABIChanged, setIsABIChanged] = useState(false);
+  const [loadedABI, setLoadedABI] = useState("");
   // const getSubscriptionABI = async () => {
   //   const response = await SubscriptionsService.getSubscriptionABI(contract.id)
   //   console.log(response)
@@ -38,13 +41,13 @@ const QueryContractView = () => {
     SubscriptionsService.getSubscriptionABI(contract.id),
     {
       ...queryCacheProps,
-      onError: (error) => {
-        toast(error, "error");
+      onError: (error: Error) => {
+        console.log(error);
       },
       onSettled: (data: any) => {
         console.log(data);
       },
-      enabled: !!contract.id,
+      enabled: !!contract.abi,
     },
   );
 
@@ -52,20 +55,43 @@ const QueryContractView = () => {
     ["abiScan", contract.address],
     async () => {
       const address = "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359";
-      const response = await axios({
-        method: "GET",
-        url: `http://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-      });
-      console.log(JSON.stringify(JSON.parse(response.data.result), null, "\t"));
+      try {
+        const response = await axios({
+          method: "GET",
+          url: `http://api.etherscan.io/api?module=contract&action=getabi&address=${contract.address}`,
+        });
+        console.log(response.data.result);
+        setLoadedABI(JSON.stringify(JSON.parse(response.data.result), null, "\t"));
+      } catch (e: any) {
+        console.log(e);
+      }
+      // console.log(JSON.stringify(JSON.parse(response.data.result), null, "\t"));
     },
     {
       enabled: false,
     },
   );
 
-  // useEffect(() => {
-  //   console.log(contract);
-  // }, [contract]);
+  const queryClient = useQueryClient();
+  const deleteSubscription = useMutation(SubscriptionsService.deleteSubscription(), {
+    onError: (error: Error) => toast(error.message, "error"),
+    onSuccess: () => {
+      setSelectedContract({});
+      queryClient.invalidateQueries("subscriptions");
+    },
+  });
+
+  useEffect(() => {
+    if (loadedABI) {
+      setJSONForEdit(loadedABI);
+    }
+  }, [loadedABI]);
+
+  useEffect(() => {
+    console.log(contract);
+    console.log("qq");
+    setJSONForEdit("");
+  }, [contract]);
 
   // useEffect(() => {
   //   console.log(ABI.data);
@@ -73,10 +99,11 @@ const QueryContractView = () => {
 
   const { data, isLoading, isFetching } = usePresignedURL({
     url: ABI.data?.data?.url,
-    isEnabled: true,
+    isEnabled: !!ABI.data?.data?.url,
     id: contract.id,
     cacheType: "abi",
     requestNewURLCallback: ABI.refetch,
+    hideToastOn404: true,
   });
 
   useEffect(() => {
@@ -98,6 +125,7 @@ const QueryContractView = () => {
           bg="#2d2d2d"
           w="100%"
           minH="100%"
+          maxW="800px"
         >
           <Flex justifyContent="space-between" alignItems="center" mb="10px">
             <Text fontSize="24px" fontWeight="700">
@@ -106,6 +134,11 @@ const QueryContractView = () => {
             <Flex gap="10px" alignItems="center">
               <Text fontSize="16px">Edit</Text>
               <EditIcon />
+              {!deleteSubscription.isLoading ? (
+                <DeleteIcon onClick={() => deleteSubscription.mutate(contract.id)} />
+              ) : (
+                <Spinner />
+              )}
             </Flex>
           </Flex>
           {contract.subscription_type_id && (
@@ -116,6 +149,8 @@ const QueryContractView = () => {
           )}
           <Flex bg="#232323" borderRadius="10px" p="20px" gap="10px" direction="column">
             <PoolDetailsRow type="Contract address" value={contract.address} />
+            <PoolDetailsRow type="id" value={contract.id} />
+
             {contract.subscription_type_id && (
               <PoolDetailsRow
                 type="Blockchain"
@@ -125,6 +160,7 @@ const QueryContractView = () => {
             {contract.created_at && (
               <PoolDetailsRow type="Creation date" value={formatDate(contract.created_at)} />
             )}
+            {!contract.abi && <PoolDetailsRow type="ABI" value={contract.abi} />}
           </Flex>
           <Flex
             bg="#2d2d2d"
@@ -156,19 +192,12 @@ const QueryContractView = () => {
               <Text pl="20px" fontSize="18px" fontWeight="700">
                 Contract ABI
               </Text>
-              {/* {!editABI && <EditIcon cursor="pointer" onClick={() => setEditABI(true)} />} */}
+              {!ABIfromScan.isFetching && <DownloadIcon onClick={() => ABIfromScan.refetch()} />}
             </Flex>
-            {(ABI.isLoading || isFetching) && <Spinner />}
-            {data && !ABI.isLoading && !editABI && (
-              <MyJsonComponent json={JSONForEdit} onChange={setJSONForEdit} />
-            )}
-            {data && !ABI.isLoading && editABI && (
-              <Textarea
-                h="100%"
-                value={JSONForEdit}
-                onChange={(e) => setJSONForEdit(e.target.value)}
-              />
-            )}
+            {(ABI.isFetching || isFetching) && <Spinner />}
+            {/* {data && !ABI.isLoading && !editABI && ( */}
+            <MyJsonComponent json={JSONForEdit} onChange={setJSONForEdit} />
+            {/* )} */}
           </Flex>
         </Flex>
       )}
