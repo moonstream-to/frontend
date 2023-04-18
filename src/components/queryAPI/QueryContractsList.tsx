@@ -30,7 +30,7 @@ const QueryContractsList = () => {
   const subscriptions = useQuery(["subscriptions"], getSubscriptions, {
     ...queryCacheProps,
     onError: (error) => {
-      toast(error, "error");
+      toast(error.message, "error");
     },
     onSuccess: (data: any) => {
       if (!selectedContract.id) {
