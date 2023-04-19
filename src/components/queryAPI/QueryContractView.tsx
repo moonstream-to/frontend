@@ -102,6 +102,8 @@ const QueryContractView = () => {
   }, [ABIfromScan.data]);
 
   useEffect(() => {
+    // console.log("contract", isABIChanged);
+
     setJSONForEdit("");
   }, [contract]);
 
@@ -117,23 +119,34 @@ const QueryContractView = () => {
   const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: (data: any) => {
-      console.log(data);
+      // console.log(data);
       ABI.refetch();
     },
   });
 
   useEffect(() => {
-    if (!JSONForEdit) {
-      setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
-    }
-  }, [data, JSONForEdit]);
+    // console.log("data, JFE", isABIChanged);
 
-  useEffect(() => {
     if (data) {
       setIsABIChanged(JSONForEdit !== JSON.stringify(data, null, "\t"));
     } else {
       setIsABIChanged(JSONForEdit !== "");
     }
+  }, [JSONForEdit]);
+
+  useEffect(() => {
+    // console.log("JFE, data", isABIChanged, !!data, !!JSONForEdit);
+    // console.log(data);
+    // console.log(JSONForEdit);
+    if (!JSONForEdit) {
+      setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
+    }
+
+    // if (data) {
+    //   setIsABIChanged(JSONForEdit !== JSON.stringify(data, null, "\t"));
+    // } else {
+    //   setIsABIChanged(JSONForEdit !== "");
+    // }
   }, [JSONForEdit, data]);
 
   return (
@@ -234,6 +247,7 @@ const QueryContractView = () => {
                   fontSize="16px"
                   fontWeight="400"
                   onClick={() => ABIfromScan.refetch()}
+                  p="0px"
                 >
                   {"Load from etherscan"}
                   <Image ml="10px" alt="" src={icons.ethScan} w="16px" h="16px" />
@@ -243,7 +257,9 @@ const QueryContractView = () => {
                 <Spinner />
               )}
             </Flex>
-            {(ABI.isFetching || (isFetching && !data)) && <Spinner />}
+            {(ABI.isFetching || (isFetching && !data)) && (
+              <Spinner ml="10px" p="0" h="20px" w="17px" />
+            )}
             {/* {data && !ABI.isLoading && !editABI && ( */}
             <MyJsonComponent json={JSONForEdit} onChange={setJSONForEdit} />
             {/* )} */}
