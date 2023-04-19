@@ -53,7 +53,7 @@ const QueryContractView = () => {
         console.log(error);
       },
       onSettled: (data: any) => {
-        console.log(data);
+        // console.log(data);
       },
       enabled: !!contract.abi,
     },
@@ -103,8 +103,11 @@ const QueryContractView = () => {
 
   useEffect(() => {
     // console.log("contract", isABIChanged);
-
-    setJSONForEdit("");
+    if (!data) {
+      setJSONForEdit("");
+    } else {
+      setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
+    }
   }, [contract]);
 
   const { data, isLoading, isFetching } = usePresignedURL({
@@ -147,7 +150,7 @@ const QueryContractView = () => {
     // } else {
     //   setIsABIChanged(JSONForEdit !== "");
     // }
-  }, [JSONForEdit, data]);
+  }, [data]);
 
   return (
     <>
