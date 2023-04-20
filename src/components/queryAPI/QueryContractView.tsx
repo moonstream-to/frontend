@@ -1,6 +1,4 @@
-import { DeleteIcon, DownloadIcon, EditIcon } from "@chakra-ui/icons";
-import { Button, Flex, Spacer, Spinner, Text, Icon, Image } from "@chakra-ui/react";
-import { TbDatabaseExport } from "react-icons/tb";
+import { Button, Flex, Spinner, Text, Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import useQueryAPI from "../../contexts/QueryAPIContext";
@@ -14,6 +12,7 @@ import usePresignedURL from "../../hooks/usePresignedURL";
 import dynamic from "next/dynamic";
 import axios from "axios";
 import { AWS_ASSETS_PATH } from "../../constants";
+import { chains } from "../../contexts/Web3Context/";
 
 const icons = {
   ethScan: `${AWS_ASSETS_PATH}/icons/database-load.png`,
@@ -38,11 +37,7 @@ const QueryContractView = () => {
   const [JSONForEdit, setJSONForEdit] = useState("");
   const [isABIChanged, setIsABIChanged] = useState(false);
   const [loadedABI, setLoadedABI] = useState("");
-  // const getSubscriptionABI = async () => {
-  //   const response = await SubscriptionsService.getSubscriptionABI(contract.id)
-  //   console.log(response)
-  //   return response.data
-  // }
+  const [ABILoader, setABILoader] = useState<{ name: string; url: string } | undefined>(undefined);
 
   const ABI = useQuery(
     ["subscriptonABI", contract.id],
@@ -64,7 +59,7 @@ const QueryContractView = () => {
     async () => {
       return axios({
         method: "GET",
-        url: `http://api.etherscan.io/api?module=contract&action=getabi&address=${contract.address}`,
+        url: `${ABILoader?.url}&address=${contract.address}`,
       });
     },
     {
@@ -81,18 +76,8 @@ const QueryContractView = () => {
     },
   });
 
-  // useEffect(() => {
-  //   console.log("loaded");
-  //   // console.log(loadedABI);
-  //   if (loadedABI) {
-  //     console.log(loadedABI);
-  //     setJSONForEdit(loadedABI);
-  //   }
-  // }, [loadedABI]);
-
   useEffect(() => {
     if (ABIfromScan.data?.data?.result) {
-      // console.log(ABIfromScan.data.data.result);
       try {
         setJSONForEdit(JSON.stringify(JSON.parse(ABIfromScan.data.data.result), null, "\t"));
       } catch (e) {
@@ -102,7 +87,12 @@ const QueryContractView = () => {
   }, [ABIfromScan.data]);
 
   useEffect(() => {
-    // console.log("contract", isABIChanged);
+    const chain = contract.subscription_type_id?.split("_")[0];
+    if (chains[chain]?.ABIScan) {
+      setABILoader(chains[chain]?.ABIScan);
+    } else {
+      setABILoader(undefined);
+    }
     if (!data) {
       setJSONForEdit("");
     } else {
@@ -122,14 +112,11 @@ const QueryContractView = () => {
   const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: (data: any) => {
-      // console.log(data);
       ABI.refetch();
     },
   });
 
   useEffect(() => {
-    // console.log("data, JFE", isABIChanged);
-
     if (data) {
       setIsABIChanged(JSONForEdit !== JSON.stringify(data, null, "\t"));
     } else {
@@ -138,18 +125,9 @@ const QueryContractView = () => {
   }, [JSONForEdit]);
 
   useEffect(() => {
-    // console.log("JFE, data", isABIChanged, !!data, !!JSONForEdit);
-    // console.log(data);
-    // console.log(JSONForEdit);
     if (!JSONForEdit) {
       setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
     }
-
-    // if (data) {
-    //   setIsABIChanged(JSONForEdit !== JSON.stringify(data, null, "\t"));
-    // } else {
-    //   setIsABIChanged(JSONForEdit !== "");
-    // }
   }, [data]);
 
   return (
@@ -169,15 +147,6 @@ const QueryContractView = () => {
             <Text fontSize="24px" fontWeight="700">
               {contract.label}
             </Text>
-            {/* <Flex gap="10px" alignItems="center">
-              <Text fontSize="16px">Edit</Text>
-              <EditIcon />
-              {!deleteSubscription.isLoading ? (
-                <DeleteIcon onClick={() => deleteSubscription.mutate(contract.id)} />
-              ) : (
-                <Spinner />
-              )}
-            </Flex> */}
           </Flex>
           {contract.subscription_type_id && (
             <Flex gap="10px">
@@ -244,7 +213,7 @@ const QueryContractView = () => {
                   Contract ABI
                 </Text>
               </Flex>
-              {!ABIfromScan.isFetching ? (
+              {ABILoader && !ABIfromScan.isFetching && (
                 <Button
                   variant="transparent"
                   fontSize="16px"
@@ -252,20 +221,16 @@ const QueryContractView = () => {
                   onClick={() => ABIfromScan.refetch()}
                   p="0px"
                 >
-                  {"Load from etherscan"}
+                  {`Load from ${ABILoader.name}`}
                   <Image ml="10px" alt="" src={icons.ethScan} w="16px" h="16px" />
-                  {/* <Icon ml="5px" as={TbDatabaseExport} /> */}
                 </Button>
-              ) : (
-                <Spinner />
               )}
+              {ABILoader && ABIfromScan.isFetching && <Spinner />}
             </Flex>
             {(ABI.isFetching || (isFetching && !data)) && (
               <Spinner ml="10px" p="0" h="20px" w="17px" />
             )}
-            {/* {data && !ABI.isLoading && !editABI && ( */}
             <MyJsonComponent json={JSONForEdit} onChange={setJSONForEdit} />
-            {/* )} */}
           </Flex>
         </Flex>
       )}

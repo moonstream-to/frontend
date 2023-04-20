@@ -76,8 +76,10 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
     chainId: 1,
     name: "ethereum",
     rpcs: ["https://mainnet.infura.io/v3/"],
-    ABIScan:
-      "http://api.etherscan.io/api?module=contract&action=getabi&address=0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
+    ABIScan: {
+      name: "etherscan",
+      url: "http://api.etherscan.io/api?module=contract&action=getabi",
+    },
   },
   localhost: {
     chainId: 1337,
@@ -93,6 +95,10 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
       "https://rpc-mumbai.maticvigil.com",
       "https://matic-testnet-archive-rpc.bwarelabs.com",
     ],
+    ABIScan: {
+      name: "polygonscan",
+      url: "https://api.polygonscan.com/api?module=contract&action=getabi",
+    },
   },
   polygon: {
     chainId: 137,
@@ -105,6 +111,10 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
       "https://rpc-mainnet.matic.quiknode.pro",
       "https://matic-mainnet-full-rpc.bwarelabs.com",
     ],
+    ABIScan: {
+      name: "polygonscan",
+      url: "https://api.polygonscan.com/api?module=contract&action=getabi",
+    },
   },
   wyrm: {
     chainId: 322,
