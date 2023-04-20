@@ -49,7 +49,7 @@ const inputs = [
 const values = [
   "0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f",
   "Transfer",
-  "1681958520",
+  "1681968384",
   "1681968684",
 ];
 
@@ -59,6 +59,10 @@ const QueryAPIQueryView = () => {
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   const [result, setResult] = useState("");
   const [filename, setFilename] = useState("");
+
+  useEffect(() => {
+    setResult("");
+  }, [query]);
 
   const addParam = () => {
     setParams((prev) => {
@@ -90,7 +94,7 @@ const QueryAPIQueryView = () => {
     const paramsObj: any = {};
     params.forEach((param) => (paramsObj[param.key] = param.value));
     console.log(paramsObj);
-    const requestTimestamp = Date.now();
+    const requestTimestamp = new Date().toUTCString();
 
     const url0 = await http({
       method: "POST",
@@ -121,13 +125,13 @@ const QueryAPIQueryView = () => {
     method?: string;
   }
 
-  const getFromPresignedURL = async (url: string, requestTimestamp: number) => {
+  const getFromPresignedURL = async (url: string, requestTimestamp: string) => {
     const requestParameters: RequestParameters = {
       url: url,
       // You can uncomment this to use mockupsLibrary in development
       // url: `https://example.com/s3`,
       headers: {
-        // "If-Modified-Since": requestTimestamp,
+        "If-Modified-Since": requestTimestamp,
       },
       method: "GET",
     };
