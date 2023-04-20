@@ -14,6 +14,8 @@ type QueryContextType = {
   setIsCreatingContract: (arg0: boolean) => void;
   isEditingContract: boolean;
   setIsEditingContract: (arg0: boolean) => void;
+  selectedQuery: any;
+  setSelectedQuery: (arg0: any) => void;
 };
 
 // const initial state
@@ -21,9 +23,11 @@ type QueryContextType = {
 const QueryAPIContext = createContext<QueryContextType | undefined>(undefined); //TODO
 
 export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isShowContracts, setIsShowContracts] = useState(true);
+  const [isShowContracts, setIsShowContracts] = useState(false);
   const [filter, setFilter] = useState("");
   const [selectedContract, setSelectedContract] = useState({});
+  const [selectedQuery, setSelectedQuery] = useState({});
+
   const [types, setTypes] = useState([]);
   const [isCreatingContract, setIsCreatingContract] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
@@ -41,6 +45,8 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
     setIsCreatingContract,
     isEditingContract,
     setIsEditingContract,
+    selectedQuery,
+    setSelectedQuery,
   };
 
   return <QueryAPIContext.Provider value={value}>{children}</QueryAPIContext.Provider>;

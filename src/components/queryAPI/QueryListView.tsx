@@ -1,5 +1,6 @@
-import { Button, Flex, Input } from "@chakra-ui/react";
+import { Button, Flex, Input, Spacer } from "@chakra-ui/react";
 import useQueryAPI from "../../contexts/QueryAPIContext";
+import QueryAPIQueriesList from "./QueryAPIQueriesList";
 import QueryContractsList from "./QueryContractsList";
 
 const QueryListView = () => {
@@ -37,6 +38,8 @@ const QueryListView = () => {
         p="8px 15px"
       />
       {isShowContracts && <QueryContractsList />}
+      {!isShowContracts && <QueryAPIQueriesList />}
+      <Spacer />
       <Button
         width="100%"
         bg="gray.0"
@@ -46,7 +49,7 @@ const QueryListView = () => {
         onClick={() => setIsCreatingContract(true)}
         disabled={isCreatingContract}
       >
-        + Add new
+        {isShowContracts ? "+ Add new" : "Request new query"}
       </Button>
     </Flex>
   );
