@@ -1,5 +1,11 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+
+import { AWS_ASSETS_PATH } from "../../constants";
+
+const icons = {
+  download: `${AWS_ASSETS_PATH}/icons/file-down.png`,
+};
 
 const MyJsonComponent = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
@@ -16,7 +22,15 @@ function download(filename: string, text: string) {
   document.body.removeChild(element);
 }
 
-const QueryAPIResult = ({ result, filename }: { result: string; filename: string }) => {
+const QueryAPIResult = ({
+  result,
+  filename,
+  status,
+}: {
+  result: string;
+  filename: string;
+  status: string;
+}) => {
   return (
     <Flex
       direction="column"
@@ -26,22 +40,19 @@ const QueryAPIResult = ({ result, filename }: { result: string; filename: string
       border="1px solid #4d4d4d"
       borderRadius="10px"
     >
-      <Flex justifyContent="space-between" alignItems="center" fontSize="16px">
-        <Text fontWeight="700">JSON</Text>
-        <Button variant="transparent" onClick={() => download(filename, result)}>
+      <Flex justifyContent="space-between" alignItems="center" fontSize="16px" p="0">
+        <Text fontWeight="700" p="0px">
+          JSON
+        </Text>
+        <Text fontWeight="400" color="#bfbfbf">
+          {status}
+        </Text>
+        <Button variant="transparent" onClick={() => download(filename, result)} p="0px" h="16px">
           <Text fontWeight="400">Download</Text>
+          <Image alt="" src={icons.download} h="16px" ml="10px" />
         </Button>
       </Flex>
-      <MyJsonComponent json={result} readOnly={true} />
-      {/* <Text
-        fontSize="14px"
-        bg="#2d2d2d"
-        border="1px solid #353535"
-        borderRadius="5px"
-        overflow="auto"
-      >
-        {result}
-      </Text> */}
+      {result && <MyJsonComponent json={result} readOnly={true} />}
     </Flex>
   );
 };
