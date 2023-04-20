@@ -17,22 +17,19 @@ import { Flex } from "@chakra-ui/react";
 // })
 // ace.edit()
 
-const MyJsonComponent = ({ json, onChange }: { json: string; onChange: (arg0: any) => void }) => {
-  const [jsonString, setJsonString] = useState(
-    `{
-  "name": "John Doe",
-  "age": 30,
-  "address": {
-    "street": "123 Main St",
-    "city": "Anytown",
-    "state": "CA",
-    "zip": "12345"
-  }
-}`,
-  );
-
+const MyJsonComponent = ({
+  json,
+  onChange,
+  readOnly = false,
+}: {
+  json: string;
+  onChange?: (arg0: any) => void;
+  readOnly?: boolean;
+}) => {
   const handleJsonChange = (newValue: string) => {
-    onChange(newValue);
+    if (onChange) {
+      onChange(newValue);
+    }
   };
 
   return (
@@ -49,6 +46,7 @@ const MyJsonComponent = ({ json, onChange }: { json: string; onChange: (arg0: an
       onLoad={function (editor) {
         editor.renderer.setPadding(20);
         editor.renderer.setScrollMargin(20, 20, 0, 0);
+        editor.setReadOnly(readOnly);
       }}
       name="json-editor"
       editorProps={{ $blockScrolling: true }}
