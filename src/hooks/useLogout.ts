@@ -5,7 +5,7 @@ import { AuthService } from "../services";
 const useLogout = () => {
   // const router = useRouter()
   const cache = useQueryClient();
-  const { mutate: logout } = useMutation(AuthService.revoke, {
+  const { mutate: logout, isLoading } = useMutation(AuthService.revoke, {
     onSuccess: () => {
       // router.push("/")
       setUser(null);
@@ -17,6 +17,7 @@ const useLogout = () => {
 
   return {
     logout,
+    isLoading,
   };
 };
 

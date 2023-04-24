@@ -37,7 +37,6 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
           alt="Logo"
         />
       </RouterLink>
-      <LoginButton />
 
       {!isMobileView && (
         <Flex alignItems="center" gap="20px">
@@ -83,6 +82,8 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
             </Flex>
           )}
           <ChainSelector />
+          <Flex w="2px" bg="#4d4d4d" h="30px" />
+          <LoginButton />
         </Flex>
       )}
     </Flex>
