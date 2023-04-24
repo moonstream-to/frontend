@@ -1,4 +1,4 @@
-import { Button, Flex, Spinner, Text, Input } from "@chakra-ui/react";
+import { Button, Flex, Spinner, Text, Input, Spacer } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import useQueryAPI from "../../contexts/QueryAPIContext";
@@ -12,6 +12,7 @@ import http from "../../utils/httpMoonstream";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import styles from "./QueryAPIQueryView.module.css";
 import QueryAPIResult from "./QueryAPIResult";
+import TimestampInput from "../TimestampInput";
 
 // import MyJsonComponent from "../JSONEdit";
 
@@ -257,18 +258,33 @@ const QueryAPIQueryView = () => {
                         </option>
                       ))}
                     </Select> */}
-                      <Input
-                        flex="2"
-                        // minW="100%"
-                        h="40px"
-                        variant="address"
-                        border="1px solid #4D4D4D"
-                        value={param.value}
-                        onChange={(e) => setParam(idx, "value", e.target.value)}
-                        mr="10px"
-                      />
+                      {param.key.includes("timestamp") ? (
+                        // <>
+                        <TimestampInput
+                          timestamp={param.value}
+                          setTimestamp={(newValue: string) =>
+                            setParam(idx, "value", String(newValue))
+                          }
+                        />
+                      ) : (
+                        //   <Spacer />
+                        // </>
+                        <Input
+                          flex="2"
+                          // minW="100%"
+                          h="40px"
+                          variant="address"
+                          border="1px solid #4D4D4D"
+                          value={param.value}
+                          onChange={(e) => setParam(idx, "value", e.target.value)}
+                          mr="10px"
+                        />
+                      )}
                       {/* <Spacer /> */}
-                      <AiOutlineMinusCircle onClick={() => removeParam(idx)} />
+                      <AiOutlineMinusCircle
+                        style={{ minWidth: "18px" }}
+                        onClick={() => removeParam(idx)}
+                      />
                     </Flex>
                   );
                 })}
