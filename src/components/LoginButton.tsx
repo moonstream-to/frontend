@@ -3,9 +3,12 @@ import { Button, Spinner, Text } from "@chakra-ui/react";
 import SignIn from "./SignIn";
 import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
+import SignUp from "./SignUp";
 
 const LoginButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+
   const { user } = useUser();
 
   const handleOpen = () => {
@@ -47,7 +50,8 @@ const LoginButton: React.FC = () => {
         {!isLoading && !user && "Log in"}
       </Button>
       {/* )} */}
-      <SignIn isOpen={isOpen} onClose={handleClose} />
+      <SignIn isOpen={isOpen} onClose={handleClose} onSignUp={() => setIsSignUpOpen(true)} />
+      <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
     </>
   );
 };
