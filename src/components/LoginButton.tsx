@@ -5,7 +5,7 @@ import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
 
 const LoginButton: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
 
   const handleOpen = () => {
