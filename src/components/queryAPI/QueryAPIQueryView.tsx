@@ -37,7 +37,7 @@ const inputs = [
   "blocks_back",
 ];
 
-const values = ["0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f", "Transfer", "1682418619"];
+const values = ["0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f", "Transfer"];
 
 const QueryAPIQueryView = () => {
   const toast = useMoonToast();
@@ -83,9 +83,10 @@ const QueryAPIQueryView = () => {
     setQueryStatus("executing...");
     params.forEach((param) => (paramsObj[param.key] = param.value));
     // console.log(paramsObj);
+    // setQueryStatus("");
     const requestTimestamp = new Date().toUTCString();
 
-    const url0 = await http({
+    const presignedUrl = await http({
       method: "POST",
       url: `${API}/queries/${query.name}/update_data`,
       data: {
@@ -99,16 +100,19 @@ const QueryAPIQueryView = () => {
         return res.data;
       })
       .catch((e) => console.log(e));
-    // console.log(url0);
-    setQueryStatus("uploading...");
 
-    const res = await getFromPresignedURL(url0.url, requestTimestamp);
-    setQueryStatus("done");
+    setQueryStatus("uploading...");
+    if (presignedUrl?.url) {
+      const res = await getFromPresignedURL(presignedUrl.url, requestTimestamp);
+      setResult(JSON.stringify(res, null, "\t"));
+      setQueryStatus("done");
+      setFilename(`${query.name}_${requestTimestamp}.json`);
+    } else {
+      setQueryStatus("error");
+    }
     setTimeout(() => {
       setQueryStatus("");
     }, 3000);
-    setResult(JSON.stringify(res, null, "\t"));
-    setFilename(`${query.name}_${requestTimestamp}.json`);
     // console.log(res);
   };
 
@@ -257,7 +261,7 @@ const QueryAPIQueryView = () => {
                       {param.key?.includes("timestamp") ? (
                         // <>
                         <TimestampInput2
-                          timestamp={param.value}
+                          timestamp={param.value ?? ""}
                           setTimestamp={(newValue: string) =>
                             setParam(idx, "value", String(newValue))
                           }
