@@ -13,6 +13,7 @@ import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import styles from "./QueryAPIQueryView.module.css";
 import QueryAPIResult from "./QueryAPIResult";
 import TimestampInput from "../TimestampInput";
+import TimestampInput2 from "../TimestampInput2";
 
 // import MyJsonComponent from "../JSONEdit";
 
@@ -36,12 +37,7 @@ const inputs = [
   "blocks_back",
 ];
 
-const values = [
-  "0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f",
-  "Transfer",
-  "1681962384",
-  "1681968684",
-];
+const values = ["0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f", "Transfer", "1682418619"];
 
 const QueryAPIQueryView = () => {
   const toast = useMoonToast();
@@ -258,9 +254,9 @@ const QueryAPIQueryView = () => {
                         </option>
                       ))}
                     </Select> */}
-                      {param.key.includes("timestamp") ? (
+                      {param.key?.includes("timestamp") ? (
                         // <>
-                        <TimestampInput
+                        <TimestampInput2
                           timestamp={param.value}
                           setTimestamp={(newValue: string) =>
                             setParam(idx, "value", String(newValue))
