@@ -197,11 +197,6 @@ const QueryAPIQueryView = () => {
           </Flex>
           {queryData.data && (
             <Flex direction="column" gap="15px">
-              {/* {queryData.data.content && (
-                <Text maxH="100px" overflowY="auto">
-                  {queryData.data.content}
-                </Text>
-              )} */}
               {queryData.data.tags && (
                 <Flex gap="10px">
                   {queryData.data.tags.map((tag: string, idx: number) => (
@@ -211,6 +206,7 @@ const QueryAPIQueryView = () => {
               )}
             </Flex>
           )}
+          {!queryData.data && <Flex minH="20px" />}
           <Flex direction="column" p="0px" overflowY="auto" gap="20px">
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="20px" fontWeight="700" userSelect="none">
