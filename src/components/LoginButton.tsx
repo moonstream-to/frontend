@@ -26,6 +26,7 @@ const LoginButton: React.FC = () => {
       <Button
         bg="#353535"
         borderRadius="20px"
+        maxH="36px"
         p="5px 15px"
         fontSize="16px"
         fontWeight="400"
