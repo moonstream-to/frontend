@@ -102,7 +102,7 @@ const TimestampInput2 = ({
           />
         </Flex>
       ))}
-      <Text fontSize="12px">GMT</Text>
+      <Text fontSize="12px">UTC</Text>
     </Flex>
   );
 };
