@@ -1,5 +1,7 @@
 import { Button, Flex, Input, Spacer } from "@chakra-ui/react";
+import { useState } from "react";
 import useQueryAPI from "../../contexts/QueryAPIContext";
+import NewQueryRequest from "../NewQueryRequest";
 import QueryAPIQueriesList from "./QueryAPIQueriesList";
 import QueryContractsList from "./QueryContractsList";
 
@@ -12,6 +14,8 @@ const QueryListView = () => {
     setIsCreatingContract,
     isCreatingContract,
   } = useQueryAPI();
+
+  const [isQueryRequestOpen, setIsQueryRequestOpen] = useState(false);
   return (
     <Flex minW="400px" borderRadius="20px" p="30px" bg="#2d2d2d" gap="30px" flexDirection="column">
       <Flex gap="20px" justifyContent="start" fontSize="24px" lineHeight="24px" p="0">
@@ -46,11 +50,18 @@ const QueryListView = () => {
         fontWeight="700"
         fontSize="20px"
         color="#2d2d2d"
-        onClick={() => setIsCreatingContract(true)}
+        onClick={() => {
+          if (isShowContracts) {
+            setIsCreatingContract(true);
+          } else {
+            setIsQueryRequestOpen(true);
+          }
+        }}
         disabled={isCreatingContract}
       >
         {isShowContracts ? "+ Add new" : "Request new query"}
       </Button>
+      <NewQueryRequest isOpen={isQueryRequestOpen} onClose={() => setIsQueryRequestOpen(false)} />
     </Flex>
   );
 };
