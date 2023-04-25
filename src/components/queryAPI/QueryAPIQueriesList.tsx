@@ -1,12 +1,10 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
-import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
 import QueryAPIQueriesListItem from "./QueryAPIQueriesListItem";
-import QueryContractsListItem from "./QueryContractsListItem";
 
 function compare(a: { created_at: string }, b: { created_at: string }) {
   if (a.created_at > b.created_at) {
@@ -21,9 +19,8 @@ function compare(a: { created_at: string }, b: { created_at: string }) {
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
 const QueryAPIQueriesList = () => {
-  // const { setTypes } = useQueryAPI();
   const toast = useMoonToast();
-  // const { selectedContract, setSelectedContract } = useQueryAPI();
+  const { selectedQuery, setSelectedQuery } = useQueryAPI();
 
   const getQueries = () =>
     http({
@@ -31,45 +28,29 @@ const QueryAPIQueriesList = () => {
       url: `${API}/queries/list`,
     });
 
-  // const getSubscriptions = () => {
-  //   return SubscriptionsService.getSubscriptions().then((res) =>
-  //     res.data.subscriptions.sort(compare),
-  //   );
-  // };
-
-  // const getQueries = () => {};
-
   const queries = useQuery(["queries"], getQueries, {
     ...queryCacheProps,
     onError: (error) => {
       toast(error.message, "error");
     },
     onSuccess: (data: any) => {
-      console.log(data);
+      if (!selectedQuery.entry_id) {
+        setSelectedQuery(data.data[0] ?? {});
+      }
     },
   });
 
-  // const getTypes = async () => {
-  //   const response = await SubscriptionsService.getTypes();
-  //   return response.data;
-  // };
-
-  // const types = useQuery(["subscription_types"], getTypes, {
-  //   ...queryCacheProps,
-  //   onSuccess(data: any) {
-  //     setTypes(data.subscription_types);
-  //   },
-  // });
+  if (queries.isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
       {queries.data?.data && (
         <Flex flexDirection="column" overflowY="auto">
-          {queries.data.data
-            // .slice(5, 55)
-            .map((query: any) => (
-              <QueryAPIQueriesListItem key={query.entry_id} query={query} />
-            ))}
+          {queries.data.data.map((query: any) => (
+            <QueryAPIQueriesListItem key={query.entry_id} query={query} />
+          ))}
         </Flex>
       )}
     </>
