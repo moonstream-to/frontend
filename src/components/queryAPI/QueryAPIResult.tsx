@@ -41,16 +41,20 @@ const QueryAPIResult = ({
       borderRadius="10px"
     >
       <Flex justifyContent="space-between" alignItems="center" fontSize="16px" p="0">
-        <Text fontWeight="700" p="0px">
-          JSON
-        </Text>
+        {result && (
+          <Text fontWeight="700" p="0px">
+            JSON
+          </Text>
+        )}
         <Text fontWeight="400" color="#bfbfbf">
           {status}
         </Text>
-        <Button variant="transparent" onClick={() => download(filename, result)} p="0px" h="16px">
-          <Text fontWeight="400">Download</Text>
-          <Image alt="" src={icons.download} h="16px" ml="10px" />
-        </Button>
+        {result && (
+          <Button variant="transparent" onClick={() => download(filename, result)} p="0px" h="16px">
+            <Text fontWeight="400">Download</Text>
+            <Image alt="" src={icons.download} h="16px" ml="10px" />
+          </Button>
+        )}
       </Flex>
       {result && <MyJsonComponent json={result} readOnly={true} />}
     </Flex>
