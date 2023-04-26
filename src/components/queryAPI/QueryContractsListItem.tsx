@@ -1,6 +1,9 @@
-import { Flex, Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+
+import { Flex, Image, Text } from "@chakra-ui/react";
+
 import useQueryAPI from "../../contexts/QueryAPIContext";
+
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 
@@ -11,9 +14,7 @@ const QueryContractsListItem = ({ contract, types }: { contract: any; types: any
   const { selectedContract, setSelectedContract, filter } = useQueryAPI();
 
   useEffect(() => {
-    // console.log(types, contract)
     if (contract && types) {
-      // console.log(contract)
       setType(types.find(({ id }: { id: string }) => id === contract.subscription_type_id) ?? {});
     }
   }, [contract, types]);
@@ -32,19 +33,8 @@ const QueryContractsListItem = ({ contract, types }: { contract: any; types: any
       setIsShow(true);
       return;
     }
-    if (contract.subscription_type_id.split("_")[0].toLowerCase().includes(lowCaseFilter)) {
-      setIsShow(true);
-      return;
-    }
 
-    if (
-      contract.subscription_type_id
-        .split("_")
-        .slice(1)
-        .join("")
-        .toLowerCase()
-        .includes(lowCaseFilter)
-    ) {
+    if (contract.subscription_type_id.toLowerCase().includes(lowCaseFilter)) {
       setIsShow(true);
       return;
     }
