@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import queryCacheProps from "../../hooks/hookCommon";
@@ -51,6 +51,10 @@ const QueryContractsList = () => {
       setTypes(data.subscription_types);
     },
   });
+
+  if (subscriptions.isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
