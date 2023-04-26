@@ -1,22 +1,11 @@
-import { Flex, Image, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useQueryAPI from "../../contexts/QueryAPIContext";
-import ChainTag from "../ChainTag";
-import Tag from "../Tag";
 
-const QueryAPIQueriesListItem = ({ query }: { query: any }) => {
-  const [type, setType] = useState<{ icon_url?: string }>({});
+const QueryAPIQueriesListItem = ({ query }: { query: { entry_id: string; name: string } }) => {
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
   const { selectedQuery, setSelectedQuery, filter } = useQueryAPI();
-
-  // useEffect(() => {
-  //   // console.log(types, contract)
-  //   if (query) {
-  //     // console.log(contract)
-  //     setType(types.find(({ id }: { id: string }) => id === contract.subscription_type_id) ?? {});
-  //   }
-  // }, [contract, types]);
 
   useEffect(() => {
     setSelected(query.entry_id === selectedQuery.entry_id);
@@ -29,10 +18,6 @@ const QueryAPIQueriesListItem = ({ query }: { query: any }) => {
     }
     const lowCaseFilter = filter.toLowerCase();
     if (query.name.toLowerCase().includes(lowCaseFilter)) {
-      setIsShow(true);
-      return;
-    }
-    if (query.type.includes(lowCaseFilter)) {
       setIsShow(true);
       return;
     }
@@ -52,13 +37,10 @@ const QueryAPIQueriesListItem = ({ query }: { query: any }) => {
           cursor="pointer"
         >
           <Flex gap="10px" alignItems="center">
-            {/* {type && type.icon_url && <Image h="20px" w="20px" alt="" src={type.icon_url} />} */}
-            <Text fontSize="18px">{query.name}</Text>
+            <Text fontSize="18px" textTransform="capitalize">
+              {query.name.split("_").join(" ")}
+            </Text>
           </Flex>
-          {/* <Flex gap="5px">
-            <ChainTag name={contract.subscription_type_id.split("_")[0]} />
-            <Tag name={contract.subscription_type_id.split("_").slice(1).join("")} />
-          </Flex> */}
         </Flex>
       )}
     </>

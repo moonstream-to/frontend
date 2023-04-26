@@ -1,20 +1,11 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { useQuery } from "react-query";
-import useQueryAPI from "../../contexts/QueryAPIContext";
+
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import http from "../../utils/httpMoonstream";
+import useQueryAPI from "../../contexts/QueryAPIContext";
 import QueryAPIQueriesListItem from "./QueryAPIQueriesListItem";
-
-function compare(a: { created_at: string }, b: { created_at: string }) {
-  if (a.created_at > b.created_at) {
-    return -1;
-  }
-  if (a.created_at < b.created_at) {
-    return 1;
-  }
-  return 0;
-}
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
@@ -33,7 +24,7 @@ const QueryAPIQueriesList = () => {
     onError: (error) => {
       toast(error.message, "error");
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data: { data: { entry_id: string; name: string }[] }) => {
       if (!selectedQuery.entry_id) {
         setSelectedQuery(data.data[0] ?? {});
       }
@@ -48,7 +39,7 @@ const QueryAPIQueriesList = () => {
     <>
       {queries.data?.data && (
         <Flex flexDirection="column" overflowY="auto">
-          {queries.data.data.map((query: any) => (
+          {queries.data.data.map((query: { entry_id: string; name: string }) => (
             <QueryAPIQueriesListItem key={query.entry_id} query={query} />
           ))}
         </Flex>
