@@ -1,5 +1,7 @@
-import { Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+
+import { Flex, Text } from "@chakra-ui/react";
+
 import useQueryAPI from "../../contexts/QueryAPIContext";
 
 const QueryAPIQueriesListItem = ({ query }: { query: { entry_id: string; name: string } }) => {
@@ -12,16 +14,7 @@ const QueryAPIQueriesListItem = ({ query }: { query: { entry_id: string; name: s
   }, [query, selectedQuery]);
 
   useEffect(() => {
-    if (filter === "") {
-      setIsShow(true);
-      return;
-    }
-    const lowCaseFilter = filter.toLowerCase();
-    if (query.name.toLowerCase().includes(lowCaseFilter)) {
-      setIsShow(true);
-      return;
-    }
-    setIsShow(false);
+    setIsShow(!filter || query.name.toLowerCase().includes(filter.toLowerCase()));
   }, [query, filter]);
 
   return (
