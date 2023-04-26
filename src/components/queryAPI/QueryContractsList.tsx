@@ -1,9 +1,11 @@
-import { Flex } from "@chakra-ui/react";
 import { useQuery } from "react-query";
+import { Flex } from "@chakra-ui/react";
+
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
+
 import QueryContractsListItem from "./QueryContractsListItem";
 
 function compare(a: { created_at: string }, b: { created_at: string }) {
@@ -17,9 +19,8 @@ function compare(a: { created_at: string }, b: { created_at: string }) {
 }
 
 const QueryContractsList = () => {
-  const { setTypes } = useQueryAPI();
+  const { setTypes, selectedContract, setSelectedContract } = useQueryAPI();
   const toast = useMoonToast();
-  const { selectedContract, setSelectedContract } = useQueryAPI();
 
   const getSubscriptions = () => {
     return SubscriptionsService.getSubscriptions().then((res) =>
@@ -33,7 +34,7 @@ const QueryContractsList = () => {
       toast(error.message, "error");
     },
     onSuccess: (data: any) => {
-      if (!selectedContract.id) {
+      if (!selectedContract.id && data[0]) {
         setSelectedContract(data[0]);
       }
     },
@@ -55,15 +56,13 @@ const QueryContractsList = () => {
     <>
       {subscriptions.data && (
         <Flex flexDirection="column" overflowY="auto">
-          {subscriptions.data
-            // .slice(5, 55)
-            .map((contract: any) => (
-              <QueryContractsListItem
-                key={contract.id}
-                contract={contract}
-                types={types.data?.subscription_types ?? undefined}
-              />
-            ))}
+          {subscriptions.data.map((contract: any) => (
+            <QueryContractsListItem
+              key={contract.id}
+              contract={contract}
+              types={types.data?.subscription_types ?? undefined}
+            />
+          ))}
         </Flex>
       )}
     </>

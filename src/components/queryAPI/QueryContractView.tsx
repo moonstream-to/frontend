@@ -1,28 +1,28 @@
-import { Button, Flex, Spinner, Text, Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import axios from "axios";
+import { Button, Flex, Spinner, Text, Image } from "@chakra-ui/react";
+
 import useQueryAPI from "../../contexts/QueryAPIContext";
+import usePresignedURL from "../../hooks/usePresignedURL";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
+import { AWS_ASSETS_PATH } from "../../constants";
+import { chains } from "../../contexts/Web3Context/";
+
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import PoolDetailsRow from "../PoolDetailsRow";
-import usePresignedURL from "../../hooks/usePresignedURL";
-import dynamic from "next/dynamic";
-import axios from "axios";
-import { AWS_ASSETS_PATH } from "../../constants";
-import { chains } from "../../contexts/Web3Context/";
 
 const icons = {
   ethScan: `${AWS_ASSETS_PATH}/icons/database-load.png`,
   ABIIcon: `${AWS_ASSETS_PATH}/icons/file-down.png`,
 };
 
-// import MyJsonComponent from "../JSONEdit";
-
 const MyJsonComponent = dynamic(() => import("../JSONEdit2"), { ssr: false });
-// MyJsonComponent.
 
 const formatDate = (dateTimeOffsetString: string) => {
   const date = new Date(dateTimeOffsetString);
@@ -33,10 +33,8 @@ const formatDate = (dateTimeOffsetString: string) => {
 const QueryContractView = () => {
   const toast = useMoonToast();
   const { selectedContract: contract, setSelectedContract } = useQueryAPI();
-  const [editABI, setEditABI] = useState(false);
   const [JSONForEdit, setJSONForEdit] = useState("");
   const [isABIChanged, setIsABIChanged] = useState(false);
-  const [loadedABI, setLoadedABI] = useState("");
   const [ABILoader, setABILoader] = useState<{ name: string; url: string } | undefined>(undefined);
 
   const ABI = useQuery(
@@ -46,9 +44,6 @@ const QueryContractView = () => {
       ...queryCacheProps,
       onError: (error: Error) => {
         console.log(error);
-      },
-      onSettled: (data: any) => {
-        // console.log(data);
       },
       enabled: !!contract.abi,
     },
@@ -68,6 +63,7 @@ const QueryContractView = () => {
   );
 
   const queryClient = useQueryClient();
+
   const deleteSubscription = useMutation(SubscriptionsService.deleteSubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
@@ -87,7 +83,7 @@ const QueryContractView = () => {
   }, [ABIfromScan.data]);
 
   useEffect(() => {
-    const chain = contract.subscription_type_id?.split("_")[0];
+    const chain = contract.subscription_type_id?.split("_")[0] as keyof typeof chains;
     if (chains[chain]?.ABIScan) {
       setABILoader(chains[chain]?.ABIScan);
     } else {
@@ -111,7 +107,7 @@ const QueryContractView = () => {
 
   const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       ABI.refetch();
     },
   });
