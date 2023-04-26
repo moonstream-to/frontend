@@ -1,8 +1,11 @@
-import { Center, Flex, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
+
 import { useQueryClient } from "react-query";
+import { Center, Flex, Text } from "@chakra-ui/react";
+
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import useUser from "../../contexts/UserContext";
+
 import QueryAPINewContractView from "./QueryAPINewContractView";
 import QueryAPIQueryView from "./QueryAPIQueryView";
 import QueryContractView from "./QueryContractView";
@@ -14,8 +17,10 @@ const QueryAPIView = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    queryClient.invalidateQueries("");
-    reset();
+    if (!user) {
+      queryClient.invalidateQueries("");
+      reset();
+    }
   }, [user]);
 
   return (
@@ -28,7 +33,11 @@ const QueryAPIView = () => {
           {!isShowContracts && <QueryAPIQueryView />}
         </Flex>
       )}
-      {!user && <Text mt="80px">You should log in to use this page</Text>}
+      {!user && (
+        <Text mt="80px" fontSize="20px" fontWeight="700">
+          You should log in to use this page
+        </Text>
+      )}
     </Center>
   );
 };
