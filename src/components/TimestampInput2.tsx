@@ -28,7 +28,7 @@ const TimestampInput2 = ({
 
   useEffect(() => {
     let date: Date;
-    if (timestamp) {
+    if (Number(timestamp)) {
       date = new Date(Number(timestamp) * 1000);
     } else {
       date = new Date(Date.now());
