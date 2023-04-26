@@ -1,5 +1,6 @@
-import { Button, Flex, Image, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+
+import { Button, Flex, Image, Text } from "@chakra-ui/react";
 
 import { AWS_ASSETS_PATH } from "../../constants";
 
@@ -26,10 +27,12 @@ const QueryAPIResult = ({
   result,
   filename,
   status,
+  onCancel,
 }: {
   result: string;
   filename: string;
   status: string;
+  onCancel: () => void;
 }) => {
   return (
     <Flex
@@ -49,6 +52,11 @@ const QueryAPIResult = ({
         <Text fontWeight="400" color="#bfbfbf">
           {status}
         </Text>
+        {status === "uploading..." && (
+          <Button variant="cancelButton" onClick={() => onCancel()}>
+            Cancel
+          </Button>
+        )}
         {result && (
           <Button variant="transparent" onClick={() => download(filename, result)} p="0px" h="16px">
             <Text fontWeight="400">Download</Text>

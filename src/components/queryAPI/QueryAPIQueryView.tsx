@@ -1,30 +1,20 @@
-import { Button, Flex, Spinner, Text, Input, Spacer } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { useQuery } from "react-query";
+import axios from "axios";
+import { Button, Flex, Spinner, Text, Input } from "@chakra-ui/react";
+import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
+
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import queryCacheProps from "../../hooks/hookCommon";
+import http from "../../utils/httpMoonstream";
 import useMoonToast from "../../hooks/useMoonToast";
 
 import Tag from "../Tag";
-
-import axios from "axios";
-import http from "../../utils/httpMoonstream";
-import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
-import styles from "./QueryAPIQueryView.module.css";
 import QueryAPIResult from "./QueryAPIResult";
-import TimestampInput from "../TimestampInput";
 import TimestampInput2 from "../TimestampInput2";
 
-// import MyJsonComponent from "../JSONEdit";
-
-// const MyJsonComponent = dynamic(() => import("../JSONEdit2"), { ssr: false });
-// MyJsonComponent.
-
-const formatDate = (dateTimeOffsetString: string) => {
-  const date = new Date(dateTimeOffsetString);
-
-  return date.toLocaleDateString();
-};
+import styles from "./QueryAPIQueryView.module.css";
 
 const inputs = [
   "address",
@@ -46,7 +36,6 @@ const QueryAPIQueryView = () => {
   const [result, setResult] = useState("");
   const [queryStatus, setQueryStatus] = useState("");
   const [filename, setFilename] = useState("");
-  const [keepTryingFetchResult, setKeepTryingFetchResult] = useState(false);
 
   useEffect(() => {
     setResult("");
@@ -55,7 +44,14 @@ const QueryAPIQueryView = () => {
   const addParam = () => {
     setParams((prev) => {
       const newParams = [...prev];
-      newParams.push({ key: inputs[prev.length], value: values[prev.length] });
+      const newParamIndex = inputs.findIndex(
+        (key, idx) => !prev.some((param) => param.key === key) && idx >= prev.length,
+      );
+      if (newParamIndex !== -1) {
+        newParams.push({ key: inputs[newParamIndex], value: values[newParamIndex] });
+      } else {
+        newParams.push({ key: "", value: "" });
+      }
       return newParams;
     });
   };
@@ -76,16 +72,17 @@ const QueryAPIQueryView = () => {
     });
   };
 
-  // usePresignedURL
+  const runQueryRef = useRef(false);
 
   const handleRun = async () => {
-    const paramsObj: any = {};
+    setResult("");
     setQueryStatus("executing...");
-    params.forEach((param) => (paramsObj[param.key] = param.value));
-    // console.log(paramsObj);
-    // setQueryStatus("");
-    const requestTimestamp = new Date().toUTCString();
+    runQueryRef.current = true;
 
+    const paramsObj: any = {};
+    params.forEach((param) => (paramsObj[param.key] = param.value));
+
+    const requestTimestamp = new Date().toUTCString();
     const presignedUrl = await http({
       method: "POST",
       url: `${API}/queries/${query.name}/update_data`,
@@ -94,26 +91,29 @@ const QueryAPIQueryView = () => {
       },
     })
       .then(async (res: any) => {
-        // console.log(res);
-        // const results = await getFromPresignedURL(res.url);
-        // console.log(results);
         return res.data;
       })
-      .catch((e) => console.log(e));
+      .catch((e: Error) => {
+        toast(e.message, "error");
+      });
 
-    setQueryStatus("uploading...");
     if (presignedUrl?.url) {
-      const res = await getFromPresignedURL(presignedUrl.url, requestTimestamp);
-      setResult(JSON.stringify(res, null, "\t"));
-      setQueryStatus("done");
-      setFilename(`${query.name}_${requestTimestamp}.json`);
+      setQueryStatus("uploading...");
+      try {
+        const res = await getFromPresignedURL(presignedUrl.url, requestTimestamp);
+        setResult(JSON.stringify(res, null, "\t"));
+        setQueryStatus("");
+        setFilename(`${query.name}_${requestTimestamp}.json`);
+      } catch (e: any) {
+        setQueryStatus(e.message);
+      }
     } else {
       setQueryStatus("error");
     }
+    runQueryRef.current = false;
     setTimeout(() => {
       setQueryStatus("");
-    }, 3000);
-    // console.log(res);
+    }, 2000);
   };
 
   interface RequestParameters {
@@ -130,17 +130,16 @@ const QueryAPIQueryView = () => {
       },
       method: "GET",
     };
-    // let keepGoing = true
-    while (true) {
+    while (runQueryRef.current) {
       try {
         const response = await axios(requestParameters);
-        // console.log(response);
-        return response.data;
+        return response.data; //TODO handle not 404 || 304 errors
       } catch (e) {
         console.log(e);
         await new Promise((r) => setTimeout(r, 5000));
       }
     }
+    return new Promise((_, reject) => reject(new Error("interrupted by user")));
   };
 
   const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
@@ -150,17 +149,13 @@ const QueryAPIQueryView = () => {
       method: "GET",
       url: `${API}/queries/${query.name}/query`,
     }).then((res) => {
-      // console.log(res);
       return res.data;
     });
 
-  const queryData = useQuery(["subscriptonABI", query.name], getQuery, {
+  const queryData = useQuery(["queryData", query.name], getQuery, {
     ...queryCacheProps,
     onError: (error: Error) => {
       console.log(error);
-    },
-    onSettled: (data: any) => {
-      // console.log(data);
     },
     enabled: !!query.name,
   });
@@ -188,10 +183,10 @@ const QueryAPIQueryView = () => {
             onClick={() => handleRun()}
             disabled={!!queryStatus && queryStatus !== "done"}
           >
-            {!queryStatus || queryStatus === "done" ? "Run" : <Spinner />}
+            {!!queryStatus && queryStatus !== "done" ? <Spinner /> : "Run"}
           </Button>
           <Flex justifyContent="space-between" alignItems="center" mb="10px">
-            <Text fontSize="24px" fontWeight="700">
+            <Text fontSize="24px" fontWeight="700" userSelect="none">
               {query.name}
             </Text>
           </Flex>
@@ -206,7 +201,8 @@ const QueryAPIQueryView = () => {
               )}
             </Flex>
           )}
-          {!queryData.data && <Flex minH="20px" />}
+          {!queryData.data &&
+            (queryData.isLoading ? <Spinner h="20px" w="20px" /> : <Flex minH="20px" />)}
           <Flex direction="column" p="0px" overflowY="auto" gap="20px">
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="20px" fontWeight="700" userSelect="none">
@@ -241,21 +237,7 @@ const QueryAPIQueryView = () => {
                           </option>
                         ))}
                       </datalist>
-                      {/* <Select
-                      value={param.key}
-                      w="fit-content"
-                      bg="#232323"
-                      onChange={(e) => setParam(idx, "key", e.target.value)}
-                      borderColor="#4D4D4D"
-                    >
-                      {inputs.map((paramKey) => (
-                        <option key="paramKey" value={paramKey}>
-                          {paramKey}
-                        </option>
-                      ))}
-                    </Select> */}
                       {param.key?.includes("timestamp") ? (
-                        // <>
                         <TimestampInput2
                           timestamp={param.value ?? ""}
                           setTimestamp={(newValue: string) =>
@@ -263,11 +245,8 @@ const QueryAPIQueryView = () => {
                           }
                         />
                       ) : (
-                        //   <Spacer />
-                        // </>
                         <Input
                           flex="2"
-                          // minW="100%"
                           h="40px"
                           variant="address"
                           border="1px solid #4D4D4D"
@@ -276,7 +255,6 @@ const QueryAPIQueryView = () => {
                           mr="10px"
                         />
                       )}
-                      {/* <Spacer /> */}
                       <AiOutlineMinusCircle
                         style={{ minWidth: "18px" }}
                         onClick={() => removeParam(idx)}
@@ -287,7 +265,15 @@ const QueryAPIQueryView = () => {
               </Flex>
             </Flex>
             {(result || queryStatus) && (
-              <QueryAPIResult result={result} filename={filename} status={queryStatus} />
+              <QueryAPIResult
+                result={result}
+                filename={filename}
+                status={queryStatus}
+                onCancel={() => {
+                  setQueryStatus("canceling...");
+                  runQueryRef.current = false;
+                }}
+              />
             )}
           </Flex>
         </Flex>
