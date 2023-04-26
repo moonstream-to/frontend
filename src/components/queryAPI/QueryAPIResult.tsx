@@ -53,7 +53,7 @@ const QueryAPIResult = ({
           {status}
         </Text>
         {status === "uploading..." && (
-          <Button variant="cancelButton" onClick={() => onCancel()}>
+          <Button variant="cancelButton" maxH="24px" fontSize="14px" onClick={() => onCancel()}>
             Cancel
           </Button>
         )}

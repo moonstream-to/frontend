@@ -138,6 +138,7 @@ const QueryContractView = () => {
           w="100%"
           minH="100%"
           maxW="800px"
+          minW="800px"
         >
           <Flex justifyContent="space-between" alignItems="center" mb="10px">
             <Text fontSize="24px" fontWeight="700">
