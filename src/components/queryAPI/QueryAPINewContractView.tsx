@@ -1,10 +1,12 @@
-import { CloseIcon } from "@chakra-ui/icons";
-import { Button, Flex, Image, Input, Select, Spinner, Text } from "@chakra-ui/react";
 import { useState } from "react";
+
 import { useMutation, useQueryClient } from "react-query";
+import { Button, Flex, Input, Select, Spinner, Text } from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons";
+
+import { SubscriptionsService } from "../../services";
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import useMoonToast from "../../hooks/useMoonToast";
-import { SubscriptionsService } from "../../services";
 
 const QueryAPINewContractView = () => {
   const toast = useMoonToast();
@@ -13,6 +15,7 @@ const QueryAPINewContractView = () => {
   const [address, setAddress] = useState("");
   const [title, setTitle] = useState("");
   const queryClient = useQueryClient();
+
   const createSubscription = useMutation(SubscriptionsService.createSubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
@@ -20,19 +23,8 @@ const QueryAPINewContractView = () => {
       setIsCreatingContract(false);
       queryClient.invalidateQueries("subscriptions");
     },
-    // onSuccess: (response) => {
-    // subscriptionsCache.refetch();
-    //   const { session_id: sessionId, session_url: sessionUrl } = response.data;
-    //   if (sessionId) {
-    //     stripe.redirectToCheckout({ sessionId });
-    //   } else if (sessionUrl) {
-    //     window.location = sessionUrl;
-    //   }
-    // },
   });
 
-  // const;
-  // const;
   return (
     <Flex
       direction="column"
@@ -81,9 +73,9 @@ const QueryAPINewContractView = () => {
       </Select>
       <Text>Address</Text>
       <Input
+        variant="address"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
-        variant="address"
         w="100%"
       />
       <Text>Title</Text>
