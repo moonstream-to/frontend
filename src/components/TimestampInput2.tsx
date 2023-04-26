@@ -1,5 +1,7 @@
-import { Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+
+import { Flex, Input, Text, Icon } from "@chakra-ui/react";
+import { BsArrowLeftRight } from "react-icons/bs";
 
 const TimestampInput2 = ({
   timestamp,
@@ -51,8 +53,8 @@ const TimestampInput2 = ({
     setTimestamp(newTimestamp);
   }, [year, month, day, hour, min, sec]);
 
-  const setComponents = (timestampString: string) => {
-    const date = new Date(Number(timestampString) * 1000);
+  const setComponents = (timestamp: string) => {
+    const date = new Date(Number(timestamp) * 1000);
     setYear(String(date.getUTCFullYear()));
     setMonth(String(date.getUTCMonth() + 1));
     setDay(String(date.getUTCDate()));
@@ -62,7 +64,7 @@ const TimestampInput2 = ({
   };
 
   return (
-    <Flex gap="10px" alignItems="end" fontSize="14px" w="100%">
+    <Flex gap="10px" alignItems="center" fontSize="14px" w="100%">
       <Input
         minW="14ch"
         maxW="14ch"
@@ -75,15 +77,15 @@ const TimestampInput2 = ({
         }}
         border="1px solid #4D4D4D"
       />
+      <Icon as={BsArrowLeftRight} />
       {components.map((component) => (
         <Flex
           direction="column"
           key={component.label}
           alignItems="center"
           justifyContent="space-between"
-          h="100%"
         >
-          <Text p="0px" color="#CCCCCC" fontSize="12px" lineHeight="12px">
+          <Text p="0px" color="#CCCCCC" fontSize="12px" lineHeight="12px" userSelect="none">
             {component.label}
           </Text>
           <Input
@@ -102,7 +104,9 @@ const TimestampInput2 = ({
           />
         </Flex>
       ))}
-      <Text fontSize="12px">UTC</Text>
+      <Text fontSize="12px" userSelect="none" mt="auto">
+        UTC
+      </Text>
     </Flex>
   );
 };
