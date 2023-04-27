@@ -24,6 +24,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
       w="100%"
       overflow="hidden"
       justifyContent="space-between"
+      borderBottom="1px solid white"
       {...props}
     >
       <RouterLink href="/" passHref>
