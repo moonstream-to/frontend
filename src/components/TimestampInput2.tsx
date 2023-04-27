@@ -16,6 +16,7 @@ const TimestampInput2 = ({
   const [hour, setHour] = useState("");
   const [min, setMin] = useState("");
   const [sec, setSec] = useState("");
+  const [borderColor, setBorderColor] = useState("#4D4D4D");
 
   const components = [
     { value: year, setValue: setYear, label: "Yr" },
@@ -53,6 +54,10 @@ const TimestampInput2 = ({
     setTimestamp(newTimestamp);
   }, [year, month, day, hour, min, sec]);
 
+  useEffect(() => {
+    setBorderColor(Number(timestamp) || !timestamp || timestamp === "0" ? "#4d4d4d" : "error.500");
+  }, [timestamp]);
+
   const setComponents = (timestamp: string) => {
     const date = new Date(Number(timestamp) * 1000);
     setYear(String(date.getUTCFullYear()));
@@ -71,11 +76,15 @@ const TimestampInput2 = ({
         fontSize="14px"
         value={timestamp}
         p="10px"
+        type="number"
         onChange={(e) => {
           setTimestamp(e.target.value);
           setComponents(e.target.value);
         }}
         border="1px solid #4D4D4D"
+        borderColor={borderColor}
+        _hover={{ borderColor }}
+        _focusVisible={{ borderColor, outline: "none" }}
       />
       <Icon as={BsArrowLeftRight} />
       {components.map((component) => (
