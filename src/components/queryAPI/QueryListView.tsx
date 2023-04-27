@@ -28,6 +28,7 @@ const QueryListView = () => {
       bg="#2d2d2d"
       gap="30px"
       flexDirection="column"
+      opacity={isCreatingContract ? 0.4 : 1}
     >
       <Flex gap="20px" justifyContent="start" fontSize="24px" lineHeight="24px" p="0">
         <Button

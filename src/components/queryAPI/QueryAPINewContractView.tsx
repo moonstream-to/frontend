@@ -35,6 +35,7 @@ const QueryAPINewContractView = () => {
       w="100%"
       minH="100%"
       maxW="800px"
+      minW="800px"
       position="relative"
     >
       <Flex gap="20px" position="absolute" zIndex="2" bottom="15px" right="15px">
