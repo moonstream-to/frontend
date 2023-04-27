@@ -6,6 +6,7 @@ import { Button, Flex, Spinner, Text, Input } from "@chakra-ui/react";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 
 import useQueryAPI from "../../contexts/QueryAPIContext";
+import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
 import http from "../../utils/httpMoonstream";
 import useMoonToast from "../../hooks/useMoonToast";
@@ -15,7 +16,6 @@ import QueryAPIResult from "./QueryAPIResult";
 import TimestampInput2 from "../TimestampInput2";
 
 import styles from "./QueryAPIQueryView.module.css";
-import Web3Context from "../../contexts/Web3Context/context";
 
 const inputs = [
   "address",
@@ -41,7 +41,8 @@ const values = ["0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f", "Transfer"];
 const QueryAPIQueryView = () => {
   const { web3 } = useContext(Web3Context);
 
-  const validate = (key: string, value: string) => {
+  const isValid = (key: string, value: string, allowEmpty = true) => {
+    if (!allowEmpty && value === "") return false;
     const validators = [
       web3.utils.isAddress,
       () => true,
@@ -51,11 +52,9 @@ const QueryAPIQueryView = () => {
       isPositiveInteger,
       isPositiveInteger,
       isPositiveInteger,
-    ];
+    ]; //TODO make it map
     const validatorIdx = inputs.indexOf(key);
-    console.log(validatorIdx);
     if (validatorIdx > -1 && validatorIdx < validators.length) {
-      console.log(validators[validatorIdx]);
       return validators[validatorIdx](value);
     } else {
       return true;
@@ -107,6 +106,12 @@ const QueryAPIQueryView = () => {
   const runQueryRef = useRef(false);
 
   const handleRun = async () => {
+    const invalidParam = params.find((param) => !isValid(param.key, param.value, false));
+    if (invalidParam) {
+      toast(`Input for '${invalidParam.key}' is not valid`, "error");
+      return;
+    }
+
     setResult("");
     setQueryStatus("executing...");
     runQueryRef.current = true;
@@ -283,7 +288,7 @@ const QueryAPIQueryView = () => {
                           variant="address"
                           border="1px solid #4D4D4D"
                           borderColor={
-                            validate(param.key, param.value) || !param.value
+                            isValid(param.key, param.value) || !param.value
                               ? "#4d4d4d"
                               : "error.500"
                           }
@@ -318,6 +323,6 @@ const QueryAPIQueryView = () => {
       )}
     </>
   );
-};
+}; //TODO break it to smaller parts
 
 export default QueryAPIQueryView;
