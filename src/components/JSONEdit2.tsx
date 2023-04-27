@@ -1,21 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect, useState } from "react";
 import AceEditor from "react-ace";
-// import "brace/mode/json";
-// import "brace/theme/github";
 
 import "ace-builds/src-noconflict/mode-json";
-import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-twilight";
-import { Flex } from "@chakra-ui/react";
-// import "ace-builds/src-noconflict/ext-language_tools";
-
-// const ace = require("ace-builds/src-noconflict/ace");
-
-// useEffect(() => {
-
-// })
-// ace.edit()
 
 const MyJsonComponent = ({
   json,

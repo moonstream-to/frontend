@@ -1,34 +1,19 @@
 import React, { useState, useEffect, useCallback, useContext, createContext } from "react";
 import http from "axios";
-// import UserContext from "./context";
 import { AUTH_URL } from "../../services/auth.service";
 
 type UserContextType = {
   user: any;
-  // selectedStage: number
-  // selectedPath: number
-  // selectedTokens: number[]
-  // gardenContractAddress: string
-  // sessionId: number
-  // selectStage: (stage: number) => void
-  // selectPath: (path: number) => void
-  // selectToken: (tokenId: number) => void
-  // generatePathId: (stage: number, path: number) => string
-  // setSessionId: (sessionId: number) => void
-  // setGardenContractAddress: (address: string) => void
-  // toggleTokenSelect: (tokenId: number) => void
 };
 
 const UserContext = createContext<UserContextType | any>(null); //TODO
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
-  // const [isInit, setInit] = useState(false);
 
   const getUser = useCallback(() => {
     const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
     if (!token) {
-      // setInit(true);
       return setUser(null);
     }
 
@@ -47,7 +32,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         },
       )
       .catch(() => setUser(null));
-    // .finally(() => setInit(true));
   }, []);
 
   useEffect(() => {
@@ -67,12 +51,10 @@ const useUser = () => {
   const context = useContext(UserContext);
 
   if (context === undefined) {
-    throw new Error("useGofp must be used within gofpContext");
+    throw new Error("useUser must be used within UserContext");
   }
 
   return context;
 };
 
 export default useUser;
-
-// export default UserProvider;
