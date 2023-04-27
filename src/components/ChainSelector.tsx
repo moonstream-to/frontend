@@ -1,10 +1,21 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext } from "react";
-import { Menu, MenuItem, MenuList, Image, MenuButton, Button, Icon } from "@chakra-ui/react";
+
+import { Menu, MenuItem, MenuList, Image, MenuButton, Button, Icon, Flex, Text } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { MdOutlineLaptopMac } from "react-icons/md";
 
 import Web3Context from "../contexts/Web3Context/context";
+import { AWS_ASSETS_PATH } from "../constants";
+
+import ChainSelectorItem from "./ChainSelectorItem";
+
+const assets = {
+  ethereum: `${AWS_ASSETS_PATH}/eth-diamond-rainbow.png`,
+  polygon: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
+  mumbai: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
+  wyrm: `${AWS_ASSETS_PATH}/great-wyrm-network-logo.png`,
+};
 
 const ChainSelector = () => {
   const web3Provider = useContext(Web3Context);
@@ -28,13 +39,7 @@ const ChainSelector = () => {
               alt="chain"
               h="24px"
               mr={4}
-              src={
-                web3Provider.targetChain?.name === "ethereum"
-                  ? "https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/ethereum/eth-diamond-rainbow.png"
-                  : web3Provider.targetChain?.name === "localhost"
-                  ? ""
-                  : "https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png"
-              }
+              src={assets[web3Provider.targetChain?.name as keyof typeof assets] ?? ''}
             ></Image>
           ) : (
             ""
@@ -47,75 +52,54 @@ const ChainSelector = () => {
         {web3Provider.targetChain?.name ?? "Chain selector"}
       </MenuButton>
       <MenuList
-        // bg='#1A1D22'
+        bg='#1A1D22'
         color="white"
         borderRadius="30px"
         border="1px solid white"
+        pl='15px'
       >
         <MenuItem
-          // isDisabled={web3Provider.targetChain?.name === "ethereum"}
+          isDisabled={web3Provider.targetChain?.name === "ethereum"}
           onClick={() => {
             web3Provider.changeChain("ethereum");
           }}
         >
-          <Image
-            alt="ethereum"
-            h="24px"
-            mr={6}
-            src="https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/eth-diamond-rainbow.png"
-          ></Image>
-          Ethereum
+          <ChainSelectorItem name='Ethereum' img={assets.ethereum} />
         </MenuItem>
         <MenuItem
-          // isDisabled={web3Provider.targetChain?.name === "polygon"}
+          isDisabled={web3Provider.targetChain?.name === "polygon"}
           onClick={() => {
             web3Provider.changeChain("polygon");
           }}
         >
-          <Image
-            alt="matic"
-            h="24px"
-            mr={4}
-            src="https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png"
-          ></Image>
-          Polygon
+          <ChainSelectorItem name='Polygon' img={assets.polygon} />
         </MenuItem>
         <MenuItem
-          // isDisabled={web3Provider.targetChain?.name === "mumbai"}
+          isDisabled={web3Provider.targetChain?.name === "mumbai"}
           onClick={() => {
             web3Provider.changeChain("mumbai");
           }}
         >
-          <Image
-            alt="matic"
-            h="24px"
-            mr={4}
-            src="https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png"
-          ></Image>
-          Mumbai
+          <ChainSelectorItem name='Mumbai' img={assets.mumbai} />
         </MenuItem>
         <MenuItem
-          // isDisabled={web3Provider.targetChain?.name === "mumbai"}
+          isDisabled={web3Provider.targetChain?.name === "wyrm"}
           onClick={() => {
             web3Provider.changeChain("wyrm");
           }}
         >
-          <Image
-            alt="wyrm"
-            h="24px"
-            mr={4}
-            src="https://s3.amazonaws.com/static.simiotics.com/moonstream/assets/matic-token-inverted-icon.png"
-          ></Image>
-          Wyrm
+          <ChainSelectorItem name='Wyrm' img={assets.wyrm} />
         </MenuItem>
         <MenuItem
-          // isDisabled={web3Provider.targetChain?.name === "localhost"}
+          isDisabled={web3Provider.targetChain?.name === "localhost"}
           onClick={() => {
             web3Provider.changeChain("localhost");
           }}
         >
-          <Icon h="24px" mr={4} as={MdOutlineLaptopMac} />
-          Localhost
+          <Flex justifyContent="center" w="24px">
+            <Icon h="24px" as={MdOutlineLaptopMac} />
+          </Flex>  
+          <Text ml="15px">Localhost</Text>
         </MenuItem>
       </MenuList>
     </Menu>
