@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
 import axios from "axios";
@@ -15,6 +15,7 @@ import QueryAPIResult from "./QueryAPIResult";
 import TimestampInput2 from "../TimestampInput2";
 
 import styles from "./QueryAPIQueryView.module.css";
+import Web3Context from "../../contexts/Web3Context/context";
 
 const inputs = [
   "address",
@@ -27,9 +28,40 @@ const inputs = [
   "blocks_back",
 ];
 
+const isPositiveInteger = (value: string) => {
+  const num = Number(value);
+  if (!num && num != 0) {
+    return false;
+  }
+  return num === Math.round(num) && num > -1;
+};
+
 const values = ["0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f", "Transfer"];
 
 const QueryAPIQueryView = () => {
+  const { web3 } = useContext(Web3Context);
+
+  const validate = (key: string, value: string) => {
+    const validators = [
+      web3.utils.isAddress,
+      () => true,
+      isPositiveInteger,
+      isPositiveInteger,
+      web3.utils.isAddress,
+      isPositiveInteger,
+      isPositiveInteger,
+      isPositiveInteger,
+    ];
+    const validatorIdx = inputs.indexOf(key);
+    console.log(validatorIdx);
+    if (validatorIdx > -1 && validatorIdx < validators.length) {
+      console.log(validators[validatorIdx]);
+      return validators[validatorIdx](value);
+    } else {
+      return true;
+    }
+  };
+
   const toast = useMoonToast();
   const { selectedQuery: query } = useQueryAPI();
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
@@ -208,7 +240,7 @@ const QueryAPIQueryView = () => {
               <Text fontSize="20px" fontWeight="700" userSelect="none">
                 Inputs
               </Text>
-              <AiOutlinePlusCircle size="24" onClick={() => addParam()} />
+              <AiOutlinePlusCircle cursor="pointer" size="24" onClick={() => addParam()} />
             </Flex>
             <Flex gap="0" w="100%">
               <Flex direction="column" gap="10px" fontSize="18px" w="100%">
@@ -250,6 +282,11 @@ const QueryAPIQueryView = () => {
                           h="40px"
                           variant="address"
                           border="1px solid #4D4D4D"
+                          borderColor={
+                            validate(param.key, param.value) || !param.value
+                              ? "#4d4d4d"
+                              : "error.500"
+                          }
                           value={param.value}
                           onChange={(e) => setParam(idx, "value", e.target.value)}
                           mr="10px"
@@ -258,6 +295,7 @@ const QueryAPIQueryView = () => {
                       <AiOutlineMinusCircle
                         style={{ minWidth: "18px" }}
                         onClick={() => removeParam(idx)}
+                        cursor="pointer"
                       />
                     </Flex>
                   );
