@@ -4,8 +4,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   FormControl,
   FormLabel,
@@ -19,7 +17,6 @@ import useLogin from "../hooks/useLogin";
 import { CloseIcon } from "@chakra-ui/icons";
 
 import { AWS_ASSETS_PATH } from "../constants";
-// import SignUp from "./SignUp";
 
 const icons = {
   logo: `${AWS_ASSETS_PATH}/icons/moon-logo.png`,
@@ -29,17 +26,16 @@ interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSignUp: () => void;
+  onForgotPassword: () => void;
 }
 
-const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp }) => {
+const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgotPassword }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const { login, isLoading, data } = useLogin();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     login({ username, password });
   };
 
@@ -54,7 +50,6 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp }) => {
       <ModalOverlay />
       <form onSubmit={handleSubmit}>
         <ModalContent p="0" borderRadius="20px" bg="transparent">
-          {/* <ModalHeader>Login</ModalHeader> */}
           <ModalBody bg="transparent">
             <Flex
               direction="column"
@@ -88,7 +83,25 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp }) => {
               </FormControl>
 
               <FormControl mt="-20px">
-                <FormLabel>Password</FormLabel>
+                <FormLabel>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    Password
+                    <Button
+                      variant="transparent"
+                      p="0"
+                      h="auto"
+                      fontWeight="400"
+                      color="#F88F78"
+                      onClick={() => {
+                        onForgotPassword();
+                        onClose();
+                      }}
+                    >
+                      Forgot password?
+                    </Button>
+                  </Flex>
+                </FormLabel>
+
                 <Input
                   type="password"
                   placeholder="Enter password"
@@ -123,9 +136,6 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp }) => {
               </Flex>
             </Flex>
           </ModalBody>
-
-          {/* <ModalFooter> */}
-          {/* </ModalFooter> */}
         </ModalContent>
       </form>
     </Modal>

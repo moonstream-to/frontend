@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Button, Spinner, Text } from "@chakra-ui/react";
+import { Button, Spinner } from "@chakra-ui/react";
 import SignIn from "./SignIn";
 import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
 import SignUp from "./SignUp";
+import ForgotPassword from "./ForgotPassword";
 
 const LoginButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isForgotPassOpen, setIsForgotPassOpen] = useState(false);
 
   const { user } = useUser();
 
@@ -22,7 +24,6 @@ const LoginButton: React.FC = () => {
   const { logout, isLoading } = useLogout();
   return (
     <>
-      {/* {!user && ( */}
       <Button
         bg="#353535"
         borderRadius="20px"
@@ -38,7 +39,6 @@ const LoginButton: React.FC = () => {
           outline: "none",
         }}
         onClick={() => {
-          console.log(user);
           if (!user) {
             handleOpen();
           } else {
@@ -50,9 +50,14 @@ const LoginButton: React.FC = () => {
         {!isLoading && user && "Log out"}
         {!isLoading && !user && "Log in"}
       </Button>
-      {/* )} */}
-      <SignIn isOpen={isOpen} onClose={handleClose} onSignUp={() => setIsSignUpOpen(true)} />
+      <SignIn
+        isOpen={isOpen}
+        onClose={handleClose}
+        onSignUp={() => setIsSignUpOpen(true)}
+        onForgotPassword={() => setIsForgotPassOpen(true)}
+      />
       <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      <ForgotPassword isOpen={isForgotPassOpen} onClose={() => setIsForgotPassOpen(false)} />
     </>
   );
 };

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
+
 import {
   Button,
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   FormControl,
   FormLabel,
@@ -15,7 +14,6 @@ import {
   Text,
   Spinner,
 } from "@chakra-ui/react";
-import useLogin from "../hooks/useLogin";
 import { CloseIcon } from "@chakra-ui/icons";
 
 import { AWS_ASSETS_PATH } from "../constants";
@@ -35,12 +33,10 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
-  // const { login, isLoading, data } = useLogin();
   const { signUp, isLoading, isSuccess } = useSignUp();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     signUp({ username, email, password });
   };
 
@@ -55,7 +51,6 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       <ModalOverlay />
       <form onSubmit={handleSubmit}>
         <ModalContent p="0" borderRadius="20px" bg="transparent">
-          {/* <ModalHeader>Login</ModalHeader> */}
           <ModalBody bg="transparent">
             <Flex
               direction="column"
@@ -92,9 +87,9 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <Input
                   type="text"
                   placeholder="Enter your email"
-                  name="username"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
+                  name="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
               </FormControl>
 
@@ -113,9 +108,6 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               </Button>
             </Flex>
           </ModalBody>
-
-          {/* <ModalFooter> */}
-          {/* </ModalFooter> */}
         </ModalContent>
       </form>
     </Modal>
