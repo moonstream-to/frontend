@@ -42,14 +42,16 @@ const TimestampInput2 = ({
 
   useEffect(() => {
     const newTimestamp = String(
-      Date.UTC(
-        Number(year),
-        Number(month) - 1,
-        Number(day),
-        Number(hour),
-        Number(min),
-        Number(sec),
-      ) / 1000,
+      Math.round(
+        Date.UTC(
+          Number(year),
+          Number(month) - 1,
+          Number(day),
+          Number(hour),
+          Number(min),
+          Number(sec),
+        ) / 1000,
+      ),
     );
     setTimestamp(newTimestamp);
   }, [year, month, day, hour, min, sec]);
