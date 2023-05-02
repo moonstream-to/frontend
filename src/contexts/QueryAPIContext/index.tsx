@@ -5,10 +5,12 @@ import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
+import http from "../../utils/httpMoonstream";
 import useUser from "../UserContext";
 
 type QueryContextType = {
   contracts: any;
+  queries: any;
   isShowContracts: boolean;
   setIsShowContracts: (arg0: boolean) => void;
   filter: string;
@@ -21,8 +23,8 @@ type QueryContextType = {
   setIsCreatingContract: (arg0: boolean) => void;
   isEditingContract: boolean;
   setIsEditingContract: (arg0: boolean) => void;
-  selectedQuery: any;
-  setSelectedQuery: (arg0: any) => void;
+  selectedQueryId: number;
+  setSelectedQueryId: (arg0: number) => void;
   reset: () => void;
 };
 
@@ -32,14 +34,14 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
   const [isShowContracts, setIsShowContracts] = useState(false);
   const [filter, setFilter] = useState("");
   const [selectedContractId, setSelectedContractId] = useState(0);
-  const [selectedQuery, setSelectedQuery] = useState({});
+  const [selectedQueryId, setSelectedQueryId] = useState(0);
   const [types, setTypes] = useState([]);
   const [isCreatingContract, setIsCreatingContract] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
   const reset = () => {
     setSelectedContractId(0);
-    setSelectedQuery({});
+    setSelectedQueryId(0);
     setIsEditingContract(false);
     setIsCreatingContract(false);
   };
@@ -71,8 +73,24 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
     enabled: !!user,
   });
 
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+  const getQueries = () =>
+    http({
+      method: "GET",
+      url: `${API}/queries/list`,
+    });
+
+  const queries = useQuery(["queries"], getQueries, {
+    ...queryCacheProps,
+    onError: (error) => {
+      toast(error.message, "error");
+    },
+    enabled: !!user,
+  });
+
   const value = {
     contracts,
+    queries,
     isShowContracts,
     setIsShowContracts,
     filter,
@@ -85,8 +103,8 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
     setIsCreatingContract,
     isEditingContract,
     setIsEditingContract,
-    selectedQuery,
-    setSelectedQuery,
+    selectedQueryId,
+    setSelectedQueryId,
     reset,
   };
 

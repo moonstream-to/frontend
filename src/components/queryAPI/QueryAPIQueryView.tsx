@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
 import axios from "axios";
@@ -62,7 +62,11 @@ const QueryAPIQueryView = () => {
   };
 
   const toast = useMoonToast();
-  const { selectedQuery: query } = useQueryAPI();
+  const { queries, selectedQueryId } = useQueryAPI();
+  const query = useMemo(
+    () => (queries.data?.data ? queries.data.data[selectedQueryId] ?? {} : {}),
+    [queries.data, selectedQueryId],
+  );
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   const [result, setResult] = useState("");
   const [queryStatus, setQueryStatus] = useState("");
@@ -70,7 +74,7 @@ const QueryAPIQueryView = () => {
 
   useEffect(() => {
     setResult("");
-  }, [query]);
+  }, [selectedQueryId]);
 
   const addParam = () => {
     setParams((prev) => {

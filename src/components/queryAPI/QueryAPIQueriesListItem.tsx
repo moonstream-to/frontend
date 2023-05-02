@@ -4,14 +4,20 @@ import { Flex, Text } from "@chakra-ui/react";
 
 import useQueryAPI from "../../contexts/QueryAPIContext";
 
-const QueryAPIQueriesListItem = ({ query }: { query: { entry_id: string; name: string } }) => {
+const QueryAPIQueriesListItem = ({
+  query,
+  idx,
+}: {
+  query: { entry_id: string; name: string };
+  idx: number;
+}) => {
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
-  const { selectedQuery, setSelectedQuery, filter } = useQueryAPI();
+  const { selectedQueryId, setSelectedQueryId, filter } = useQueryAPI();
 
   useEffect(() => {
-    setSelected(query.entry_id === selectedQuery.entry_id);
-  }, [query, selectedQuery]);
+    setSelected(idx === selectedQueryId);
+  }, [idx, selectedQueryId]);
 
   useEffect(() => {
     setIsShow(!filter || query.name.toLowerCase().includes(filter.toLowerCase()));
@@ -24,7 +30,7 @@ const QueryAPIQueriesListItem = ({ query }: { query: { entry_id: string; name: s
           flexDirection="column"
           gap="15px"
           p="10px"
-          onClick={() => setSelectedQuery(query)}
+          onClick={() => setSelectedQueryId(idx)}
           borderRadius="10px"
           bg={selected ? "#4d4d4d" : "transparent"}
           cursor="pointer"
