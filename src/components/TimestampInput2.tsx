@@ -10,38 +10,39 @@ const TimestampInput2 = ({
   timestamp: string;
   setTimestamp: (arg0: string) => void;
 }) => {
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
-  const [hour, setHour] = useState("");
-  const [min, setMin] = useState("");
-  const [sec, setSec] = useState("");
   const [borderColor, setBorderColor] = useState("#4D4D4D");
 
-  const components = [
-    { value: year, setValue: setYear, label: "Yr" },
-    { value: month, setValue: setMonth, label: "Mon" },
-    { value: day, setValue: setDay, label: "Day" },
-    { value: hour, setValue: setHour, label: "Hr" },
-    { value: min, setValue: setMin, label: "Min" },
-    { value: sec, setValue: setSec, label: "Sec" },
-  ];
+  const initialState = {
+    components: [
+      { value: "", label: "Yr" },
+      { value: "", label: "Mon" },
+      { value: "", label: "Day" },
+      { value: "", label: "Hr" },
+      { value: "", label: "Min" },
+      { value: "", label: "Sec" },
+    ],
+    epoch: "",
+  };
 
-  useEffect(() => {
-    let date: Date;
-    if (Number(timestamp)) {
-      date = new Date(Number(timestamp) * 1000);
-    } else {
-      date = new Date(Date.now());
-      date.setMinutes(0);
-      date.setSeconds(0);
-      date.setMilliseconds(0);
-    }
-    setComponents(String(date.getTime() / 1000));
-  }, []);
+  const [date, setDate] = useState({
+    components: [...initialState.components],
+    epoch: "",
+  });
 
-  useEffect(() => {
-    const newTimestamp = String(
+  const getComponents = (timestamp: string) => {
+    const date = new Date(Number(timestamp) * 1000);
+    const result = [...initialState.components];
+    result[0].value = String(date.getUTCFullYear());
+    result[1].value = String(date.getUTCMonth() + 1);
+    result[2].value = String(date.getUTCDate());
+    result[3].value = String(date.getUTCHours());
+    result[4].value = String(date.getUTCMinutes());
+    result[5].value = String(date.getUTCSeconds());
+    return result;
+  };
+
+  const getEpoch = ([year, month, day, hour, min, sec]: string[]) => {
+    return String(
       Math.round(
         Date.UTC(
           Number(year),
@@ -53,22 +54,58 @@ const TimestampInput2 = ({
         ) / 1000,
       ),
     );
-    setTimestamp(newTimestamp);
-  }, [year, month, day, hour, min, sec]);
+  };
+
+  useEffect(() => {
+    let date: Date;
+    if (Number(timestamp)) {
+      date = new Date(Number(timestamp) * 1000);
+    } else {
+      date = new Date(Date.now());
+      date.setMinutes(0);
+      date.setSeconds(0);
+      date.setMilliseconds(0);
+    }
+    const components = getComponents(String(date.getTime() / 1000));
+    setDate({ epoch: String(date.getTime() / 1000), components });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleComponentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const components = [...date.components];
+    components[Number(e.target.name)].value = e.target.value;
+    console.log(components);
+    setDate({
+      epoch: getEpoch(components.map((c) => c.value)),
+      components,
+    });
+  };
+
+  useEffect(() => {
+    setTimestamp(date.epoch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date]);
+
+  const handleTimestampChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDate({
+      epoch: e.target.value,
+      components: getComponents(e.target.value),
+    });
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const value = e.clipboardData.getData("text/plain");
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      e.preventDefault();
+      const components = getComponents(String(date.getTime() / 1000));
+      setDate({ epoch: String(date.getTime() / 1000), components });
+    }
+  };
 
   useEffect(() => {
     setBorderColor(Number(timestamp) || !timestamp || timestamp === "0" ? "#4d4d4d" : "error.500");
   }, [timestamp]);
-
-  const setComponents = (timestamp: string) => {
-    const date = new Date(Number(timestamp) * 1000);
-    setYear(String(date.getUTCFullYear()));
-    setMonth(String(date.getUTCMonth() + 1));
-    setDay(String(date.getUTCDate()));
-    setHour(String(date.getUTCHours()));
-    setMin(String(date.getUTCMinutes()));
-    setSec(String(date.getUTCSeconds()));
-  };
 
   return (
     <Flex gap="10px" alignItems="center" fontSize="14px" w="100%">
@@ -76,20 +113,18 @@ const TimestampInput2 = ({
         minW="14ch"
         maxW="14ch"
         fontSize="14px"
-        value={timestamp}
+        value={date.epoch}
         p="10px"
         type="number"
-        onChange={(e) => {
-          setTimestamp(e.target.value);
-          setComponents(e.target.value);
-        }}
+        onChange={handleTimestampChange}
         border="1px solid #4D4D4D"
         borderColor={borderColor}
         _hover={{ borderColor }}
         _focusVisible={{ borderColor, outline: "none" }}
+        onPaste={handlePaste}
       />
       <Icon as={BsArrowLeftRight} />
-      {components.map((component) => (
+      {date.components.map((component, idx: number) => (
         <Flex
           direction="column"
           key={component.label}
@@ -108,10 +143,10 @@ const TimestampInput2 = ({
             mt="5px"
             h="20px"
             border="1px solid #4D4D4D"
+            name={String(idx)}
             w={component.label === "Yr" ? "6ch" : "4ch"}
-            onChange={(e) => {
-              component.setValue(e.target.value);
-            }}
+            onChange={handleComponentChange}
+            onPaste={handlePaste}
           />
         </Flex>
       ))}
