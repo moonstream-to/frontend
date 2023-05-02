@@ -220,7 +220,7 @@ const QueryAPIQueryView = () => {
             onClick={() => handleRun()}
             disabled={!!queryStatus && queryStatus !== "done"}
           >
-            {!!queryStatus && queryStatus !== "done" ? <Spinner /> : "Run"}
+            {!!queryStatus && queryStatus !== "done" ? queryStatus : "Run"}
           </Button>
           <Flex justifyContent="space-between" alignItems="center" mb="10px">
             <Text fontSize="24px" fontWeight="700" userSelect="none">

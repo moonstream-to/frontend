@@ -134,6 +134,9 @@ const variantSave = () => {
     _hover: {
       backgroundColor: "#F56646",
       textDecoration: "none",
+      _disabled: {
+        backgroundColor: "#F56646",
+      },
     },
     _focus: {
       backgroundColor: "#F56646",

@@ -49,11 +49,14 @@ const QueryAPIResult = ({
             JSON
           </Text>
         )}
-        <Text fontWeight="400" color="#bfbfbf">
-          {status}
-        </Text>
         {status === "uploading..." && (
-          <Button variant="cancelButton" maxH="24px" fontSize="14px" onClick={() => onCancel()}>
+          <Button
+            mx="auto"
+            variant="cancelButton"
+            maxH="24px"
+            fontSize="14px"
+            onClick={() => onCancel()}
+          >
             Cancel
           </Button>
         )}
