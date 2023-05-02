@@ -7,11 +7,19 @@ import useQueryAPI from "../../contexts/QueryAPIContext";
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 
-const QueryContractsListItem = ({ contract, types }: { contract: any; types: any }) => {
+const QueryContractsListItem = ({
+  contract,
+  idx,
+  types,
+}: {
+  contract: any;
+  idx: number;
+  types: any;
+}) => {
   const [type, setType] = useState<{ icon_url?: string }>({});
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
-  const { selectedContract, setSelectedContract, filter } = useQueryAPI();
+  const { selectedContractId, setSelectedContractId, filter } = useQueryAPI();
 
   useEffect(() => {
     if (contract && types) {
@@ -20,8 +28,8 @@ const QueryContractsListItem = ({ contract, types }: { contract: any; types: any
   }, [contract, types]);
 
   useEffect(() => {
-    setSelected(contract.id === selectedContract.id);
-  }, [contract, selectedContract]);
+    setSelected(idx === selectedContractId);
+  }, [idx, selectedContractId]);
 
   useEffect(() => {
     if (filter === "") {
@@ -49,7 +57,7 @@ const QueryContractsListItem = ({ contract, types }: { contract: any; types: any
           flexDirection="column"
           gap="15px"
           p="10px"
-          onClick={() => setSelectedContract(contract)}
+          onClick={() => setSelectedContractId(idx)}
           borderRadius="10px"
           bg={selected ? "#4d4d4d" : "transparent"}
           cursor="pointer"

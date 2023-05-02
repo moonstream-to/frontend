@@ -10,7 +10,7 @@ import useMoonToast from "../../hooks/useMoonToast";
 
 const QueryAPINewContractView = () => {
   const toast = useMoonToast();
-  const { types, setIsCreatingContract, setSelectedContract } = useQueryAPI();
+  const { types, setIsCreatingContract, setSelectedContractId } = useQueryAPI();
   const [type, setType] = useState("");
   const [address, setAddress] = useState("");
   const [title, setTitle] = useState("");
@@ -19,7 +19,7 @@ const QueryAPINewContractView = () => {
   const createSubscription = useMutation(SubscriptionsService.createSubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
-      setSelectedContract({});
+      setSelectedContractId(0);
       setIsCreatingContract(false);
       queryClient.invalidateQueries("subscriptions");
     },

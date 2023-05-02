@@ -30,9 +30,9 @@ const formatDate = (dateTimeOffsetString: string) => {
   return date.toLocaleDateString();
 };
 
-const QueryContractView = () => {
+const QueryContractView = ({ contract }: { contract: any }) => {
   const toast = useMoonToast();
-  const { selectedContract: contract, setSelectedContract } = useQueryAPI();
+  const { setSelectedContractId } = useQueryAPI();
   const [JSONForEdit, setJSONForEdit] = useState("");
   const [isABIChanged, setIsABIChanged] = useState(false);
   const [ABILoader, setABILoader] = useState<{ name: string; url: string } | undefined>(undefined);
@@ -67,7 +67,7 @@ const QueryContractView = () => {
   const deleteSubscription = useMutation(SubscriptionsService.deleteSubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
-      setSelectedContract({});
+      setSelectedContractId(0);
       queryClient.invalidateQueries("subscriptions");
     },
   });

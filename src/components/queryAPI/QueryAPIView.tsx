@@ -12,7 +12,8 @@ import QueryContractView from "./QueryContractView";
 import QueryListView from "./QueryListView";
 
 const QueryAPIView = () => {
-  const { isCreatingContract, isShowContracts, reset } = useQueryAPI();
+  const { isCreatingContract, isShowContracts, reset, contracts, selectedContractId } =
+    useQueryAPI();
   const { user } = useUser();
   const queryClient = useQueryClient();
 
@@ -28,8 +29,10 @@ const QueryAPIView = () => {
       {user && (
         <Flex gap="30px" py="30px" px="7%" maxH="760px" minH="760px" maxW="1600px" minW="1400px">
           <QueryListView />
-          {isShowContracts &&
-            (!isCreatingContract ? <QueryContractView /> : <QueryAPINewContractView />)}
+          {isShowContracts && contracts.data && !isCreatingContract && (
+            <QueryContractView contract={contracts.data[selectedContractId]} />
+          )}
+          {isShowContracts && isCreatingContract && <QueryAPINewContractView />}
           {!isShowContracts && <QueryAPIQueryView />}
         </Flex>
       )}
