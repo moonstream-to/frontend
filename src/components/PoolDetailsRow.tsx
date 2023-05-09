@@ -2,15 +2,25 @@ import { HTMLAttributes, useEffect, useState } from "react";
 import { Flex, Link, Text } from "@chakra-ui/layout";
 
 import { MAX_INT } from "../constants";
+import { CopyIcon } from "@chakra-ui/icons";
+import { useClipboard } from "@chakra-ui/react";
 
 interface DetailsProps extends HTMLAttributes<HTMLElement> {
   type: string;
   value: string;
   href?: string;
   displayFull?: boolean;
+  canBeCopied?: boolean;
 }
 
-const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsProps) => {
+const PoolDetailsRow = ({
+  type,
+  value,
+  displayFull,
+  href,
+  canBeCopied = false,
+  ...props
+}: DetailsProps) => {
   const [valueString, setValueString] = useState("");
 
   const valueComponent = () => {
@@ -85,23 +95,39 @@ const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsPro
     setValueString(value);
   }, [value, displayFull]);
 
+  const { onCopy, hasCopied } = useClipboard(value);
+
   return (
     <Flex justifyContent="space-between" {...props}>
       <Text fontWeight="400" fontSize="18px">
         {type}
       </Text>
-      {href ? (
-        <Link
-          href={href}
-          color="orange.1000"
-          _hover={{ color: "orange.400", textDecoration: "none" }}
-          target="_blank"
-        >
-          {valueComponent()}
-        </Link>
-      ) : (
-        valueComponent()
-      )}
+      <Flex gap="10px" position="relative" alignItems="center">
+        {href ? (
+          <Link
+            href={href}
+            color="orange.1000"
+            _hover={{ color: "orange.400", textDecoration: "none" }}
+            target="_blank"
+          >
+            {valueComponent()}
+          </Link>
+        ) : (
+          valueComponent()
+        )}
+        {canBeCopied && <CopyIcon onClick={onCopy} cursor="pointer" />}
+        {hasCopied && (
+          <Text
+            fontWeight="700"
+            position="absolute"
+            top="-30px"
+            left="50%"
+            transform="translate(-50%, 0)"
+          >
+            copied
+          </Text>
+        )}
+      </Flex>
     </Flex>
   );
 };
