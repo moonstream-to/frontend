@@ -151,7 +151,7 @@ const QueryContractView = ({ contract }: { contract: any }) => {
             </Flex>
           )}
           <Flex bg="#232323" borderRadius="10px" p="20px" gap="10px" direction="column">
-            <PoolDetailsRow type="Contract address" value={contract.address} />
+            <PoolDetailsRow type="Contract address" value={contract.address} canBeCopied />
             {contract.subscription_type_id && (
               <PoolDetailsRow
                 type="Blockchain"
@@ -173,7 +173,7 @@ const QueryContractView = ({ contract }: { contract: any }) => {
             h="100%"
             position="relative"
           >
-            {isABIChanged && (
+            {isABIChanged && !abi.isLoading && (
               <Flex gap="20px" position="absolute" zIndex="2" bottom="15px" right="15px">
                 <Button
                   variant="cancelButton"
