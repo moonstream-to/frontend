@@ -10,11 +10,12 @@ import TerminusContractView from "./TerminusContractView";
 import Web3Context from "../../contexts/Web3Context/context";
 import ContractRow from "../ContractRow";
 import useTerminus from "../../contexts/TerminusContext";
+import useRecentAddresses from "../../hooks/useRecentAddresses";
 
 const TerminusView = () => {
   const {
-    recentAddresses,
-    setRecentAddresses,
+    // recentAddresses,
+    // setRecentAddresses,
     contractAddress,
     setContractAddress,
     selectPool,
@@ -24,25 +25,27 @@ const TerminusView = () => {
 
   const [addressInputValue, setAddressInputValue] = useState(contractAddress);
 
+  const [recentAddresses, addRecentAddress] = useRecentAddresses("terminus");
+
   const toast = useToast();
 
-  useEffect(() => {
-    let addresses = undefined;
-    const item = localStorage.getItem("terminusContracts");
-    if (item) {
-      try {
-        addresses = JSON.parse(item);
-      } finally {
-        setRecentAddresses(addresses);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   let addresses = undefined;
+  //   const item = localStorage.getItem("terminusContracts");
+  //   if (item) {
+  //     try {
+  //       addresses = JSON.parse(item);
+  //     } finally {
+  //       setRecentAddresses(addresses);
+  //     }
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (recentAddresses) {
-      localStorage.setItem("terminusContracts", JSON.stringify(recentAddresses));
-    }
-  }, [recentAddresses]);
+  // useEffect(() => {
+  //   if (recentAddresses) {
+  //     localStorage.setItem("terminusContracts", JSON.stringify(recentAddresses));
+  //   }
+  // }, [recentAddresses]);
 
   useEffect(() => {
     if (!router.query.poolId) {
@@ -120,7 +123,7 @@ const TerminusView = () => {
         </Flex>
         {contractAddress && (
           <>
-            <TerminusContractView />
+            <TerminusContractView addRecentAddress={addRecentAddress} />
             <Flex gap="40px" maxH="700px">
               <TerminusPoolsListView />
               <TerminusPoolView />
@@ -130,19 +133,15 @@ const TerminusView = () => {
         {!contractAddress && recentAddresses && (
           <Flex direction="column" gap="20px" bg="#2d2d2d" borderRadius="10px" p="20px">
             <Text>Recent</Text>
-            {Object.keys(recentAddresses).map((address) => {
-              const { chainId, name, image } =
-                recentAddresses[address as keyof typeof recentAddresses];
-              return (
-                <ContractRow
-                  key={address}
-                  address={address}
-                  chainId={chainId}
-                  name={name}
-                  image={image}
-                />
-              );
-            })}
+            {recentAddresses.map(({ address, chainId, name, image }) => (
+              <ContractRow
+                key={address}
+                address={address}
+                chainId={Number(chainId)}
+                name={name}
+                image={image}
+              />
+            ))}
           </Flex>
         )}
       </Flex>
