@@ -59,7 +59,6 @@ export const QueryAPIProvider = ({ children }: { children: React.ReactNode }) =>
   const toast = useMoonToast();
 
   const getSubscriptions = () => {
-    console.log("get subscriptions");
     return SubscriptionsService.getSubscriptions().then((res) =>
       res.data.subscriptions.sort(compare),
     );

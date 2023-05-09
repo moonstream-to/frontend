@@ -6,7 +6,6 @@ import axios from "axios";
 import { Button, Flex, Spinner, Text, Image } from "@chakra-ui/react";
 
 import useQueryAPI from "../../contexts/QueryAPIContext";
-import usePresignedURL from "../../hooks/usePresignedURL";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
@@ -16,6 +15,7 @@ import { chains } from "../../contexts/Web3Context/";
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import PoolDetailsRow from "../PoolDetailsRow";
+import http from "../../utils/httpMoonstream";
 
 const icons = {
   ethScan: `${AWS_ASSETS_PATH}/icons/database-load.png`,
@@ -37,17 +37,25 @@ const QueryContractView = ({ contract }: { contract: any }) => {
   const [isABIChanged, setIsABIChanged] = useState(false);
   const [ABILoader, setABILoader] = useState<{ name: string; url: string } | undefined>(undefined);
 
-  const ABI = useQuery(
-    ["subscriptonABI", contract.id],
-    SubscriptionsService.getSubscriptionABI(contract.id),
-    {
-      ...queryCacheProps,
-      onError: (error: Error) => {
-        console.log(error);
-      },
-      enabled: !!contract.abi,
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+
+  const getSubscriptionABI = (id: string) => () => {
+    return http({
+      method: "GET",
+      url: `${API}/subscriptions/${id}/abi`,
+    }).then((res) => JSON.stringify(JSON.parse(res.data?.abi), null, "\t"));
+  };
+
+  const abi = useQuery(["subscriptonABI", contract.id], getSubscriptionABI(contract.id), {
+    ...queryCacheProps,
+    onError: (error: Error) => {
+      console.log(error);
     },
-  );
+    onSuccess: (data: any) => {
+      console.log(data);
+    },
+    enabled: !!contract.abi,
+  });
 
   const ABIfromScan = useQuery(
     ["abiScan", contract.address],
@@ -89,42 +97,33 @@ const QueryContractView = ({ contract }: { contract: any }) => {
     } else {
       setABILoader(undefined);
     }
-    if (!data) {
+    if (!abi.data) {
       setJSONForEdit("");
     } else {
-      setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
+      setJSONForEdit(abi.data ?? "");
     }
   }, [contract]);
-
-  const { data, isLoading, isFetching } = usePresignedURL({
-    url: ABI.data?.data?.url,
-    isEnabled: !!ABI.data?.data?.url,
-    id: contract.id,
-    cacheType: "abi",
-    requestNewURLCallback: ABI.refetch,
-    hideToastOn404: true,
-  });
 
   const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
-      ABI.refetch();
+      abi.refetch();
     },
   });
 
   useEffect(() => {
-    if (data) {
-      setIsABIChanged(JSONForEdit !== JSON.stringify(data, null, "\t"));
+    if (abi.data) {
+      setIsABIChanged(JSONForEdit !== abi.data);
     } else {
       setIsABIChanged(JSONForEdit !== "");
     }
-  }, [JSONForEdit]);
+  }, [JSONForEdit, abi.data]);
 
   useEffect(() => {
-    if (!JSONForEdit) {
-      setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
+    if (!JSONForEdit && abi.data) {
+      setJSONForEdit(abi.data);
     }
-  }, [data]);
+  }, [abi.data]);
 
   return (
     <>
@@ -180,7 +179,7 @@ const QueryContractView = ({ contract }: { contract: any }) => {
                   variant="cancelButton"
                   disabled={updateSubscription.isLoading}
                   onClick={() => {
-                    setJSONForEdit(JSON.stringify(data, null, "\t") ?? "");
+                    setJSONForEdit(abi.data ?? "");
                   }}
                 >
                   Cancel
@@ -190,7 +189,7 @@ const QueryContractView = ({ contract }: { contract: any }) => {
                   disabled={updateSubscription.isLoading}
                   onClick={() => {
                     try {
-                      if (JSONForEdit !== JSON.stringify(JSON.parse(JSONForEdit))) {
+                      if (JSONForEdit !== JSON.stringify(JSON.parse(JSONForEdit), null, "\t")) {
                         throw new Error("not valid JSON");
                       }
                       updateSubscription.mutate({ id: contract.id, abi: JSONForEdit });
@@ -224,9 +223,7 @@ const QueryContractView = ({ contract }: { contract: any }) => {
               )}
               {ABILoader && ABIfromScan.isFetching && <Spinner />}
             </Flex>
-            {(ABI.isFetching || (isFetching && !data)) && (
-              <Spinner ml="10px" p="0" h="20px" w="17px" />
-            )}
+            {abi.isFetching && !abi.data && <Spinner ml="10px" p="0" h="20px" w="17px" />}
             <MyJsonComponent json={JSONForEdit} onChange={setJSONForEdit} />
           </Flex>
         </Flex>
