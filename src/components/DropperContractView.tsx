@@ -8,7 +8,13 @@ import Web3Context from "../contexts/Web3Context/context";
 
 import useDropperContract from "../hooks/useDropper.sol";
 
-const DropperContractView = ({ address }: { address: string }) => {
+const DropperContractView = ({
+  address,
+  addRecentAddress,
+}: {
+  address: string;
+  addRecentAddress: (address: string, fields: Record<string, string>) => void;
+}) => {
   const errorDialog = [
     "Something is wrong. Is MetaMask connected properly to the right chain?",
     "Is contract address correct?",
@@ -30,6 +36,12 @@ const DropperContractView = ({ address }: { address: string }) => {
   useEffect(() => {
     setIsTimeout(false);
   }, [address]);
+
+  useEffect(() => {
+    if (contractState.data?.owner) {
+      addRecentAddress(address, { chainId: String(web3ctx.chainId) });
+    }
+  }, [contractState.data]);
 
   return (
     <>

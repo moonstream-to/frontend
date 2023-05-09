@@ -135,6 +135,7 @@ const TerminusView = () => {
             <Text>Recent</Text>
             {recentAddresses.map(({ address, chainId, name, image }) => (
               <ContractRow
+                type="terminus"
                 key={address}
                 address={address}
                 chainId={Number(chainId)}

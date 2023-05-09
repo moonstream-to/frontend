@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Flex, Input, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
 
 import Layout from "../../src/components/layout";
 import DropperContractView from "../../src/components/DropperContractView";
@@ -13,6 +13,8 @@ import DropperClaimsListView from "../../src/components/DropperClaimsListView";
 import DropperClaimView from "../../src/components/DropperClaimView";
 import { useQueryClient } from "react-query";
 import { TokenInterface } from "../../src/types/Moonstream";
+import useRecentAddresses from "../../src/hooks/useRecentAddresses";
+import ContractRow from "../../src/components/ContractRow";
 
 const Dropper = () => {
   const router = useRouter();
@@ -32,6 +34,7 @@ const Dropper = () => {
   const [nextValue, setNextValue] = useState(contractAddress);
 
   const toast = useToast();
+  const [recentAddresses, addRecentAddress] = useRecentAddresses("dropper");
 
   useEffect(() => {
     if (!router.query.claimId) {
@@ -141,7 +144,7 @@ const Dropper = () => {
           </Flex>
           {contractAddress && (
             <>
-              <DropperContractView address={contractAddress} />
+              <DropperContractView address={contractAddress} addRecentAddress={addRecentAddress} />
               <Flex gap="40px" maxH="700px">
                 <DropperClaimsListView
                   contractAddress={contractAddress}
@@ -157,6 +160,21 @@ const Dropper = () => {
                 />
               </Flex>
             </>
+          )}
+          {!contractAddress && recentAddresses && (
+            <Flex direction="column" gap="20px" bg="#2d2d2d" borderRadius="10px" p="20px">
+              <Text>Recent</Text>
+              {recentAddresses.map(({ address, chainId, name, image }) => (
+                <ContractRow
+                  key={address}
+                  address={address}
+                  chainId={Number(chainId)}
+                  name={name}
+                  image={image}
+                  type="dropper"
+                />
+              ))}
+            </Flex>
           )}
         </Flex>
       </Center>
