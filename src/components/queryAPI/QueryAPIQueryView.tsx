@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
 import axios from "axios";
-import { Button, Flex, Spinner, Text, Input } from "@chakra-ui/react";
+import { Button, Flex, Spinner, Text, Input, Box } from "@chakra-ui/react";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 
 import useQueryAPI from "../../contexts/QueryAPIContext";
@@ -74,6 +74,7 @@ const QueryAPIQueryView = () => {
 
   useEffect(() => {
     setResult("");
+    setParams([]);
   }, [selectedQueryId]);
 
   const addParam = () => {
@@ -190,6 +191,7 @@ const QueryAPIQueryView = () => {
       method: "GET",
       url: `${API}/queries/${query.name}/query`,
     }).then((res) => {
+      console.log(res.data);
       return res.data;
     });
 
@@ -200,6 +202,16 @@ const QueryAPIQueryView = () => {
     },
     enabled: !!query.name,
   });
+
+  useEffect(() => {
+    console.log(queryData.data?.parameters);
+    if (queryData.data?.parameters) {
+      const newParams = Object.keys(queryData.data.parameters).map((k) => {
+        return { key: k, value: "" };
+      });
+      setParams(newParams);
+    }
+  }, [queryData.data]);
 
   return (
     <>
@@ -232,15 +244,16 @@ const QueryAPIQueryView = () => {
             </Text>
           </Flex>
           {queryData.data && (
-            <Flex direction="column" gap="15px">
-              {queryData.data.tags && (
-                <Flex gap="10px">
-                  {queryData.data.tags.map((tag: string, idx: number) => (
-                    <Tag key={idx} name={tag} />
-                  ))}
-                </Flex>
-              )}
-            </Flex>
+            <Tag name={queryData.data.approved ? "approved" : "not approved"} />
+            // <Flex direction="column" gap="15px">
+            //   {queryData.data.tags && (
+            //     <Flex gap="10px">
+            //       {queryData.data.tags.map((tag: string, idx: number) => (
+            //         <Tag key={idx} name={tag} />
+            //       ))}
+            //     </Flex>
+            //   )}
+            // </Flex>
           )}
           {!queryData.data &&
             (queryData.isLoading ? <Spinner h="20px" w="20px" /> : <Flex minH="20px" />)}
@@ -249,14 +262,14 @@ const QueryAPIQueryView = () => {
               <Text fontSize="20px" fontWeight="700" userSelect="none">
                 Inputs
               </Text>
-              <AiOutlinePlusCircle cursor="pointer" size="24" onClick={() => addParam()} />
+              {/* <AiOutlinePlusCircle cursor="pointer" size="24" onClick={() => addParam()} /> */}
             </Flex>
             <Flex gap="0" w="100%">
               <Flex direction="column" gap="10px" fontSize="18px" w="100%">
                 {params.map((param, idx) => {
                   return (
                     <Flex key={idx} gap="0px" minW="100%" alignItems="center" pr="1.5px">
-                      <input
+                      {/* <input
                         list="inputs"
                         type="text"
                         value={param.key}
@@ -277,7 +290,17 @@ const QueryAPIQueryView = () => {
                             {paramKey}
                           </option>
                         ))}
-                      </datalist>
+                      </datalist> */}
+                      <Box
+                        bg="#232323"
+                        borderRadius="10px"
+                        border="1px solid #4D4D4D"
+                        p="7px 15px"
+                        fontSize="16px"
+                        minW="20ch"
+                      >
+                        {param.key}
+                      </Box>
                       {param.key?.includes("timestamp") ? (
                         <TimestampInput2
                           timestamp={param.value ?? ""}
@@ -301,11 +324,11 @@ const QueryAPIQueryView = () => {
                           mr="10px"
                         />
                       )}
-                      <AiOutlineMinusCircle
+                      {/* <AiOutlineMinusCircle
                         style={{ minWidth: "18px" }}
                         onClick={() => removeParam(idx)}
                         cursor="pointer"
-                      />
+                      /> */}
                     </Flex>
                   );
                 })}
