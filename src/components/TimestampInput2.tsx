@@ -122,6 +122,7 @@ const TimestampInput2 = ({
         _hover={{ borderColor }}
         _focusVisible={{ borderColor, outline: "none" }}
         onPaste={handlePaste}
+        title="you can paste date in ISO 8601, RFC 822, 1036, 1123 or 3339 format"
       />
       <Icon as={BsArrowLeftRight} />
       {date.components.map((component, idx: number) => (
