@@ -16,7 +16,7 @@ const SessionPanel = () => {
     futureLinks: [],
   });
 
-  const { gardenContractAddress, sessionId } = useGofp();
+  const { selectPath, gardenContractAddress, sessionId } = useGofp();
   const web3ctx = useContext(Web3Context);
 
   const { generatePathId } = useGofp();
@@ -83,6 +83,9 @@ const SessionPanel = () => {
         }}
         maxWidth="700px"
         position="relative"
+        onClick={() => {
+          selectPath(0);
+        }}
       >
         <Connections
           links={connectionsData.links}

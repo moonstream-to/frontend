@@ -38,18 +38,37 @@ const Inventory = () => {
   const characterAddress = "0xDfbC5320704b417C5DBbd950738A32B8B5Ed75b3";
   const greatwyrmContractAddress = "0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b";
 
-  type terminusType = "gamemaster" | "character_creation" | "experience";
-  const terminusTypes: terminusType[] = ["gamemaster", "character_creation", "experience"];
+  type terminusType =
+    | "gamemaster"
+    | "character_creation"
+    | "experience"
+    | "chronicler_cred"
+    | "secret_message"
+    | "summon_beast";
+  const terminusTypes: terminusType[] = [
+    "gamemaster",
+    "character_creation",
+    "experience",
+    "chronicler_cred",
+    "secret_message",
+    "summon_beast",
+  ];
   const terminusPoolIds: { [key in terminusType]: number } = {
     gamemaster: 1,
     character_creation: 2,
     experience: 3,
+    chronicler_cred: 4,
+    secret_message: 5,
+    summon_beast: 6,
   };
 
   const defaultBalances: { [key in terminusType]: number } = {
     gamemaster: 0,
     character_creation: 0,
     experience: 0,
+    chronicler_cred: 0,
+    secret_message: 0,
+    summon_beast: 0,
   };
 
   const terminusBalances = useQuery<{ [key in terminusType]: number }>(
@@ -403,7 +422,7 @@ const Inventory = () => {
           <Flex flexDirection="column">
             <TerminusList
               terminusAddress={terminusAddress}
-              poolIdList={[2, 3]}
+              poolIdList={[2, 3, 4, 5, 6]}
               balances={formatTerminusBalances(terminusBalances.data || defaultBalances)}
             ></TerminusList>
           </Flex>

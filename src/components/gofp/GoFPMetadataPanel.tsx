@@ -71,30 +71,38 @@ const MetadataPanel = () => {
                 read more...
               </Text>
             </Center>
-            <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+            <Modal isOpen={isOpen} onClose={onClose} size="lg" scrollBehavior="inside">
               <ModalOverlay />
               <ModalContent
-                bg="#1A1D22"
+                bg="#2D2D2D"
                 border="1px solid white"
                 borderRadius="20px"
                 textColor="white"
               >
                 <ModalHeader>{stage.title}</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Flex flexDir="column" px={10}>
+                <ModalCloseButton pl={3} />
+                <ModalBody fontFamily="Lora">
+                  <Flex flexDir="column">
                     {stage.imageUrl.length > 0 && (
                       <Center pb={6}>
-                        <Image h="300px" alt={"Stage Image"} src={stage.imageUrl} />
+                        <Image h="240px" alt={"Stage Image"} src={stage.imageUrl} />
                       </Center>
                     )}
-                    <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
-                      {stage.lore}
-                    </ReactMarkdown>
+                    <Flex
+                      textColor="white"
+                      fontFamily="Lora"
+                      fontSize="14px"
+                      fontWeight="700"
+                      lineHeight="160%"
+                    >
+                      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                        {stage.lore}
+                      </ReactMarkdown>
+                    </Flex>
                   </Flex>
                 </ModalBody>
                 <ModalFooter>
-                  <Button bgColor="#4D4D4D" onClick={onClose}>
+                  <Button bgColor="#4D4D4D" w="100%" h="20px" rounded="20px" onClick={onClose}>
                     Close
                   </Button>
                 </ModalFooter>
