@@ -22,7 +22,6 @@ import useGofp from "../../contexts/GoFPContext";
 import useGofpContract from "../../hooks/useGofpConract";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import TextWithPopup from "../TextWithPopup";
 
 const MetadataPanel = () => {
   const web3ctx = useContext(Web3Context);
@@ -64,11 +63,6 @@ const MetadataPanel = () => {
             p={2}
             flexDir="column"
           >
-            {/* <TextWithPopup
-              text={stage.lore}
-              title={stage.title}
-              image={stage.imageUrl.length > 0 ? stage.imageUrl : undefined}
-            /> */}
             <Text fontSize="m" maxH="120px" overflow="hidden">
               {stage.lore}
             </Text>
