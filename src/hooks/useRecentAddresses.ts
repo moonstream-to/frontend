@@ -15,17 +15,15 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
 
   useEffect(() => {
     const storedAddresses = localStorage.getItem(`${type}-recentAddresses`);
-    // console.log(storedAddresses ? JSON.parse(storedAddresses) : []);
-    setRecentAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);
+    try {
+      setRecentAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);
+    } catch (e) {
+      console.log(e);
+    }
   }, [type]);
-
-  useEffect(() => {
-    console.log(recentAddresses);
-  }, [recentAddresses]);
 
   const addRecentAddress = (address: string, fields: Record<string, string>) => {
     const existingAddressIndex = recentAddresses.findIndex((a) => a.address === address);
-    console.log(recentAddresses, address, fields);
     if (existingAddressIndex >= 0) {
       // Address already exists, merge existing fields with new fields
       const existingAddress = recentAddresses[existingAddressIndex];
