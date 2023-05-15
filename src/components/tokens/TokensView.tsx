@@ -18,6 +18,7 @@ import { useMutation, useQueryClient } from "react-query";
 import useUser from "../../contexts/UserContext";
 import useMoonToast from "../../hooks/useMoonToast";
 import { AuthService } from "../../services";
+import NeedAuthorizationView from "../NeedAuthorizationView";
 
 import TokensList from "./TokensList";
 
@@ -55,6 +56,10 @@ const TokensView = () => {
     event.preventDefault();
     createToken.mutate({ username: user.username, password, token_note: newAPIKeyLabel });
   };
+
+  if (!user) {
+    return <NeedAuthorizationView />;
+  }
 
   return (
     <Flex px="7%" py="30px" w="100%" userSelect="none">
