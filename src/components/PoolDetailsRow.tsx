@@ -129,9 +129,13 @@ const PoolDetailsRow = ({
           <Text
             fontWeight="700"
             position="absolute"
-            top="-30px"
-            left="50%"
+            top="-40px"
+            left="69%"
             transform="translate(-50%, 0)"
+            bg="#2d2d2d"
+            borderRadius="8px"
+            p="5px 10px"
+            border="2px solid #BBBBBB"
           >
             copied
           </Text>
