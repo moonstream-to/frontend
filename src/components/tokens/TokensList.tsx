@@ -26,9 +26,10 @@ const TokensList = () => {
   const AUTH_URL = `${API_URL}/users`;
 
   const [userToken, setUserToken] = useState("");
+
   useEffect(() => {
     setUserToken(localStorage.getItem("MOONSTREAM_ACCESS_TOKEN") ?? "");
-  }, []);
+  }, [user]);
 
   const formattedDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -57,7 +58,7 @@ const TokensList = () => {
         return aName > bName ? -1 : aName < bName ? 1 : 0;
       }
     } else {
-      if (sortBy.direction === "ASC") {
+      if (sortBy.direction === "DESC") {
         return Number(new Date(b.created_at)) - Number(new Date(a.created_at));
       } else {
         return Number(new Date(a.created_at)) - Number(new Date(b.created_at));
@@ -117,6 +118,7 @@ const TokensList = () => {
           w="800px"
           fontFamily="Jet Brains Mono, monospace"
           verticalAlign="center"
+          userSelect="none"
         >
           <GridItem>
             <Input
@@ -140,9 +142,7 @@ const TokensList = () => {
           <GridItem borderBottom="1px solid #AAAAAA">
             <SortingColumnHeader title="date" sortBy={sortBy} setSortBy={setSortBy} />
           </GridItem>
-          <GridItem textAlign="center" borderBottom="1px solid #AAAAAA" cursor="default">
-            delete
-          </GridItem>
+          <GridItem textAlign="center" cursor="default"></GridItem>
           {sortedTokens.map((token: Token, idx: number) => (
             <React.Fragment key={idx}>
               <GridItem w="100%" h="15px" px="15px">
