@@ -79,6 +79,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                   name="username"
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
+                  tabIndex={1}
                 />
               </FormControl>
 
@@ -96,7 +97,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                         onForgotPassword();
                         onClose();
                       }}
-                      tabIndex={1}
+                      tabIndex={4}
                     >
                       Forgot password?
                     </Button>
@@ -109,9 +110,17 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                   value={password}
                   name="password"
                   onChange={(event) => setPassword(event.target.value)}
+                  tabIndex={2}
                 />
               </FormControl>
-              <Button w="100%" h="54px" type="submit" variant="plainOrange" p="10px 30px">
+              <Button
+                w="100%"
+                h="54px"
+                type="submit"
+                variant="plainOrange"
+                p="10px 30px"
+                tabIndex={3}
+              >
                 {isLoading ? <Spinner /> : <Text lineHeight="26px">Login</Text>}
               </Button>
               <Flex
@@ -131,7 +140,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                     onSignUp();
                     onClose();
                   }}
-                  tabIndex={2}
+                  tabIndex={5}
                 >
                   Create an account
                 </Button>
