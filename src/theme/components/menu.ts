@@ -5,7 +5,6 @@ const Menu = {
   baseStyle: () => {
     return {
       button: {
-        color: "green",
         _active: { textDecoration: "none", backgroundColor: "#1A1D22" },
         _focus: { textDecoration: "none", backgroundColor: "#1A1D22" },
         _hover: {
@@ -15,7 +14,7 @@ const Menu = {
         },
       },
       item: {
-        backgroundColor: "transparent",
+        backgroundColor: "#1A1D22",
         fontWeight: "400",
         fontSize: "md",
         _hover: {
@@ -27,8 +26,9 @@ const Menu = {
         },
       },
       list: {
-        bg: "transparent",
+        bg: "#1A1D22",
         borderWidth: 0,
+        px: "15px",
       },
     };
   },
