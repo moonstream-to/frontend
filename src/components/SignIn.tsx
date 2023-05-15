@@ -96,6 +96,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                         onForgotPassword();
                         onClose();
                       }}
+                      tabIndex={1}
                     >
                       Forgot password?
                     </Button>
@@ -130,6 +131,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                     onSignUp();
                     onClose();
                   }}
+                  tabIndex={2}
                 >
                   Create an account
                 </Button>
