@@ -102,7 +102,27 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
           )}
           <ChainSelector />
           <Flex w="2px" bg="#4d4d4d" h="30px" />
-          {!user && <LoginButton />}
+          {!user && (
+            <LoginButton>
+              <Button
+                bg="#353535"
+                borderRadius="20px"
+                maxH="36px"
+                p="5px 15px"
+                fontSize="16px"
+                fontWeight="400"
+                minW="90px"
+                _hover={{
+                  bg: "#353535",
+                }}
+                _focus={{
+                  outline: "none",
+                }}
+              >
+                Log in
+              </Button>
+            </LoginButton>
+          )}
           {user && !isLoggingOut && (
             <Menu>
               <MenuButton>
