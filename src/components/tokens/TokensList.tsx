@@ -1,7 +1,16 @@
 import React, { useMemo, useState, useEffect } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Center, Grid, GridItem, IconButton, Input, Spinner, Text } from "@chakra-ui/react";
+import {
+  Center,
+  Grid,
+  GridItem,
+  IconButton,
+  Input,
+  Skeleton,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 
 import { AuthService } from "../../services";
@@ -111,39 +120,43 @@ const TokensList = () => {
 
   return (
     <>
-      {tokens.data && (
-        <Grid
-          templateColumns="repeat(4, auto)"
-          gap="10px"
-          w="800px"
-          fontFamily="Jet Brains Mono, monospace"
-          verticalAlign="center"
-          userSelect="none"
-        >
-          <GridItem>
-            <Input
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              placeholder={"Type here to filter by label"}
-              borderRadius="10px"
-              w="100%"
-              p="10px"
-              fontSize="14px"
-              mb="10px"
-            />
-          </GridItem>
-          <GridItem colSpan={3} />
-          <GridItem borderBottom="1px solid #AAAAAA">
-            <SortingColumnHeader title="label" sortBy={sortBy} setSortBy={setSortBy} />
-          </GridItem>
-          <GridItem textAlign="center" borderBottom="1px solid #AAAAAA" cursor="default">
-            token
-          </GridItem>
-          <GridItem borderBottom="1px solid #AAAAAA">
-            <SortingColumnHeader title="date" sortBy={sortBy} setSortBy={setSortBy} />
-          </GridItem>
-          <GridItem textAlign="center" cursor="default"></GridItem>
-          {sortedTokens.map((token: Token, idx: number) => (
+      <Grid
+        templateColumns="repeat(4, auto)"
+        gap="10px"
+        w="800px"
+        fontFamily="Jet Brains Mono, monospace"
+        verticalAlign="center"
+        userSelect="none"
+      >
+        <GridItem>
+          <Input
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder={"Type here to filter by label"}
+            borderRadius="10px"
+            w="100%"
+            p="10px"
+            fontSize="14px"
+            mb="10px"
+          />
+        </GridItem>
+        <GridItem colSpan={3} />
+        <GridItem borderBottom="1px solid #AAAAAA">
+          <SortingColumnHeader title="label" sortBy={sortBy} setSortBy={setSortBy} />
+        </GridItem>
+        <GridItem textAlign="center" borderBottom="1px solid #AAAAAA" cursor="default">
+          token
+        </GridItem>
+        <GridItem borderBottom="1px solid #AAAAAA">
+          <SortingColumnHeader title="date" sortBy={sortBy} setSortBy={setSortBy} />
+        </GridItem>
+        <GridItem textAlign="center" cursor="default"></GridItem>
+        {tokens.isLoading &&
+          Array.from(Array(20)).map((_, idx) => (
+            <Skeleton key={idx} h="27px" w="100%" startColor="#2d2d2d" endColor="#222222" />
+          ))}
+        {tokens.data &&
+          sortedTokens.map((token: Token, idx: number) => (
             <React.Fragment key={idx}>
               <GridItem w="100%" h="15px" px="15px">
                 {(update.isLoading || tokens.isFetching) &&
@@ -218,8 +231,7 @@ const TokensList = () => {
               </GridItem>
             </React.Fragment>
           ))}
-        </Grid>
-      )}
+      </Grid>
     </>
   );
 };
