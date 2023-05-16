@@ -22,7 +22,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ children }) => {
   };
 
   return (
-    <Box display="inline" onClick={() => handleOpen()} style={{ cursor: "pointer" }}>
+    <div onClick={() => handleOpen()} style={{ cursor: "pointer", display: "inline" }}>
       <SignIn
         isOpen={isOpen}
         onClose={handleClose}
@@ -32,7 +32,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ children }) => {
       <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
       <ForgotPassword isOpen={isForgotPassOpen} onClose={() => setIsForgotPassOpen(false)} />
       {children}
-    </Box>
+    </div>
   );
 };
 

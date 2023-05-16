@@ -1,26 +1,27 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import LoginButton from "./LoginButton";
 
 const NeedAuthorizationView = () => {
   return (
-    <Flex direction="column" gap="10px" mx="auto" mt="60px">
+    <Flex direction="column" gap="10px" mx="auto" mt="60px" fontSize="18px">
       <Text textAlign="center">Authorization Required</Text>
-      <Text>
-        Please&nbsp;
+      <Flex>
+        <Text>Please&nbsp;</Text>
         <LoginButton>
-          <Button
+          <Text
             verticalAlign="center"
             variant="transparent"
             p="0"
             h="auto"
-            fontWeight="400"
+            fontWeight="500"
+            fontSize="18px"
             color="#F88F78"
           >
             log in
-          </Button>
+          </Text>
         </LoginButton>
-        &nbsp;to view this page.
-      </Text>
+        <Text>&nbsp;to view this page.</Text>
+      </Flex>
     </Flex>
   );
 };
