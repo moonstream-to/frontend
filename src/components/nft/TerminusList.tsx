@@ -7,6 +7,7 @@ import Web3Context from "../../contexts/Web3Context/context";
 const terminusAbi = require("../../../src/web3/abi/MockTerminus.json");
 import { MockTerminus as TerminusFacet } from "../../web3/contracts/types/MockTerminus";
 import { hookCommon } from "../../hooks";
+import { queryPublic } from "../../utils/http";
 
 import TextWithPopup from "../TextWithPopup";
 import { NFTInfo } from "./types";
@@ -26,7 +27,7 @@ const _TerminusList = ({
 
   const fetchMetdata = async (tokenURI: string) => {
     if (tokenURI && tokenURI.trim() != "") {
-      return fetch(tokenURI, { cache: "no-cache" }).then((response) => response.json());
+      return queryPublic(tokenURI).then((r: any) => r.data);
     } else {
       return null;
     }
@@ -88,11 +89,11 @@ const _TerminusList = ({
   );
 
   return (
-    <Flex {...props}>
+    <Flex {...props} flexWrap="wrap" py={6}>
       {badges.data &&
         badges.data.map((item: NFTInfo, idx: number) => {
           return (
-            <HStack key={idx}>
+            <HStack key={idx} p={4}>
               <Image src={item.imageURI} alt={item.metadata.name} w={100} h={100} />
               <VStack alignItems="left">
                 <Text>{item.metadata.name}</Text>

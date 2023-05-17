@@ -104,11 +104,46 @@ a {
   color: #f56646;
 }
 .markdown * a:hover {
-  /* color: #F56646; */
+  color: #F56646;
   font-weight: 600;
+}
+
+.markdown h1 {
+  font-size: x-large;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.markdown h2 {
+  font-size: large;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .markdown p {
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.markdown li {
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+blockquote {
+  border: 2px solid #FCE5DD;
+  border-radius: 10px;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 1em;
+  padding-right: 1em;
+  font-weight: 400;
+  line-height: 140%;
+}
+blockquote p {
+  display: inline;
 }

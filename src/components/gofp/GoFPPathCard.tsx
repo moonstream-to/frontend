@@ -24,7 +24,7 @@ const PathCard = ({
   const incorrectPathColor = "#E85858";
   const undecidedPathColor = "#4C4C4C";
 
-  const { selectedPath, selectPath, sessionId, gardenContractAddress } = useGofp();
+  const { selectedPath, selectPath, selectStage, sessionId, gardenContractAddress } = useGofp();
   const web3ctx = useContext(Web3Context);
 
   const { choosePath, correctPaths, currentStage } = useGofpContract({
@@ -99,8 +99,10 @@ const PathCard = ({
       ref={drop}
       id={pathId}
       px={2}
-      onClick={() => {
+      onClick={(e) => {
         if (stageIdx + 1 === currentStage.data) {
+          e.stopPropagation();
+          selectStage(stageIdx + 1);
           selectPath(pathIdx + 1);
         }
       }}
