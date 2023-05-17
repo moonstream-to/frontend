@@ -23,7 +23,7 @@ const BreadcrumbView = () => {
     >
       {path.length !== 0 && (
         <BreadcrumbItem>
-          <BreadcrumbLink textTransform={"capitalize"} href={"/"}>
+          <BreadcrumbLink as={NextLink} textTransform={"capitalize"} href={"/"}>
             Home
           </BreadcrumbLink>
         </BreadcrumbItem>
@@ -41,6 +41,7 @@ const BreadcrumbView = () => {
               fontWeight={idx === path.length - 1 ? "semibold" : "normal"}
               textTransform={"capitalize"}
               href={linkPath}
+              as={NextLink}
             >
               {element}
             </BreadcrumbLink>
