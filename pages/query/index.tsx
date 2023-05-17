@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
 import { QueryAPIProvider } from "../../src/contexts/QueryAPIContext";
-import { UserProvider } from "../../src/contexts/UserContext";
 import Layout from "../../src/components/layout";
 
 import QueryAPIView from "../../src/components/queryAPI/QueryAPIView";
@@ -12,13 +11,11 @@ const Query = () => {
   }, []);
 
   return (
-    <UserProvider>
-      <QueryAPIProvider>
-        <Layout home={false}>
-          <QueryAPIView />
-        </Layout>
-      </QueryAPIProvider>
-    </UserProvider>
+    <QueryAPIProvider>
+      <Layout home={false}>
+        <QueryAPIView />
+      </Layout>
+    </QueryAPIProvider>
   );
 };
 

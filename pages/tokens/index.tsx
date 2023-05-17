@@ -1,6 +1,6 @@
+import Link from "next/link";
 import { useEffect } from "react";
 
-import { UserProvider } from "../../src/contexts/UserContext";
 import Layout from "../../src/components/layout";
 import TokensView from "../../src/components/tokens/TokensView";
 
@@ -10,11 +10,10 @@ const Query = () => {
   }, []);
 
   return (
-    <UserProvider>
-      <Layout home={false}>
-        <TokensView />
-      </Layout>
-    </UserProvider>
+    <Layout home={false}>
+      <TokensView />
+      <Link href="/">home</Link>
+    </Layout>
   );
 };
 
