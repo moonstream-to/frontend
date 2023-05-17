@@ -10,6 +10,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import axios from "axios";
+import Link from "next/link";
 import { useState } from "react";
 import { useMutation } from "react-query";
 
@@ -90,7 +91,15 @@ const ContactForm = () => {
   };
 
   return (
-    <Flex borderRadius="20px" p="30px" direction="column" gap="20px" bg="#2d2d2d">
+    <Flex
+      borderRadius="20px"
+      p="30px"
+      direction="column"
+      gap="20px"
+      bg="#2d2d2d"
+      maxW="900px"
+      mx="auto"
+    >
       <Text fontSize="18px" fontWeight="700">
         Thanks for your interest in Moonstream. Our tools are fully customized to your project.
       </Text>
@@ -125,7 +134,9 @@ const ContactForm = () => {
       </FormControl>
       <Flex gap="15px">
         <Spacer />
-        <Button variant="cancelButton">Cancel</Button>
+        <Link href="/">
+          <Button variant="cancelButton">Cancel</Button>
+        </Link>
         {sendForm.isLoading ? (
           <Spinner />
         ) : (
@@ -134,6 +145,10 @@ const ContactForm = () => {
           </Button>
         )}
       </Flex>
+      <Text mx="auto" fontStyle="italic" maxW="600px" textAlign="center">
+        We&apos;ll reach out directly within 3 business days after you submit this form. You
+        won&apos;t be receiving any spam emails from us, only the most important technical updates.
+      </Text>
     </Flex>
   );
 };
