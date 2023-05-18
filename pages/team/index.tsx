@@ -44,7 +44,8 @@ const Team = () => {
         alignItems="center"
         w="100%"
         maxW="1238"
-        p={{ base: "3%", sm: "7%" }}
+        px={{ base: "3%", sm: "7%", md: "7%" }}
+        py="40px"
         mx="auto"
       >
         <Stack w="100%">
@@ -76,7 +77,7 @@ const Team = () => {
               </chakra.span>
             </Box>
             <Center w="100%" h="100%" py={6}>
-              <ChakraImage w="75%" src={assets["rocket"]} alt="rocket" />
+              <ChakraImage w="40%" src={assets["rocket"]} alt="rocket" />
             </Center>
           </SimpleGrid>
         </Stack>
