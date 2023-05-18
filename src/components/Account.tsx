@@ -1,6 +1,6 @@
 import RouterLink from "next/link";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Flex,
@@ -16,32 +16,48 @@ import LoginButton from "./LoginButton";
 import { BsPerson } from "react-icons/bs";
 import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
+import SignUp from "./SignUp";
 
 const Account = () => {
   const { user } = useUser();
   const { logout, isLoading: isLoggingOut } = useLogout();
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+
   return (
     <>
       {!user && (
-        <LoginButton>
+        <Flex gap="10px">
+          <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+          <LoginButton>
+            <Button
+              bg="#353535"
+              borderRadius="20px"
+              maxH="36px"
+              p="5px 15px"
+              fontSize="16px"
+              fontWeight="400"
+              minW="90px"
+              _hover={{
+                bg: "#353535",
+              }}
+              _focus={{
+                outline: "none",
+              }}
+            >
+              Log in
+            </Button>
+          </LoginButton>
           <Button
-            bg="#353535"
-            borderRadius="20px"
-            maxH="36px"
-            p="5px 15px"
             fontSize="16px"
             fontWeight="400"
-            minW="90px"
-            _hover={{
-              bg: "#353535",
-            }}
-            _focus={{
-              outline: "none",
-            }}
+            p="5px 15px"
+            maxH="36px"
+            variant="plainOrange"
+            onClick={() => setIsSignUpOpen(true)}
           >
-            Log in
+            Sign up
           </Button>
-        </LoginButton>
+        </Flex>
       )}
       {isLoggingOut && <Spinner />}
       {user && !isLoggingOut && (

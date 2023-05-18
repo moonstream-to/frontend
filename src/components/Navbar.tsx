@@ -1,6 +1,6 @@
 import RouterLink from "next/link";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   Image,
@@ -18,10 +18,11 @@ import {
 
 import Web3Context from "../contexts/Web3Context/context";
 import ChainSelector from "./ChainSelector";
-import LoginButton from "./LoginButton";
 import { BsPerson } from "react-icons/bs";
 import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
+import SignUp from "./SignUp";
+import Account from "./Account";
 
 const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const [isMobileView] = useMediaQuery("(max-width: 767px)");
@@ -30,6 +31,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`;
   const web3Provider = useContext(Web3Context);
   const { logout, isLoading: isLoggingOut } = useLogout();
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   return (
     <Flex
@@ -45,6 +47,8 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
       borderBottom="1px solid white"
       {...props}
     >
+      <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+
       <RouterLink href="/" passHref>
         {/* {home ? ()}  //TODO */}
         <Link
@@ -102,27 +106,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
           )}
           <ChainSelector />
           <Flex w="2px" bg="#4d4d4d" h="30px" />
-          {!user && (
-            <LoginButton>
-              <Button
-                bg="#353535"
-                borderRadius="20px"
-                maxH="36px"
-                p="5px 15px"
-                fontSize="16px"
-                fontWeight="400"
-                minW="90px"
-                _hover={{
-                  bg: "#353535",
-                }}
-                _focus={{
-                  outline: "none",
-                }}
-              >
-                Log in
-              </Button>
-            </LoginButton>
-          )}
+          {!user && <Account />}
           {user && !isLoggingOut && (
             <Menu>
               <MenuButton>
