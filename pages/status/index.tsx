@@ -81,7 +81,7 @@ const Status = () => {
           <Text fontSize="24px" fontWeight="700" mb="30px" textAlign="center">
             Status page
           </Text>
-          {status.isLoading && <Spinner />}
+          {status.isLoading && <Spinner mx="auto" />}
           {status.data && (
             <Flex direction="column" mx="auto" gap="15px">
               {status.data.map((service: any, idx: number) => (
