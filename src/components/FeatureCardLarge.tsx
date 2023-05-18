@@ -62,7 +62,12 @@ const FeatureCardLarge: React.FC<FeatureCardLargeProps> = ({
         >
           <Center flexDirection="column">
             {isMobile && (
-              <Link href="/discordleed" fontWeight="semibold" textDecoration="underline" isExternal>
+              <Link
+                href="https://discord.gg/K56VNUQGvA"
+                fontWeight="semibold"
+                textDecoration="underline"
+                isExternal
+              >
                 Learn More
               </Link>
             )}
