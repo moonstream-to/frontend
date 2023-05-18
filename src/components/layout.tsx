@@ -21,7 +21,7 @@ export default function Layout({
   home?: boolean;
   title?: string;
 }) {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   return (
     <div>
       <Head>
@@ -43,7 +43,7 @@ export default function Layout({
           <Navbar home={home} px="7%" />
           <BreadcrumbView />
         </Flex>
-        {user ? children : <NeedAuthorizationView />}
+        {user ? children : isLoading ? "" : <NeedAuthorizationView />}
         <Spacer />
         <Footer home={home} />
       </Flex>

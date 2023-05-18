@@ -58,7 +58,7 @@ const TokensView = () => {
   };
 
   if (!user) {
-    return <NeedAuthorizationView />;
+    return;
   }
 
   return (

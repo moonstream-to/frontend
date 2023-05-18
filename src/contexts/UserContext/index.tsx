@@ -10,13 +10,14 @@ const UserContext = createContext<UserContextType | any>(null); //TODO
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getUser = useCallback(() => {
     const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
     if (!token) {
       return setUser(null);
     }
-
+    setIsLoading(true);
     const headers = { Authorization: `Bearer ${token}` };
     http
       .get(`${AUTH_URL}/`, { headers })
@@ -31,7 +32,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           }
         },
       )
-      .catch(() => setUser(null));
+      .catch(() => setUser(null))
+      .finally(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -44,7 +46,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [getUser]);
 
-  return <UserContext.Provider value={{ user, setUser, getUser }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser, getUser, isLoading }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 const useUser = () => {
