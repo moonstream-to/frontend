@@ -12,7 +12,6 @@ const Query = () => {
   return (
     <Layout home={false}>
       <TokensView />
-      <Link href="/">home</Link>
     </Layout>
   );
 };

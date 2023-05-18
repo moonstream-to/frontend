@@ -18,7 +18,6 @@ import { useMutation, useQueryClient } from "react-query";
 import useUser from "../../contexts/UserContext";
 import useMoonToast from "../../hooks/useMoonToast";
 import { AuthService } from "../../services";
-import NeedAuthorizationView from "../NeedAuthorizationView";
 
 import TokensList from "./TokensList";
 
