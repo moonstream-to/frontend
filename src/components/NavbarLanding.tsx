@@ -1,6 +1,6 @@
 import RouterLink from "next/link";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Image,
@@ -17,10 +17,15 @@ import {
 import { AWS_STATIC_ASSETS_PATH, PAGETYPE, SITEMAP } from "../constants";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import Account from "./Account";
+import { useRouter } from "next/router";
+const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
 
 const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
-  const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
+  const router = useRouter();
 
+  useEffect(() => {
+    console.log(router.asPath);
+  }, [router.asPath]);
   return (
     <Flex
       alignItems="center"
@@ -111,21 +116,23 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
         })}
       </ButtonGroup>
       <Flex justifyContent="end" w="160px" gap="15px" alignItems="center">
-        <RouterLink href="/">
-          <Button
-            variant="whiteOutline"
-            fontSize="14px"
-            p="5px 10px"
-            h="fit-content"
-            borderRadius="10px"
-            borderWidth="1px"
-            _hover={{
-              backgroundColor: "transparent",
-            }}
-          >
-            Portal
-          </Button>
-        </RouterLink>
+        {!router.asPath.includes("portal") && (
+          <RouterLink href="/">
+            <Button
+              variant="whiteOutline"
+              fontSize="14px"
+              p="5px 10px"
+              h="fit-content"
+              borderRadius="10px"
+              borderWidth="1px"
+              _hover={{
+                backgroundColor: "transparent",
+              }}
+            >
+              Portal
+            </Button>
+          </RouterLink>
+        )}
         <Account />
       </Flex>
     </Flex>
