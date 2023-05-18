@@ -5,6 +5,9 @@ import { Center, Flex } from "@chakra-ui/react";
 import FeatureCard from "../src/components/FeatureCard";
 import Layout from "../src/components/layout";
 import { AWS_ASSETS_PATH } from "../src/constants";
+import useUser from "../src/contexts/UserContext";
+import NeedAuthorizationView from "../src/components/NeedAuthorizationView";
+import LayoutLanding from "../src/components/layoutLanding";
 
 const assets = {
   airdrop: `${AWS_ASSETS_PATH}/open-lootbox.png`,
@@ -26,35 +29,42 @@ const features = [
     image: assets.dropper,
     href: "/dropper",
   },
-  {
-    name: "Claim drops",
-    description: "Player, claim your rewards",
-    image: assets.airdrop,
-    href: "/airdrop",
-  },
-  {
-    name: "Garden of Forking Paths",
-    description: "Start your adventure at Garden of Forking Paths",
-    image: assets.games,
-    href: "/games/garden/sessions/?contractId=0x42A8E82253CD19EF8274D48fC0bC89cdf1B4425b",
-  },
 ];
 
 export default function Home() {
+  const { user, isLoading } = useUser();
+  if (isLoading) {
+    return <></>;
+  }
+
   return (
-    <Layout home={true}>
-      <Head>
-        <title>Moonstream portal</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-      <Center>
-        <Flex gap="40px" py="40px">
-          {features.map((feature) => (
-            <FeatureCard feature={feature} key={feature.name} />
-          ))}
-        </Flex>
-      </Center>
-    </Layout>
+    <>
+      {!user && (
+        <LayoutLanding home={false} title="Moonstream: portal">
+          <Flex direction="column" mx="auto">
+            <NeedAuthorizationView />
+            <Flex gap="40px" py="40px">
+              {features.map((feature) => (
+                <FeatureCard feature={feature} key={feature.name} disabled />
+              ))}
+            </Flex>
+          </Flex>
+        </LayoutLanding>
+      )}
+      <Layout home={true}>
+        <Head>
+          <title>Moonstream portal</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.png" />
+        </Head>
+        <Center>
+          <Flex gap="40px" py="40px">
+            {features.map((feature) => (
+              <FeatureCard feature={feature} key={feature.name} />
+            ))}
+          </Flex>
+        </Center>
+      </Layout>
+    </>
   );
 }
