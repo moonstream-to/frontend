@@ -14,6 +14,7 @@ export interface ChainInterface {
   chainId: number;
   name: supportedChains;
   rpcs: Array<string>;
+  ABIScan?: { name: string; url: string };
 }
 
 export declare function GetMethodsAbiType<T>(abi: AbiItem[], name: keyof T): AbiItem;

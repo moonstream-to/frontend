@@ -2,15 +2,27 @@ import { HTMLAttributes, useEffect, useState } from "react";
 import { Flex, Link, Text } from "@chakra-ui/layout";
 
 import { MAX_INT } from "../constants";
+import { CopyIcon } from "@chakra-ui/icons";
+import { useClipboard } from "@chakra-ui/react";
 
 interface DetailsProps extends HTMLAttributes<HTMLElement> {
-  type: string;
+  type?: string;
   value: string;
   href?: string;
   displayFull?: boolean;
+  canBeCopied?: boolean;
+  range?: { atStart: number; atEnd: number };
 }
 
-const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsProps) => {
+const PoolDetailsRow = ({
+  type,
+  value,
+  displayFull,
+  href,
+  canBeCopied = false,
+  range,
+  ...props
+}: DetailsProps) => {
   const [valueString, setValueString] = useState("");
 
   const valueComponent = () => {
@@ -70,6 +82,11 @@ const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsPro
       return fullString.slice(0, atStart) + "..." + fullString.slice(-atEnd);
     };
 
+    if (range) {
+      setValueString(shortString(String(value), range.atStart, range.atEnd));
+      return;
+    }
+
     if (String(value).slice(0, 4) === "http") {
       setValueString(shortString(String(value), 20, 10));
       return;
@@ -85,23 +102,45 @@ const PoolDetailsRow = ({ type, value, displayFull, href, ...props }: DetailsPro
     setValueString(value);
   }, [value, displayFull]);
 
+  const { onCopy, hasCopied } = useClipboard(value);
+
   return (
-    <Flex justifyContent="space-between" {...props}>
-      <Text fontWeight="400" fontSize="18px">
-        {type}
-      </Text>
-      {href ? (
-        <Link
-          href={href}
-          color="orange.1000"
-          _hover={{ color: "orange.400", textDecoration: "none" }}
-          target="_blank"
-        >
-          {valueComponent()}
-        </Link>
-      ) : (
-        valueComponent()
+    <Flex justifyContent="space-between" gap="10px" {...props}>
+      {type && (
+        <Text fontWeight="400" fontSize="18px">
+          {type}
+        </Text>
       )}
+      <Flex gap="10px" position="relative" alignItems="center">
+        {href ? (
+          <Link
+            href={href}
+            color="orange.1000"
+            _hover={{ color: "orange.400", textDecoration: "none" }}
+            target="_blank"
+          >
+            {valueComponent()}
+          </Link>
+        ) : (
+          valueComponent()
+        )}
+        {canBeCopied && <CopyIcon onClick={onCopy} cursor="pointer" />}
+        {hasCopied && (
+          <Text
+            fontWeight="700"
+            position="absolute"
+            top="-40px"
+            left="69%"
+            transform="translate(-50%, 0)"
+            bg="#2d2d2d"
+            borderRadius="8px"
+            p="5px 10px"
+            border="2px solid #BBBBBB"
+          >
+            copied
+          </Text>
+        )}
+      </Flex>
     </Flex>
   );
 };
