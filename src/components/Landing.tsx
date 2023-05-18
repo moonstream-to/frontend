@@ -182,9 +182,11 @@ const Landing = () => {
                           fontSize={["16px", "16px", "20px"]}
                         >
                           <Center>
-                            <Button variant="orangeGradient" px={["20px", "20px", "30px"]}>
-                              Get Started
-                            </Button>
+                            <RouterLink href="/contact">
+                              <Button variant="orangeGradient" px={["20px", "20px", "30px"]}>
+                                Get Started
+                              </Button>
+                            </RouterLink>
                           </Center>
                           <Center>
                             <Link isExternal href="https://discord.gg/K56VNUQGvA">
@@ -414,7 +416,9 @@ const Landing = () => {
                 <Center py={8}>
                   <Stack direction={["column", "column", "row", "row", "row", "row"]} pb={4}>
                     <Center>
-                      <Button variant="plainOrange">Learn more about our features</Button>
+                      <RouterLink href="/features">
+                        <Button variant="plainOrange">Learn more about our features</Button>
+                      </RouterLink>
                     </Center>
                     <Center>
                       <Link href="https://docs.google.com/document/d/1mjfF8SgRrAZvtCVVxB2qNSUcbbmrH6dTEYSMfHKdEgc/view">

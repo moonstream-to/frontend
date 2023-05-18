@@ -99,6 +99,7 @@ const ContactForm = () => {
       bg="#2d2d2d"
       maxW="900px"
       mx="auto"
+      w="100%"
     >
       <Text fontSize="18px" fontWeight="700">
         Thanks for your interest in Moonstream. Our tools are fully customized to your project.
