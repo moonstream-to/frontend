@@ -117,7 +117,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
       </ButtonGroup>
       <Flex justifyContent="end" w="160px" gap="15px" alignItems="center">
         {!router.asPath.includes("portal") && (
-          <RouterLink href="/">
+          <RouterLink href="/portal">
             <Button
               variant="whiteOutline"
               fontSize="14px"

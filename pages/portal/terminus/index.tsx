@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import Layout from "../../src/components/layout";
-import TerminusView from "../../src/components/terminus/TerminusView";
-import { TerminusProvider } from "../../src/contexts/TerminusContext";
+import Layout from "../../../src/components/layout";
+import TerminusView from "../../../src/components/terminus/TerminusView";
+import { TerminusProvider } from "../../../src/contexts/TerminusContext";
 
 const Terminus = () => {
   useEffect(() => {

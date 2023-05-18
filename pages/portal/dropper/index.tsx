@@ -5,14 +5,14 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Center, Flex, Input, useToast } from "@chakra-ui/react";
 
-import Layout from "../../src/components/layout";
-import DropperContractView from "../../src/components/DropperContractView";
-import Web3Context from "../../src/contexts/Web3Context/context";
-import useDropperContract from "../../src/hooks/useDropper.sol";
-import DropperClaimsListView from "../../src/components/DropperClaimsListView";
-import DropperClaimView from "../../src/components/DropperClaimView";
+import Layout from "../../../src/components/layout";
+import DropperContractView from "../../../src/components/DropperContractView";
+import Web3Context from "../../../src/contexts/Web3Context/context";
+import useDropperContract from "../../../src/hooks/useDropper.sol";
+import DropperClaimsListView from "../../../src/components/DropperClaimsListView";
+import DropperClaimView from "../../../src/components/DropperClaimView";
 import { useQueryClient } from "react-query";
-import { TokenInterface } from "../../src/types/Moonstream";
+import { TokenInterface } from "../../../src/types/Moonstream";
 
 const Dropper = () => {
   const router = useRouter();
