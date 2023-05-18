@@ -2,7 +2,7 @@ import { Button, Container, Link, useMediaQuery } from "@chakra-ui/react";
 
 import FeatureCard from "../../src/components/FeatureCardLarge";
 import { AWS_STATIC_ASSETS_PATH } from "../../src/constants";
-import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const assets = {
   airdrop: `${AWS_STATIC_ASSETS_PATH}/airdrop.png`,
@@ -15,7 +15,7 @@ const Features = () => {
   const [isBaseView] = useMediaQuery("(max-width: 768px)");
 
   return (
-    <Layout title="Moonstream: features" home={false}>
+    <LayoutLanding title="Moonstream: features" home={false}>
       <Container
         id="container"
         maxW="1238"
@@ -114,7 +114,7 @@ const Features = () => {
           </>
         </FeatureCard>
       </Container>
-    </Layout>
+    </LayoutLanding>
   );
 };
 

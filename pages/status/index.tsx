@@ -6,6 +6,7 @@ import { Text, Flex, Spinner } from "@chakra-ui/react";
 import Layout from "../../src/components/layout";
 import queryCacheProps from "../../src/hooks/hookCommon";
 import useMoonToast from "../../src/hooks/useMoonToast";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const BUGOUT_STATUS_URL = process.env.NEXT_PUBLIC_BUGOUT_STATUS_URL;
 
@@ -75,21 +76,21 @@ const Status = () => {
   };
   return (
     <>
-      <Layout home={false} title="Moonstream: Status page">
-        <Flex mx="auto">
-          <Text fontSize="24px" fontWeight="700" mb="30px">
+      <LayoutLanding home={false} title="Moonstream: Status page">
+        <Flex mx="auto" py="40px" direction="column" justifyContent="center">
+          <Text fontSize="24px" fontWeight="700" mb="30px" textAlign="center">
             Status page
           </Text>
           {status.isLoading && <Spinner />}
+          {status.data && (
+            <Flex direction="column" mx="auto" gap="15px">
+              {status.data.map((service: any, idx: number) => (
+                <StatusRow key={idx} service={service} />
+              ))}
+            </Flex>
+          )}
         </Flex>
-        {status.data && (
-          <Flex direction="column" mx="auto" gap="15px">
-            {status.data.map((service: any, idx: number) => (
-              <StatusRow key={idx} service={service} />
-            ))}
-          </Flex>
-        )}
-      </Layout>
+      </LayoutLanding>
     </>
   );
 };

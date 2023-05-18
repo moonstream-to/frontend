@@ -1,14 +1,14 @@
 import { Flex } from "@chakra-ui/react";
 import ContactForm from "../../src/components/ContactForm";
-import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const Contact = () => {
   return (
-    <Layout home={false}>
+    <LayoutLanding home={false}>
       <Flex px="7%" gap="40px" py="40px" direction="column" justifyContent="start" h="100%">
         <ContactForm />
       </Flex>
-    </Layout>
+    </LayoutLanding>
   );
 };
 

@@ -1,9 +1,9 @@
 import { Box, Heading, ListItem, Text, Link } from "@chakra-ui/react";
 import { UnorderedList, OrderedList } from "@chakra-ui/react";
-import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const TermsOfService = () => (
-  <Layout home={false} title="Moonstream: Terms of Service">
+  <LayoutLanding home={false} title="Moonstream: Terms of Service">
     <Box mt="72px">
       <Box m="auto" mb={8} maxWidth="1238" minHeight="60vh">
         <Heading textAlign="start" my={8} as="h1">
@@ -557,7 +557,7 @@ const TermsOfService = () => (
         </Text>
       </Box>
     </Box>
-  </Layout>
+  </LayoutLanding>
 );
 
 export default TermsOfService;

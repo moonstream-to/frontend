@@ -16,13 +16,13 @@ import {
 
 import { AWS_STATIC_ASSETS_PATH, PAGETYPE, SITEMAP } from "../constants";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import Account from "./Account";
 
 const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
 
   return (
     <Flex
-      zIndex={1}
       alignItems="center"
       id="NavbarLanding"
       minH="56px"
@@ -31,6 +31,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
       w="100%"
       overflow="hidden"
       justifyContent="space-between"
+      borderBottom="1px solid white"
       {...props}
     >
       <RouterLink href="/" passHref>
@@ -44,22 +45,10 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
           alt="Logo"
         />
       </RouterLink>
-      <ButtonGroup h="100%" variant="link" spacing={4} mx="auto" justifyContent="center">
+      <ButtonGroup h="100%" variant="link" spacing={4} justifyContent="center">
         {SITEMAP.map((item, idx) => {
           return (
             <React.Fragment key={`Fragment-${idx}`}>
-              {/* {!item.children && item.type !== PAGETYPE.FOOTER_CATEGORY && (
-                <RouteButton
-                  key={`${idx}-${item.title}-landing-all-links`}
-                  variant="link"
-                  href={item.path}
-                  color="black"
-                  fontSize="16px"
-                  isActive={!!(router.pathname === item.path)}
-                >
-                  {item.title}
-                </RouteButton>
-              )} */}
               {item.type !== PAGETYPE.FOOTER_CATEGORY && item.children && (
                 <Menu autoSelect={false}>
                   <MenuButton
@@ -121,6 +110,24 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
           );
         })}
       </ButtonGroup>
+      <Flex justifyContent="end" w="160px" gap="15px" alignItems="center">
+        <RouterLink href="/">
+          <Button
+            variant="whiteOutline"
+            fontSize="14px"
+            p="5px 10px"
+            h="fit-content"
+            borderRadius="10px"
+            borderWidth="1px"
+            _hover={{
+              backgroundColor: "transparent",
+            }}
+          >
+            Portal
+          </Button>
+        </RouterLink>
+        <Account />
+      </Flex>
     </Flex>
   );
 };

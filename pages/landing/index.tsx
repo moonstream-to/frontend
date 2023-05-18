@@ -1,11 +1,12 @@
 import Landing from "../../src/components/Landing";
 import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const LandingPage = () => {
   return (
-    <Layout home={true} title="Moonstream">
+    <LayoutLanding home={true} title="Moonstream">
       <Landing />
-    </Layout>
+    </LayoutLanding>
   );
 };
 

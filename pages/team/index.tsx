@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import TeamCard from "../../src/components/TeamCard";
 import { AWS_STATIC_ASSETS_PATH } from "../../src/constants";
-import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const TEAM_PATH = `${AWS_STATIC_ASSETS_PATH}/team`;
 
@@ -36,7 +36,7 @@ const assets = {
 
 const Team = () => {
   return (
-    <Layout home={false} title="Moonstream: Team page">
+    <LayoutLanding home={false} title="Moonstream: Team page">
       <Flex
         bgColor="transparent"
         minH="100vh"
@@ -208,7 +208,7 @@ const Team = () => {
           </Flex>
         </Stack>
       </Flex>
-    </Layout>
+    </LayoutLanding>
   );
 };
 

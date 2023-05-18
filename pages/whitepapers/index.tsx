@@ -2,11 +2,11 @@ import { Flex, Heading } from "@chakra-ui/react";
 
 import WhitepaperCard from "../../src/components/WhitepaperCard";
 import { AWS_STATIC_ASSETS_PATH } from "../../src/constants";
-import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 
 const Whitepapers = () => {
   return (
-    <Layout home={false} title="Moonstream: whitepapers">
+    <LayoutLanding home={false} title="Moonstream: whitepapers">
       <Flex
         direction="column"
         px={{ base: "3%", sm: "7%" }}
@@ -26,7 +26,7 @@ const Whitepapers = () => {
           text="We present the Ethereum NFTs dataset, a representation of the activity on the Ethereum non-fungible token (NFT) market between April 1, 2021 and September 25, 2021, constructed purely from on-chain data. This dataset consists of all 7 020 950 token mints and transfers across 727 102 accounts between block 12 150 245 and block 13 296 011."
         />
       </Flex>
-    </Layout>
+    </LayoutLanding>
   );
 };
 
