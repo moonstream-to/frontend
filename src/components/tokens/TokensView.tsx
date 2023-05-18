@@ -58,7 +58,7 @@ const TokensView = () => {
   };
 
   if (!user) {
-    return;
+    return <></>;
   }
 
   return (
