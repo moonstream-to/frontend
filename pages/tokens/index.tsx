@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { useEffect } from "react";
 
-import Layout from "../../src/components/layout";
+import LayoutLanding from "../../src/components/layoutLanding";
 import TokensView from "../../src/components/tokens/TokensView";
 
 const Query = () => {
@@ -10,9 +9,9 @@ const Query = () => {
   }, []);
 
   return (
-    <Layout home={false}>
+    <LayoutLanding home={false}>
       <TokensView />
-    </Layout>
+    </LayoutLanding>
   );
 };
 
