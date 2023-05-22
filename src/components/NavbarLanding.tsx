@@ -79,33 +79,33 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
                       border="1px solid white"
                     >
                       {item.children.map((child, idx) => (
-                        <RouterLink
-                          shallow={true}
-                          key={`${idx}-${item.title}-menu-links`}
-                          href={child.path}
-                          passHref
+                        <MenuItem
+                          key={`menu-${idx}`}
+                          as={"div"} // change this
+                          cursor="pointer"
+                          onClick={() => {
+                            if (child.type === PAGETYPE.EXTERNAL) {
+                              window.open(child.path, "_blank");
+                            } else {
+                              router.push(child.path);
+                            }
+                          }}
+                          m={0}
+                          color="white"
+                          fontWeight="400"
+                          fontSize="16px"
+                          px="0px"
+                          mb="10px"
+                          h="22px"
+                          _hover={{
+                            backgroundColor: "black.300",
+                            color: "orange.1000",
+                            fontWeight: "700",
+                          }}
+                          _focus={{ backgroundColor: "black.300" }}
                         >
-                          <MenuItem
-                            key={`menu-${idx}`}
-                            as={"a"}
-                            target={child.type === PAGETYPE.EXTERNAL ? "_blank" : "_self"}
-                            m={0}
-                            color="white"
-                            fontWeight="400"
-                            fontSize="16px"
-                            px="0px"
-                            mb="10px"
-                            h="22px"
-                            _hover={{
-                              backgroundColor: "black.300",
-                              color: "orange.1000",
-                              fontWeight: "700",
-                            }}
-                            _focus={{ backgroundColor: "black.300" }}
-                          >
-                            {child.title}
-                          </MenuItem>
-                        </RouterLink>
+                          {child.title}
+                        </MenuItem>
                       ))}
                     </MenuList>
                   </Portal>
