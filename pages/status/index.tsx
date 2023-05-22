@@ -7,6 +7,7 @@ import Layout from "../../src/components/layout";
 import queryCacheProps from "../../src/hooks/hookCommon";
 import useMoonToast from "../../src/hooks/useMoonToast";
 import LayoutLanding from "../../src/components/layoutLanding";
+import StatusRow from "../../src/components/Status/StatusRow";
 
 const BUGOUT_STATUS_URL = process.env.NEXT_PUBLIC_BUGOUT_STATUS_URL;
 
@@ -46,44 +47,16 @@ const Status = () => {
     retry: 0,
   });
 
-  const StatusRow = ({
-    service,
-  }: {
-    service: { name: string; isHealthy: boolean; details: { key: string; value: string }[] };
-  }) => {
-    const healthyStatusText = "Available";
-    const downStatusText = "Unavailable";
-    const healthyStatusColor = "green.1000";
-    const downStatusColor = "red.600";
-    return (
-      <Flex direction="column" gap="10px">
-        <Flex justifyContent="space-between" fontSize="18px" fontWeight="700">
-          <Text textTransform="capitalize">{service.name}</Text>
-          <Text color={service.isHealthy ? healthyStatusColor : downStatusColor}>
-            {service.isHealthy ? healthyStatusText : downStatusText}
-          </Text>
-        </Flex>
-        <Flex direction="column" ml="10px" gap="5px">
-          {service.details.map((d, idx) => (
-            <Flex key={idx} justifyContent="space-between" gap="30px">
-              <Text>{d.key}</Text>
-              <Text fontFamily="Jet Brains Mono, monospace">{d.value}</Text>
-            </Flex>
-          ))}
-        </Flex>
-      </Flex>
-    );
-  };
   return (
     <>
       <LayoutLanding home={false} title="Moonstream: Status page">
-        <Flex mx="auto" py="40px" direction="column" justifyContent="center">
+        <Flex mx="auto" py="40px" direction="column" justifyContent="space-between" minW="700px">
           <Text fontSize="24px" fontWeight="700" mb="30px" textAlign="center">
             Status page
           </Text>
           {status.isLoading && <Spinner mx="auto" />}
           {status.data && (
-            <Flex direction="column" mx="auto" gap="15px">
+            <Flex direction="column" w="100%" mx="auto" gap="15px">
               {status.data.map((service: any, idx: number) => (
                 <StatusRow key={idx} service={service} />
               ))}
