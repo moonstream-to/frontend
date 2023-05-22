@@ -41,9 +41,9 @@ export default function Home() {
     <>
       {!user && (
         <LayoutLanding home={false} title="Moonstream: portal">
-          <Flex direction="column" mx="auto">
+          <Flex direction="column" mx="auto" my="40px">
             <NeedAuthorizationView />
-            <Flex gap="40px" py="40px">
+            <Flex gap="40px" py="40px" justifyContent="center">
               {features.map((feature) => (
                 <FeatureCard feature={feature} key={feature.name} disabled />
               ))}
@@ -51,20 +51,22 @@ export default function Home() {
           </Flex>
         </LayoutLanding>
       )}
-      <Layout home={true}>
-        <Head>
-          <title>Moonstream portal</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.png" />
-        </Head>
-        <Center>
-          <Flex gap="40px" py="40px">
-            {features.map((feature) => (
-              <FeatureCard feature={feature} key={feature.name} />
-            ))}
-          </Flex>
-        </Center>
-      </Layout>
+      {user && (
+        <Layout home={true}>
+          <Head>
+            <title>Moonstream portal</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="/favicon.png" />
+          </Head>
+          <Center>
+            <Flex gap="40px" py="40px" justifyContent="center">
+              {features.map((feature) => (
+                <FeatureCard feature={feature} key={feature.name} />
+              ))}
+            </Flex>
+          </Center>
+        </Layout>
+      )}
     </>
   );
 }
