@@ -3,7 +3,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { Button, Flex, Spinner, Text, Input, Box } from "@chakra-ui/react";
-import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 
 import useQueryAPI from "../../contexts/QueryAPIContext";
 import Web3Context from "../../contexts/Web3Context/context";
@@ -13,9 +12,7 @@ import useMoonToast from "../../hooks/useMoonToast";
 
 import Tag from "../Tag";
 import QueryAPIResult from "./QueryAPIResult";
-import TimestampInput2 from "../TimestampInput2";
-
-import styles from "./QueryAPIQueryView.module.css";
+import TimestampInput from "../TimestampInput";
 
 const inputs = [
   "address",
@@ -76,28 +73,6 @@ const QueryAPIQueryView = () => {
     setResult("");
     setParams([]);
   }, [selectedQueryId]);
-
-  const addParam = () => {
-    setParams((prev) => {
-      const newParams = [...prev];
-      const newParamIndex = inputs.findIndex(
-        (key, idx) => !prev.some((param) => param.key === key) && idx >= prev.length,
-      );
-      if (newParamIndex !== -1) {
-        newParams.push({ key: inputs[newParamIndex], value: values[newParamIndex] });
-      } else {
-        newParams.push({ key: "", value: "" });
-      }
-      return newParams;
-    });
-  };
-
-  const removeParam = (idx: number) => {
-    setParams((prev) => {
-      const newParams = prev.slice(0, idx).concat(prev.slice(idx + 1));
-      return newParams;
-    });
-  };
 
   const setParam = (idx: number, key: string, value: string) => {
     setParams((prev) => {
@@ -269,28 +244,6 @@ const QueryAPIQueryView = () => {
                 {params.map((param, idx) => {
                   return (
                     <Flex key={idx} gap="0px" minW="100%" alignItems="center" pr="1.5px">
-                      {/* <input
-                        list="inputs"
-                        type="text"
-                        value={param.key}
-                        onChange={(e) => setParam(idx, "key", e.target.value)}
-                        onFocus={() => setParam(idx, "key", "")}
-                        className={styles.input}
-                        style={{
-                          backgroundColor: "#232323",
-                          borderRadius: "10px",
-                          border: "1px solid #4D4D4D",
-                          padding: "7px 15px",
-                          fontSize: "16px",
-                        }}
-                      />
-                      <datalist id="inputs">
-                        {inputs.map((paramKey) => (
-                          <option key={paramKey} value={paramKey}>
-                            {paramKey}
-                          </option>
-                        ))}
-                      </datalist> */}
                       <Box
                         bg="#232323"
                         borderRadius="10px"
@@ -302,7 +255,7 @@ const QueryAPIQueryView = () => {
                         {param.key}
                       </Box>
                       {param.key?.includes("timestamp") ? (
-                        <TimestampInput2
+                        <TimestampInput
                           timestamp={param.value ?? ""}
                           setTimestamp={(newValue: string) =>
                             setParam(idx, "value", String(newValue))
@@ -324,11 +277,6 @@ const QueryAPIQueryView = () => {
                           mr="10px"
                         />
                       )}
-                      {/* <AiOutlineMinusCircle
-                        style={{ minWidth: "18px" }}
-                        onClick={() => removeParam(idx)}
-                        cursor="pointer"
-                      /> */}
                     </Flex>
                   );
                 })}

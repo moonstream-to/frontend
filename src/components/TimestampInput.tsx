@@ -1,26 +1,7 @@
-import { Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-// const dateToTimestamp = (dateString: string) => {};
-
-const getPattern = () => {
-  const y = new Date("1999-03-25");
-  const localeString = y.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  // console.log(y, localeString);
-  const dayPos = localeString.indexOf("25");
-  const monthPos = localeString.indexOf("03");
-  // const yearPos = localeString.indexOf("1999");
-  const divider = localeString.charAt(Math.min(dayPos, monthPos) + 2);
-  return {
-    pattern:
-      localeString.replace("1999", "YYYY").replace("25", "DD").replace("03", "MM") + "THH:mm:ss",
-    divider,
-  };
-};
+import { Flex, Input, Text, Icon } from "@chakra-ui/react";
+import { BsArrowLeftRight } from "react-icons/bs";
 
 const TimestampInput = ({
   timestamp,
@@ -29,111 +10,150 @@ const TimestampInput = ({
   timestamp: string;
   setTimestamp: (arg0: string) => void;
 }) => {
-  const [value, setValue] = useState(timestamp);
-  // const [dateFromDate, setDateFromDate] = useState(getPattern);
-  const [valueOnPattern, setValueOnPattern] = useState("");
-  const [dateFromTimestamp, setDateFromTimestamp] = useState("");
-  const [fromDateIsBetter, setFromDateIsBest] = useState(false);
-  const [fromTSIsBetter, setFromTSIsBest] = useState(false);
+  const [borderColor, setBorderColor] = useState("#4D4D4D");
 
-  const onChange = (newValue: string) => {
-    setValue(newValue);
-    const newChar = newValue.slice(-1);
-    const pattern = getPattern().pattern;
+  const initialState = {
+    components: [
+      { value: "", label: "Yr" },
+      { value: "", label: "Mon" },
+      { value: "", label: "Day" },
+      { value: "", label: "Hr" },
+      { value: "", label: "Min" },
+      { value: "", label: "Sec" },
+    ],
+    epoch: "",
+  };
 
-    const newValueArray = newValue.split("");
-    const newValuOnPatternArray: string[] = [];
-    const requiredSymbols = ["D", "M", "Y", "H", "m", "s"];
-    newValueArray.forEach((c: string) => {
-      const pos = newValuOnPatternArray.length;
-      if (!pattern.at(pos)) {
-        return;
-      }
-      newValuOnPatternArray.push(c);
-      if (!requiredSymbols.includes(pattern.at(pos + 1) ?? "")) {
-        if (pattern.at(pos + 1)) {
-          newValuOnPatternArray.push(pattern.at(pos + 1) ?? "");
-        }
-      }
-    });
-    const newValueOnPattern = newValuOnPatternArray.join("");
-    let newDateString = "";
-    if (newValueOnPattern.length === pattern.length) {
-      const dayPos = pattern.indexOf("D");
-      const monthPos = pattern.indexOf("M");
-      const yearPos = pattern.indexOf("Y");
-      const timePos = pattern.indexOf("T");
-      if (dayPos > -1 && monthPos > -1 && yearPos > -1 && timePos > -1) {
-        newDateString = `${newValueOnPattern.slice(yearPos, yearPos + 4)}-${newValueOnPattern.slice(
-          monthPos,
-          monthPos + 2,
-        )}-${newValueOnPattern.slice(dayPos, dayPos + 2)}${newValueOnPattern.slice(timePos)}`;
-        console.log(newDateString);
-        console.log(new Date(newDateString));
-      }
-    }
-    setValueOnPattern(newValueOnPattern);
-    setTimestamp(newValue);
-    const dateFromTS = new Date(Number(newValue));
-    const dateFromDate = new Date(newDateString);
-    if (dateFromTS.getTime() > 0) {
-      setDateFromTimestamp(dateFromTS.toLocaleString());
-      if (dateFromDate.getTime() > 0) {
-        const today = Date.now();
-        setFromDateIsBest(
-          Math.abs(today - Number(newValue)) > Math.abs(today - Date.parse(newDateString)),
-        );
-        setFromTSIsBest(
-          Math.abs(today - Number(newValue)) < Math.abs(today - Date.parse(newDateString)),
-        );
-      } else {
-        setFromTSIsBest(true);
-      }
+  const [date, setDate] = useState({
+    components: [...initialState.components],
+    epoch: "",
+  });
+
+  const getComponents = (timestamp: string) => {
+    const date = new Date(Number(timestamp) * 1000);
+    const result = [...initialState.components];
+    result[0].value = String(date.getUTCFullYear());
+    result[1].value = String(date.getUTCMonth() + 1);
+    result[2].value = String(date.getUTCDate());
+    result[3].value = String(date.getUTCHours());
+    result[4].value = String(date.getUTCMinutes());
+    result[5].value = String(date.getUTCSeconds());
+    return result;
+  };
+
+  const getEpoch = ([year, month, day, hour, min, sec]: string[]) => {
+    return String(
+      Math.round(
+        Date.UTC(
+          Number(year),
+          Number(month) - 1,
+          Number(day),
+          Number(hour),
+          Number(min),
+          Number(sec),
+        ) / 1000,
+      ),
+    );
+  };
+
+  useEffect(() => {
+    let date: Date;
+    if (Number(timestamp)) {
+      date = new Date(Number(timestamp) * 1000);
     } else {
-      if (dateFromDate.getTime() > 0) {
-        setFromDateIsBest(true);
-        setFromTSIsBest(false);
-      } else {
-        setFromDateIsBest(false);
-      }
-      setDateFromTimestamp("invalid date");
-      setFromTSIsBest(false);
+      date = new Date(Date.now());
+      date.setMinutes(0);
+      date.setSeconds(0);
+      date.setMilliseconds(0);
+    }
+    const components = getComponents(String(date.getTime() / 1000));
+    setDate({ epoch: String(date.getTime() / 1000), components });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleComponentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const components = [...date.components];
+    components[Number(e.target.name)].value = e.target.value;
+    console.log(components);
+    setDate({
+      epoch: getEpoch(components.map((c) => c.value)),
+      components,
+    });
+  };
+
+  useEffect(() => {
+    setTimestamp(date.epoch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date]);
+
+  const handleTimestampChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDate({
+      epoch: e.target.value,
+      components: getComponents(e.target.value),
+    });
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const value = e.clipboardData.getData("text/plain");
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      e.preventDefault();
+      const components = getComponents(String(date.getTime() / 1000));
+      setDate({ epoch: String(date.getTime() / 1000), components });
     }
   };
+
+  useEffect(() => {
+    setBorderColor(Number(timestamp) || !timestamp || timestamp === "0" ? "#4d4d4d" : "error.500");
+  }, [timestamp]);
 
   return (
     <Flex gap="10px" alignItems="center" fontSize="14px" w="100%">
       <Input
-        w="20ch"
-        fontSize="12px"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        minW="14ch"
+        maxW="14ch"
+        fontSize="14px"
+        value={date.epoch}
+        p="10px"
+        type="number"
+        onChange={handleTimestampChange}
         border="1px solid #4D4D4D"
+        borderColor={borderColor}
+        _hover={{ borderColor }}
+        _focusVisible={{ borderColor, outline: "none" }}
+        onPaste={handlePaste}
+        title="you can paste date in ISO 8601, RFC 822, 1036, 1123 or 3339 format"
       />
-      <Flex direction="column" fontWeight={fromDateIsBetter ? "700" : "400"}>
-        <Flex>
-          <Text>{valueOnPattern}</Text>
-          <Text color="#7d7d7d">{getPattern().pattern.slice(valueOnPattern.length)}</Text>
+      <Icon as={BsArrowLeftRight} />
+      {date.components.map((component, idx: number) => (
+        <Flex
+          direction="column"
+          key={component.label}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Text p="0px" color="#CCCCCC" fontSize="12px" lineHeight="12px" userSelect="none">
+            {component.label}
+          </Text>
+          <Input
+            fontSize="14px"
+            value={component.value}
+            type="number"
+            textAlign="center"
+            px="3px"
+            mt="5px"
+            h="20px"
+            border="1px solid #4D4D4D"
+            name={String(idx)}
+            w={component.label === "Yr" ? "6ch" : "4ch"}
+            onChange={handleComponentChange}
+            onPaste={handlePaste}
+          />
         </Flex>
-        <Text>
-          {new Date().toLocaleTimeString("en-us", { timeZoneName: "short" }).split(" ")[2]}
-        </Text>
-      </Flex>
-      <Flex
-        direction="column"
-        fontWeight={fromTSIsBetter ? "700" : "400"}
-        onClick={() => {
-          setFromTSIsBest(true);
-          setFromDateIsBest(false);
-        }}
-      >
-        <Flex>
-          <Text>{dateFromTimestamp}</Text>
-        </Flex>
-        <Text>
-          {new Date().toLocaleTimeString("en-us", { timeZoneName: "short" }).split(" ")[2]}
-        </Text>
-      </Flex>
+      ))}
+      <Text fontSize="12px" userSelect="none" mt="auto">
+        UTC
+      </Text>
     </Flex>
   );
 };
