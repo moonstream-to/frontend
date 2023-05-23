@@ -76,6 +76,7 @@ const useDropperContract = ({
     () => getState(dropperAddress, ctx)(),
     {
       ...queryCacheProps,
+      retry: false,
       enabled:
         !!dropperAddress &&
         ctx.web3?.utils.isAddress(ctx.account) &&

@@ -2,11 +2,31 @@
 import { useContext, useEffect, useState } from "react";
 
 import { Flex, Text } from "@chakra-ui/layout";
+import { Spinner } from "@chakra-ui/spinner";
 
 import PoolDetailsRow from "./PoolDetailsRow";
 import Web3Context from "../contexts/Web3Context/context";
 
 import useDropperContract from "../hooks/useDropper.sol";
+import { supportedChains } from "../types";
+import { chains } from "../contexts/Web3Context";
+
+const CONNECTION_ERRORS: WalletStatesInterface = {
+  ONBOARD: "Cannot retrieve any data. MetaMask isn't installed",
+  CONNECT: "Cannot retrieve any data. MetaMask is installed, but it isn't connected",
+  CONNECTED:
+    "Cannot retrieve any data. MetaMask is installed and connected, but something is wrong. It could be due to the wrong chain or address.",
+  UNKNOWN_CHAIN: "Cannot retrieve any data. Unsupported chain",
+  NO_CHAIN_SELECTED: "Cannot retrieve any data. The chain hasn't been selected in MetaMask.",
+};
+
+export interface WalletStatesInterface {
+  ONBOARD: string;
+  CONNECT: string;
+  CONNECTED: string;
+  NO_CHAIN_SELECTED: string;
+  UNKNOWN_CHAIN: string;
+}
 
 const DropperContractView = ({
   address,
@@ -15,27 +35,9 @@ const DropperContractView = ({
   address: string;
   addRecentAddress: (address: string, fields: Record<string, string>) => void;
 }) => {
-  const errorDialog = [
-    "Something is wrong. Is MetaMask connected properly to the right chain?",
-    "Is contract address correct?",
-    `Then I don't know. Maybe you should try later`,
-  ];
-  const [dialogStep, setDialogStep] = useState(0);
-  const nextStep = () => {
-    setDialogStep((prev) => Math.min(prev + 1, errorDialog.length - 1));
-  };
   const web3ctx = useContext(Web3Context);
   const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address });
-  const [isTimeout, setIsTimeout] = useState(false);
-
-  useEffect(() => {
-    const timeOutId = setTimeout(() => setIsTimeout(true), 9000);
-    return () => clearTimeout(timeOutId);
-  }, [address]);
-
-  useEffect(() => {
-    setIsTimeout(false);
-  }, [address]);
+  const [connectionStatus, setConnectionStatus] = useState("");
 
   useEffect(() => {
     if (contractState.data?.owner) {
@@ -43,9 +45,36 @@ const DropperContractView = ({
     }
   }, [contractState.data]);
 
+  const isKnownChain = (_chainId: number) => {
+    return Object.keys(chains).some((key) => {
+      return chains[key as any as supportedChains].chainId == _chainId;
+    });
+  };
+
+  useEffect(() => {
+    if (
+      web3ctx.web3.currentProvider &&
+      web3ctx.chainId &&
+      web3ctx.targetChain?.chainId &&
+      web3ctx.account
+    ) {
+      if (isKnownChain(web3ctx.chainId)) {
+        setConnectionStatus(CONNECTION_ERRORS.CONNECTED);
+      } else {
+        setConnectionStatus(CONNECTION_ERRORS.UNKNOWN_CHAIN);
+      }
+    } else {
+      if (!window.ethereum) {
+        setConnectionStatus(CONNECTION_ERRORS.ONBOARD);
+      } else {
+        setConnectionStatus(CONNECTION_ERRORS.CONNECT);
+      }
+    }
+  }, [web3ctx.web3.currentProvider, web3ctx.chainId, web3ctx.targetChain, web3ctx.account]);
+
   return (
     <>
-      <Flex bg="#2d2d2d" maxW="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
+      <Flex bg="#2d2d2d" w="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
         <Flex gap="30px">
           {contractState.data?.owner && (
             <Flex
@@ -69,26 +98,14 @@ const DropperContractView = ({
               <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
             </Flex>
           )}
-          {!contractState.data?.owner && isTimeout && (
+          {contractState.isError && (
             <Flex alignItems="center" gap="10px" color="gray.900">
               <Text fontStyle="italic" color="gray.900">
-                {errorDialog[dialogStep]}
+                {connectionStatus}
               </Text>
-              {dialogStep < errorDialog.length - 1 && (
-                <Text
-                  cursor="pointer"
-                  h="fit-content"
-                  p="2px 12px"
-                  border="1px solid gray"
-                  borderRadius="5px"
-                  bg="transparent"
-                  onClick={nextStep}
-                >
-                  Yes
-                </Text>
-              )}
             </Flex>
           )}
+          {contractState.isLoading && <Spinner />}
         </Flex>
       </Flex>
     </>

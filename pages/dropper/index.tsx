@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
@@ -25,12 +24,12 @@ const Dropper = () => {
 
   const { contractState } = useDropperContract({ dropperAddress: contractAddress, ctx: web3ctx });
   const [selected, setSelected] = useState(-1);
+  const [claimMetadata, setClaimMetadata] = useState<unknown>({});
 
   const handleClick = (claimId: string, metadata: unknown) => {
     setSelected(Number(claimId));
     setClaimMetadata(metadata);
   };
-  const [claimMetadata, setClaimMetadata] = useState<unknown>({});
   const [nextValue, setNextValue] = useState(contractAddress);
 
   const toast = useToast();
@@ -146,18 +145,22 @@ const Dropper = () => {
             <>
               <DropperContractView address={contractAddress} addRecentAddress={addRecentAddress} />
               <Flex gap="40px" maxH="700px">
-                <DropperClaimsListView
-                  contractAddress={contractAddress}
-                  contractState={contractState}
-                  onChange={handleClick}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <DropperClaimView
-                  address={contractAddress}
-                  claimId={String(selected)}
-                  metadata={claimMetadata}
-                />
+                {contractState.data && (
+                  <DropperClaimsListView
+                    contractAddress={contractAddress}
+                    contractState={contractState}
+                    onChange={handleClick}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                )}
+                {contractState.data && (
+                  <DropperClaimView
+                    address={contractAddress}
+                    claimId={String(selected)}
+                    metadata={claimMetadata}
+                  />
+                )}
               </Flex>
             </>
           )}
