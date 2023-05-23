@@ -98,7 +98,7 @@ const DropperContractView = ({
               <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
             </Flex>
           )}
-          {contractState.isError && (
+          {(contractState.isError || !contractState.data?.owner) && (
             <Flex alignItems="center" gap="10px" color="gray.900">
               <Text fontStyle="italic" color="gray.900">
                 {connectionStatus}
