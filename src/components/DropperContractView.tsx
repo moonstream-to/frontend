@@ -13,7 +13,8 @@ import { chains } from "../contexts/Web3Context";
 
 const CONNECTION_ERRORS: WalletStatesInterface = {
   ONBOARD: "Cannot retrieve any data. MetaMask isn't installed",
-  CONNECT: "Cannot retrieve any data. MetaMask is installed, but it isn't connected",
+  CONNECT:
+    "Cannot retrieve any data. MetaMask is installed, but something is wrong. It could be due to the wrong chain or address.",
   CONNECTED:
     "Cannot retrieve any data. MetaMask is installed and connected, but something is wrong. It could be due to the wrong chain or address.",
   UNKNOWN_CHAIN: "Cannot retrieve any data. Unsupported chain",
@@ -98,13 +99,15 @@ const DropperContractView = ({
               <PoolDetailsRow type={"Active"} value={String(!contractState.data.paused)} />
             </Flex>
           )}
-          {(contractState.isError || !contractState.data?.owner) && (
-            <Flex alignItems="center" gap="10px" color="gray.900">
-              <Text fontStyle="italic" color="gray.900">
-                {connectionStatus}
-              </Text>
-            </Flex>
-          )}
+          {(contractState.isError || connectionStatus !== CONNECTION_ERRORS.CONNECTED) &&
+            !contractState.isLoading &&
+            !contractState.data && (
+              <Flex alignItems="center" gap="10px" color="gray.900">
+                <Text fontStyle="italic" color="gray.900">
+                  {connectionStatus}
+                </Text>
+              </Flex>
+            )}
           {contractState.isLoading && <Spinner />}
         </Flex>
       </Flex>
