@@ -38,6 +38,7 @@ const ForgotPassword = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
               gap="30px"
               p="30px"
               alignItems="center"
+              border="1px solid white"
             >
               <Flex justifyContent="space-between" w="100%">
                 <Text>Forgot Password</Text>

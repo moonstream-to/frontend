@@ -58,6 +58,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
               gap="30px"
               p="30px"
               alignItems="center"
+              border="1px solid white"
             >
               <Flex justifyContent="end" w="100%">
                 <CloseIcon
