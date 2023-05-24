@@ -59,47 +59,53 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
 
       {!isMobileView && (
         <Flex alignItems="center" gap="20px">
-          {web3Provider.buttonText !== web3Provider.WALLET_STATES.CONNECTED && (
+          {(web3Provider.buttonText !== web3Provider.WALLET_STATES.CONNECTED ||
+            !web3Provider.account) && (
             <Button
               variant="orangeGradient"
               fontSize="16px"
               isDisabled={web3Provider.WALLET_STATES.UNKNOWN_CHAIN === web3Provider.buttonText}
               onClick={web3Provider.onConnectWalletClick}
             >
-              {web3Provider.buttonText}
+              {web3Provider.account
+                ? web3Provider.buttonText
+                : web3Provider.buttonText === web3Provider.WALLET_STATES.ONBOARD
+                ? "Install Metamask"
+                : "Connect with Metamask"}
             </Button>
           )}
 
-          {web3Provider.buttonText === web3Provider.WALLET_STATES.CONNECTED && (
-            <Flex>
-              <code>
-                <Badge
-                  p="10px 1vw"
-                  fontWeight="400"
-                  textTransform="none"
-                  backgroundColor="white"
-                  color="#1A1D22"
-                  borderRadius="10px"
-                  mr={2}
-                  h="36px"
-                >
-                  <Skeleton
-                    isLoaded={!!web3Provider.account}
-                    colorScheme={"red"}
-                    w="100%"
-                    borderRadius={"inherit"}
-                    startColor="red.500"
-                    endColor="blue.500"
-                    fontSize="min(16px, 9px + 0.5vw)"
-                    lineHeight="16px"
-                    p={0}
+          {web3Provider.buttonText === web3Provider.WALLET_STATES.CONNECTED &&
+            web3Provider.account && (
+              <Flex>
+                <code>
+                  <Badge
+                    p="10px 1vw"
+                    fontWeight="400"
+                    textTransform="none"
+                    backgroundColor="white"
+                    color="#1A1D22"
+                    borderRadius="10px"
+                    mr={2}
+                    h="36px"
                   >
-                    {web3Provider.account}
-                  </Skeleton>
-                </Badge>
-              </code>
-            </Flex>
-          )}
+                    <Skeleton
+                      isLoaded={!!web3Provider.account}
+                      colorScheme={"red"}
+                      w="100%"
+                      borderRadius={"inherit"}
+                      startColor="red.500"
+                      endColor="blue.500"
+                      fontSize="min(16px, 9px + 0.5vw)"
+                      lineHeight="16px"
+                      p={0}
+                    >
+                      {web3Provider.account}
+                    </Skeleton>
+                  </Badge>
+                </code>
+              </Flex>
+            )}
           <ChainSelector />
           <Flex w="2px" bg="#4d4d4d" h="30px" />
           {!user && (

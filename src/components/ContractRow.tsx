@@ -9,16 +9,18 @@ const ContractRow = ({
   name,
   image,
   chainId,
+  type,
 }: {
   address?: string;
   name?: string;
   image?: string;
   chainId?: number;
+  type: string;
 }) => {
   const router = useRouter();
   const handleClick = () => {
     router.push({
-      pathname: "/terminus",
+      pathname: `/${type}`,
       query: {
         contractAddress: address,
       },

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Flex, Select, Text } from "@chakra-ui/react";
+import { Flex, Select, Skeleton, SkeletonCircle, Text } from "@chakra-ui/react";
 
-import Spinner from "./Spinner/Spinner";
 import Web3Context from "../contexts/Web3Context/context";
 import queryCacheProps from "../hooks/hookCommon";
 const multicallABI = require("../web3/abi/Multicall2.json");
@@ -104,10 +103,6 @@ const DropperClaimsList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimsList.data, selected]);
 
-  if (claimsList.isLoading) {
-    return <Spinner />;
-  }
-
   return (
     <>
       {claimsList.data && (
@@ -133,6 +128,13 @@ const DropperClaimsList = ({
               </Select>
             </Flex>
           )}
+          {claimsList.isLoading &&
+            Array.from(Array(5)).map((_, idx) => (
+              <Flex key={idx} gap="15px">
+                <SkeletonCircle minH="27px" startColor="#2d2d2d" endColor="#222222" />
+                <Skeleton bg="red" minH="27px" w="250px" startColor="#2d2d2d" endColor="#222222" />
+              </Flex>
+            ))}
           {claimsList.data.map((claim: { uri: string; id: number }) => (
             <DropperClaimsListItem
               key={claim.id}
