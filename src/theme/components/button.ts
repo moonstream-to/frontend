@@ -53,6 +53,22 @@ const variantWyrmButton = () => {
   };
 };
 
+const variantSelector = () => {
+  return {
+    p: "0px",
+    lineHeight: "1",
+    fontSize: "24px",
+    fontWeight: "700",
+    h: "24px",
+    color: "#4d4d4d",
+    _disabled: {
+      color: "white",
+      cursor: "default",
+      opacity: "1",
+    },
+  };
+};
+
 const variantPlainOrange = () => {
   return {
     alignItems: "center",
@@ -74,6 +90,59 @@ const variantPlainOrange = () => {
     },
     _active: {
       backgroundColor: "#F4532F",
+    },
+  };
+};
+
+const variantTransparent = () => {
+  return {
+    backgroundColor: "transparent",
+    _hover: {
+      backgroundColor: "transparent",
+      textDecoration: "none",
+    },
+    _focus: {
+      backgroundColor: "transparent",
+    },
+    _active: {
+      backgroundColor: "transparent",
+    },
+  };
+};
+
+const variantCancel = () => {
+  return {
+    padding: "10px 40px",
+    backgroundColor: "#4D4D4D",
+    _hover: {
+      backgroundColor: "#4D4D4D",
+      textDecoration: "none",
+    },
+    _focus: {
+      backgroundColor: "#4D4D4D",
+    },
+    _active: {
+      backgroundColor: "#4D4D4D",
+    },
+  };
+};
+
+const variantSave = () => {
+  return {
+    padding: "10px 80px",
+    backgroundColor: "#F56646",
+    _hover: {
+      backgroundColor: "#F56646",
+      textDecoration: "none",
+      _disabled: {
+        backgroundColor: "#F56646",
+      },
+    },
+    _focus: {
+      backgroundColor: "#F56646",
+    },
+    _active: {
+      backgroundColor: "#F56646",
     },
   };
 };
@@ -115,6 +184,10 @@ const Button = {
     plainOrange: variantPlainOrange,
     orangeGradient: variantOrangeGradient,
     wyrmButton: variantWyrmButton,
+    selector: variantSelector,
+    cancelButton: variantCancel,
+    saveButton: variantSave,
+    transparent: variantTransparent,
   },
 };
 export default Button;
