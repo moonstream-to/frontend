@@ -13,14 +13,8 @@ import useTerminus from "../../contexts/TerminusContext";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
 
 const TerminusView = () => {
-  const {
-    // recentAddresses,
-    // setRecentAddresses,
-    contractAddress,
-    setContractAddress,
-    selectPool,
-    setSelectedPoolMetadata,
-  } = useTerminus();
+  const { contractAddress, setContractAddress, selectPool, setSelectedPoolMetadata } =
+    useTerminus();
   const router = useRouter();
 
   const [addressInputValue, setAddressInputValue] = useState(contractAddress);
@@ -28,24 +22,6 @@ const TerminusView = () => {
   const [recentAddresses, addRecentAddress] = useRecentAddresses("terminus");
 
   const toast = useToast();
-
-  // useEffect(() => {
-  //   let addresses = undefined;
-  //   const item = localStorage.getItem("terminusContracts");
-  //   if (item) {
-  //     try {
-  //       addresses = JSON.parse(item);
-  //     } finally {
-  //       setRecentAddresses(addresses);
-  //     }
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (recentAddresses) {
-  //     localStorage.setItem("terminusContracts", JSON.stringify(recentAddresses));
-  //   }
-  // }, [recentAddresses]);
 
   useEffect(() => {
     if (!router.query.poolId) {
