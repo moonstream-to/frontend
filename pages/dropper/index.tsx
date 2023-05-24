@@ -33,7 +33,7 @@ const Dropper = () => {
   const [nextValue, setNextValue] = useState(contractAddress);
 
   const toast = useToast();
-  const [recentAddresses, addRecentAddress] = useRecentAddresses("dropper");
+  const { recentAddresses, addRecentAddress } = useRecentAddresses("dropper");
 
   useEffect(() => {
     if (!router.query.claimId) {

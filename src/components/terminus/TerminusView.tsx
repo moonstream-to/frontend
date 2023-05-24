@@ -19,7 +19,7 @@ const TerminusView = () => {
 
   const [addressInputValue, setAddressInputValue] = useState(contractAddress);
 
-  const [recentAddresses, addRecentAddress] = useRecentAddresses("terminus");
+  const { recentAddresses, addRecentAddress } = useRecentAddresses("terminus");
 
   const toast = useToast();
 

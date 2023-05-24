@@ -5,10 +5,11 @@ type Address = {
   [key: string]: string; // arbitrary set of fields
 };
 
-type UseRecentAddressesReturnType = [
-  Address[],
-  (address: string, fields: Record<string, string>) => void,
-];
+type UseRecentAddressesReturnType = {
+  recentAddresses: Address[];
+  addRecentAddress: (address: string, fields: Record<string, string>) => void;
+  deleteRecentAddress: (address: string) => void;
+};
 
 const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
   const [recentAddresses, setRecentAddresses] = useState<Address[]>([]);
@@ -44,7 +45,13 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
     }
   };
 
-  return [recentAddresses, addRecentAddress];
+  const deleteRecentAddress = (address: string) => {
+    const updatedAddresses = recentAddresses.filter((a) => a.address !== address);
+    setRecentAddresses(updatedAddresses);
+    localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
+  };
+
+  return { recentAddresses, addRecentAddress, deleteRecentAddress };
 };
 
 export default useRecentAddresses;
