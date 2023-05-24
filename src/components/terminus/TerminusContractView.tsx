@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
+
 import { useQuery } from "react-query";
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Spacer, Text } from "@chakra-ui/layout";
@@ -21,8 +22,7 @@ import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
 const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
-import useTermiminus, { ContractData } from "../../contexts/TerminusContext";
-import useRecentAddresses from "../../hooks/useRecentAddresses";
+import useTermiminus from "../../contexts/TerminusContext";
 
 const TerminusContractView = ({
   addRecentAddress,
@@ -30,7 +30,6 @@ const TerminusContractView = ({
   addRecentAddress: (address: string, fields: Record<string, string>) => void;
 }) => {
   const { setContractState, contractAddress } = useTermiminus();
-  // const [recentAddresses, addRecentAddress] = useRecentAddresses("terminus");
   const errorDialog = [
     "Something is wrong. Is MetaMask connected properly to the right chain?",
     "Is contract address correct?",
@@ -111,7 +110,6 @@ const TerminusContractView = ({
             controller: parsedResults[4],
           };
           if (data.controller) {
-            // console.log(recentAddresses);
             addRecentAddress(contractAddress, { chainId: String(chainId) });
           }
           setURI(data.contractURI);
@@ -136,18 +134,13 @@ const TerminusContractView = ({
     ["link", uri],
     (query: any) => {
       return queryPublic(query.queryKey[1]).then((res: any) => {
-        const data: ContractData = {};
         let fields = {};
         if (res.data?.image) {
           fields = { image: res.data.image };
-          // data.image = res.data.image;
         }
         if (res.data?.name) {
           fields = { ...fields, name: res.data.name };
-
-          // data.name = res.data.name;
         }
-        // console.log(recentAddresses);
         addRecentAddress(contractAddress, fields);
         return res.data;
       });
