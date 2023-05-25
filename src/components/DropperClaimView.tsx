@@ -2,18 +2,9 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useQuery } from "react-query";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  IconButton,
-  Spinner,
-  useClipboard,
-} from "@chakra-ui/react";
+import { IconButton, Spinner, useClipboard } from "@chakra-ui/react";
 import { LinkIcon } from "@chakra-ui/icons";
-import { Box, Flex, Spacer, Text } from "@chakra-ui/layout";
+import { Flex, Text } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
@@ -27,6 +18,7 @@ import { PORTAL_PATH } from "../constants";
 const dropperAbi = require("../web3/abi/Dropper.json");
 import { Dropper } from "../web3/contracts/types/Dropper";
 import ClaimButton from "./ClaimButton";
+import MetadataPanel from "./MetadataPanel";
 
 const DropperClaimView = ({
   address,
@@ -138,6 +130,7 @@ const DropperClaimView = ({
       position="relative"
     >
       {dropState && <ClaimButton dropState={dropState} />}
+
       <Flex gap={2} position="relative" w="fit-content">
         {hasCopied && <Text variant="tooltip">copied</Text>}
         <Text
@@ -214,46 +207,7 @@ const DropperClaimView = ({
                     />
                   </>
                 )}
-                {metadata && (
-                  <Accordion allowMultiple>
-                    <AccordionItem border="none">
-                      <AccordionButton p="0" mb="10px">
-                        <Spacer />
-                        <Box as="span" flex="1" textAlign="right" pr="10px" fontWeight="700">
-                          Metadata
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel>
-                        {Object.keys(metadata)
-                          .filter((key) => !headerMeta.includes(key))
-                          .map((key) => {
-                            return (
-                              <PoolDetailsRow key={key} type={key} value={String(metadata[key])} />
-                            );
-                          })}
-                        {metadata?.attributes && (
-                          <>
-                            <Text fontWeight="700" mt="20px">
-                              Attributes:
-                            </Text>
-
-                            {metadata.attributes.map(
-                              (attribute: { trait_type: string; value: string }) => (
-                                <PoolDetailsRow
-                                  key={attribute.trait_type}
-                                  type={attribute.trait_type}
-                                  value={String(attribute.value)}
-                                  style={{ marginLeft: "20px" }}
-                                />
-                              ),
-                            )}
-                          </>
-                        )}
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
-                )}
+                {metadata && <MetadataPanel metadata={metadata} excludeFields={headerMeta} />}
               </Flex>
             )}
             {dropState && <ClaimantsView claimId={dropState.id} />}
