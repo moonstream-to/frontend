@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import {
   Accordion,
   AccordionButton,
@@ -9,9 +9,7 @@ import {
   AccordionItem,
   AccordionPanel,
   IconButton,
-  useToast,
   Spinner,
-  Button,
   useClipboard,
 } from "@chakra-ui/react";
 import { LinkIcon } from "@chakra-ui/icons";
@@ -28,7 +26,7 @@ import queryCacheProps from "../hooks/hookCommon";
 import { PORTAL_PATH } from "../constants";
 const dropperAbi = require("../web3/abi/Dropper.json");
 import { Dropper } from "../web3/contracts/types/Dropper";
-import http from "../utils/http";
+import ClaimButton from "./ClaimButton";
 
 const DropperClaimView = ({
   address,
@@ -116,32 +114,9 @@ const DropperClaimView = ({
     },
     {
       ...queryCacheProps,
+      retry: false,
       enabled: Number(claimId) > 0 && !!address,
       // onSuccess: () => {}, //TODO
-    },
-  );
-
-  const [tempCaption, setTempCaption] = useState("");
-  const queryClient = useQueryClient();
-  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL;
-
-  const ADMIN_API = `${API}/admin`;
-
-  const setActive = useMutation(
-    (active: boolean) => {
-      if (!dropState) {
-        return;
-      } //TODO
-      return http({
-        method: "PUT",
-        url: `${ADMIN_API}/drops/${dropState?.id}/${active ? "" : "de"}activate`,
-      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"));
-    },
-    {
-      onSuccess: () => {
-        setTimeout(() => setTempCaption(""), 5000);
-        queryClient.invalidateQueries("claimAdmin");
-      },
     },
   );
 
@@ -162,49 +137,7 @@ const DropperClaimView = ({
       maxW="800px"
       position="relative"
     >
-      {dropState && (
-        <>
-          {dropState?.active ? (
-            <Button
-              bg="#e85858"
-              _hover={{ bg: "#ff6565" }}
-              borderRadius="10px"
-              fontWeight="700"
-              position="absolute"
-              right="30px"
-              bottom="30px"
-              fontSize="20px"
-              zIndex="2"
-              onClick={() => setActive.mutate(false)}
-            >
-              {tempCaption !== ""
-                ? tempCaption
-                : !setActive.isLoading
-                ? "Deactivate"
-                : "Deactivating..."}
-            </Button>
-          ) : (
-            <Button
-              bg="#f56646"
-              _hover={{ bg: "#f37e5b" }}
-              borderRadius="10px"
-              fontWeight="700"
-              position="absolute"
-              right="30px"
-              bottom="30px"
-              fontSize="20px"
-              zIndex="2"
-              onClick={() => setActive.mutate(true)}
-            >
-              {tempCaption !== ""
-                ? tempCaption
-                : !setActive.isLoading
-                ? "Activate"
-                : "Activating..."}
-            </Button>
-          )}
-        </>
-      )}
+      {dropState && <ClaimButton dropState={dropState} />}
       <Flex gap={2} position="relative" w="fit-content">
         {hasCopied && <Text variant="tooltip">copied</Text>}
         <Text

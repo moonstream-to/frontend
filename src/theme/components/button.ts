@@ -147,6 +147,22 @@ const variantSave = () => {
   };
 };
 
+const variantClaimButton = () => {
+  return {
+    borderRadius: "10px",
+    fontWeight: "700",
+    position: "absolute",
+    right: "30px",
+    bottom: "30px",
+    fontSize: "20px",
+    zIndex: "2",
+    _disabled: {
+      opacity: 1,
+      cursor: "not-allowed",
+    },
+  };
+};
+
 const Button = {
   // 1. We can update the base styles
   baseStyle: () => ({
@@ -188,6 +204,7 @@ const Button = {
     cancelButton: variantCancel,
     saveButton: variantSave,
     transparent: variantTransparent,
+    claimButton: variantClaimButton,
   },
 };
 export default Button;
