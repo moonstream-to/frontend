@@ -12,6 +12,7 @@ import {
   useToast,
   Spinner,
   Button,
+  useClipboard,
 } from "@chakra-ui/react";
 import { LinkIcon } from "@chakra-ui/icons";
 import { Box, Flex, Spacer, Text } from "@chakra-ui/layout";
@@ -44,7 +45,9 @@ const DropperClaimView = ({
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
 
-  const toast = useToast();
+  const { onCopy, hasCopied } = useClipboard(
+    `${PORTAL_PATH}/dropper/?contractAddress=${address}&claimId=${claimId}`,
+  );
 
   const { adminClaims } = useDrops({
     dropperAddress: address,
@@ -117,31 +120,6 @@ const DropperClaimView = ({
       // onSuccess: () => {}, //TODO
     },
   );
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        toast({
-          duration: 3000,
-          render: () => (
-            <Box borderRadius="10px" textAlign="center" color="black" p={3} bg="green.800">
-              Copied to clipboard
-            </Box>
-          ),
-        });
-      })
-      .catch((e) => {
-        toast({
-          duration: 3000,
-          render: () => (
-            <Box borderRadius="10px" textAlign="center" color="black" p={3} bg="red.800">
-              {e}
-            </Box>
-          ),
-        });
-      });
-  };
 
   const [tempCaption, setTempCaption] = useState("");
   const queryClient = useQueryClient();
@@ -227,7 +205,8 @@ const DropperClaimView = ({
           )}
         </>
       )}
-      <Flex gap={2}>
+      <Flex gap={2} position="relative" w="fit-content">
+        {hasCopied && <Text variant="tooltip">copied</Text>}
         <Text
           textAlign="start"
           color="#c2c2c2"
@@ -242,9 +221,7 @@ const DropperClaimView = ({
         </Text>
         <IconButton
           bg="transparent"
-          onClick={() =>
-            copyToClipboard(`${PORTAL_PATH}/dropper/?contractAddress=${address}&claimId=${claimId}`)
-          }
+          onClick={onCopy}
           color="#c2c2c2"
           _hover={{ bg: "transparent", color: "white" }}
           icon={<LinkIcon />}

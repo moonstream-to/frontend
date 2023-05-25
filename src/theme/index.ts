@@ -9,6 +9,7 @@ import colors from "./foundations/colors";
 // Component style overrides
 import Button from "./components/button";
 import Menu from "./components/menu";
+import Text from "./components/text";
 
 const overrides = {
   breakpoints,
@@ -17,6 +18,7 @@ const overrides = {
   components: {
     Button,
     Menu,
+    Text,
     Input: {
       variants: {
         address: {
