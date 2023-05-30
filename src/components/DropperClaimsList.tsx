@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Flex, Select, Skeleton, SkeletonCircle, Text } from "@chakra-ui/react";
+import { Flex, Select, Skeleton, SkeletonCircle, Spinner, Text } from "@chakra-ui/react";
 
 import Web3Context from "../contexts/Web3Context/context";
 import queryCacheProps from "../hooks/hookCommon";
@@ -107,6 +107,7 @@ const DropperClaimsList = ({
     <>
       {claimsList.data && (
         <Flex direction="column" gap="15px" h="100%" overflowY="auto">
+          {adminClaims.isLoading && <Spinner />}
           {adminClaims.data?.length > 0 && (
             <Flex alignItems="center" fontSize="18px">
               <Text>Drop state:</Text>
