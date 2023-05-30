@@ -106,7 +106,13 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   const setClaimURI = useMutation(
     ({ uri }: { uri: string }) =>
       dropperContract.methods.setClaimUri(claimId ?? "", uri).send({ from: ctx.account }),
-    { ...commonProps },
+    {
+      ...commonProps,
+      onSuccess: () => {
+        queryClient.invalidateQueries("claimsList");
+        queryClient.invalidateQueries("claimState");
+      },
+    },
   );
 
   const setClaimSigner = useMutation(
