@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useQuery } from "react-query";
-import { Spinner } from "@chakra-ui/react";
+import { Button, Spinner } from "@chakra-ui/react";
 import { Flex, Text } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
@@ -126,7 +126,13 @@ const DropperClaimView = ({
       maxW="800px"
       position="relative"
     >
-      <DropHeader address={address} claimId={claimId} PORTAL_PATH={PORTAL_PATH} />
+      <DropHeader
+        address={address}
+        claimId={claimId}
+        PORTAL_PATH={PORTAL_PATH}
+        isEdit={isEdit}
+        toggleEdit={() => setIsEdit(!isEdit)}
+      />
 
       {!!claimState.data && (
         <>
@@ -154,21 +160,26 @@ const DropperClaimView = ({
               )}
             </Flex>
             {dropState && claimState.data && isEdit && (
-              <EditDrop
-                address={address}
-                claimId={claimId}
-                dbData={{
-                  terminusAddress: dropState.terminusAddress,
-                  terminusPoolId: dropState.terminusPoolId,
-                  active: dropState.active,
-                  deadline: String(dropState.deadline),
-                  claimUUID: dropState.id,
-                }}
-                chainData={{
-                  uri: claimState.data.claimUri,
-                  signer: claimState.data.signer,
-                }}
-              />
+              <Flex direction="column" gap="20px" mb="20px">
+                <EditDrop
+                  address={address}
+                  claimId={claimId}
+                  dbData={{
+                    terminusAddress: dropState.terminusAddress,
+                    terminusPoolId: dropState.terminusPoolId,
+                    active: dropState.active,
+                    deadline: String(dropState.deadline),
+                    claimUUID: dropState.id,
+                  }}
+                  chainData={{
+                    uri: claimState.data.claimUri,
+                    signer: claimState.data.signer,
+                  }}
+                />
+                <Button alignSelf="end" variant="cancelButton" onClick={() => setIsEdit(false)}>
+                  Cancel
+                </Button>
+              </Flex>
             )}
             {claimState.data?.claim && !isEdit && (
               <DropData
