@@ -151,11 +151,7 @@ const variantClaimButton = () => {
   return {
     borderRadius: "10px",
     fontWeight: "700",
-    position: "absolute",
-    right: "30px",
-    bottom: "30px",
     fontSize: "20px",
-    zIndex: "2",
     _disabled: {
       opacity: 1,
       cursor: "not-allowed",

@@ -2,23 +2,22 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useQuery } from "react-query";
-import { IconButton, Spinner, useClipboard } from "@chakra-ui/react";
-import { LinkIcon } from "@chakra-ui/icons";
+import { Spinner } from "@chakra-ui/react";
 import { Flex, Text } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 
 import ClaimantsView from "./ClaimantsView";
-import PoolDetailsRow from "./PoolDetailsRow";
 import Web3Context from "../contexts/Web3Context/context";
 import useDrops from "../hooks/useDrops";
 import queryCacheProps from "../hooks/hookCommon";
 import { PORTAL_PATH } from "../constants";
 const dropperAbi = require("../web3/abi/Dropper.json");
 import { Dropper } from "../web3/contracts/types/Dropper";
-import ClaimButton from "./ClaimButton";
-import MetadataPanel from "./MetadataPanel";
+import DropData from "./dropper/DropData";
+import DropHeader from "./dropper/DropHeader";
+import EditDrop from "./dropper/EditDrop";
 
 const DropperClaimView = ({
   address,
@@ -32,12 +31,10 @@ const DropperClaimView = ({
 }) => {
   const { chainId, web3 } = useContext(Web3Context);
 
+  const [isEdit, setIsEdit] = useState(true);
+
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
-
-  const { onCopy, hasCopied } = useClipboard(
-    `${PORTAL_PATH}/dropper/?contractAddress=${address}&claimId=${claimId}`,
-  );
 
   const { adminClaims } = useDrops({
     dropperAddress: address,
@@ -129,31 +126,8 @@ const DropperClaimView = ({
       maxW="800px"
       position="relative"
     >
-      {dropState && <ClaimButton dropState={dropState} />}
+      <DropHeader address={address} claimId={claimId} PORTAL_PATH={PORTAL_PATH} />
 
-      <Flex gap={2} position="relative" w="fit-content">
-        {hasCopied && <Text variant="tooltip">copied</Text>}
-        <Text
-          textAlign="start"
-          color="#c2c2c2"
-          w="fit-content"
-          py={1}
-          pr={0}
-          borderBottom="1px solid #c2c2c2"
-          fontSize="20px"
-          mb="20px"
-        >
-          {`drop ${claimId}`}
-        </Text>
-        <IconButton
-          bg="transparent"
-          onClick={onCopy}
-          color="#c2c2c2"
-          _hover={{ bg: "transparent", color: "white" }}
-          icon={<LinkIcon />}
-          aria-label="copy link"
-        />
-      </Flex>
       {!!claimState.data && (
         <>
           {metadata?.name && (
@@ -179,38 +153,33 @@ const DropperClaimView = ({
                 </ReactMarkdown>
               )}
             </Flex>
-
-            {claimState.data?.claim && (
-              <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
-                <PoolDetailsRow type="Token address" value={claimState.data.claim[1]} />
-                <PoolDetailsRow type="Drop type" value={claimState.data.dropType} />
-
-                <PoolDetailsRow type="Signer" value={claimState.data.signer} />
-                <PoolDetailsRow
-                  type="Metadata uri"
-                  href={claimState.data.claimUri}
-                  value={claimState.data.claimUri}
-                />
-                {dropState && (
-                  <>
-                    <PoolDetailsRow type="Deadline" value={String(dropState.deadline)} />
-                    <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
-                      type="Terminus address"
-                      value={String(dropState.terminusAddress)}
-                    />
-
-                    <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
-                      type="Terminus Pool"
-                      value={String(dropState.terminusPoolId)}
-                    />
-                  </>
-                )}
-                {metadata && <MetadataPanel metadata={metadata} excludeFields={headerMeta} />}
-              </Flex>
+            {dropState && claimState.data && isEdit && (
+              <EditDrop
+                address={address}
+                claimId={claimId}
+                dbData={{
+                  terminusAddress: dropState.terminusAddress,
+                  terminusPoolId: dropState.terminusPoolId,
+                  active: dropState.active,
+                  deadline: String(dropState.deadline),
+                  claimUUID: dropState.id,
+                }}
+                chainData={{
+                  uri: claimState.data.claimUri,
+                  signer: claimState.data.signer,
+                }}
+              />
             )}
-            {dropState && <ClaimantsView claimId={dropState.id} />}
+            {claimState.data?.claim && !isEdit && (
+              <DropData
+                metadata={metadata}
+                claimState={claimState}
+                dropState={dropState}
+                excludeFields={headerMeta}
+                PORTAL_PATH={PORTAL_PATH}
+              />
+            )}
+            {dropState && !isEdit && <ClaimantsView claimId={dropState.id} />}
           </Flex>
         </>
       )}
