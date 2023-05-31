@@ -18,6 +18,7 @@ import { Dropper } from "../web3/contracts/types/Dropper";
 import DropData from "./dropper/DropData";
 import DropHeader from "./dropper/DropHeader";
 import EditDrop from "./dropper/EditDrop";
+import useRecentAddresses from "../hooks/useRecentAddresses";
 
 const DropperClaimView = ({
   address,
@@ -35,6 +36,7 @@ const DropperClaimView = ({
 
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
+  const { addRecentAddress } = useRecentAddresses("dropper");
 
   const { adminClaims } = useDrops({
     dropperAddress: address,
@@ -43,7 +45,18 @@ const DropperClaimView = ({
 
   useEffect(() => {
     adminClaims.refetch();
+    setIsEdit(false);
   }, [address, web3ctx.account]);
+
+  useEffect(() => {
+    setIsEdit(false);
+  }, [claimId]);
+
+  useEffect(() => {
+    if (metadata?.image) {
+      addRecentAddress(address, { image: metadata.image });
+    }
+  }, [metadata?.image]);
 
   const [dropState, setDropState] = useState<
     | {
@@ -166,7 +179,7 @@ const DropperClaimView = ({
                   claimId={claimId}
                   dbData={{
                     terminusAddress: dropState.terminusAddress,
-                    terminusPoolId: dropState.terminusPoolId,
+                    terminusPoolId: String(dropState.terminusPoolId),
                     active: dropState.active,
                     deadline: String(dropState.deadline),
                     claimUUID: dropState.id,
