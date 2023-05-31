@@ -2,6 +2,7 @@
 import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
 
 import Layout from "../../../src/components/layout";
@@ -10,7 +11,6 @@ import Web3Context from "../../../src/contexts/Web3Context/context";
 import useDropperContract from "../../../src/hooks/useDropper.sol";
 import DropperClaimsListView from "../../../src/components/DropperClaimsListView";
 import DropperClaimView from "../../../src/components/DropperClaimView";
-import { useQueryClient } from "react-query";
 import { TokenInterface } from "../../../src/types/Moonstream";
 import useRecentAddresses from "../../../src/hooks/useRecentAddresses";
 import ContractRow from "../../../src/components/ContractRow";
