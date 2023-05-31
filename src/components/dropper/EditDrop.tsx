@@ -67,6 +67,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   const [isDBDataChanged, setIsDBDataChanged] = useState(false);
   const [isChainDataChanged, setIsChainDataChanged] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [childKey, setChildKey] = useState(Date.now());
 
   const toast = useMoonToast();
   const ctx = useContext(Web3Context);
@@ -192,6 +193,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
 
   const revertDBDataChanges = () => {
     setNewDBData(dbData);
+    setChildKey(Date.now());
     setIsDBDataChanged(false);
   };
 
@@ -221,6 +223,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
         <Text>deadline</Text>
         <Box w="50ch">
           <TimestampInput
+            key={childKey}
             timestamp={newDBData.deadline}
             setTimestamp={(newValue: string) => handleChangeDBData("deadline", String(newValue))}
           />
