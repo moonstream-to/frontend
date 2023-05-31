@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { IconButton, Spinner } from "@chakra-ui/react";
+import { Box, IconButton, Spinner } from "@chakra-ui/react";
 
 import Web3Context from "../../contexts/Web3Context/context";
 import { Dropper } from "../../web3/contracts/types/Dropper";
@@ -12,6 +12,7 @@ import { AiOutlineUndo } from "react-icons/ai";
 import { UpdateClaim } from "../../types/Moonstream";
 import { patchHttp } from "../../utils/http";
 import ClaimButton from "../ClaimButton";
+import TimestampInput from "../TimestampInput";
 
 type DBData = {
   active: boolean;
@@ -37,10 +38,12 @@ const EditRow = ({
   title,
   onChange,
   value,
+  validationError,
 }: {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   title: string;
   value: string;
+  validationError: string;
 }) => {
   return (
     <Flex justifyContent="space-between" alignItems="center">
@@ -52,6 +55,7 @@ const EditRow = ({
         variant="address"
         value={value}
         onChange={onChange}
+        borderColor={!validationError || !value ? "#4d4d4d" : "error.500"}
       />
     </Flex>
   );
@@ -62,6 +66,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   const [newChainData, setNewChainData] = useState<ChainData>(chainData);
   const [isDBDataChanged, setIsDBDataChanged] = useState(false);
   const [isChainDataChanged, setIsChainDataChanged] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const toast = useMoonToast();
   const ctx = useContext(Web3Context);
@@ -136,7 +141,36 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
     }
   };
 
+  // const handleChangeDBData = <T extends keyof DBData>(key: T, value: DBData[T]) => {
+  //   const newDBDataTemp = { ...newDBData, [key]: value };
+  //   setNewDBData(newDBDataTemp);
+  //   setIsDBDataChanged(
+  //     Object.keys(dbData).some(
+  //       (k) => dbData[k as keyof DBData] !== newDBDataTemp[k as keyof DBData],
+  //     ),
+  //   );
+  // };
+
   const handleChangeDBData = <T extends keyof DBData>(key: T, value: DBData[T]) => {
+    const valueString = value as unknown as string;
+    let errorMessage: string;
+    switch (key) {
+      case "terminusAddress":
+        errorMessage = ctx.web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
+        break;
+      case "terminusPoolId":
+        errorMessage = Number.isInteger(Number(valueString)) ? "" : "Pool ID should be an integer";
+        break;
+      case "deadline":
+        const dateFromTimestamp = new Date(Number(valueString) * 1000);
+        const isValidTimestamp = !isNaN(dateFromTimestamp.getTime());
+        errorMessage = isValidTimestamp ? "" : "Invalid timestamp";
+        break;
+      default:
+        break;
+    }
+    setValidationErrors((errors) => ({ ...errors, [key]: errorMessage }));
+
     const newDBDataTemp = { ...newDBData, [key]: value };
     setNewDBData(newDBDataTemp);
     setIsDBDataChanged(
@@ -175,17 +209,23 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
         title="Terminus address:"
         onChange={(e) => handleChangeDBData("terminusAddress", e.target.value)}
         value={newDBData.terminusAddress}
+        validationError={validationErrors["terminusAddress"]}
       />
       <EditRow
         title="Terminus pool ID:"
         onChange={(e) => handleChangeDBData("terminusPoolId", e.target.value)}
         value={newDBData.terminusPoolId}
+        validationError={validationErrors["terminusPoolId"]}
       />
-      <EditRow
-        title="Deadline:"
-        onChange={(e) => handleChangeDBData("deadline", e.target.value)}
-        value={newDBData.deadline}
-      />
+      <Flex justifyContent="space-between" alignItems="center">
+        <Text>deadline</Text>
+        <Box w="50ch">
+          <TimestampInput
+            timestamp={newDBData.deadline}
+            setTimestamp={(newValue: string) => handleChangeDBData("deadline", String(newValue))}
+          />
+        </Box>
+      </Flex>
       <Flex justifyContent="end" gap="15px" alignItems="center">
         <IconButton
           aria-label=""
@@ -210,11 +250,13 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
         title="Signer:"
         onChange={(e) => handleChangeChainData("signer", e.target.value)}
         value={newChainData.signer}
+        validationError={validationErrors["signer"]}
       />
       <EditRow
         title="Metadata uri:"
         onChange={(e) => handleChangeChainData("uri", e.target.value)}
         value={newChainData.uri}
+        validationError={validationErrors["uri"]}
       />
       <Flex justifyContent="end" gap="15px" alignItems="center">
         <IconButton
