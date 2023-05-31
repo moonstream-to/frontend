@@ -31,27 +31,13 @@ const ContractRow = ({
       gap="15px"
       cursor="pointer"
       onClick={handleClick}
-      _hover={{ transform: "scale(1.05)", transition: "0.42s" }}
+      _hover={{ transform: "scale(1.01)", transition: "0.42s" }}
     >
-      {image ? (
-        <Image alt="address" src={image} w="72px" h="72px" />
-      ) : (
-        <Flex
-          opacity=".7"
-          w="72px"
-          h="72px"
-          alignItems="center"
-          textAlign="center"
-          justifyContent="center"
-        >
-          no
-          <br /> image
-        </Flex>
-      )}
+      {image && <Image alt="address" src={image} w="72px" h="72px" />}
       <Flex direction="column">
-        {name ? <Text>{name}</Text> : <Text opacity=".7">name N/A</Text>}
+        {name && <Text>{name}</Text>}
         <Text fontFamily="mono">{address}</Text>
-        {chainId && <Text>{chainByChainId[chainId]}</Text>}
+        {chainId && <Text>{chainByChainId[chainId] ?? chainId}</Text>}
       </Flex>
     </Flex>
   );
