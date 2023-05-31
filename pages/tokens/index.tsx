@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useEffect } from "react";
 
 import Layout from "../../src/components/layout";
@@ -12,7 +11,6 @@ const Query = () => {
   return (
     <Layout home={false}>
       <TokensView />
-      <Link href="/">home</Link>
     </Layout>
   );
 };
