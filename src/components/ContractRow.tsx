@@ -37,7 +37,7 @@ const ContractRow = ({
       <Flex direction="column">
         {name && <Text>{name}</Text>}
         <Text fontFamily="mono">{address}</Text>
-        {chainId && <Text>{chainByChainId[chainId] ?? chainId}</Text>}
+        {chainId && <Text>{chainByChainId(chainId) ?? chainId}</Text>}
       </Flex>
     </Flex>
   );
