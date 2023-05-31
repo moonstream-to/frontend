@@ -13,6 +13,7 @@ import { UpdateClaim } from "../../types/Moonstream";
 import { patchHttp } from "../../utils/http";
 import ClaimButton from "../ClaimButton";
 import TimestampInput from "../TimestampInput";
+import { balanceOfAddress } from "../../web3/contracts/terminus.contracts";
 
 type DBData = {
   active: boolean;
@@ -87,14 +88,40 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
     },
   };
 
+  const dbKeys = ["terminusAddress", "terminusPoolId", "deadline"];
+
   const update = useMutation(
-    (data: DBData) => {
+    async (data: DBData) => {
+      let inputsAreValid = true;
+      dbKeys.forEach((k) => {
+        if (validationErrors[k]) {
+          toast(validationErrors[k], "error");
+          inputsAreValid = false;
+        }
+      });
+      if (!inputsAreValid) {
+        throw new Error("");
+      }
       const patchData: UpdateClaim = {
         claim_block_deadline: data.deadline,
         terminus_address: data.terminusAddress,
         terminus_pool_id: data.terminusPoolId,
       };
-      if (dbData.claimUUID) return patchHttp(`/admin/drops/${dbData.claimUUID}`, { ...patchData });
+      const balance = await balanceOfAddress(
+        ctx.account,
+        data.terminusAddress,
+        Number(data.terminusPoolId),
+        ctx,
+      )();
+      if (Number(balance) <= 0) {
+        const confirmation = window.confirm("Balance is 0 or less. Do you want to proceed?");
+
+        if (!confirmation) {
+          throw new Error("User cancelled operation due to low balance.");
+        }
+      }
+      if (dbData.claimUUID && Number(balance) === -1)
+        return patchHttp(`/admin/drops/${dbData.claimUUID}`, { ...patchData });
       else throw new Error("Cannot use update without claimid");
     },
     {
@@ -104,7 +131,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
         toast("Updated drop info", "success");
       },
       onError: (e: Error) => {
-        toast(e.message, "error");
+        if (e.message) toast(e.message, "error");
       },
     },
   );
@@ -128,10 +155,16 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   const handleSendClick = async () => {
     try {
       if (newChainData.uri !== chainData.uri) {
+        if (validationErrors["uri"]) {
+          throw new Error(validationErrors["uri"]);
+        }
         await setClaimURI.mutateAsync({ uri: newChainData.uri });
       }
 
       if (newChainData.signer !== chainData.signer) {
+        if (validationErrors["signer"]) {
+          throw new Error(validationErrors["signer"]);
+        }
         await setClaimSigner.mutateAsync({ signer: newChainData.signer });
       }
 
@@ -141,16 +174,6 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
       toast(error.message, "error");
     }
   };
-
-  // const handleChangeDBData = <T extends keyof DBData>(key: T, value: DBData[T]) => {
-  //   const newDBDataTemp = { ...newDBData, [key]: value };
-  //   setNewDBData(newDBDataTemp);
-  //   setIsDBDataChanged(
-  //     Object.keys(dbData).some(
-  //       (k) => dbData[k as keyof DBData] !== newDBDataTemp[k as keyof DBData],
-  //     ),
-  //   );
-  // };
 
   const handleChangeDBData = <T extends keyof DBData>(key: T, value: DBData[T]) => {
     const valueString = value as unknown as string;
@@ -182,6 +205,22 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   };
 
   const handleChangeChainData = <T extends keyof ChainData>(key: T, value: ChainData[T]) => {
+    const valueString = value as unknown as string;
+    let errorMessage: string;
+    switch (key) {
+      case "signer":
+        errorMessage = ctx.web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
+        break;
+      case "uri":
+        errorMessage = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm.test(valueString)
+          ? ""
+          : "Invalid URL";
+        break;
+      default:
+        break;
+    }
+    setValidationErrors((errors) => ({ ...errors, [key]: errorMessage }));
+
     const newChainDataTemp = { ...newChainData, [key]: value };
     setNewChainData(newChainDataTemp);
     setIsChainDataChanged(
