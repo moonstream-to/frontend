@@ -72,8 +72,9 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   const queryClient = useQueryClient();
   const commonProps = {
     onSuccess: () => {
-      toast("Successfully updated contract", "success");
-      queryClient.invalidateQueries("dropperContract");
+      toast("Successfully updated drop", "success");
+      queryClient.invalidateQueries("claimsList");
+      queryClient.invalidateQueries("claimState");
     },
     onError: (e: Error) => {
       toast(e.message, "error");
@@ -87,13 +88,12 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
         terminus_address: data.terminusAddress,
         terminus_pool_id: data.terminusPoolId,
       };
-      console.log(dbData.claimUUID);
       if (dbData.claimUUID) return patchHttp(`/admin/drops/${dbData.claimUUID}`, { ...patchData });
       else throw new Error("Cannot use update without claimid");
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("dropperContract");
+        queryClient.invalidateQueries("claimAdmin");
         setIsDBDataChanged(false);
         toast("Updated drop info", "success");
       },
@@ -108,10 +108,6 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
       dropperContract.methods.setClaimUri(claimId ?? "", uri).send({ from: ctx.account }),
     {
       ...commonProps,
-      onSuccess: () => {
-        queryClient.invalidateQueries("claimsList");
-        queryClient.invalidateQueries("claimState");
-      },
     },
   );
 
