@@ -1,26 +1,22 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import LoginButton from "./LoginButton";
 
 const NeedAuthorizationView = () => {
   return (
-    <Flex direction="column" gap="10px" mx="auto" mt="60px" fontSize="18px">
-      <Text textAlign="center">Authorization Required</Text>
-      <Flex>
-        <Text>Please&nbsp;</Text>
+    <Flex direction="column" gap="60px" mx="auto" fontSize="18px" maxW="525px">
+      <Flex direction="column" gap="40px">
+        <Text textAlign="center" fontSize="50px" lineHeight="50px" fontWeight="700">
+          Lead the future of gaming
+        </Text>
+        <Text textAlign="center">
+          Access tools to manage your games on the blockchain. Build games and reward your players.
+        </Text>
+      </Flex>
+      <Flex gap="20px">
         <LoginButton>
-          <Text
-            verticalAlign="center"
-            variant="transparent"
-            p="0"
-            h="auto"
-            fontWeight="500"
-            fontSize="18px"
-            color="#F88F78"
-          >
-            log in
-          </Text>
+          <Button variant="orangeGradient">Log in</Button>
         </LoginButton>
-        <Text>&nbsp;to view this page.</Text>
+        <Button variant="whiteOutline">Learn more about our features</Button>
       </Flex>
     </Flex>
   );
