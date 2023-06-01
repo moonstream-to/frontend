@@ -16,12 +16,18 @@ export function useClaimUpdate() {
       terminus_address: data.terminusAddress,
       terminus_pool_id: data.terminusPoolId,
     };
-    const balance = await balanceOfAddress(
-      ctx.account,
-      data.terminusAddress,
-      Number(data.terminusPoolId),
-      ctx,
-    )();
+    let balance;
+    try {
+      balance = await balanceOfAddress(
+        ctx.account,
+        data.terminusAddress,
+        Number(data.terminusPoolId),
+        ctx,
+      )();
+    } catch (e) {
+      console.log(e);
+      throw new Error("Cannot retrive balance. Incorrect address or chain probalbly ");
+    }
     if (Number(balance) <= 0) {
       const confirmation = window.confirm("Balance is 0 or less. Do you want to proceed?");
 
