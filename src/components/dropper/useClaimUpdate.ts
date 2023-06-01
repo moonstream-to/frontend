@@ -29,8 +29,7 @@ export function useClaimUpdate() {
         throw new Error("User cancelled operation due to low balance.");
       }
     }
-    if (data.claimUUID && data.claimUUID === "qq")
-      return patchHttp(`/admin/drops/${data.claimUUID}`, { ...patchData });
+    if (data.claimUUID) return patchHttp(`/admin/drops/${data.claimUUID}`, { ...patchData });
     else throw new Error("Cannot use update without claimid");
   }, {});
 
