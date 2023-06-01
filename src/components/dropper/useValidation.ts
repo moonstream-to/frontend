@@ -1,10 +1,24 @@
 // Custom hook for form validation
 import { useState } from "react";
+import useMoonToast from "../../hooks/useMoonToast";
 import { DropDBData, DropChainData } from "../../types";
 import { MoonstreamWeb3ProviderInterface } from "../../types/Moonstream";
 
 const useValidation = (ctx: MoonstreamWeb3ProviderInterface) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const toast = useMoonToast();
+
+  const isValid = (keys: string[]) => {
+    let inputsAreValid = true;
+    keys.forEach((k) => {
+      if (errors[k]) {
+        toast(errors[k], "error");
+        inputsAreValid = false;
+      }
+    });
+    return inputsAreValid;
+  };
 
   const validateDBData = <T extends keyof DropDBData>(key: T, value: DropDBData[T]) => {
     const valueString = value as unknown as string;
@@ -47,7 +61,7 @@ const useValidation = (ctx: MoonstreamWeb3ProviderInterface) => {
 
   const resetErrors = () => setErrors({});
 
-  return { errors, resetErrors, validateChainData, validateDBData };
+  return { errors, isValid, resetErrors, validateChainData, validateDBData };
 };
 
 export default useValidation;
