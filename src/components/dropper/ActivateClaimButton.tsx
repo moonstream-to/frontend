@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Button } from "@chakra-ui/react";
-import http from "../utils/http";
+import http from "../../utils/http";
 
 type DropStateType = {
   id: string;
   active: boolean;
 };
 
-const ClaimButton = ({ dropState }: { dropState: DropStateType }) => {
+const ActivateClaimButton = ({ dropState }: { dropState: DropStateType }) => {
   const [tempCaption, setTempCaption] = useState("");
   const queryClient = useQueryClient();
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL;
@@ -59,4 +59,4 @@ const ClaimButton = ({ dropState }: { dropState: DropStateType }) => {
   );
 };
 
-export default ClaimButton;
+export default ActivateClaimButton;
