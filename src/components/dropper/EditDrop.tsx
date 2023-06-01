@@ -120,8 +120,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
           throw new Error("User cancelled operation due to low balance.");
         }
       }
-      if (dbData.claimUUID && Number(balance) === -1)
-        return patchHttp(`/admin/drops/${dbData.claimUUID}`, { ...patchData });
+      if (dbData.claimUUID) return patchHttp(`/admin/drops/${dbData.claimUUID}`, { ...patchData });
       else throw new Error("Cannot use update without claimid");
     },
     {
