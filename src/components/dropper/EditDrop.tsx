@@ -7,133 +7,50 @@ import Web3Context from "../../contexts/Web3Context/context";
 import { Dropper } from "../../web3/contracts/types/Dropper";
 const dropperAbi = require("../../web3/abi/Dropper.json");
 import useMoonToast from "../../hooks/useMoonToast";
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import { AiOutlineUndo } from "react-icons/ai";
-import { UpdateClaim } from "../../types/Moonstream";
-import { patchHttp } from "../../utils/http";
 import ClaimButton from "../ClaimButton";
 import TimestampInput from "../TimestampInput";
-import { balanceOfAddress } from "../../web3/contracts/terminus.contracts";
+import { DropChainData, DropDBData, EditDropProps } from "../../types";
+import EditRow from "./EditRow";
+import { useClaimUpdate } from "./useClaimUpdate";
+import useValidation from "./useValidation";
 
-type DBData = {
-  active: boolean;
-  terminusAddress: string;
-  terminusPoolId: string;
-  deadline: string;
-  claimUUID: string;
-};
-
-type ChainData = {
-  uri: string;
-  signer: string;
-};
-
-type EditDropProps = {
-  dbData: DBData;
-  chainData: ChainData;
-  address: string;
-  claimId: string;
-};
-
-const EditRow = ({
-  title,
-  onChange,
-  value,
-  validationError,
-}: {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  title: string;
-  value: string;
-  validationError: string;
-}) => {
-  return (
-    <Flex justifyContent="space-between" alignItems="center">
-      <Text>{title}</Text>
-      <Input
-        w="50ch"
-        fontSize="16px"
-        type="text"
-        variant="address"
-        value={value}
-        onChange={onChange}
-        borderColor={!validationError || !value ? "#4d4d4d" : "error.500"}
-      />
-    </Flex>
-  );
-};
+const dbKeys = ["terminusAddress", "terminusPoolId", "deadline"];
+const chainKeys = ["signer", "uri"];
 
 const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId }) => {
-  const [newDBData, setNewDBData] = useState<DBData>(dbData);
-  const [newChainData, setNewChainData] = useState<ChainData>(chainData);
+  const [newDBData, setNewDBData] = useState<DropDBData>(dbData);
+  const [newChainData, setNewChainData] = useState<DropChainData>(chainData);
   const [isDBDataChanged, setIsDBDataChanged] = useState(false);
   const [isChainDataChanged, setIsChainDataChanged] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [childKey, setChildKey] = useState(Date.now());
 
   const toast = useMoonToast();
   const ctx = useContext(Web3Context);
+  const { errors: validationErrors, validateChainData, validateDBData } = useValidation(ctx);
+  const updateClaim = useClaimUpdate();
 
-  const dropperContract = new ctx.web3.eth.Contract(dropperAbi) as any as Dropper;
+  const dropperContract = new ctx.web3.eth.Contract(dropperAbi) as unknown as Dropper;
   dropperContract.options.address = address ?? "";
 
   const queryClient = useQueryClient();
+  const handleError = (e: unknown) => {
+    if (e instanceof Error) {
+      toast(e.message, "error");
+    } else {
+      toast("An error occurred", "error");
+    }
+  };
+
   const commonProps = {
     onSuccess: () => {
       toast("Successfully updated drop", "success");
       queryClient.invalidateQueries("claimsList");
       queryClient.invalidateQueries("claimState");
     },
-    onError: (e: Error) => {
-      toast(e.message, "error");
-    },
+    onError: handleError,
   };
-
-  const dbKeys = ["terminusAddress", "terminusPoolId", "deadline"];
-
-  const update = useMutation(
-    async (data: DBData) => {
-      let inputsAreValid = true;
-      dbKeys.forEach((k) => {
-        if (validationErrors[k]) {
-          toast(validationErrors[k], "error");
-          inputsAreValid = false;
-        }
-      });
-      if (!inputsAreValid) {
-        throw new Error("");
-      }
-      const patchData: UpdateClaim = {
-        claim_block_deadline: data.deadline,
-        terminus_address: data.terminusAddress,
-        terminus_pool_id: data.terminusPoolId,
-      };
-      const balance = await balanceOfAddress(
-        ctx.account,
-        data.terminusAddress,
-        Number(data.terminusPoolId),
-        ctx,
-      )();
-      if (Number(balance) <= 0) {
-        const confirmation = window.confirm("Balance is 0 or less. Do you want to proceed?");
-
-        if (!confirmation) {
-          throw new Error("User cancelled operation due to low balance.");
-        }
-      }
-      if (dbData.claimUUID) return patchHttp(`/admin/drops/${dbData.claimUUID}`, { ...patchData });
-      else throw new Error("Cannot use update without claimid");
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("claimAdmin");
-        setIsDBDataChanged(false);
-        toast("Updated drop info", "success");
-      },
-      onError: (e: Error) => {
-        if (e.message) toast(e.message, "error");
-      },
-    },
-  );
 
   const setClaimURI = useMutation(
     ({ uri }: { uri: string }) =>
@@ -151,80 +68,66 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
 
   const isMutationLoading = setClaimURI.isLoading || setClaimSigner.isLoading;
 
+  const isValid = (keys: string[]) => {
+    let inputsAreValid = true;
+    keys.forEach((k) => {
+      if (validationErrors[k]) {
+        toast(validationErrors[k], "error");
+        inputsAreValid = false;
+      }
+    });
+    return inputsAreValid;
+  };
+
+  const handleSaveClick = () => {
+    if (!isValid(dbKeys)) return;
+    updateClaim.mutate(newDBData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("claimAdmin");
+        setIsDBDataChanged(false);
+        toast("Updated drop info", "success");
+      },
+      onError: handleError,
+    });
+  };
+
   const handleSendClick = async () => {
+    if (!isValid(chainKeys)) return;
     try {
       if (newChainData.uri !== chainData.uri) {
-        if (validationErrors["uri"]) {
-          throw new Error(validationErrors["uri"]);
-        }
         await setClaimURI.mutateAsync({ uri: newChainData.uri });
       }
 
       if (newChainData.signer !== chainData.signer) {
-        if (validationErrors["signer"]) {
-          throw new Error(validationErrors["signer"]);
-        }
         await setClaimSigner.mutateAsync({ signer: newChainData.signer });
       }
-
-      // Reset state after successful mutations
       setIsChainDataChanged(false);
-    } catch (error: any) {
-      toast(error.message, "error");
+    } catch (error: unknown) {
+      handleError(error);
     }
   };
 
-  const handleChangeDBData = <T extends keyof DBData>(key: T, value: DBData[T]) => {
-    const valueString = value as unknown as string;
-    let errorMessage: string;
-    switch (key) {
-      case "terminusAddress":
-        errorMessage = ctx.web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
-        break;
-      case "terminusPoolId":
-        errorMessage = Number.isInteger(Number(valueString)) ? "" : "Pool ID should be an integer";
-        break;
-      case "deadline":
-        const dateFromTimestamp = new Date(Number(valueString) * 1000);
-        const isValidTimestamp = !isNaN(dateFromTimestamp.getTime());
-        errorMessage = isValidTimestamp ? "" : "Invalid timestamp";
-        break;
-      default:
-        break;
-    }
-    setValidationErrors((errors) => ({ ...errors, [key]: errorMessage }));
-
+  const handleChangeDBData = <T extends keyof DropDBData>(key: T, value: DropDBData[T]) => {
+    validateDBData(key, value);
     const newDBDataTemp = { ...newDBData, [key]: value };
     setNewDBData(newDBDataTemp);
     setIsDBDataChanged(
       Object.keys(dbData).some(
-        (k) => dbData[k as keyof DBData] !== newDBDataTemp[k as keyof DBData],
+        (k) => dbData[k as keyof DropDBData] !== newDBDataTemp[k as keyof DropDBData],
       ),
     );
   };
 
-  const handleChangeChainData = <T extends keyof ChainData>(key: T, value: ChainData[T]) => {
-    const valueString = value as unknown as string;
-    let errorMessage: string;
-    switch (key) {
-      case "signer":
-        errorMessage = ctx.web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
-        break;
-      case "uri":
-        errorMessage = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm.test(valueString)
-          ? ""
-          : "Invalid URL";
-        break;
-      default:
-        break;
-    }
-    setValidationErrors((errors) => ({ ...errors, [key]: errorMessage }));
-
+  const handleChangeChainData = <T extends keyof DropChainData>(
+    key: T,
+    value: DropChainData[T],
+  ) => {
+    validateChainData(key, value);
     const newChainDataTemp = { ...newChainData, [key]: value };
     setNewChainData(newChainDataTemp);
     setIsChainDataChanged(
       Object.keys(chainData).some(
-        (k) => chainData[k as keyof ChainData] !== newChainDataTemp[k as keyof ChainData],
+        (k) => chainData[k as keyof DropChainData] !== newChainDataTemp[k as keyof DropChainData],
       ),
     );
   };
@@ -233,11 +136,13 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
     setNewDBData(dbData);
     setChildKey(Date.now());
     setIsDBDataChanged(false);
+    (dbKeys as Array<keyof DropDBData>).forEach((k) => validateDBData(k, dbData[k]));
   };
 
   const revertChainDataChanges = () => {
     setNewChainData(chainData);
     setIsChainDataChanged(false);
+    (chainKeys as Array<keyof DropChainData>).forEach((k) => validateChainData(k, chainData[k]));
   };
 
   return (
@@ -273,7 +178,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
           icon={<AiOutlineUndo />}
           variant="cancelButton"
           mb="15px"
-          disabled={!isDBDataChanged || update.isLoading}
+          disabled={!isDBDataChanged || updateClaim.isLoading}
           onClick={revertDBDataChanges}
         />
         <Button
@@ -281,10 +186,10 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
           alignSelf="end"
           mb="15px"
           w="200px"
-          disabled={!isDBDataChanged || update.isLoading}
-          onClick={() => update.mutate(newDBData)}
+          disabled={!isDBDataChanged || updateClaim.isLoading}
+          onClick={handleSaveClick}
         >
-          {update.isLoading ? <Spinner /> : "Save"}
+          {updateClaim.isLoading ? <Spinner /> : "Save"}
         </Button>
       </Flex>
       <EditRow
