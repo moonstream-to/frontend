@@ -41,18 +41,18 @@ const PathCard = ({
   const [status, setStatus] = useState(PathStatus.undecided);
   const [isSelected, setIsSelected] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!correctPaths.data) {
-      return;
-    }
-    if (stageIdx < correctPaths.data?.length) {
-      setStatus(
-        correctPaths.data[stageIdx] === pathIdx + 1 ? PathStatus.correct : PathStatus.incorrect,
-      );
-    } else {
-      setStatus(PathStatus.undecided);
-    }
-  }, [correctPaths.data, pathIdx, stageIdx]);
+  // useEffect(() => {
+  //   if (!correctPaths.data) {
+  //     return;
+  //   }
+  //   if (stageIdx < correctPaths.data?.length) {
+  //     setStatus(
+  //       correctPaths.data[stageIdx] === pathIdx + 1 ? PathStatus.correct : PathStatus.incorrect,
+  //     );
+  //   } else {
+  //     setStatus(PathStatus.undecided);
+  //   }
+  // }, [correctPaths.data, pathIdx, stageIdx]);
 
   useEffect(() => {
     if (stageIdx + 1 === currentStage.data && pathIdx + 1 === selectedPath) {
