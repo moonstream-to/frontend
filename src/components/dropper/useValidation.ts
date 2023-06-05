@@ -1,12 +1,12 @@
 // Custom hook for form validation
 import { useState } from "react";
+import Web3 from "web3";
 import useMoonToast from "../../hooks/useMoonToast";
 import { DropDBData, DropChainData } from "../../types";
-import { MoonstreamWeb3ProviderInterface } from "../../types/Moonstream";
 
-const useValidation = (ctx: MoonstreamWeb3ProviderInterface) => {
+const useValidation = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const web3 = new Web3();
   const toast = useMoonToast();
 
   const isValid = (keys: string[]) => {
@@ -25,7 +25,7 @@ const useValidation = (ctx: MoonstreamWeb3ProviderInterface) => {
     let errorMessage: string;
     switch (key) {
       case "terminusAddress":
-        errorMessage = ctx.web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
+        errorMessage = web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
         break;
       case "terminusPoolId":
         errorMessage = Number.isInteger(Number(valueString)) ? "" : "Pool ID should be an integer";
@@ -46,7 +46,7 @@ const useValidation = (ctx: MoonstreamWeb3ProviderInterface) => {
     let errorMessage: string;
     switch (key) {
       case "signer":
-        errorMessage = ctx.web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
+        errorMessage = web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
         break;
       case "uri":
         errorMessage = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm.test(valueString)

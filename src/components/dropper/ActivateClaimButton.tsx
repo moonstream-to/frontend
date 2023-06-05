@@ -3,15 +3,19 @@ import { useMutation, useQueryClient } from "react-query";
 import { Button } from "@chakra-ui/react";
 import http from "../../utils/http";
 
-type DropStateType = {
+interface DropStateType {
   id: string;
   active: boolean;
-};
+}
 
-const ActivateClaimButton = ({ dropState }: { dropState: DropStateType }) => {
-  const [tempCaption, setTempCaption] = useState("");
+interface ActivateClaimButtonProps {
+  dropState: DropStateType;
+}
+
+const ActivateClaimButton: React.FC<ActivateClaimButtonProps> = ({ dropState }) => {
+  const [buttonLabel, setButtonLabel] = useState("");
   const queryClient = useQueryClient();
-  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL;
+  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL || process.env.NEXT_PUBLIC_PLAY_API_URL;
   const ADMIN_API = `${API}/admin`;
 
   const setActive = useMutation(
@@ -22,39 +26,40 @@ const ActivateClaimButton = ({ dropState }: { dropState: DropStateType }) => {
       return http({
         method: "PUT",
         url: `${ADMIN_API}/drops/${dropState.id}/${active ? "" : "de"}activate`,
-      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"));
+      }).then(() => setButtonLabel(active ? "Activated" : "Deactivated"));
     },
     {
       onSuccess: () => {
-        setTimeout(() => setTempCaption(""), 5000);
+        setTimeout(() => setButtonLabel(""), 5000);
         queryClient.invalidateQueries("claimAdmin");
       },
     },
   );
 
   if (!dropState) {
-    return <></>;
+    return null;
   }
 
-  return dropState?.active ? (
+  const buttonColor = dropState.active ? "#e85858" : "#f56646";
+  const hoverColor = dropState.active ? "#ff6565" : "#f37e5b";
+  const mutationAction = !dropState.active;
+  const buttonText =
+    buttonLabel ||
+    (setActive.isLoading
+      ? `${mutationAction ? "Activating" : "Deactivating"}...`
+      : mutationAction
+      ? "Activate"
+      : "Deactivate");
+
+  return (
     <Button
       variant="claimButton"
-      bg="#e85858"
-      _hover={{ bg: "#ff6565" }}
-      onClick={() => setActive.mutate(false)}
-      disabled={tempCaption !== "" || setActive.isLoading}
+      bg={buttonColor}
+      _hover={{ bg: hoverColor }}
+      onClick={() => setActive.mutate(mutationAction)}
+      disabled={Boolean(buttonLabel) || setActive.isLoading}
     >
-      {tempCaption !== "" ? tempCaption : !setActive.isLoading ? "Deactivate" : "Deactivating..."}
-    </Button>
-  ) : (
-    <Button
-      variant="claimButton"
-      bg="#f56646"
-      _hover={{ bg: "#f37e5b" }}
-      onClick={() => setActive.mutate(true)}
-      disabled={tempCaption !== "" || setActive.isLoading}
-    >
-      {tempCaption !== "" ? tempCaption : !setActive.isLoading ? "Activate" : "Activating..."}
+      {buttonText}
     </Button>
   );
 };

@@ -47,7 +47,7 @@ const DropHeader: React.FC<DropHeaderProps> = ({
         />
       </Flex>
       <IconButton
-        aria-label=""
+        aria-label={isEdit ? "Disable Edit" : "Enable Edit"}
         bg="transparent"
         _hover={{ bg: "transparent", color: "white" }}
         icon={isEdit ? <AiFillEdit /> : <AiOutlineEdit />}

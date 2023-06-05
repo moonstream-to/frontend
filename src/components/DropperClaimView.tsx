@@ -177,10 +177,10 @@ const DropperClaimView = ({
                 <EditDrop
                   address={address}
                   claimId={claimId}
+                  active={dropState.active}
                   dbData={{
                     terminusAddress: dropState.terminusAddress,
                     terminusPoolId: String(dropState.terminusPoolId),
-                    active: dropState.active,
                     deadline: String(dropState.deadline),
                     claimUUID: dropState.id,
                   }}

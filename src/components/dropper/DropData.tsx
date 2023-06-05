@@ -1,29 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
-
-type ClaimStateType = {
-  data?: {
-    claim: any;
-    dropType: string;
-    signer: string;
-    claimUri: string;
-  };
-};
-
-type DropStateType = {
-  deadline?: string;
-  terminusAddress?: string;
-  terminusPoolId?: string;
-};
-
-type DropDataProps = {
-  claimState: ClaimStateType;
-  dropState?: DropStateType;
-  metadata: Record<string, any>;
-  excludeFields: string[];
-  PORTAL_PATH: string;
-};
+import { DropDataProps } from "../../types";
 
 const DropData: React.FC<DropDataProps> = ({
   claimState,

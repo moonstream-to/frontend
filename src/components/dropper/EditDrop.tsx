@@ -6,7 +6,7 @@ import DBDataEditSection from "./DBDataEditSection";
 import ChainDataEditSection from "./ChainDataEditSection";
 import ActivateClaimButton from "./ActivateClaimButton";
 
-const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId }) => {
+const EditDrop: React.FC<EditDropProps> = ({ active, dbData, chainData, address, claimId }) => {
   const toast = useMoonToast();
   const handleError = (e: unknown) => {
     if (e instanceof Error) {
@@ -19,7 +19,7 @@ const EditDrop: React.FC<EditDropProps> = ({ dbData, chainData, address, claimId
   return (
     <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
       <Flex justifyContent="end" mb="10px">
-        <ActivateClaimButton dropState={{ id: dbData.claimUUID, active: dbData.active }} />
+        <ActivateClaimButton dropState={{ id: dbData.claimUUID, active }} />
       </Flex>
       <DBDataEditSection dbData={dbData} handleError={handleError} />
       <ChainDataEditSection

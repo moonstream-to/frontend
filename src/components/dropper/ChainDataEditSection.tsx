@@ -15,24 +15,30 @@ import EditRow from "./EditRow";
 import useValidation from "./useValidation";
 const dropperAbi = require("../../web3/abi/Dropper.json");
 
-const chainKeys = ["signer", "uri"];
+const chainKeys: (keyof DropChainData)[] = ["signer", "uri"];
 
-const ChainDataEditSection: React.FC<{
+interface ChainDataEditSectionProps {
   chainData: DropChainData;
   claimId: string;
   address: string;
   handleError: (error: unknown) => void;
-}> = ({ address, chainData, claimId, handleError }) => {
+}
+
+const ChainDataEditSection: React.FC<ChainDataEditSectionProps> = ({
+  address,
+  chainData,
+  claimId,
+  handleError,
+}) => {
   const toast = useMoonToast();
-  const ctx = useContext(Web3Context);
-  const [newChainData, setNewChainData] = useState<DropChainData>(chainData);
+  const { web3, account } = useContext(Web3Context);
+  const [newChainData, setNewChainData] = useState<DropChainData>({ ...chainData });
   const [isChainDataChanged, setIsChainDataChanged] = useState(false);
-  const { errors: validationErrors, validateChainData, isValid } = useValidation(ctx);
-  const dropperContract = new ctx.web3.eth.Contract(dropperAbi) as unknown as Dropper;
-  dropperContract.options.address = address ?? "";
+  const { errors: validationErrors, validateChainData, isValid } = useValidation();
+  const dropperContract = new web3.eth.Contract(dropperAbi, address) as unknown as Dropper;
 
   const queryClient = useQueryClient();
-  const commonProps = {
+  const commonMutationOptions = {
     onSuccess: () => {
       toast("Successfully updated drop", "success");
       queryClient.invalidateQueries("claimsList");
@@ -43,14 +49,14 @@ const ChainDataEditSection: React.FC<{
 
   const setClaimURI = useMutation(
     ({ uri }: { uri: string }) =>
-      dropperContract.methods.setClaimUri(claimId ?? "", uri).send({ from: ctx.account }),
-    { ...commonProps },
+      dropperContract.methods.setClaimUri(claimId, uri).send({ from: account }),
+    commonMutationOptions,
   );
 
   const setClaimSigner = useMutation(
     ({ signer }: { signer: string }) =>
-      dropperContract.methods.setSignerForClaim(claimId ?? "", signer).send({ from: ctx.account }),
-    { ...commonProps },
+      dropperContract.methods.setSignerForClaim(claimId, signer).send({ from: account }),
+    commonMutationOptions,
   );
 
   const isMutationLoading = setClaimURI.isLoading || setClaimSigner.isLoading;
@@ -60,23 +66,20 @@ const ChainDataEditSection: React.FC<{
     value: DropChainData[T],
   ) => {
     validateChainData(key, value);
-    const newChainDataTemp = { ...newChainData, [key]: value };
-    setNewChainData(newChainDataTemp);
-    setIsChainDataChanged(
-      Object.keys(chainData).some(
-        (k) => chainData[k as keyof DropChainData] !== newChainDataTemp[k as keyof DropChainData],
-      ),
-    );
+    const updatedChainData = { ...newChainData, [key]: value };
+    setNewChainData(updatedChainData);
+    setIsChainDataChanged(chainKeys.some((k) => chainData[k] !== updatedChainData[k]));
   };
 
   const revertChainDataChanges = () => {
     setNewChainData(chainData);
     setIsChainDataChanged(false);
-    (chainKeys as Array<keyof DropChainData>).forEach((k) => validateChainData(k, chainData[k]));
+    chainKeys.forEach((k) => validateChainData(k, chainData[k]));
   };
 
   const handleSendClick = async () => {
     if (!isValid(chainKeys)) return;
+
     try {
       if (newChainData.uri !== chainData.uri) {
         await setClaimURI.mutateAsync({ uri: newChainData.uri });
@@ -85,26 +88,24 @@ const ChainDataEditSection: React.FC<{
       if (newChainData.signer !== chainData.signer) {
         await setClaimSigner.mutateAsync({ signer: newChainData.signer });
       }
+
       setIsChainDataChanged(false);
-    } catch (error: unknown) {
+    } catch (error) {
       handleError(error);
     }
   };
 
   return (
     <>
-      <EditRow
-        title="Signer:"
-        onChange={(e) => handleChangeChainData("signer", e.target.value)}
-        value={newChainData.signer}
-        validationError={validationErrors["signer"]}
-      />
-      <EditRow
-        title="Metadata uri:"
-        onChange={(e) => handleChangeChainData("uri", e.target.value)}
-        value={newChainData.uri}
-        validationError={validationErrors["uri"]}
-      />
+      {chainKeys.map((key) => (
+        <EditRow
+          key={key}
+          title={`${key.charAt(0).toUpperCase() + key.slice(1)}:`}
+          onChange={(e) => handleChangeChainData(key, e.target.value)}
+          value={newChainData[key]}
+          validationError={validationErrors[key]}
+        />
+      ))}
       <Flex justifyContent="end" gap="15px" alignItems="center">
         <IconButton
           aria-label=""
