@@ -207,8 +207,23 @@ sketch
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,nextjs,react
 
 # Custom
+.vscode/
+
 .secrets/
-prod.env
 dev.env
 test.env
-.vscode/
+prod.env
+.env.production
+dev.env.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+yarn.lock
+package-lock.json
+
+# vercel
+.vercel
+
+.todo
