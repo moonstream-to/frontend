@@ -14,6 +14,8 @@ import {
   MenuList,
   MenuItem,
   Divider,
+  useDisclosure,
+  Text,
 } from "@chakra-ui/react";
 
 import Web3Context from "../contexts/Web3Context/context";
@@ -22,6 +24,7 @@ import LoginButton from "./LoginButton";
 import { BsPerson } from "react-icons/bs";
 import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
+import NodeBalancerInfo from "./NodeBalancerInfo";
 
 const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const [isMobileView] = useMediaQuery("(max-width: 767px)");
@@ -30,6 +33,8 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`;
   const web3Provider = useContext(Web3Context);
   const { logout, isLoading: isLoggingOut } = useLogout();
+
+  const { onOpen, isOpen, onClose } = useDisclosure();
 
   return (
     <Flex
@@ -131,6 +136,7 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
           )}
           {user && !isLoggingOut && (
             <Menu>
+              <NodeBalancerInfo onClose={onClose} isOpen={isOpen} />
               <MenuButton>
                 <Flex gap="10px" alignItems="center">
                   <BsPerson />
@@ -144,6 +150,11 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
 
                 <MenuItem p="0px" mb="10px">
                   <RouterLink href="/tokens">API tokens</RouterLink>
+                </MenuItem>
+                <MenuItem p="0px" mb="10px">
+                  <Text fontWeight="400" px="0" onClick={() => onOpen()}>
+                    NodeBalancer info
+                  </Text>
                 </MenuItem>
                 <Divider mb="10px" />
                 <MenuItem p="0px" onClick={() => logout()}>
