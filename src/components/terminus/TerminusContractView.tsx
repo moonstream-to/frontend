@@ -23,6 +23,7 @@ const terminusAbi = require("../../web3/abi/MockTerminus.json");
 const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
+import { terminusContractState } from "../../utils/nodeBalancer";
 
 const TerminusContractView = ({
   addRecentAddress,
@@ -41,80 +42,88 @@ const TerminusContractView = ({
   };
   const headerMeta = ["name", "description", "image"];
   const [uri, setURI] = useState<string | undefined>(undefined);
-  const { web3, chainId } = useContext(Web3Context);
+  const { web3, chainId, account } = useContext(Web3Context);
+
+  const [selectedChainId, setSelectedChainId] = useState(0);
 
   const contractState = useQuery(
-    ["contractState", contractAddress, chainId],
+    ["contractState2", contractAddress, chainId],
     async () => {
-      const MULTICALL2_CONTRACT_ADDRESS =
-        MULTICALL2_CONTRACT_ADDRESSES[
-          String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
-        ];
-      if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
-        return;
-      }
-      setDialogStep(0);
-      const terminusContract = new web3.eth.Contract(
-        terminusAbi,
-        contractAddress,
-      ) as unknown as MockTerminus;
-      const target = contractAddress;
-      const callDatas = [];
-      callDatas.push(terminusContract.methods.poolBasePrice().encodeABI());
-      callDatas.push(terminusContract.methods.paymentToken().encodeABI());
-      callDatas.push(terminusContract.methods.contractURI().encodeABI());
-      callDatas.push(terminusContract.methods.totalPools().encodeABI());
-      callDatas.push(terminusContract.methods.terminusController().encodeABI());
-      const queries = callDatas.map((callData) => {
-        return {
-          target,
-          callData,
-        };
-      });
-
-      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
-
-      return multicallContract.methods
-        .tryAggregate(false, queries)
-        .call()
-        .then((results: { returnData: string; success: boolean }[]) => {
-          const parsedResults = results.map(
-            (result: { returnData: string; success: boolean }, idx: number) => {
-              if (result.returnData === "0x") {
-                return undefined;
-              }
-              let parsed;
-              try {
-                parsed = web3.utils.hexToNumberString(result.returnData);
-
-                if (idx === 4 || idx === 1) {
-                  const adr = "0x" + result.returnData.slice(-40);
-                  parsed = web3.utils.toChecksumAddress(adr);
-                }
-                if (idx === 2) {
-                  parsed =
-                    "https://" + web3.utils.hexToUtf8(result.returnData).split("https://")[1];
-                }
-              } catch (e) {
-                console.log(e);
-                parsed = undefined;
-              }
-              return String(parsed);
-            },
-          );
-          const data = {
-            poolBasePrice: parsedResults[0],
-            paymentToken: parsedResults[1],
-            contractURI: parsedResults[2],
-            totalPools: parsedResults[3],
-            controller: parsedResults[4],
+      console.log(contractAddress);
+      if (account) {
+        const MULTICALL2_CONTRACT_ADDRESS =
+          MULTICALL2_CONTRACT_ADDRESSES[
+            String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
+          ];
+        if (!contractAddress || !MULTICALL2_CONTRACT_ADDRESS) {
+          return;
+        }
+        setDialogStep(0);
+        const terminusContract = new web3.eth.Contract(
+          terminusAbi,
+          contractAddress,
+        ) as unknown as MockTerminus;
+        const target = contractAddress;
+        const callDatas = [];
+        callDatas.push(terminusContract.methods.poolBasePrice().encodeABI());
+        callDatas.push(terminusContract.methods.paymentToken().encodeABI());
+        callDatas.push(terminusContract.methods.contractURI().encodeABI());
+        callDatas.push(terminusContract.methods.totalPools().encodeABI());
+        callDatas.push(terminusContract.methods.terminusController().encodeABI());
+        const queries = callDatas.map((callData) => {
+          return {
+            target,
+            callData,
           };
-          if (data.controller) {
-            addRecentAddress(contractAddress, { chainId: String(chainId) });
-          }
-          setURI(data.contractURI);
-          return data;
         });
+
+        console.log("qqq");
+        const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
+        return multicallContract.methods
+          .tryAggregate(false, queries)
+          .call()
+          .then((results: { returnData: string; success: boolean }[]) => {
+            const parsedResults = results.map(
+              (result: { returnData: string; success: boolean }, idx: number) => {
+                if (result.returnData === "0x") {
+                  return undefined;
+                }
+                let parsed;
+                try {
+                  parsed = web3.utils.hexToNumberString(result.returnData);
+
+                  if (idx === 4 || idx === 1) {
+                    const adr = "0x" + result.returnData.slice(-40);
+                    parsed = web3.utils.toChecksumAddress(adr);
+                  }
+                  if (idx === 2) {
+                    parsed =
+                      "https://" + web3.utils.hexToUtf8(result.returnData).split("https://")[1];
+                  }
+                } catch (e) {
+                  console.log(e);
+                  parsed = undefined;
+                }
+                return String(parsed);
+              },
+            );
+            const data = {
+              poolBasePrice: parsedResults[0],
+              paymentToken: parsedResults[1],
+              contractURI: parsedResults[2],
+              totalPools: parsedResults[3],
+              controller: parsedResults[4],
+            };
+            if (data.controller) {
+              addRecentAddress(contractAddress, { chainId: String(chainId) });
+            }
+            setURI(data.contractURI);
+            return data;
+          });
+      } else {
+        console.log("qq");
+        return terminusContractState(contractAddress, 322);
+      }
     },
     {
       ...queryCacheProps,
@@ -124,10 +133,12 @@ const TerminusContractView = ({
 
   useEffect(() => {
     setContractState(contractState.data);
+    console.log(contractState.data);
   }, [contractState.data]);
 
   useEffect(() => {
     setURI(contractState.data?.contractURI);
+    console.log("www");
   }, []);
 
   const metadata = useQuery(

@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Input, Select, Text, useToast } from "@chakra-ui/react";
 
 import TerminusPoolsListView from "./TerminusPoolsListView";
 import TerminusPoolView from "./TerminusPoolView";
@@ -11,10 +11,16 @@ import Web3Context from "../../contexts/Web3Context/context";
 import ContractRow from "../ContractRow";
 import useTerminus from "../../contexts/TerminusContext";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
+import { chains } from "../../contexts/Web3Context";
 
 const TerminusView = () => {
-  const { contractAddress, setContractAddress, selectPool, setSelectedPoolMetadata } =
-    useTerminus();
+  const {
+    contractAddress,
+    setContractAddress,
+    contractState,
+    selectPool,
+    setSelectedPoolMetadata,
+  } = useTerminus();
   const router = useRouter();
 
   const [addressInputValue, setAddressInputValue] = useState(contractAddress);
@@ -31,7 +37,7 @@ const TerminusView = () => {
     }
   }, [router.query.contractAddress, router.query.poolId]);
 
-  const { chainId, web3 } = useContext(Web3Context);
+  const { chainId, web3, account } = useContext(Web3Context);
 
   useEffect(() => {
     setContractAddress(
@@ -87,6 +93,15 @@ const TerminusView = () => {
             value={addressInputValue}
             onChange={(e) => setAddressInputValue(e.target.value)}
           />
+          {!account && (
+            <Select w="fit-content">
+              {Object.keys(chains).map((c) => (
+                <option value={chains[c].chainId} key={chains[c].chainId}>
+                  {chains[c].name}
+                </option>
+              ))}
+            </Select>
+          )}
           <Button
             bg="gray.0"
             fontWeight="400"
@@ -100,10 +115,12 @@ const TerminusView = () => {
         {contractAddress && (
           <>
             <TerminusContractView addRecentAddress={addRecentAddress} />
-            <Flex gap="40px" maxH="700px">
-              <TerminusPoolsListView />
-              <TerminusPoolView />
-            </Flex>
+            {contractState && (
+              <Flex gap="40px" maxH="700px">
+                <TerminusPoolsListView />
+                <TerminusPoolView />
+              </Flex>
+            )}
           </>
         )}
         {!contractAddress && recentAddresses && (

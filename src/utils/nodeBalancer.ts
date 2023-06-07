@@ -121,7 +121,15 @@ export const terminusContractState = (contractAddress: string, chainId: number) 
           return String(parsed);
         },
       );
-      console.log(parsedResults);
+      const data = {
+        poolBasePrice: parsedResults[0],
+        paymentToken: parsedResults[1],
+        contractURI: parsedResults[2],
+        totalPools: parsedResults[3],
+        controller: parsedResults[4],
+      };
+      console.log("data", data);
+      return data;
     })
     .catch((error) => {
       console.error(error);

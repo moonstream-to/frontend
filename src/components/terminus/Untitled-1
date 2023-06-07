@@ -1,0 +1,7 @@
+curl -L --request GET "https://auth.bugout.dev/resources?type=nodebalancer-access" --header "Authorization: Bearer $S
+ERGEI_MOONSTREAM_ACCESS_TOKEN" | jq .
+
+curl --request POST "https://api.moonstream.to/nb/wyrm/jsonrpc?access_id=$SERGEI_NB_ACCESS_ID" --header 'Content-Type: application/json' --data-raw '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", false],"id":1}'
+
+
+curl --request POST "https://api.moonstream.to/nb/wyrm/jsonrpc" --header 'Content-Type: application/json' --data-raw '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", false],"id":1}' --header "Authorization: Bearer $SERGEI_MOONSTREAM_ACCESS_TOKEN"

@@ -139,7 +139,7 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
                 </Text>
                 <Text fontSize="18px">{nodeBalancerAccess.data.description}</Text>
                 <PoolDetailsRow
-                  type="Access"
+                  type="Active"
                   value={nodeBalancerAccess.data.blockchain_access ? "Yes" : "No"}
                   w="100%"
                 />
