@@ -8,10 +8,11 @@ const ChainTag = ({ name }: { name: string }) => {
       fontSize="12px"
       lineHeight="100%"
       fontWeight="500"
-      color="#358BF5"
-      bg="#1A1D22"
+      color="#101114"
+      bg="#94C2FA"
       borderRadius="30px"
-      border="0.5px solid #358BF5"
+      border="0.5px solid #E6E6E6"
+      textTransform="capitalize"
     >
       {name}
     </Box>

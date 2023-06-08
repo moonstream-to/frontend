@@ -9,7 +9,7 @@ const Tag = ({ name }: { name: string }) => {
       lineHeight="100%"
       fontWeight="500"
       color="black"
-      bg="#358BF5"
+      bg="#FFFFFF"
       borderRadius="30px"
       // border="0.5px solid #358BF5"
     >
