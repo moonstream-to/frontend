@@ -2,29 +2,19 @@ import { useState } from "react";
 
 import { Button, Flex, Input, InputGroup, InputRightElement, Spacer, Text } from "@chakra-ui/react";
 
-import NewQueryRequest from "../NewQueryRequest";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import { SearchIcon } from "@chakra-ui/icons";
 import AnalyticsAddressesList from "./AnalyticsAddressesList";
 import AddressesPlaceholder from "./AddressesPlaceholder";
-// import QueryAPIQueriesList from "./QueryAPIQueriesList";
-// import QueryContractsList from "./QueryContractsList";
+import { SkeletonComponent } from "./AnalyticsListItemSkeleton";
 
 const AnalyticsAddressesView = () => {
-  const {
-    isShowContracts,
-    setIsShowContracts,
-    filter,
-    setFilter,
-    setIsCreatingContract,
-    isCreatingContract,
-    addresses,
-  } = useAnalytics();
+  const { filter, setFilter, setIsCreatingContract, isCreatingContract, addresses } =
+    useAnalytics();
 
-  const [isQueryRequestOpen, setIsQueryRequestOpen] = useState(false);
   return (
     <Flex
-      // minW="450px"
+      minW="400px"
       maxW="400px"
       borderRadius="20px"
       p="30px"
@@ -34,7 +24,7 @@ const AnalyticsAddressesView = () => {
       opacity={isCreatingContract ? 0.4 : 1}
     >
       <Text variant="title">Addresses</Text>
-      {addresses.data?.length > 100 && (
+      {addresses.data?.length > 0 && (
         <>
           <InputGroup>
             <Input
@@ -51,9 +41,8 @@ const AnalyticsAddressesView = () => {
           <AnalyticsAddressesList />
         </>
       )}
-      {addresses.data?.length !== 0 && <AddressesPlaceholder />}
-      {/* {isShowContracts && <QueryContractsList />}
-      {!isShowContracts && <QueryAPIQueriesList />} */}
+      {addresses.data?.length === 0 && !addresses.isLoading && <AddressesPlaceholder />}
+      {addresses.isLoading && [1, 2, 3, 4, 5].map((_, idx) => <SkeletonComponent key={idx} />)}
       <Spacer />
       <Button
         width="100%"
