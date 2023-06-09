@@ -18,7 +18,6 @@ export const web3tags = [
   "StakingContract",
   "InsuranceContract",
   "GameContract",
-  "Ethereum",
   "ERC20",
   "ERC721",
   "ERC1155",
@@ -28,7 +27,6 @@ export const web3tags = [
   "Testing",
   "Production",
   "Kovan",
-  "Rinkeby",
 ];
 
 export function getRandomTags() {

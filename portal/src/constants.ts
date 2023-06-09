@@ -98,5 +98,7 @@ export const MULTICALL2_CONTRACT_ADDRESSES = {
 export const MAX_INT =
   "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
-export const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
+export const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`; //TODO delete
+export const AWS_ASSETS_PATH_CF = "https://static.simiotics.com/moonstream/assets";
+
 export const PORTAL_PATH = "https://portal.moonstream.to";

@@ -1,0 +1,16 @@
+.container {
+  position: relative;
+}
+
+.container::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  width: 14px;
+  height: 14px;
+  background-color: #94C2FA;
+  border-right: 1px solid white;
+  border-top: 1px solid white;
+  transform: rotate(45deg);
+  top: calc(50% - 8px);
+}

@@ -6,6 +6,7 @@ import NewQueryRequest from "../NewQueryRequest";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import { SearchIcon } from "@chakra-ui/icons";
 import AnalyticsAddressesList from "./AnalyticsAddressesList";
+import AddressesPlaceholder from "./AddressesPlaceholder";
 // import QueryAPIQueriesList from "./QueryAPIQueriesList";
 // import QueryContractsList from "./QueryContractsList";
 
@@ -17,13 +18,14 @@ const AnalyticsAddressesView = () => {
     setFilter,
     setIsCreatingContract,
     isCreatingContract,
+    addresses,
   } = useAnalytics();
 
   const [isQueryRequestOpen, setIsQueryRequestOpen] = useState(false);
   return (
     <Flex
-      minW="450px"
-      maxW="450px"
+      // minW="450px"
+      maxW="400px"
       borderRadius="20px"
       p="30px"
       bg="#2d2d2d"
@@ -32,19 +34,24 @@ const AnalyticsAddressesView = () => {
       opacity={isCreatingContract ? 0.4 : 1}
     >
       <Text variant="title">Addresses</Text>
-      <InputGroup>
-        <Input
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          placeholder={"Search by address or tag"}
-          borderRadius="10px"
-          p="8px 15px"
-        />
-        <InputRightElement>
-          <SearchIcon />
-        </InputRightElement>
-      </InputGroup>
-      <AnalyticsAddressesList />
+      {addresses.data?.length > 100 && (
+        <>
+          <InputGroup>
+            <Input
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder={"Search by address or tag"}
+              borderRadius="10px"
+              p="8px 15px"
+            />
+            <InputRightElement>
+              <SearchIcon />
+            </InputRightElement>
+          </InputGroup>
+          <AnalyticsAddressesList />
+        </>
+      )}
+      {addresses.data?.length !== 0 && <AddressesPlaceholder />}
       {/* {isShowContracts && <QueryContractsList />}
       {!isShowContracts && <QueryAPIQueriesList />} */}
       <Spacer />
