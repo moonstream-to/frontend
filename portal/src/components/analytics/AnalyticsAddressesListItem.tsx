@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
-import { Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 
 // import useQueryAPI from "../../contexts/QueryAPIContext";
 
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import useAnalytics from "../../contexts/AnalyticsContext";
+import { getChainImage } from "../../constants";
 
 const AnalyticsAddressesListItem = ({
   address,
@@ -60,20 +61,31 @@ const AnalyticsAddressesListItem = ({
           p="10px"
           onClick={() => setSelectedContractId(idx)}
           borderRadius="10px"
-          // bg={selected ? "#4d4d4d" : "transparent"}
-          border={selected ? "1px solid white" : "none"}
+          border="1px solid"
+          borderColor={selected ? "white" : "transparent"}
           cursor="pointer"
         >
           <Flex gap="10px" alignItems="center">
-            {type && type.icon_url && <Image h="20px" w="20px" alt="" src={type.icon_url} />}
-            <Text fontSize="18px">{address.label}</Text>
+            {type && type.icon_url ? (
+              <Image
+                h="20px"
+                w="20px"
+                alt=""
+                src={getChainImage(address.subscription_type_id.split("_")[0])}
+                filter="invert(100%)"
+              />
+            ) : (
+              <Box w="20px" />
+            )}
+            <Text fontSize="14px" lineHeight="18px">
+              {address.label}
+            </Text>
           </Flex>
           <Flex gap="5px" wrap="wrap">
             <ChainTag name={address.subscription_type_id.split("_")[0]} />
             {address.tags.map((a: string, idx: number) => (
               <Tag key={idx} name={a} />
             ))}
-            {/* <Tag name={address.subscription_type_id.split("_").slice(1).join("")} /> */}
           </Flex>
         </Flex>
       )}
