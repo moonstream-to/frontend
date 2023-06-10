@@ -1,17 +1,8 @@
-import { Flex, Image, Text } from "@chakra-ui/react";
-import { Fragment } from "react";
-import { AWS_ASSETS_PATH_CF } from "../../constants";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import styles from "./AddressesPlaceholder.module.css";
 
-const chainLogos = [
-  `${AWS_ASSETS_PATH_CF}/icons/eth-outline.png`,
-  `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
-  `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
-  `${AWS_ASSETS_PATH_CF}/icons/xdai-outline.png`,
-  `${AWS_ASSETS_PATH_CF}/icons/wyrm-small-fill.png`,
-];
-
-const chainNames = ["etherium", "polygon", "mumbai", "xdai", "wyrm"];
+const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
 
 const AddressesPlaceholder = () => {
   return (
@@ -28,20 +19,20 @@ const AddressesPlaceholder = () => {
         w="340px"
         className={styles.container}
       >
-        <Flex gap="15px">
+        <Flex gap="15px" alignItems="center">
           <Image src={`${AWS_ASSETS_PATH_CF}/icons/sparkles.png`} h="20px" alt="" />
           <Text variant="text" color="#1A1D22">
             Set Moonstream up to watch an account on one of supported blockchains
           </Text>
         </Flex>
-        <Flex gap="8px" alignItems="center">
-          {chainLogos.map((l, idx: number) => (
-            <Fragment key={idx}>
-              <Image alt="" src={l} h="20px" />
-              <Text fontSize="9px" lineHeight="11px" ml="-5px" textTransform="uppercase">
-                {chainNames[idx]}
+        <Flex gap="8px" alignItems="center" wrap="wrap" whiteSpace="nowrap">
+          {chainNames.map((n, idx: number) => (
+            <Box key={idx} display="inline-flex" alignItems="center" gap="3px">
+              <Image alt="" src={getChainImage(n)} h="20px" />
+              <Text fontSize="9px" lineHeight="11px" textTransform="uppercase">
+                {n}
               </Text>
-            </Fragment>
+            </Box>
           ))}
         </Flex>
       </Flex>
