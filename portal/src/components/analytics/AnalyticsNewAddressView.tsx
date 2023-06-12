@@ -5,10 +5,6 @@ import {
   IconButton,
   Image,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
   Radio,
   RadioGroup,
   Text,
@@ -28,6 +24,7 @@ const AnalyticsNewAddressView = () => {
   const [address, setAddress] = useState("");
   const [isConnectingMetamask, setIsConnectingMetamask] = useState(false);
   const { account, onConnectWalletClick } = useContext(Web3Context);
+  const [metamaskAddress, setMetamaskAddress] = useState("");
   const [type, setType] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -37,16 +34,19 @@ const AnalyticsNewAddressView = () => {
   const loadFromMetamask = () => {
     if (account) {
       setAddress(account);
+      setMetamaskAddress(account);
     } else {
       setIsConnectingMetamask(true);
       onConnectWalletClick();
     }
   };
 
+  const isLoadedFromMetamask = address !== "" && address === metamaskAddress && account;
   useEffect(() => {
     if (isConnectingMetamask) {
       if (account) {
         setAddress(account);
+        setMetamaskAddress(account);
       }
       setIsConnectingMetamask(false);
     }
@@ -63,7 +63,7 @@ const AnalyticsNewAddressView = () => {
     <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" maxW="800px" minW="800px">
       <AddTagModal isOpen={isOpen} onClose={onClose} onAddTag={handleAddTag} />
 
-      <Flex direction="column" p="30px" gap="30px" overflowY="auto">
+      <Flex direction="column" p="30px" gap="30px" overflowY="auto" w="100%">
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title"> Watch new address</Text>
           {addresses.data?.length > 0 && (
@@ -104,19 +104,23 @@ const AnalyticsNewAddressView = () => {
               // w="100%"
               placeholder="Enter address or etherscan/polygonscan link to address"
             />
-            or
-            <Button
-              variant="transparent"
-              fontWeight="400"
-              borderRadius="10px"
-              border="1px solid white"
-              onClick={() => loadFromMetamask()}
-            >
-              <Flex gap="10px">
-                Load from metamask
-                <Image h="18px" alt="metamask" src={metamaskIcon} />
-              </Flex>
-            </Button>
+            {!isLoadedFromMetamask && (
+              <>
+                or
+                <Button
+                  variant="transparent"
+                  fontWeight="400"
+                  borderRadius="10px"
+                  border="1px solid white"
+                  onClick={() => loadFromMetamask()}
+                >
+                  <Flex gap="10px">
+                    Load from metamask
+                    <Image h="18px" w="20px" alt="metamask" src={metamaskIcon} />
+                  </Flex>
+                </Button>
+              </>
+            )}
           </Flex>
         </Flex>
         <Flex direction="column" gap="10px">
@@ -130,7 +134,7 @@ const AnalyticsNewAddressView = () => {
             </Flex>
           </RadioGroup>
         </Flex>
-        <Flex direction="column" gap="10px">
+        <Flex direction="column" gap="10px" w="100%">
           <Text variant="label">Title</Text>
           <Input
             fontSize="18px"
