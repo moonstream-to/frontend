@@ -103,9 +103,13 @@ const variantTransparent = () => {
     },
     _focus: {
       backgroundColor: "transparent",
+      outline: "none",
     },
+    _focusVisible: { boxShadow: "none" },
     _active: {
       backgroundColor: "transparent",
+      outline: "none",
+      boxShadow: "none",
     },
   };
 };
