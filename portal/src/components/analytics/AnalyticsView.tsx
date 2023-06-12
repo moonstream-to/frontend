@@ -3,18 +3,13 @@ import { useEffect } from "react";
 import { useQueryClient } from "react-query";
 import { Center, Flex, Text } from "@chakra-ui/react";
 
-import useQueryAPI from "../../contexts/QueryAPIContext";
 import useUser from "../../contexts/UserContext";
 import AnalyticsAddressesView from "./AnalyticsAddressesView";
 import useAnalytics from "../../contexts/AnalyticsContext";
-
-// import QueryAPINewContractView from "./QueryAPINewContractView";
-// import QueryAPIQueryView from "./QueryAPIQueryView";
-// import QueryContractView from "./QueryContractView";
-// import QueryListView from "./QueryListView";
+import AnalyticsNewAddressView from "./AnalyticsNewAddressView";
 
 const AnalyticsView = () => {
-  const { isCreatingContract, isShowContracts, reset, addresses, selectedContractId } =
+  const { isCreatingAddress, isShowContracts, reset, addresses, selectedContractId } =
     useAnalytics();
   const { user } = useUser();
   const queryClient = useQueryClient();
@@ -33,9 +28,8 @@ const AnalyticsView = () => {
           <AnalyticsAddressesView />
           {/* {isShowContracts && contracts.data && !isCreatingContract && (
             <QueryContractView contract={contracts.data[selectedContractId]} />
-          )}
-          {isCreatingContract && <QueryAPINewContractView />}
-          {!isShowContracts && <QueryAPIQueryView />} */}
+          )} */}
+          {isCreatingAddress && <AnalyticsNewAddressView />}
         </Flex>
       )}
       {!user && (

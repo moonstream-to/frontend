@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { Button, Flex, Input, InputGroup, InputRightElement, Spacer, Text } from "@chakra-ui/react";
 
 import useAnalytics from "../../contexts/AnalyticsContext";
@@ -9,8 +7,7 @@ import AddressesPlaceholder from "./AddressesPlaceholder";
 import { SkeletonComponent } from "./AnalyticsListItemSkeleton";
 
 const AnalyticsAddressesView = () => {
-  const { filter, setFilter, setIsCreatingContract, isCreatingContract, addresses } =
-    useAnalytics();
+  const { filter, setFilter, setIsCreatingAddress, isCreatingAddress, addresses } = useAnalytics();
 
   return (
     <Flex
@@ -21,7 +18,7 @@ const AnalyticsAddressesView = () => {
       bg="#2d2d2d"
       gap="30px"
       flexDirection="column"
-      opacity={isCreatingContract ? 0.4 : 1}
+      opacity={isCreatingAddress ? 0.4 : 1}
     >
       <Text variant="title">Addresses</Text>
       {addresses.data?.length > 0 && (
@@ -51,9 +48,9 @@ const AnalyticsAddressesView = () => {
         fontSize="20px"
         color="#2d2d2d"
         onClick={() => {
-          setIsCreatingContract(true);
+          setIsCreatingAddress(true);
         }}
-        disabled={isCreatingContract}
+        disabled={isCreatingAddress}
       >
         + Watch new address
       </Button>

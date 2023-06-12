@@ -20,8 +20,8 @@ type AnalyticsContextType = {
   setSelectedContractId: (arg0: number) => void;
   types: any;
   setTypes: (arg0: any) => void;
-  isCreatingContract: boolean;
-  setIsCreatingContract: (arg0: boolean) => void;
+  isCreatingAddress: boolean;
+  setIsCreatingAddress: (arg0: boolean) => void;
   isEditingContract: boolean;
   setIsEditingContract: (arg0: boolean) => void;
   selectedQueryId: number;
@@ -37,14 +37,14 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const [selectedContractId, setSelectedContractId] = useState(0);
   const [selectedQueryId, setSelectedQueryId] = useState(0);
   const [types, setTypes] = useState([]);
-  const [isCreatingContract, setIsCreatingContract] = useState(false);
+  const [isCreatingAddress, setIsCreatingAddress] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
   const reset = () => {
     setSelectedContractId(0);
     setSelectedQueryId(0);
     setIsEditingContract(false);
-    setIsCreatingContract(false);
+    setIsCreatingAddress(false);
   };
 
   function compare(a: { created_at: string }, b: { created_at: string }) {
@@ -111,8 +111,8 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     setSelectedContractId,
     types,
     setTypes,
-    isCreatingContract,
-    setIsCreatingContract,
+    isCreatingAddress,
+    setIsCreatingAddress,
     isEditingContract,
     setIsEditingContract,
     selectedQueryId,
