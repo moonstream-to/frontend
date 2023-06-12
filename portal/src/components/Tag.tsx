@@ -1,8 +1,9 @@
-import { Box } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 
-const Tag = ({ name }: { name: string }) => {
+const Tag = ({ name, ...rest }: { name: string } & Omit<BoxProps, "name">) => {
   return (
     <Box
+      display="flex"
       p="4px 8px"
       w="fit-content"
       fontSize="12px"
@@ -11,7 +12,8 @@ const Tag = ({ name }: { name: string }) => {
       color="black"
       bg="#FFFFFF"
       borderRadius="30px"
-      // border="0.5px solid #358BF5"
+      alignItems="center"
+      {...rest}
     >
       {name}
     </Box>
