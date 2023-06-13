@@ -1,6 +1,11 @@
+import { CloseIcon } from "@chakra-ui/icons";
 import { Box, BoxProps } from "@chakra-ui/react";
 
-const Tag = ({ name, ...rest }: { name: string } & Omit<BoxProps, "name">) => {
+const Tag = ({
+  name,
+  onDelete,
+  ...rest
+}: { name: string; onDelete?: () => void } & Omit<BoxProps, "name">) => {
   return (
     <Box
       display="flex"
@@ -13,9 +18,11 @@ const Tag = ({ name, ...rest }: { name: string } & Omit<BoxProps, "name">) => {
       bg="#FFFFFF"
       borderRadius="30px"
       alignItems="center"
+      gap="5px"
       {...rest}
     >
       {name}
+      {onDelete && <CloseIcon h="16px" w="16px" p="4px" cursor="pointer" onClick={onDelete} />}
     </Box>
   );
 };
