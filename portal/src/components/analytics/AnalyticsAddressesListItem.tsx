@@ -44,6 +44,11 @@ const AnalyticsAddressesListItem = ({
       return;
     }
 
+    if (address.tags.some((tag: string) => tag.toLocaleLowerCase().includes(lowCaseFilter))) {
+      setIsShow(true);
+      return;
+    }
+
     if (address.subscription_type_id.toLowerCase().includes(lowCaseFilter)) {
       setIsShow(true);
       return;
