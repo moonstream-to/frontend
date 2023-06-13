@@ -54,6 +54,7 @@ const AddTagModal = ({ isOpen, onClose, onAddTag }: AddTagModalProps) => {
             </Flex>
             <Input
               type="text"
+              variant="text"
               placeholder="Enter new tag"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}

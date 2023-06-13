@@ -34,6 +34,12 @@ const overrides = {
             px: "1ch",
           },
         },
+        text: {
+          field: {
+            border: "1px solid white",
+            bg: "transparent",
+          },
+        },
       },
     },
     // Other components go here

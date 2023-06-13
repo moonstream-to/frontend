@@ -161,6 +161,7 @@ const AnalyticsNewAddressView = () => {
         <Flex direction="column" gap="10px" w="100%">
           <Text variant="label">Title</Text>
           <Input
+            variant="text"
             fontSize="18px"
             borderRadius="10px"
             _placeholder={{ fontSize: "16px" }}
