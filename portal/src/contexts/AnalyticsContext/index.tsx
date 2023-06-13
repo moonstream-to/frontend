@@ -5,7 +5,7 @@ import useUser from "../../contexts/UserContext";
 
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
-import { getRandomTags } from "../../mocks";
+import { getRandomSmartContractDescription, getRandomTags } from "../../mocks";
 import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
 
@@ -68,7 +68,12 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
       .then((res) => res.data.subscriptions.sort(compare))
       .then((array) =>
         array.map((i: object) => {
-          return { ...i, tags: getRandomTags() };
+          return {
+            ...i,
+            tags: getRandomTags(),
+            type: "smartcontract",
+            description: getRandomSmartContractDescription(),
+          };
         }),
       );
   };
