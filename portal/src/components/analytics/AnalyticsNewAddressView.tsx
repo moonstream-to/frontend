@@ -1,6 +1,7 @@
 import { CloseIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Collapse,
   Flex,
   IconButton,
   Image,
@@ -12,12 +13,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
-import { AWS_ASSETS_PATH_CF } from "../../constants";
+import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import Web3Context from "../../contexts/Web3Context/context";
 import AddTagModal from "../AddTagModal";
 import Tag from "../Tag";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
+const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
 
 const AnalyticsNewAddressView = () => {
   const { addresses, setIsCreatingAddress } = useAnalytics();
@@ -30,6 +32,7 @@ const AnalyticsNewAddressView = () => {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [chainName, setChainName] = useState("");
 
   const loadFromMetamask = () => {
     if (account) {
@@ -41,7 +44,8 @@ const AnalyticsNewAddressView = () => {
     }
   };
 
-  const isLoadedFromMetamask = address !== "" && address === metamaskAddress && account;
+  const isLoadedFromMetamask = address !== "" && address === metamaskAddress && address === account;
+
   useEffect(() => {
     if (isConnectingMetamask) {
       if (account) {
@@ -60,10 +64,18 @@ const AnalyticsNewAddressView = () => {
   };
 
   return (
-    <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" maxW="800px" minW="800px">
+    <Flex
+      borderRadius="20px"
+      bg="#2d2d2d"
+      w="100%"
+      minH="100%"
+      maxW="800px"
+      minW="800px"
+      direction="column"
+      overflowY="auto"
+    >
       <AddTagModal isOpen={isOpen} onClose={onClose} onAddTag={handleAddTag} />
-
-      <Flex direction="column" p="30px" gap="30px" overflowY="auto" w="100%">
+      <Flex direction="column" p="30px" gap="30px" w="100%">
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title"> Watch new address</Text>
           {addresses.data?.length > 0 && (
@@ -76,8 +88,17 @@ const AnalyticsNewAddressView = () => {
           )}
         </Flex>
         <Flex gap="5px" h="24px" wrap="wrap" alignItems="center">
-          {tags.map((a: string, idx: number) => (
-            <Tag key={idx} name={a} h="24px" />
+          {chainName && type === "smartcontract" && (
+            <Tag name={chainName} h="24px" bg="#94C2FA" textTransform="capitalize" />
+          )}
+          {tags.map((n: string, idx: number) => (
+            <Tag
+              key={idx}
+              name={n}
+              h="24px"
+              onDelete={() => setTags(tags.filter((tag) => tag !== n))}
+              fontSize="14px"
+            />
           ))}
           <Button
             onClick={onOpen}
@@ -134,6 +155,33 @@ const AnalyticsNewAddressView = () => {
             </Flex>
           </RadioGroup>
         </Flex>
+        <Collapse in={type === "smartcontract"}>
+          <Flex direction="column" gap="10px" w="100%" transition="all 5s">
+            <Text variant="label">Blockchain</Text>
+            <Flex wrap="wrap" gap="10px">
+              {chainNames.map((n, idx: number) => (
+                <Flex
+                  key={idx}
+                  borderRadius="30px"
+                  border="1px solid"
+                  borderColor={chainName === n ? "white" : "#4D4D4D"}
+                  display="inline-flex"
+                  alignItems="center"
+                  gap="3px"
+                  p="8px 15px"
+                  cursor="pointer"
+                  onClick={() => setChainName(n)}
+                >
+                  <Image alt="" src={getChainImage(n)} h="20px" filter="invert(100%)" />
+                  <Text fontSize="14px" lineHeight="18px" textTransform="uppercase">
+                    {n}
+                  </Text>
+                </Flex>
+              ))}
+            </Flex>
+          </Flex>
+        </Collapse>
+
         <Flex direction="column" gap="10px" w="100%">
           <Text variant="label">Title</Text>
           <Input
@@ -142,7 +190,6 @@ const AnalyticsNewAddressView = () => {
             _placeholder={{ fontSize: "16px" }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            // w="100%"
             placeholder="Enter title"
             w="100%"
           />
@@ -160,9 +207,18 @@ const AnalyticsNewAddressView = () => {
             w="100%"
           />
         </Flex>
-        <Button placeSelf="end" variant="saveButton">
-          Watch
-        </Button>
+        <Flex justifyContent="end" gap="20px">
+          {addresses.data?.length > 0 && (
+            <Button
+              variant="cancelButton"
+              aria-label="close"
+              onClick={() => setIsCreatingAddress(false)}
+            >
+              Cancel
+            </Button>
+          )}
+          <Button variant="saveButton">Watch</Button>
+        </Flex>
       </Flex>
     </Flex>
   );
