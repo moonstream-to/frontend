@@ -10,14 +10,12 @@ import {
   RadioGroup,
   Text,
   Textarea,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import Web3Context from "../../contexts/Web3Context/context";
-import AddTagModal from "../AddTagModal";
-import Tag from "../Tag";
+import AnalyticsAddressTags from "./AnalyticsAddressTags";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
 const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
 
@@ -31,7 +29,6 @@ const AnalyticsNewAddressView = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [chainName, setChainName] = useState("");
 
   const loadFromMetamask = () => {
@@ -57,10 +54,9 @@ const AnalyticsNewAddressView = () => {
   }, [account]);
 
   const handleAddTag = (newTag: string) => {
-    if (newTag.trim() !== "") {
+    if (newTag.trim() !== "" && !tags.includes(newTag)) {
       setTags((prevTags) => [...prevTags, newTag]);
     }
-    onClose();
   };
 
   return (
@@ -74,7 +70,6 @@ const AnalyticsNewAddressView = () => {
       direction="column"
       overflowY="auto"
     >
-      <AddTagModal isOpen={isOpen} onClose={onClose} onAddTag={handleAddTag} />
       <Flex direction="column" p="30px" gap="30px" w="100%">
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title"> Watch new address</Text>
@@ -87,31 +82,12 @@ const AnalyticsNewAddressView = () => {
             />
           )}
         </Flex>
-        <Flex gap="5px" h="24px" wrap="wrap" alignItems="center">
-          {chainName && type === "smartcontract" && (
-            <Tag name={chainName} h="24px" bg="#94C2FA" textTransform="capitalize" />
-          )}
-          {tags.map((n: string, idx: number) => (
-            <Tag
-              key={idx}
-              name={n}
-              h="24px"
-              onDelete={() => setTags(tags.filter((tag) => tag !== n))}
-              fontSize="14px"
-            />
-          ))}
-          <Button
-            onClick={onOpen}
-            variant="transparent"
-            color="#BFBFBF"
-            fontSize="14px"
-            py="0"
-            h="fit-content"
-          >
-            + Add a tag...
-          </Button>
-        </Flex>
-
+        <AnalyticsAddressTags
+          tags={tags}
+          chainName={type === "smartcontract" ? chainName : undefined}
+          onAdd={handleAddTag}
+          onDelete={(t) => setTags(tags.filter((tag) => tag !== t))}
+        />
         <Flex direction="column" gap="10px">
           <Text variant="label">Address</Text>
           <Flex justifyContent="space-between" gap="10px" alignItems="center">
@@ -202,7 +178,6 @@ const AnalyticsNewAddressView = () => {
             _placeholder={{ fontSize: "16px" }}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            // w="100%"
             placeholder="Enter description"
             w="100%"
           />
