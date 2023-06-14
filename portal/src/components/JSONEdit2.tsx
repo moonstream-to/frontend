@@ -22,8 +22,8 @@ const MyJsonComponent = ({
   return (
     <AceEditor
       style={{
-        backgroundColor: "#232323",
-        borderRadius: "10px",
+        backgroundColor: "#2d2d2d",
+        borderRadius: "5px",
         fontSize: "14px",
         padding: "10px",
       }}
@@ -31,6 +31,7 @@ const MyJsonComponent = ({
       theme="twilight"
       onChange={handleJsonChange}
       onLoad={function (editor) {
+        editor.renderer.setShowGutter(false);
         editor.renderer.setPadding(20);
         editor.renderer.setScrollMargin(20, 20, 0, 0);
         editor.setReadOnly(readOnly);

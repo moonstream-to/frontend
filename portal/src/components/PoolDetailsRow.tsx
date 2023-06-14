@@ -57,6 +57,7 @@ const PoolDetailsRow = ({
           fontFamily="Jet Brains Mono, monospace"
           fontWeight="400"
           fontSize="18px"
+          {...props}
         >
           {valueString}
         </Text>
@@ -107,7 +108,7 @@ const PoolDetailsRow = ({
   return (
     <Flex justifyContent="space-between" gap="10px" {...props}>
       {type && (
-        <Text fontWeight="400" fontSize="18px">
+        <Text fontWeight="400" fontSize="18px" {...props}>
           {type}
         </Text>
       )}
@@ -136,6 +137,7 @@ const PoolDetailsRow = ({
             borderRadius="8px"
             p="5px 10px"
             border="2px solid #BBBBBB"
+            zIndex="100"
           >
             copied
           </Text>
