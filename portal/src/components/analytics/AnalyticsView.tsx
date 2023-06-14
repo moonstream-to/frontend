@@ -7,10 +7,10 @@ import useUser from "../../contexts/UserContext";
 import AnalyticsAddressesView from "./AnalyticsAddressesView";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import AnalyticsNewAddressView from "./AnalyticsNewAddressView";
+import AnalyticsSmartContractView from "./AnalyticsSmartContractView";
 
 const AnalyticsView = () => {
-  const { isCreatingAddress, isShowContracts, reset, addresses, selectedContractId } =
-    useAnalytics();
+  const { isCreatingAddress, reset, addresses, selectedAddressId } = useAnalytics();
   const { user } = useUser();
   const queryClient = useQueryClient();
 
@@ -26,9 +26,9 @@ const AnalyticsView = () => {
       {user && (
         <Flex gap="30px" py="30px" px="7%" maxH="760px" minH="760px" maxW="1600px" minW="1400px">
           <AnalyticsAddressesView />
-          {/* {isShowContracts && contracts.data && !isCreatingContract && (
-            <QueryContractView contract={contracts.data[selectedContractId]} />
-          )} */}
+          {addresses.data && !isCreatingAddress && (
+            <AnalyticsSmartContractView address={addresses.data[selectedAddressId]} />
+          )}
           {isCreatingAddress && <AnalyticsNewAddressView />}
         </Flex>
       )}

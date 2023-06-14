@@ -21,7 +21,7 @@ const AnalyticsAddressesListItem = ({
   const [type, setType] = useState<{ icon_url?: string }>({});
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
-  const { selectedContractId, setSelectedContractId, filter } = useAnalytics();
+  const { selectedAddressId, setSelectedAddressId, filter } = useAnalytics();
 
   useEffect(() => {
     if (address && types) {
@@ -30,8 +30,8 @@ const AnalyticsAddressesListItem = ({
   }, [address, types]);
 
   useEffect(() => {
-    setSelected(idx === selectedContractId);
-  }, [idx, selectedContractId]);
+    setSelected(idx === selectedAddressId);
+  }, [idx, selectedAddressId]);
 
   useEffect(() => {
     if (filter === "") {
@@ -64,7 +64,7 @@ const AnalyticsAddressesListItem = ({
           flexDirection="column"
           gap="15px"
           p="10px"
-          onClick={() => setSelectedContractId(idx)}
+          onClick={() => setSelectedAddressId(idx)}
           borderRadius="10px"
           border="1px solid"
           borderColor={selected ? "white" : "transparent"}

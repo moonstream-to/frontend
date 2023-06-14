@@ -5,7 +5,7 @@ import useUser from "../../contexts/UserContext";
 
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
-import { getRandomSmartContractDescription, getRandomTags } from "../../mocks";
+import { getDescriptionForTitle, getRandomTags, getRandomTitle } from "../../mocks";
 import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
 
@@ -16,8 +16,8 @@ type AnalyticsContextType = {
   setIsShowContracts: (arg0: boolean) => void;
   filter: string;
   setFilter: (arg0: string) => void;
-  selectedContractId: number;
-  setSelectedContractId: (arg0: number) => void;
+  selectedAddressId: number;
+  setSelectedAddressId: (arg0: number) => void;
   types: any;
   setTypes: (arg0: any) => void;
   isCreatingAddress: boolean;
@@ -34,14 +34,14 @@ const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefin
 export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) => {
   const [isShowContracts, setIsShowContracts] = useState(false);
   const [filter, setFilter] = useState("");
-  const [selectedContractId, setSelectedContractId] = useState(0);
+  const [selectedAddressId, setSelectedAddressId] = useState(0);
   const [selectedQueryId, setSelectedQueryId] = useState(0);
   const [types, setTypes] = useState([]);
   const [isCreatingAddress, setIsCreatingAddress] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
   const reset = () => {
-    setSelectedContractId(0);
+    setSelectedAddressId(0);
     setSelectedQueryId(0);
     setIsEditingContract(false);
     setIsCreatingAddress(false);
@@ -68,11 +68,14 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
       .then((res) => res.data.subscriptions.sort(compare))
       .then((array) =>
         array.map((i: object) => {
+          const label = getRandomTitle();
+          const description = getDescriptionForTitle(label);
           return {
             ...i,
             tags: getRandomTags(),
             type: "smartcontract",
-            description: getRandomSmartContractDescription(),
+            description,
+            label,
           };
         }),
       );
@@ -112,8 +115,8 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     setIsShowContracts,
     filter,
     setFilter,
-    selectedContractId,
-    setSelectedContractId,
+    selectedAddressId,
+    setSelectedAddressId,
     types,
     setTypes,
     isCreatingAddress,
