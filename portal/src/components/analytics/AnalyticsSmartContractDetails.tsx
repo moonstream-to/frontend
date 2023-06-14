@@ -53,7 +53,7 @@ const AnalyticsSmartContractDetails = ({
       console.log(error);
     },
     onSuccess: (data: any) => {
-      console.log(data);
+      // console.log(data);
     },
   });
 

@@ -8,6 +8,26 @@ const variantTitle = () => {
   };
 };
 
+const variantTitle2 = () => {
+  return {
+    padding: "0px",
+    fontWeight: "700",
+    fontSize: "20px",
+    lineHeight: "100%",
+    userSelect: "none",
+  };
+};
+
+const variantTitle3 = () => {
+  return {
+    padding: "0px",
+    fontWeight: "700",
+    fontSize: "16px",
+    lineHeight: "100%",
+    userSelect: "none",
+  };
+};
+
 const variantLabel = {
   fontSize: "16px",
   fontWeight: "400",
@@ -35,6 +55,8 @@ const variantText = () => {
 const Text = {
   variants: {
     title: variantTitle,
+    title2: variantTitle2,
+    title3: variantTitle3,
     hint: variantHint,
     text: variantText,
     label: variantLabel,

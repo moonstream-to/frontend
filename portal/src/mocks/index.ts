@@ -233,4 +233,155 @@ export function getRandomTags() {
   return randomTags;
 }
 
-// console.log(getRandomTags()); // Use the function
+const contractQueries: string[] = [
+  "Contract Events",
+  "Recent Transactions",
+  "Current Owners with Token",
+  "Locked Tokens",
+  "All Tokens",
+  "Metadata",
+  "Contract Creation Date",
+  "Contract's Current Balance",
+  "Token Transfer History",
+  "Contract's Source Code",
+  "Interacting Contracts",
+  "Failed Transactions",
+  "Contract's Gas Usage",
+  "Contract Creators",
+  "Contract's Function Calls",
+  "Token Holders",
+  "Whitelisted Addresses",
+  "Contract's External Calls",
+  "Tokens Minted/Burned",
+  "Contract Updates",
+  "Token Sale Data",
+  "Gas Price History",
+  "Associated IPFS Data",
+  "Contract Function Descriptions",
+  "ERC-721 Token Transfers",
+  "ERC-20 Token Transfers",
+  "All Self-Destruct Transactions",
+  "All Contract Creations",
+  "Gas Used by Transaction",
+  "Contract's Ether Balance History",
+];
+
+const queryDescriptions: { [key: string]: string } = {
+  "Contract Events": "Returns a list of all events triggered by the contract.",
+  "Recent Transactions": "Provides a list of the most recent transactions involving the contract.",
+  "Current Owners with Token":
+    "Shows all current token holders along with their respective balances.",
+  "Locked Tokens": "Displays tokens that are currently locked and not transferable.",
+  "All Tokens": "Provides a comprehensive list of all tokens related to the contract.",
+  Metadata: "Returns metadata associated with the contract, like contract name or token symbol.",
+  "Contract Creation Date":
+    "Shows the date and time when the contract was created and deployed on the blockchain.",
+  "Contract's Current Balance": "Displays the current cryptocurrency balance held by the contract.",
+  "Token Transfer History": "Returns a history of all token transfers involving the contract.",
+  "Contract's Source Code": "Provides the original source code of the smart contract.",
+  "Interacting Contracts": "Lists all other contracts that have interacted with this contract.",
+  "Failed Transactions": "Shows a history of transactions involving the contract that failed.",
+  "Contract's Gas Usage":
+    "Provides information on the amount of gas used by the contract for computations.",
+  "Contract Creators":
+    "Displays the addresses of the entities that created and deployed the contract.",
+  "Contract's Function Calls": "Returns a log of all function calls made to the contract.",
+  "Token Holders": "Lists all current holders of the contract's token and their balances.",
+  "Whitelisted Addresses":
+    "Shows all addresses currently whitelisted for interaction with the contract.",
+  "Contract's External Calls":
+    "Returns a log of all calls made by the contract to external contracts or addresses.",
+  "Tokens Minted/Burned":
+    "Shows the total number of tokens that have been minted or burned by the contract.",
+  "Contract Updates":
+    "Returns a history of all updates made to the contract after its initial deployment.",
+  "Token Sale Data":
+    "Provides data related to any token sales conducted by the contract, such as total tokens sold and total Ether raised.",
+  "Gas Price History":
+    "Returns a history of gas prices at the time of each transaction involving the contract.",
+  "Associated IPFS Data":
+    "Shows any data associated with the contract that's stored on the InterPlanetary File System (IPFS).",
+  "Contract Function Descriptions":
+    "Provides descriptions of all functions that can be called on the contract.",
+  "ERC-721 Token Transfers":
+    "Returns a log of all ERC-721 (non-fungible token) transfers involving the contract.",
+  "ERC-20 Token Transfers": "Shows a history of all ERC-20 token transfers involving the contract.",
+  "All Self-Destruct Transactions":
+    "Lists all transactions where the contract's self-destruct function was called.",
+  "All Contract Creations":
+    "Returns a history of all instances where the contract created another contract.",
+  "Gas Used by Transaction":
+    "Provides a detailed account of the amount of gas used by each individual transaction involving the contract.",
+  "Contract's Ether Balance History":
+    "Returns a history of the contract's Ether balance over time.",
+};
+
+export function getQueryDescription(query: string): string {
+  return queryDescriptions[query];
+}
+
+export function getRandomQueries(): string[] {
+  const numberOfQueries = Math.floor(Math.random() * 6) + 5; // This will give a random integer between 5 and 10
+  const result: string[] = [];
+  const tempArray = [...contractQueries]; // Create a copy of contractQueries
+
+  for (let i = 0; i < numberOfQueries; i++) {
+    const randomIndex = Math.floor(Math.random() * tempArray.length);
+    result.push(tempArray[randomIndex]);
+    tempArray.splice(randomIndex, 1); // This will remove the selected element from tempArray
+  }
+
+  return result;
+}
+
+const parameters: { [key: string]: string } = {
+  amount: "integer",
+  address: "address",
+  contract_address: "address",
+  claim_id: "string",
+  session_id: "string",
+  name: "string",
+  block_number: "integer",
+  block_timestamp: "integer",
+  transaction_hash: "string",
+  label_data: "jsonb",
+  event_name: "string",
+  event_args: "jsonb",
+  token_id: "string",
+  current_owner: "address",
+  previous_owner: "address",
+  previous_owner_balance: "integer",
+  current_owner_balance: "integer",
+  previous_owner_balance_delta: "integer",
+  user_address: "address",
+  start_block_number: "integer",
+  end_block_number: "integer",
+  blocks_back: "integer",
+  limit: "integer",
+  time_range: "string",
+  time_format: "string",
+  contract_addresses: "array[address]",
+  contracts_list: "array[address]",
+  // start_timestamp: "integer",
+  // end_timestamp: "integer",
+  type: "string",
+};
+
+export function getRandomParameters(): string[] {
+  const keys = Object.keys(parameters);
+  const numberOfParameters = Math.floor(Math.random() * 4); // This will give a random integer between 0 and 3
+  const result: string[] = [];
+  const tempArray = [...keys]; // Create a copy of keys array
+
+  for (let i = 0; i < numberOfParameters; i++) {
+    const randomIndex = Math.floor(Math.random() * tempArray.length);
+    result.push(tempArray[randomIndex]);
+    tempArray.splice(randomIndex, 1); // This will remove the selected element from tempArray
+  }
+
+  return result;
+}
+
+export function getParameterType(parameter: string): string {
+  return parameters[parameter];
+}
