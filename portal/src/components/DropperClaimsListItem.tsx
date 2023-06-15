@@ -35,7 +35,7 @@ const DropperClaimsListItem = ({
     if (selected) {
       onChange(claimId, metadata.data);
     }
-  }, [selected, metadata, claimId, onChange]);
+  }, [selected, metadata.data, claimId, onChange]);
 
   const [statusShow, setStatusShow] = useState(true);
   useEffect(() => {

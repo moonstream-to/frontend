@@ -66,3 +66,46 @@ export interface ClaimInterface {
   terminus_pool_id: number;
   title: string;
 }
+
+type DropDBData = {
+  terminusAddress: string;
+  terminusPoolId: string;
+  deadline: string;
+  claimUUID: string;
+};
+
+type DropChainData = {
+  uri: string;
+  signer: string;
+};
+
+type EditDropProps = {
+  active: boolean;
+  dbData: DropDBData;
+  chainData: DropChainData;
+  address: string;
+  claimId: string;
+};
+
+type ClaimStateType = {
+  data?: {
+    claim: any;
+    dropType: string;
+    signer: string;
+    claimUri: string;
+  };
+};
+
+type DropStateType = {
+  deadline?: string;
+  terminusAddress?: string;
+  terminusPoolId?: string;
+};
+
+type DropDataProps = {
+  claimState: ClaimStateType;
+  dropState?: DropStateType;
+  metadata: Record<string, any>;
+  excludeFields: string[];
+  PORTAL_PATH: string;
+};
