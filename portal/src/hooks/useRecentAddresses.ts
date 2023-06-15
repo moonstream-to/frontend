@@ -15,13 +15,30 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
   const [recentAddresses, setRecentAddresses] = useState<Address[]>([]);
 
   useEffect(() => {
-    const storedAddresses = localStorage.getItem(`${type}-recentAddresses`);
-    try {
-      setRecentAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);
-    } catch (e) {
-      console.log(e);
-    }
+    const updateAddresses = () => {
+      const storedAddresses = localStorage.getItem(`${type}-recentAddresses`);
+      try {
+        setRecentAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    // Listen to the custom event
+    window.addEventListener(`${type}-recentAddresses-updated`, updateAddresses);
+
+    updateAddresses();
+
+    // Cleanup
+    return () => {
+      window.removeEventListener(`${type}-recentAddresses-updated`, updateAddresses);
+    };
   }, [type]);
+
+  const dispatchUpdatedEvent = () => {
+    const event = new CustomEvent(`${type}-recentAddresses-updated`);
+    window.dispatchEvent(event);
+  };
 
   const addRecentAddress = (address: string, fields: Record<string, string>) => {
     const existingAddressIndex = recentAddresses.findIndex((a) => a.address === address);
@@ -33,6 +50,7 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
       const updatedAddresses = [updatedAddress, ...otherAddresses];
       setRecentAddresses(updatedAddresses);
       localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
+      dispatchUpdatedEvent();
     } else {
       // Address is new, add as a new item to the beginning of the list
       const newAddress = { address, ...fields };
@@ -49,6 +67,7 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
     const updatedAddresses = recentAddresses.filter((a) => a.address !== address);
     setRecentAddresses(updatedAddresses);
     localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
+    dispatchUpdatedEvent();
   };
 
   return { recentAddresses, addRecentAddress, deleteRecentAddress };

@@ -1,33 +1,24 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  IconButton,
-  useToast,
-  Spinner,
-  Button,
-} from "@chakra-ui/react";
-import { LinkIcon } from "@chakra-ui/icons";
-import { Box, Flex, Spacer, Text } from "@chakra-ui/layout";
+import { useQuery } from "react-query";
+import { Button, Spinner } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 
 import ClaimantsView from "./ClaimantsView";
-import PoolDetailsRow from "./PoolDetailsRow";
 import Web3Context from "../contexts/Web3Context/context";
 import useDrops from "../hooks/useDrops";
 import queryCacheProps from "../hooks/hookCommon";
 import { PORTAL_PATH } from "../constants";
 const dropperAbi = require("../web3/abi/Dropper.json");
 import { Dropper } from "../web3/contracts/types/Dropper";
-import http from "../utils/http";
+import DropData from "./dropper/DropData";
+import DropHeader from "./dropper/DropHeader";
+import EditDrop from "./dropper/EditDrop";
+import useRecentAddresses from "../hooks/useRecentAddresses";
 
 const DropperClaimView = ({
   address,
@@ -41,10 +32,11 @@ const DropperClaimView = ({
 }) => {
   const { chainId, web3 } = useContext(Web3Context);
 
+  const [isEdit, setIsEdit] = useState(true);
+
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
-
-  const toast = useToast();
+  const { addRecentAddress } = useRecentAddresses("dropper");
 
   const { adminClaims } = useDrops({
     dropperAddress: address,
@@ -53,7 +45,18 @@ const DropperClaimView = ({
 
   useEffect(() => {
     adminClaims.refetch();
+    setIsEdit(false);
   }, [address, web3ctx.account]);
+
+  useEffect(() => {
+    setIsEdit(false);
+  }, [claimId]);
+
+  useEffect(() => {
+    if (metadata?.image) {
+      addRecentAddress(address, { image: metadata.image });
+    }
+  }, [metadata?.image]);
 
   const [dropState, setDropState] = useState<
     | {
@@ -113,57 +116,9 @@ const DropperClaimView = ({
     },
     {
       ...queryCacheProps,
+      retry: false,
       enabled: Number(claimId) > 0 && !!address,
       // onSuccess: () => {}, //TODO
-    },
-  );
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        toast({
-          duration: 3000,
-          render: () => (
-            <Box borderRadius="10px" textAlign="center" color="black" p={3} bg="green.800">
-              Copied to clipboard
-            </Box>
-          ),
-        });
-      })
-      .catch((e) => {
-        toast({
-          duration: 3000,
-          render: () => (
-            <Box borderRadius="10px" textAlign="center" color="black" p={3} bg="red.800">
-              {e}
-            </Box>
-          ),
-        });
-      });
-  };
-
-  const [tempCaption, setTempCaption] = useState("");
-  const queryClient = useQueryClient();
-  const API = process.env.NEXT_PUBLIC_ENGINE_API_URL ?? process.env.NEXT_PUBLIC_PLAY_API_URL;
-
-  const ADMIN_API = `${API}/admin`;
-
-  const setActive = useMutation(
-    (active: boolean) => {
-      if (!dropState) {
-        return;
-      } //TODO
-      return http({
-        method: "PUT",
-        url: `${ADMIN_API}/drops/${dropState?.id}/${active ? "" : "de"}activate`,
-      }).then(() => setTempCaption(active ? "Activated" : "Deactivated"));
-    },
-    {
-      onSuccess: () => {
-        setTimeout(() => setTempCaption(""), 5000);
-        queryClient.invalidateQueries("claimAdmin");
-      },
     },
   );
 
@@ -184,73 +139,14 @@ const DropperClaimView = ({
       maxW="800px"
       position="relative"
     >
-      {dropState && (
-        <>
-          {dropState?.active ? (
-            <Button
-              bg="#e85858"
-              _hover={{ bg: "#ff6565" }}
-              borderRadius="10px"
-              fontWeight="700"
-              position="absolute"
-              right="30px"
-              bottom="30px"
-              fontSize="20px"
-              zIndex="2"
-              onClick={() => setActive.mutate(false)}
-            >
-              {tempCaption !== ""
-                ? tempCaption
-                : !setActive.isLoading
-                ? "Deactivate"
-                : "Deactivating..."}
-            </Button>
-          ) : (
-            <Button
-              bg="#f56646"
-              _hover={{ bg: "#f37e5b" }}
-              borderRadius="10px"
-              fontWeight="700"
-              position="absolute"
-              right="30px"
-              bottom="30px"
-              fontSize="20px"
-              zIndex="2"
-              onClick={() => setActive.mutate(true)}
-            >
-              {tempCaption !== ""
-                ? tempCaption
-                : !setActive.isLoading
-                ? "Activate"
-                : "Activating..."}
-            </Button>
-          )}
-        </>
-      )}
-      <Flex gap={2}>
-        <Text
-          textAlign="start"
-          color="#c2c2c2"
-          w="fit-content"
-          py={1}
-          pr={0}
-          borderBottom="1px solid #c2c2c2"
-          fontSize="20px"
-          mb="20px"
-        >
-          {`drop ${claimId}`}
-        </Text>
-        <IconButton
-          bg="transparent"
-          onClick={() =>
-            copyToClipboard(`${PORTAL_PATH}/dropper/?contractAddress=${address}&claimId=${claimId}`)
-          }
-          color="#c2c2c2"
-          _hover={{ bg: "transparent", color: "white" }}
-          icon={<LinkIcon />}
-          aria-label="copy link"
-        />
-      </Flex>
+      <DropHeader
+        address={address}
+        claimId={claimId}
+        PORTAL_PATH={PORTAL_PATH}
+        isEdit={isEdit}
+        toggleEdit={() => setIsEdit(!isEdit)}
+      />
+
       {!!claimState.data && (
         <>
           {metadata?.name && (
@@ -276,77 +172,38 @@ const DropperClaimView = ({
                 </ReactMarkdown>
               )}
             </Flex>
-
-            {claimState.data?.claim && (
-              <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
-                <PoolDetailsRow type="Token address" value={claimState.data.claim[1]} />
-                <PoolDetailsRow type="Drop type" value={claimState.data.dropType} />
-
-                <PoolDetailsRow type="Signer" value={claimState.data.signer} />
-                <PoolDetailsRow
-                  type="Metadata uri"
-                  href={claimState.data.claimUri}
-                  value={claimState.data.claimUri}
+            {dropState && claimState.data && isEdit && (
+              <Flex direction="column" gap="20px" mb="20px">
+                <EditDrop
+                  address={address}
+                  claimId={claimId}
+                  active={dropState.active}
+                  dbData={{
+                    terminusAddress: dropState.terminusAddress,
+                    terminusPoolId: String(dropState.terminusPoolId),
+                    deadline: String(dropState.deadline),
+                    claimUUID: dropState.id,
+                  }}
+                  chainData={{
+                    uri: claimState.data.claimUri,
+                    signer: claimState.data.signer,
+                  }}
                 />
-                {dropState && (
-                  <>
-                    <PoolDetailsRow type="Deadline" value={String(dropState.deadline)} />
-                    <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
-                      type="Terminus address"
-                      value={String(dropState.terminusAddress)}
-                    />
-
-                    <PoolDetailsRow
-                      href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
-                      type="Terminus Pool"
-                      value={String(dropState.terminusPoolId)}
-                    />
-                  </>
-                )}
-                {metadata && (
-                  <Accordion allowMultiple>
-                    <AccordionItem border="none">
-                      <AccordionButton p="0" mb="10px">
-                        <Spacer />
-                        <Box as="span" flex="1" textAlign="right" pr="10px" fontWeight="700">
-                          Metadata
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel>
-                        {Object.keys(metadata)
-                          .filter((key) => !headerMeta.includes(key))
-                          .map((key) => {
-                            return (
-                              <PoolDetailsRow key={key} type={key} value={String(metadata[key])} />
-                            );
-                          })}
-                        {metadata?.attributes && (
-                          <>
-                            <Text fontWeight="700" mt="20px">
-                              Attributes:
-                            </Text>
-
-                            {metadata.attributes.map(
-                              (attribute: { trait_type: string; value: string }) => (
-                                <PoolDetailsRow
-                                  key={attribute.trait_type}
-                                  type={attribute.trait_type}
-                                  value={String(attribute.value)}
-                                  style={{ marginLeft: "20px" }}
-                                />
-                              ),
-                            )}
-                          </>
-                        )}
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
-                )}
+                <Button alignSelf="end" variant="cancelButton" onClick={() => setIsEdit(false)}>
+                  Cancel
+                </Button>
               </Flex>
             )}
-            {dropState && <ClaimantsView claimId={dropState.id} />}
+            {claimState.data?.claim && !isEdit && (
+              <DropData
+                metadata={metadata}
+                claimState={claimState}
+                dropState={dropState}
+                excludeFields={headerMeta}
+                PORTAL_PATH={PORTAL_PATH}
+              />
+            )}
+            {dropState && !isEdit && <ClaimantsView claimId={dropState.id} />}
           </Flex>
         </>
       )}

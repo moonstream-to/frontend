@@ -74,7 +74,6 @@ const TimestampInput = ({
   const handleComponentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const components = [...date.components];
     components[Number(e.target.name)].value = e.target.value;
-    console.log(components);
     setDate({
       epoch: getEpoch(components.map((c) => c.value)),
       components,
@@ -104,14 +103,15 @@ const TimestampInput = ({
   };
 
   useEffect(() => {
-    setBorderColor(Number(timestamp) || !timestamp || timestamp === "0" ? "#4d4d4d" : "error.500");
+    const dateFromTimestamp = new Date(Number(timestamp) * 1000);
+    const isValidTimestamp = !isNaN(dateFromTimestamp.getTime());
+    setBorderColor(isValidTimestamp ? "#4d4d4d" : "error.500");
   }, [timestamp]);
 
   return (
     <Flex gap="10px" alignItems="center" fontSize="14px" w="100%">
       <Input
         minW="14ch"
-        maxW="14ch"
         fontSize="14px"
         value={date.epoch}
         p="10px"

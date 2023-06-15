@@ -42,7 +42,22 @@ const variantHint = () => {
     color: "#E6E6E6",
   };
 };
-
+const variantTooltip = {
+  fontWeight: "700",
+  position: "absolute",
+  top: "-40px",
+  left: "69%",
+  transform: "translate(-50%, 0)",
+  bg: "#2d2d2d",
+  borderRadius: "8px",
+  p: "5px 10px",
+  userSelect: "none",
+  border: "2px solid #BBBBBB",
+  _hover: {
+    borderColor: "green",
+    color: "green",
+  },
+};
 const variantText = () => {
   return {
     fontSize: "14px",
@@ -60,6 +75,8 @@ const Text = {
     hint: variantHint,
     text: variantText,
     label: variantLabel,
+    tooltip: variantTooltip,
   },
 };
+
 export default Text;
