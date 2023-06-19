@@ -12,6 +12,7 @@ interface DetailsProps extends HTMLAttributes<HTMLElement> {
   displayFull?: boolean;
   canBeCopied?: boolean;
   range?: { atStart: number; atEnd: number };
+  [x: string]: any;
 }
 
 const PoolDetailsRow = ({

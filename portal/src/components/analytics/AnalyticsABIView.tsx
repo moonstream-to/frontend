@@ -209,7 +209,7 @@ const AnalyticsABIView = ({
       {ABIStatus === "error" && (
         <Flex justifyContent="space-between" fontSize="14px">
           <Flex gap="10px" alignItems="center">
-            <AiOutlineClockCircle color="red" h="14px" w="14px" />
+            <AiOutlineClockCircle color="red" width="14px" height="14px" />
             <Text>
               We couldn’t find the ABI automatically. Try again or paste it below manually.
             </Text>
@@ -221,7 +221,7 @@ const AnalyticsABIView = ({
             cursor="pointer"
           >
             <Text>Try again</Text>
-            <AiOutlineSync h="14px" w="14px" />
+            <AiOutlineSync width="14px" height="14px" />
           </Flex>
         </Flex>
       )}
@@ -229,7 +229,7 @@ const AnalyticsABIView = ({
         <Flex justifyContent="space-between" fontSize="14">
           <Flex gap="10px" alignItems="center">
             <Text>{`Loaded from ${ABILoader?.name}`}</Text>
-            <AiOutlineSync h="14px" w="14px" />
+            <AiOutlineSync width="14px" height="14px" />
           </Flex>
           <Text cursor="pointer" variant="transparent" onClick={() => setJSONForEdit("")}>
             Clear
