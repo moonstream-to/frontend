@@ -22,6 +22,7 @@ import useGofp from "../../contexts/GoFPContext";
 import useGofpContract from "../../hooks/useGofpConract";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 
 const MetadataPanel = () => {
   const web3ctx = useContext(Web3Context);
@@ -95,7 +96,7 @@ const MetadataPanel = () => {
                       fontWeight="700"
                       lineHeight="160%"
                     >
-                      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm, remarkBreaks]}>
                         {stage.lore}
                       </ReactMarkdown>
                     </Flex>
