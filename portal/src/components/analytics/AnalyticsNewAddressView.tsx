@@ -15,6 +15,7 @@ import { useContext, useEffect, useState } from "react";
 import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import Web3Context from "../../contexts/Web3Context/context";
+import useMoonToast from "../../hooks/useMoonToast";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
 const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
@@ -23,7 +24,7 @@ const AnalyticsNewAddressView = () => {
   const { addresses, setIsCreatingAddress } = useAnalytics();
   const [address, setAddress] = useState("");
   const [isConnectingMetamask, setIsConnectingMetamask] = useState(false);
-  const { account, onConnectWalletClick } = useContext(Web3Context);
+  const { account, onConnectWalletClick, web3 } = useContext(Web3Context);
   const [metamaskAddress, setMetamaskAddress] = useState("");
   const [type, setType] = useState("");
   const [title, setTitle] = useState("");
@@ -57,6 +58,25 @@ const AnalyticsNewAddressView = () => {
     if (newTag.trim() !== "" && !tags.includes(newTag)) {
       setTags((prevTags) => [...prevTags, newTag]);
     }
+  };
+
+  const toast = useMoonToast();
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const value = e.clipboardData.getData("text/plain");
+    if (web3.utils.isAddress(value)) {
+      return;
+    }
+    e.preventDefault();
+    const position = value.indexOf("0x");
+    if (position !== -1) {
+      const newAddress = value.slice(position, position + 42);
+      if (web3.utils.isAddress(newAddress)) {
+        setAddress(web3.utils.toChecksumAddress(newAddress));
+        return;
+      }
+    }
+    toast("Can't extract address", "error");
   };
 
   return (
@@ -100,6 +120,7 @@ const AnalyticsNewAddressView = () => {
               onChange={(e) => setAddress(e.target.value)}
               // w="100%"
               placeholder="Enter address or etherscan/polygonscan link to address"
+              onPaste={handlePaste}
             />
             {!isLoadedFromMetamask && (
               <>
