@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
 import { getRandomParameters } from "../../mocks";
-import http from "../../utils/httpMoonstream";
 import AnalyticsQueryParameters from "./AnalyticsQueryParameters";
 import { QueryInterface } from "./AnalyticsSmartContractQueries";
 
@@ -34,8 +33,22 @@ const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
   useEffect(() => {
     console.log(queryData.data?.parameters);
     if (queryData.data?.parameters) {
-      const newParams = queryData.data.parameters.map((k) => {
-        return { key: k, value: "" };
+      const newParams = queryData.data.parameters.map((key) => {
+        let value = "";
+        if (key === "end_timestamp") {
+          value = String(Math.floor(Date.now() / 1000));
+        } else {
+          if (key === "start_timestamp") {
+            const date = new Date(Date.now());
+            let newMonth = date.getUTCMonth() - 1;
+            if (newMonth === -1) {
+              newMonth = 11;
+            }
+            date.setMonth(newMonth);
+            value = String(Math.floor(date.getTime() / 1000));
+          }
+        }
+        return { key, value };
       });
       // const newParams = Object.keys(queryData.data.parameters).map((k) => {
       //   return { key: k, value: "" };
