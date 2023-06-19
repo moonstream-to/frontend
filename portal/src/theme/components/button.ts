@@ -151,6 +151,30 @@ const variantSave = () => {
   };
 };
 
+const variantRun = () => {
+  return {
+    padding: "10px 80px",
+    backgroundColor: "#F56646",
+    _hover: {
+      backgroundColor: "#F56646",
+      textDecoration: "none",
+      _disabled: {
+        backgroundColor: "#BFBFBF",
+      },
+    },
+    _disabled: {
+      backgroundColor: "#BFBFBF",
+      cursor: "not-allowed",
+    },
+    _focus: {
+      backgroundColor: "#F56646",
+    },
+    _active: {
+      backgroundColor: "#F56646",
+    },
+  };
+};
+
 const variantClaimButton = () => {
   return {
     borderRadius: "10px",
@@ -203,6 +227,7 @@ const Button = {
     selector: variantSelector,
     cancelButton: variantCancel,
     saveButton: variantSave,
+    runButton: variantRun,
     transparent: variantTransparent,
     claimButton: variantClaimButton,
   },

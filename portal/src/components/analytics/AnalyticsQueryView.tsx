@@ -5,6 +5,7 @@ import queryCacheProps from "../../hooks/hookCommon";
 import { getRandomParameters } from "../../mocks";
 import AnalyticsQueryParameters from "./AnalyticsQueryParameters";
 import { QueryInterface } from "./AnalyticsSmartContractQueries";
+import { isValidArray } from "./validateParameters";
 
 const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
@@ -71,12 +72,13 @@ const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
       <Flex justifyContent="space-between" alignItems="center">
         <Text variant="title3">{query.name}</Text>
         <Button
-          bg="#BFBFBF"
+          variant="runButton"
           color="#4d4d4d"
           borderRadius="30px"
           p="6px 20px"
           fontSize="14px"
           h="30px"
+          disabled={!isValidArray(params)}
         >
           Run
         </Button>
