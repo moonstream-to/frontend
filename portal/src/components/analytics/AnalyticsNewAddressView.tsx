@@ -16,6 +16,7 @@ import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
+import AnalyticsABIView from "./AnalyticsABIView";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
 const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
@@ -204,6 +205,11 @@ const AnalyticsNewAddressView = () => {
             w="100%"
           />
         </Flex>
+        {type === "smartcontract" && chainName && web3.utils.isAddress(address) && (
+          <Flex borderRadius="10px" border="1px solid white" p="20px">
+            <AnalyticsABIView address={address} chain={chainName} id="-1" />
+          </Flex>
+        )}
         <Flex justifyContent="end" gap="20px">
           {addresses.data?.length > 0 && (
             <Button
