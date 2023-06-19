@@ -22,7 +22,7 @@ const AddressesPlaceholder = () => {
         <Flex gap="15px" alignItems="center">
           <Image src={`${AWS_ASSETS_PATH_CF}/icons/sparkles.png`} h="20px" alt="" />
           <Text variant="text" color="#1A1D22">
-            Set Moonstream up to watch an account on one of supported blockchains
+            Configure Moonstream to watch an account on one of our supported blockchains
           </Text>
         </Flex>
         <Flex gap="8px" alignItems="center" wrap="wrap" whiteSpace="nowrap">
