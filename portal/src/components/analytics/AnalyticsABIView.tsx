@@ -8,7 +8,7 @@ import http, { axios } from "../../utils/httpMoonstream";
 import { chains } from "../../contexts/Web3Context/";
 import { AWS_ASSETS_PATH_CF } from "../../constants";
 import dynamic from "next/dynamic";
-import { AiOutlineClockCircle, AiOutlineSync } from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSync } from "react-icons/ai";
 import queryCacheProps from "../../hooks/hookCommon";
 // import MyJsonComponent from "../JSONEdit2";
 
@@ -57,10 +57,16 @@ const AnalyticsABIView = ({
     ["abiScan", address, chain],
     async () => {
       setABIStatus("");
-      return axios({
-        method: "GET",
-        url: `${ABILoader?.url}&address=${address}`,
-      });
+      if (chains[chain as keyof typeof chains]?.ABIScan?.url) {
+        return axios({
+          method: "GET",
+          url: `${chains[chain as keyof typeof chains]?.ABIScan.url}&address=${address}`,
+        });
+      } else {
+        return new Promise((_, reject) => {
+          return reject(new Error("no scan url"));
+        });
+      }
     },
     {
       ...queryCacheProps,
@@ -107,7 +113,7 @@ const AnalyticsABIView = ({
     } else {
       setJSONForEdit(abi.data ?? "");
     }
-    if (id === "-1" && ABILoader) {
+    if (id === "-1") {
       ABIfromScan.refetch();
     }
   }, [chain, address, id]);
@@ -196,7 +202,7 @@ const AnalyticsABIView = ({
       {ABIStatus === "error" && (
         <Flex justifyContent="space-between" fontSize="14px">
           <Flex gap="10px" alignItems="center">
-            <AiOutlineClockCircle color="red" width="14px" height="14px" />
+            <AiOutlineCloseCircle color="red" width="14px" height="14px" />
             <Text>
               We couldn’t find the ABI automatically. Try again or paste it below manually.
             </Text>
@@ -216,7 +222,12 @@ const AnalyticsABIView = ({
         <Flex justifyContent="space-between" fontSize="14">
           <Flex gap="10px" alignItems="center">
             <Text>{`Loaded from ${ABILoader?.name}`}</Text>
-            <AiOutlineSync width="14px" height="14px" />
+            <AiOutlineSync
+              width="14px"
+              height="14px"
+              onClick={() => ABIfromScan.refetch()}
+              cursor="pointer"
+            />
           </Flex>
           <Text cursor="pointer" variant="transparent" onClick={() => setJSONForEdit("")}>
             Clear
