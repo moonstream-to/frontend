@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
 import { getRandomParameters } from "../../mocks";
 import AnalyticsQueryParameters from "./AnalyticsQueryParameters";
+import AnalyticsQueryResults from "./AnalyticsQueryResults";
 import { QueryInterface } from "./AnalyticsSmartContractQueries";
 import { isValidArray } from "./validateParameters";
 
@@ -85,6 +86,7 @@ const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
       </Flex>
       <Text>{query.description}</Text>
       <AnalyticsQueryParameters params={params} setParam={setParam} />
+      <AnalyticsQueryResults />
     </Flex>
   );
 };
