@@ -50,6 +50,7 @@ const AnalyticsABIView = ({
       // console.log(data);
     },
     enabled: id !== "-1",
+    retry: false,
   });
 
   const ABIfromScan = useQuery(
@@ -95,18 +96,7 @@ const AnalyticsABIView = ({
   });
 
   useEffect(() => {
-    if (ABIfromScan.data?.data?.result) {
-      try {
-        setJSONForEdit(JSON.stringify(JSON.parse(ABIfromScan.data.data.result), null, "\t"));
-        // setABIStatus("");
-        // console.log(isABIfromScan, scannedABI, JSONForEdit);
-      } catch (e) {
-        // toast(ABIfromScan.data?.data?.result, "error");
-      }
-    }
-  }, [ABIfromScan.data]);
-
-  useEffect(() => {
+    setABIStatus("");
     if (chains[chain as keyof typeof chains]?.ABIScan) {
       setABILoader(chains[chain as keyof typeof chains]?.ABIScan);
     } else {
@@ -138,10 +128,7 @@ const AnalyticsABIView = ({
 
   return (
     <Flex
-      // bg="#2d2d2d"
-      // p="20px"
       borderRadius="10px"
-      // border="1px solid #4d4d4d"
       direction="column"
       overflowY="auto"
       gap="15px"
