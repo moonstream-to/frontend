@@ -8,21 +8,24 @@ import {
   Input,
   Radio,
   RadioGroup,
+  Spinner,
   Text,
   Textarea,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
+import { SubscriptionsService } from "../../services";
 import AnalyticsABIView from "./AnalyticsABIView";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
 const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
 
 const AnalyticsNewAddressView = () => {
-  const { addresses, setIsCreatingAddress } = useAnalytics();
+  const { addresses, setIsCreatingAddress, setSelectedAddressId } = useAnalytics();
   const [address, setAddress] = useState("");
   const [isConnectingMetamask, setIsConnectingMetamask] = useState(false);
   const { account, onConnectWalletClick, web3 } = useContext(Web3Context);
@@ -32,6 +35,7 @@ const AnalyticsNewAddressView = () => {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [chainName, setChainName] = useState("");
+  const [showInvalid, setShowInvalid] = useState(false);
 
   const loadFromMetamask = () => {
     if (account) {
@@ -61,7 +65,34 @@ const AnalyticsNewAddressView = () => {
     }
   };
 
+  const queryClient = useQueryClient();
+  const createSubscription = useMutation(SubscriptionsService.createSubscription(), {
+    onError: (error: Error) => toast(error.message, "error"),
+    onSuccess: () => {
+      setSelectedAddressId(0);
+      setIsCreatingAddress(false);
+      queryClient.invalidateQueries("subscriptions");
+    },
+  });
+
   const toast = useMoonToast();
+
+  const isInputsValid = () => {
+    setShowInvalid(true);
+    return isAddressValid && isTitleValid && isTypeValid && isChainValid;
+  };
+
+  const isAddressValid = web3.utils.isAddress(address);
+
+  const isTitleValid = !!title;
+
+  const isTypeValid = !!type;
+
+  const isChainValid = type === "regularAccount" || !!chainName;
+
+  useEffect(() => {
+    setShowInvalid(false);
+  }, [address, title, type, chainName]);
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const value = e.clipboardData.getData("text/plain");
@@ -119,7 +150,7 @@ const AnalyticsNewAddressView = () => {
               _placeholder={{ fontSize: "16px" }}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              // w="100%"
+              borderColor={!showInvalid || isAddressValid ? "white" : "error.500"}
               placeholder="Enter address or etherscan/polygonscan link to address"
               onPaste={handlePaste}
             />
@@ -144,19 +175,33 @@ const AnalyticsNewAddressView = () => {
         </Flex>
         <Flex direction="column" gap="10px">
           <Text variant="label">Account type</Text>
-          <RadioGroup colorScheme="orange" onChange={setType} value={type}>
+          <RadioGroup
+            colorScheme="orange"
+            borderBottom="1px solid white"
+            borderColor={!showInvalid || isTypeValid ? "transparent" : "error.500"}
+            onChange={setType}
+            value={type}
+            w="fit-content"
+          >
             <Flex py="10px" gap="30px">
               <Radio fontSize="26px" value="smartcontract">
                 Smart contract
               </Radio>
-              <Radio value="Regular account">Regular account</Radio>
+              <Radio value="regularAccount">Regular account</Radio>
             </Flex>
           </RadioGroup>
         </Flex>
         <Collapse in={type === "smartcontract"}>
           <Flex direction="column" gap="10px" w="100%" transition="all 5s">
             <Text variant="label">Blockchain</Text>
-            <Flex wrap="wrap" gap="10px">
+            <Flex
+              wrap="wrap"
+              gap="10px"
+              borderBottom="1px solid white"
+              borderColor={!showInvalid || isChainValid ? "transparent" : "error.500"}
+              w="fit-content"
+              pb="5px"
+            >
               {chainNames.map((n, idx: number) => (
                 <Flex
                   key={idx}
@@ -186,6 +231,7 @@ const AnalyticsNewAddressView = () => {
             variant="text"
             fontSize="18px"
             borderRadius="10px"
+            borderColor={!showInvalid || isTitleValid ? "white" : "error.500"}
             _placeholder={{ fontSize: "16px" }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -220,7 +266,22 @@ const AnalyticsNewAddressView = () => {
               Cancel
             </Button>
           )}
-          <Button variant="saveButton">Watch</Button>
+          <Button
+            variant="saveButton"
+            minW="220px"
+            onClick={() => {
+              if (isInputsValid()) {
+                createSubscription.mutate({
+                  type: `${chainName}_${type}`,
+                  address,
+                  label: title,
+                  color: "#000000",
+                });
+              }
+            }}
+          >
+            {!createSubscription.isLoading ? <Text>Watch</Text> : <Spinner />}
+          </Button>
         </Flex>
       </Flex>
     </Flex>
