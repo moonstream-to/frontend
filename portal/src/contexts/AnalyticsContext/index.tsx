@@ -69,13 +69,13 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
       .then((array) =>
         array.map((i: object) => {
           const label = getRandomTitle();
-          const description = getDescriptionForTitle(label);
+          // const description = getDescriptionForTitle(label);
           return {
             ...i,
-            tags: getRandomTags(),
-            type: "smartcontract",
-            description,
-            label,
+            // tags: getRandomTags(),
+            // type: "smartcontract",
+            // description,
+            // label,
           };
         }),
       );
