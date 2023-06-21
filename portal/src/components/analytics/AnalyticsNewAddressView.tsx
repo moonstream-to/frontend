@@ -36,6 +36,7 @@ const AnalyticsNewAddressView = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [chainName, setChainName] = useState("");
   const [showInvalid, setShowInvalid] = useState(false);
+  const [abi, setABI] = useState("");
 
   const loadFromMetamask = () => {
     if (account) {
@@ -253,7 +254,13 @@ const AnalyticsNewAddressView = () => {
         </Flex>
         {type === "smartcontract" && chainName && web3.utils.isAddress(address) && (
           <Flex borderRadius="10px" border="1px solid white" p="20px">
-            <AnalyticsABIView address={address} chain={chainName} id="-1" isAbi={false} />
+            <AnalyticsABIView
+              address={address}
+              chain={chainName}
+              id="-1"
+              isAbi={false}
+              setABI={setABI}
+            />
           </Flex>
         )}
         <Flex justifyContent="end" gap="20px">
@@ -276,6 +283,7 @@ const AnalyticsNewAddressView = () => {
                   address,
                   label: title,
                   color: "#000000",
+                  abi,
                 });
               }
             }}

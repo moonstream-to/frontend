@@ -26,11 +26,13 @@ const AnalyticsABIView = ({
   chain,
   id,
   isAbi,
+  setABI,
 }: {
   address: string;
   chain: string;
   id: string;
   isAbi: boolean;
+  setABI?: (arg0: string) => void;
 }) => {
   const [JSONForEdit, setJSONForEdit] = useState("");
   const [isABIChanged, setIsABIChanged] = useState(false);
@@ -122,6 +124,9 @@ const AnalyticsABIView = ({
       setIsABIChanged(JSONForEdit !== abi.data);
     } else {
       setIsABIChanged(JSONForEdit !== "");
+    }
+    if (setABI) {
+      setABI(JSONForEdit);
     }
   }, [JSONForEdit, abi.data]);
 
