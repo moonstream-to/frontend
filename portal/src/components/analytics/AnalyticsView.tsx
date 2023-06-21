@@ -26,10 +26,10 @@ const AnalyticsView = () => {
       {user && (
         <Flex gap="30px" py="30px" px="7%" maxH="760px" minH="760px" maxW="1600px" minW="1400px">
           <AnalyticsAddressesView />
-          {addresses.data && !isCreatingAddress && (
+          {addresses.data?.length > 0 && !isCreatingAddress && (
             <AnalyticsSmartContractView address={addresses.data[selectedAddressId]} />
           )}
-          {isCreatingAddress && <AnalyticsNewAddressView />}
+          {(isCreatingAddress || addresses.data?.length === 0) && <AnalyticsNewAddressView />}
         </Flex>
       )}
       {!user && (
