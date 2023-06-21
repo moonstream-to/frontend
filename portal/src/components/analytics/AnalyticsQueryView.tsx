@@ -102,8 +102,10 @@ const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
     if (presignedUrl?.url) {
       setQueryStatus("uploading...");
       try {
-        const res = await getFromPresignedURL(presignedUrl.url, requestTimestamp);
-        setResult(JSON.stringify(res, null, "\t"));
+        const data = await getFromPresignedURL(presignedUrl.url, requestTimestamp).then(
+          (res: any) => res.data,
+        );
+        setResult(JSON.stringify(data, null, "\t"));
         setQueryStatus("");
         setFilename(`${query.context_url}_${requestTimestamp}.json`);
       } catch (e: any) {
@@ -174,7 +176,7 @@ const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
       </Flex>
       <Text>{query.description}</Text>
       {params.length > 0 && <AnalyticsQueryParameters params={params} setParam={setParam} />}
-      {result === "" && queryStatus === "" && <AnalyticsQueryResults result={result} />}
+      {result === "" && queryStatus === "" && <AnalyticsQueryResults />}
       {(queryStatus || result) && (
         <QueryAPIResult
           result={result}
