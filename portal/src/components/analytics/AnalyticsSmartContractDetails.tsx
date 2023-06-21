@@ -16,10 +16,12 @@ const AnalyticsSmartContractDetails = ({
   address,
   chain,
   id,
+  isAbi,
 }: {
   address: string;
   chain: string;
   id: string;
+  isAbi: boolean;
 }) => {
   return (
     <Flex
@@ -57,7 +59,7 @@ const AnalyticsSmartContractDetails = ({
                 fontSize="14px"
               />
               <Flex w="100%" bg="#4D4D4D" h="1px" mt="20px" mb="12px" />
-              <AnalyticsABIView address={address} id={id} chain={chain} />
+              <AnalyticsABIView address={address} id={id} chain={chain} isAbi={isAbi} />
             </Flex>
           </AccordionPanel>
         </AccordionItem>

@@ -90,6 +90,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           address={address.address}
           id={address.id}
           chain={chainName}
+          isAbi={address.abi === "True"}
         />
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title2">Analytics</Text>

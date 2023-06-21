@@ -253,7 +253,7 @@ const AnalyticsNewAddressView = () => {
         </Flex>
         {type === "smartcontract" && chainName && web3.utils.isAddress(address) && (
           <Flex borderRadius="10px" border="1px solid white" p="20px">
-            <AnalyticsABIView address={address} chain={chainName} id="-1" />
+            <AnalyticsABIView address={address} chain={chainName} id="-1" isAbi={false} />
           </Flex>
         )}
         <Flex justifyContent="end" gap="20px">

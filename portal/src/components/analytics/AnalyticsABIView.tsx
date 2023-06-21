@@ -24,10 +24,12 @@ const AnalyticsABIView = ({
   address,
   chain,
   id,
+  isAbi,
 }: {
   address: string;
   chain: string;
   id: string;
+  isAbi: boolean;
 }) => {
   const [JSONForEdit, setJSONForEdit] = useState("");
   const [isABIChanged, setIsABIChanged] = useState(false);
@@ -49,7 +51,7 @@ const AnalyticsABIView = ({
     onSuccess: (data: any) => {
       // console.log(data);
     },
-    enabled: id !== "-1",
+    enabled: id !== "-1" && isAbi,
     retry: false,
   });
 
@@ -60,7 +62,7 @@ const AnalyticsABIView = ({
       if (chains[chain as keyof typeof chains]?.ABIScan?.url) {
         return axios({
           method: "GET",
-          url: `${chains[chain as keyof typeof chains]?.ABIScan.url}&address=${address}`,
+          url: `${chains[chain as keyof typeof chains]?.ABIScan?.url}&address=${address}`,
         });
       } else {
         return new Promise((_, reject) => {
