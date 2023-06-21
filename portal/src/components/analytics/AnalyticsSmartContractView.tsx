@@ -1,8 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { ChainName } from "../../constants";
-import useAnalytics from "../../contexts/AnalyticsContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import { getQueryDescription, getRandomQueries } from "../../mocks";
 import http from "../../utils/httpMoonstream";
@@ -15,6 +13,10 @@ const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
 const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const [selectedIdx, setSelectedIdx] = useState(-1);
+
+  useEffect(() => {
+    setSelectedIdx(-1);
+  }, [address]);
 
   const handleAddTag = (newTag: string) => {
     //TODO add tag to DB
