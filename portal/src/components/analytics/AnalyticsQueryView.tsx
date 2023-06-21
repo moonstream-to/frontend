@@ -36,7 +36,12 @@ const AnalyticsQueryView = ({
       method: "GET",
       url: `${API}/queries/${query.context_url}/query`,
     }).then((res) => {
-      const parameters = { ...res.data.parameters };
+      const parameters = {
+        ...res.data.parameters,
+        // start_timestamp: "qq",
+        // end_timestamp: "qq",
+        // event: "qq",
+      };
       delete parameters.address; //Using address from subscription, not from input
       const data = { ...res.data, parameters };
       return data;
@@ -47,7 +52,7 @@ const AnalyticsQueryView = ({
     return new Promise((_, resolve) => {
       setTimeout(() => {
         resolve({
-          data: { parameters: ["start_timestamp", "end_timestamp", ...getRandomParameters()] },
+          data: { parameters: ["start_timestamp", "end_timestamp", ...getRandomParameters()] }, //TODO wrong response
         });
       }, Math.floor(Math.random() * 5000));
     });
@@ -58,31 +63,33 @@ const AnalyticsQueryView = ({
     onError: (error: Error) => {
       console.log(error);
     },
+    onSuccess: (data) => {
+      if (data.parameters) {
+        const newParams = Object.keys(data.parameters).map((key) => {
+          return { key, value: getDefaultValue(key) };
+        });
+        setParams(newParams);
+      }
+    },
     enabled: !!query.context_url,
   });
 
-  useEffect(() => {
-    if (queryData.data?.parameters) {
-      const newParams = Object.keys(queryData.data.parameters).map((key) => {
-        let value = "";
-        if (key === "end_timestamp") {
-          value = String(Math.floor(Date.now() / 1000));
-        } else {
-          if (key === "start_timestamp") {
-            const date = new Date(Date.now());
-            let newMonth = date.getUTCMonth() - 1;
-            if (newMonth === -1) {
-              newMonth = 11;
-            }
-            date.setMonth(newMonth);
-            value = String(Math.floor(date.getTime() / 1000));
-          }
+  const getDefaultValue = (key: string) => {
+    switch (key) {
+      case "end_timestamp":
+        return String(Math.floor(Date.now() / 1000));
+      case "start_timestamp":
+        const date = new Date(Date.now());
+        let newMonth = date.getUTCMonth() - 1;
+        if (newMonth === -1) {
+          newMonth = 11;
         }
-        return { key, value };
-      });
-      setParams(newParams);
+        date.setMonth(newMonth);
+        return String(Math.floor(date.getTime() / 1000));
+      default:
+        return "";
     }
-  }, [queryData.data]);
+  };
 
   const handleRun = async () => {
     setResult("");
