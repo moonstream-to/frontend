@@ -22,7 +22,7 @@ const MyJsonComponent = ({
   return (
     <AceEditor
       style={{
-        backgroundColor: "#2d2d2d",
+        backgroundColor: json ? "#2d2d2d" : "#232323",
         borderRadius: "5px",
         fontSize: "14px",
         padding: "10px",
@@ -42,6 +42,7 @@ const MyJsonComponent = ({
       height="300px"
       width="100%"
       setOptions={{ useWorker: false }}
+      placeholder="Paste your ABI here"
     />
   );
 };
