@@ -1,16 +1,17 @@
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+import { useMutation, useQuery } from "react-query";
 import { Flex, Text } from "@chakra-ui/layout";
 import { Button, Image, Spinner } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
 import useMoonToast from "../../hooks/useMoonToast";
+
 import { SubscriptionsService } from "../../services";
 import http, { axios } from "../../utils/httpMoonstream";
 import { chains } from "../../contexts/Web3Context/";
 import { AWS_ASSETS_PATH_CF } from "../../constants";
-import dynamic from "next/dynamic";
-import { AiOutlineCloseCircle, AiOutlineSync } from "react-icons/ai";
 import queryCacheProps from "../../hooks/hookCommon";
-// import MyJsonComponent from "../JSONEdit2";
+import AnalyticsABIHeader from "./AnalyticsABIHeader";
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 const icons = {
@@ -48,9 +49,6 @@ const AnalyticsABIView = ({
     onError: (error: Error) => {
       console.log(error);
     },
-    onSuccess: (data: any) => {
-      // console.log(data);
-    },
     enabled: id !== "-1" && isAbi,
     retry: false,
   });
@@ -75,7 +73,6 @@ const AnalyticsABIView = ({
       retry: false,
       enabled: false,
       onSuccess: (data: any) => {
-        console.log(data);
         try {
           const json = JSON.stringify(JSON.parse(data.data?.result), null, "\t");
           setScannedABI(json);
@@ -134,6 +131,17 @@ const AnalyticsABIView = ({
     }
   }, [abi.data]);
 
+  const handleSave = () => {
+    try {
+      if (JSONForEdit !== JSON.stringify(JSON.parse(JSONForEdit), null, "\t")) {
+        throw new Error("not valid JSON");
+      }
+      updateSubscription.mutate({ id, abi: JSONForEdit });
+    } catch (e: any) {
+      toast(e.message, "error", 7000);
+    }
+  };
+
   return (
     <Flex
       borderRadius="10px"
@@ -155,20 +163,7 @@ const AnalyticsABIView = ({
           >
             Cancel
           </Button>
-          <Button
-            variant="saveButton"
-            disabled={updateSubscription.isLoading}
-            onClick={() => {
-              try {
-                if (JSONForEdit !== JSON.stringify(JSON.parse(JSONForEdit), null, "\t")) {
-                  throw new Error("not valid JSON");
-                }
-                updateSubscription.mutate({ id, abi: JSONForEdit });
-              } catch (e: any) {
-                toast(e.message, "error", 7000);
-              }
-            }}
-          >
+          <Button variant="saveButton" disabled={updateSubscription.isLoading} onClick={handleSave}>
             {updateSubscription.isLoading ? <Spinner /> : "Save"}
           </Button>
         </Flex>
@@ -193,56 +188,15 @@ const AnalyticsABIView = ({
           </Button>
         )}
       </Flex>
-      {ABILoader && ABIfromScan.isFetching && (
-        <Flex justifyContent="start" gap="10px">
-          <Spinner />
-          <Text fontSize="14px">{`We are loading ABI from ${ABILoader.name}. Please wait or paste it below manually.`}</Text>
-        </Flex>
-      )}
-      {abi.isFetching && !abi.data && <Spinner ml="10px" p="0" h="20px" w="17px" />}
-
-      {ABIStatus === "error" && (
-        <Flex justifyContent="space-between" fontSize="14px">
-          <Flex gap="10px" alignItems="center">
-            <AiOutlineCloseCircle color="red" width="14px" height="14px" />
-            <Text>
-              We couldn’t find the ABI automatically. Try again or paste it below manually.
-            </Text>
-          </Flex>
-          <Flex
-            gap="10px"
-            alignItems="center"
-            onClick={() => ABIfromScan.refetch()}
-            cursor="pointer"
-          >
-            <Text>Try again</Text>
-            <AiOutlineSync width="14px" height="14px" />
-          </Flex>
-        </Flex>
-      )}
-      {isABIfromScan && JSONForEdit !== "" && (
-        <Flex justifyContent="space-between" fontSize="14">
-          <Flex gap="10px" alignItems="center">
-            <Text>{`Loaded from ${ABILoader?.name}`}</Text>
-            <AiOutlineSync
-              width="14px"
-              height="14px"
-              onClick={() => ABIfromScan.refetch()}
-              cursor="pointer"
-            />
-          </Flex>
-          <Text cursor="pointer" variant="transparent" onClick={() => setJSONForEdit("")}>
-            Clear
-          </Text>
-        </Flex>
-      )}
-      {JSONForEdit !== "" && !isABIfromScan && (
-        <Flex justifyContent="end" fontSize="14">
-          <Text cursor="pointer" variant="transparent" onClick={() => setJSONForEdit("")}>
-            Clear
-          </Text>
-        </Flex>
-      )}
+      <AnalyticsABIHeader
+        ABILoader={ABILoader}
+        ABIStatus={ABIStatus}
+        ABIfromScan={ABIfromScan}
+        isABIfromScan={isABIfromScan}
+        setJSONForEdit={setJSONForEdit}
+        JSONForEdit={JSONForEdit}
+        abi={abi}
+      />
       <MyJsonComponent
         json={JSONForEdit}
         onChange={(value) => {
