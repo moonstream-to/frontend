@@ -1,18 +1,21 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
+import useMoonToast from "../../hooks/useMoonToast";
 import { getQueryDescription, getRandomQueries } from "../../mocks";
 import http from "../../utils/httpMoonstream";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 import AnalyticsQueryView from "./AnalyticsQueryView";
 import AnalyticsSmartContractDetails from "./AnalyticsSmartContractDetails";
-import AnalyticsSmartContractQueries from "./AnalyticsSmartContractQueries";
+import AnalyticsSmartContractQueries, { QueryInterface } from "./AnalyticsSmartContractQueries";
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
 const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const [selectedIdx, setSelectedIdx] = useState(-1);
+
+  const [queries, setQueries] = useState<QueryInterface[]>([]);
 
   useEffect(() => {
     setSelectedIdx(-1);
@@ -50,19 +53,47 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     },
   );
 
-  const mockQueries = useQuery(["smartContractQueries", address.id], getMockQueries(address.id), {
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+  const toast = useMoonToast();
+  const getQueries = () => {
+    console.log("userQueries");
+    return http({
+      method: "GET",
+      url: `${API}/queries/list`,
+    }).then((res) =>
+      res.data.map((q: { name: string }) => {
+        return { title: q.name.split("_").join(" "), context_url: q.name };
+      }),
+    );
+  };
+
+  const userQueries = useQuery(["queries"], getQueries, {
     ...queryCacheProps,
-    onError: (error: Error) => {
-      console.log(error);
-    },
-    onSuccess: (data: any) => {
-      console.log(data);
+    onError: (error) => {
+      toast(error.message, "error");
     },
   });
+
+  // const mockQueries = useQuery(["smartContractQueries", address.id], getMockQueries(address.id), {
+  //   ...queryCacheProps,
+  //   onError: (error: Error) => {
+  //     console.log(error);
+  //   },
+  //   onSuccess: (data: any) => {
+  //     console.log(data);
+  //   },
+  // });
 
   useEffect(() => {
     setSelectedIdx(-1);
   }, [address.address]);
+
+  useEffect(() => {
+    const templatesArray = templates.data ? templates.data : [];
+    const userQueriesArray = userQueries.data ? userQueries.data : [];
+    setQueries([...templatesArray, ...userQueriesArray]);
+    console.log("qq", templatesArray, userQueriesArray);
+  }, [templates.data, userQueries.data]);
 
   return (
     <Flex
@@ -94,20 +125,24 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         />
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title2">Analytics</Text>
+          {/* {(templates.isLoading || userQueries.isLoading) && <Spinner />}
+          {templates.data && <Text>{templates.data.length}</Text>}
+          {userQueries.data && <Text>{userQueries.data.length}</Text>} */}
+          {/* <Text>{queries.length}</Text> */}
           <Text my="auto" color="#F88F78" fontSize="14px" cursor="pointer">
             Request new
           </Text>
         </Flex>
-        {templates.data && (
+        {queries && (
           <AnalyticsSmartContractQueries
-            queries={templates.data}
+            queries={queries}
             selectedIdx={selectedIdx}
             onChange={setSelectedIdx}
           />
         )}
-        {templates.data && selectedIdx > -1 && (
+        {queries && selectedIdx > -1 && (
           <AnalyticsQueryView
-            query={templates.data[selectedIdx]}
+            query={queries[selectedIdx]}
             address={address.address}
             chainName={chainName}
           />
