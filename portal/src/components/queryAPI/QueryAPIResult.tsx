@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { Button, Flex, Image, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Spinner, Text } from "@chakra-ui/react";
 
 import { AWS_ASSETS_PATH } from "../../constants";
 
@@ -43,26 +43,22 @@ const QueryAPIResult = ({
       border="1px solid #4d4d4d"
       borderRadius="10px"
     >
-      <Flex justifyContent="space-between" alignItems="center" fontSize="16px" p="0">
+      <Flex justifyContent="space-between" gap="10px" alignItems="center" fontSize="16px" p="0">
         {result && (
           <Text fontWeight="700" p="0px">
             JSON
           </Text>
         )}
+        <Text>{status}</Text>
+        {(status === "executing..." || status === "uploading...") && <Spinner w="20px" h="20px" />}
         {status === "uploading..." && (
-          <Button
-            mx="auto"
-            variant="cancelButton"
-            maxH="24px"
-            fontSize="14px"
-            onClick={() => onCancel()}
-          >
+          <Button variant="cancelButton" maxH="24px" fontSize="14px" onClick={() => onCancel()}>
             Cancel
           </Button>
         )}
         {result && (
           <Button variant="transparent" onClick={() => download(filename, result)} p="0px" h="16px">
-            <Text fontWeight="400">Download</Text>
+            <Text fontWeight="400">Save</Text>
             <Image alt="" src={icons.download} h="16px" ml="10px" />
           </Button>
         )}
