@@ -1,7 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
+import { ChainName } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import { getQueryDescription, getRandomQueries } from "../../mocks";
@@ -10,13 +10,10 @@ import AnalyticsAddressTags from "./AnalyticsAddressTags";
 import AnalyticsQueryView from "./AnalyticsQueryView";
 import AnalyticsSmartContractDetails from "./AnalyticsSmartContractDetails";
 import AnalyticsSmartContractQueries from "./AnalyticsSmartContractQueries";
-const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
-const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
 const AnalyticsSmartContractView = ({ address }: { address: any }) => {
-  const { addresses, setIsCreatingAddress } = useAnalytics();
   const [selectedIdx, setSelectedIdx] = useState(-1);
 
   const handleAddTag = (newTag: string) => {
@@ -27,17 +24,32 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     // TODO delete tag from DB
   };
 
-  const getContractQueries = (id: string) => () => {
-    // return http({
-    //   method: "GET",
-    //   url: `${API}/subscriptions/${id}/queries`,
-    // }).then((res) => JSON.stringify(JSON.parse(res.data?.abi), null, "\t"));
+  const getMockQueries = (id: string) => () => {
     return getRandomQueries().map((query: string) => {
-      return { name: query, description: getQueryDescription(query) };
+      return { title: query, context_url: "", description: getQueryDescription(query) };
     });
   };
 
-  const queries = useQuery(["smartContractQueries", address.id], getContractQueries(address.id), {
+  const templates = useQuery(
+    ["queryTemplates"],
+    () => {
+      return http({
+        method: "GET",
+        url: `${API}/queries/templates`,
+      }).then((res) => res.data.queries);
+    },
+    {
+      ...queryCacheProps,
+      onError: (error: Error) => {
+        console.log(error);
+      },
+      onSuccess: (data: any) => {
+        console.log(data);
+      },
+    },
+  );
+
+  const mockQueries = useQuery(["smartContractQueries", address.id], getMockQueries(address.id), {
     ...queryCacheProps,
     onError: (error: Error) => {
       console.log(error);
@@ -80,19 +92,19 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         />
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title2">Analytics</Text>
-          <Text color="#F88F78" fontSize="14px" cursor="pointer">
+          <Text my="auto" color="#F88F78" fontSize="14px" cursor="pointer">
             Request new
           </Text>
         </Flex>
-        {queries.data && (
+        {templates.data && (
           <AnalyticsSmartContractQueries
-            queries={queries.data}
+            queries={templates.data}
             selectedIdx={selectedIdx}
             onChange={setSelectedIdx}
           />
         )}
-        {queries.data && selectedIdx > -1 && (
-          <AnalyticsQueryView query={queries.data[selectedIdx]} />
+        {templates.data && selectedIdx > -1 && (
+          <AnalyticsQueryView query={templates.data[selectedIdx]} />
         )}
       </Flex>
     </Flex>
