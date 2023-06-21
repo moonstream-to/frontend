@@ -30,6 +30,8 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     });
   };
 
+  const chainName = address.subscription_type_id.split("_")[0];
+
   const templates = useQuery(
     ["queryTemplates"],
     () => {
@@ -42,9 +44,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
       ...queryCacheProps,
       onError: (error: Error) => {
         console.log(error);
-      },
-      onSuccess: (data: any) => {
-        console.log(data);
       },
     },
   );
@@ -78,7 +77,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         <Text variant="title">{address.label}</Text>
         <AnalyticsAddressTags
           tags={address.tags}
-          chainName={address.subscription_type_id.split("_")[0]}
+          chainName={chainName}
           onAdd={handleAddTag}
           onDelete={(t: string) => handleDeleteTag(t)}
         />
@@ -88,7 +87,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         <AnalyticsSmartContractDetails
           address={address.address}
           id={address.id}
-          chain={address.subscription_type_id.split("_")[0]}
+          chain={chainName}
         />
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title2">Analytics</Text>
@@ -104,7 +103,11 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           />
         )}
         {templates.data && selectedIdx > -1 && (
-          <AnalyticsQueryView query={templates.data[selectedIdx]} />
+          <AnalyticsQueryView
+            query={templates.data[selectedIdx]}
+            address={address.address}
+            chainName={chainName}
+          />
         )}
       </Flex>
     </Flex>

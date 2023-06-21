@@ -13,7 +13,15 @@ import { isValidArray } from "./validateParameters";
 import QueryAPIResult from "../queryAPI/QueryAPIResult";
 import { RxReload } from "react-icons/rx";
 
-const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
+const AnalyticsQueryView = ({
+  query,
+  address,
+  chainName,
+}: {
+  query: QueryInterface;
+  address: string;
+  chainName: string;
+}) => {
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   const [result, setResult] = useState("");
   const [queryStatus, setQueryStatus] = useState("");
@@ -88,8 +96,8 @@ const AnalyticsQueryView = ({ query }: { query: QueryInterface }) => {
       method: "POST",
       url: `${API}/queries/${query.context_url}/update_data`,
       data: {
-        blockchain: "polygon",
-        params: { ...paramsObj, address: "0xdC0479CC5BbA033B3e7De9F178607150B3AbCe1f" },
+        blockchain: chainName,
+        params: { ...paramsObj, address },
       },
     })
       .then(async (res: any) => {
