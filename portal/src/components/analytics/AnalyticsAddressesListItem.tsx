@@ -88,9 +88,8 @@ const AnalyticsAddressesListItem = ({
           </Flex>
           <Flex gap="5px" wrap="wrap">
             <ChainTag name={address.subscription_type_id.split("_")[0]} />
-            {address.tags.map((a: string, idx: number) => (
-              <Tag key={idx} name={a} />
-            ))}
+            {address.tags &&
+              address.tags.map((a: string, idx: number) => <Tag key={idx} name={a} />)}
           </Flex>
         </Flex>
       )}

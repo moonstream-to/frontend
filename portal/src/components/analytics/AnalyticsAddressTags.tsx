@@ -26,15 +26,16 @@ const AnalyticsAddressTags = ({
     <Flex gap="5px" h="24px" wrap="wrap" alignItems="center">
       {onAdd && <AddTagModal isOpen={isOpen} onClose={onClose} onAddTag={handleAddTag} />}
       {chainName && <Tag name={chainName} h="24px" bg="#94C2FA" textTransform="capitalize" />}
-      {tags.map((tag: string, idx: number) => (
-        <Tag
-          key={idx}
-          name={tag}
-          h="24px"
-          onDelete={onDelete ? () => onDelete(tag) : undefined}
-          fontSize="14px"
-        />
-      ))}
+      {tags &&
+        tags.map((tag: string, idx: number) => (
+          <Tag
+            key={idx}
+            name={tag}
+            h="24px"
+            onDelete={onDelete ? () => onDelete(tag) : undefined}
+            fontSize="14px"
+          />
+        ))}
       <Button
         onClick={onOpen}
         variant="transparent"
