@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { Button, Flex, Image, Spinner, Text } from "@chakra-ui/react";
 
 import { AWS_ASSETS_PATH } from "../../constants";
+import useMoonToast from "../../hooks/useMoonToast";
 
 const icons = {
   download: `${AWS_ASSETS_PATH}/icons/file-down.png`,
@@ -34,6 +35,17 @@ const QueryAPIResult = ({
   status: string;
   onCancel: () => void;
 }) => {
+  const toast = useMoonToast();
+  const handleSave = () => {
+    try {
+      const rawJSON = JSON.stringify(JSON.parse(result));
+      download(filename, rawJSON);
+    } catch (e) {
+      console.log(e);
+      toast("Error saving file", "error");
+    }
+  };
+
   return (
     <Flex
       direction="column"
@@ -57,7 +69,7 @@ const QueryAPIResult = ({
           </Button>
         )}
         {result && (
-          <Button variant="transparent" onClick={() => download(filename, result)} p="0px" h="16px">
+          <Button variant="transparent" onClick={handleSave} p="0px" h="16px">
             <Text fontWeight="400">Save</Text>
             <Image alt="" src={icons.download} h="16px" ml="10px" />
           </Button>
