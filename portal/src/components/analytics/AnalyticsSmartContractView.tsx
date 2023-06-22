@@ -1,4 +1,4 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Spacer, Spinner, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
@@ -135,8 +135,10 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           chain={chainName}
           isAbi={address.abi === "True"}
         />
-        <Flex justifyContent="space-between" alignItems="center">
+        <Flex justifyContent="space-between" alignItems="center" gap="20px">
           <Text variant="title2">Analytics</Text>
+          {(userQueries.isLoading || templates.isLoading) && <Spinner size="sm" />}
+          <Spacer />
           {/* {(templates.isLoading || userQueries.isLoading) && <Spinner />}
           {templates.data && <Text>{templates.data.length}</Text>}
           {userQueries.data && <Text>{userQueries.data.length}</Text>} */}
@@ -157,6 +159,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             query={queries[selectedIdx]}
             address={address.address}
             chainName={chainName}
+            type={address.type}
           />
         )}
       </Flex>

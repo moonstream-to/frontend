@@ -17,10 +17,12 @@ const AnalyticsQueryView = ({
   query,
   address,
   chainName,
+  type,
 }: {
   query: QueryInterface;
   address: string;
   chainName: string;
+  type: string;
 }) => {
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   const [result, setResult] = useState("");
@@ -43,6 +45,9 @@ const AnalyticsQueryView = ({
         // event: "qq",
       };
       delete parameters.address; //Using address from subscription, not from input
+      if (type === "eoa") {
+        delete parameters.user_address;
+      }
       const data = { ...res.data, parameters };
       return data;
     });
@@ -108,12 +113,18 @@ const AnalyticsQueryView = ({
     const paramsObj: any = {};
     params.forEach((param) => (paramsObj[param.key] = param.value));
     const requestTimestamp = new Date().toUTCString();
+    if (type === "smartcontract") {
+      paramsObj.address = address;
+    }
+    if (type === "eoa") {
+      paramsObj.user_address = address;
+    }
     const presignedUrl = await http({
       method: "POST",
       url: `${API}/queries/${query.context_url}/update_data`,
       data: {
         blockchain: chainName,
-        params: { ...paramsObj, address },
+        params: { ...paramsObj },
       },
     })
       .then(async (res: any) => {
