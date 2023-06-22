@@ -7,7 +7,7 @@ import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import useAnalytics from "../../contexts/AnalyticsContext";
-import { getChainImage } from "../../constants";
+import { AWS_ASSETS_PATH_CF, getChainImage } from "../../constants";
 
 const AnalyticsAddressesListItem = ({
   address,
@@ -57,6 +57,8 @@ const AnalyticsAddressesListItem = ({
     setIsShow(false);
   }, [address, filter]);
 
+  const chainName = address.subscription_type_id.split("_")[0];
+
   return (
     <>
       {isShow && (
@@ -71,23 +73,30 @@ const AnalyticsAddressesListItem = ({
           cursor="pointer"
         >
           <Flex gap="10px" alignItems="center">
-            {type && type.icon_url ? (
-              <Image
-                h="20px"
-                w="20px"
-                alt=""
-                src={getChainImage(address.subscription_type_id.split("_")[0])}
-                filter="invert(100%)"
-              />
+            {address.type === "smartcontract" ? (
+              <>
+                {type && type.icon_url ? (
+                  <Image
+                    h="20px"
+                    w="20px"
+                    alt=""
+                    src={getChainImage(chainName)}
+                    filter="invert(100%)"
+                  />
+                ) : (
+                  <Box w="20px" />
+                )}
+              </>
             ) : (
-              <Box w="20px" />
+              <Image h="20px" w="20px" alt="" src={`${AWS_ASSETS_PATH_CF}/icons/account.png`} />
             )}
             <Text fontSize="14px" lineHeight="18px">
               {address.label}
             </Text>
           </Flex>
+
           <Flex gap="5px" wrap="wrap">
-            <ChainTag name={address.subscription_type_id.split("_")[0]} />
+            {address.type === "smartcontract" && <ChainTag name={chainName} />}
             {address.tags &&
               address.tags.map((a: string, idx: number) => <Tag key={idx} name={a} />)}
           </Flex>

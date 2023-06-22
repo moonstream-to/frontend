@@ -22,7 +22,7 @@ import { SubscriptionsService } from "../../services";
 import AnalyticsABIView from "./AnalyticsABIView";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
-const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
+const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "gnosis", "wyrm"];
 
 const AnalyticsNewAddressView = () => {
   const { addresses, setIsCreatingAddress, setSelectedAddressId } = useAnalytics();
@@ -279,7 +279,8 @@ const AnalyticsNewAddressView = () => {
             onClick={() => {
               if (isInputsValid()) {
                 createSubscription.mutate({
-                  type: `${chainName}_${type}`,
+                  type:
+                    type === "smartcontract" ? `${chainName}_${type}` : "externaly_owned_account",
                   address,
                   label: title,
                   color: "#000000",
