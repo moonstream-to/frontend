@@ -138,7 +138,7 @@ const AnalyticsNewAddressView = () => {
         <AnalyticsAddressTags
           tags={tags}
           chainName={type === "smartcontract" ? chainName : undefined}
-          onAdd={handleAddTag}
+          // onAdd={handleAddTag}
           onDelete={(t) => setTags(tags.filter((tag) => tag !== t))}
         />
         <Flex direction="column" gap="10px">

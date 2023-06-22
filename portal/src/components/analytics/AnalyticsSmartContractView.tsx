@@ -105,7 +105,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           <AnalyticsAddressTags
             tags={address.tags}
             chainName={chainName}
-            onAdd={handleAddTag}
+            // onAdd={handleAddTag}
             onDelete={(t: string) => handleDeleteTag(t)}
           />
         )}

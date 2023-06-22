@@ -36,16 +36,18 @@ const AnalyticsAddressTags = ({
             fontSize="14px"
           />
         ))}
-      <Button
-        onClick={onOpen}
-        variant="transparent"
-        color="#BFBFBF"
-        fontSize="14px"
-        py="0"
-        h="fit-content"
-      >
-        + Add a tag...
-      </Button>
+      {onAdd && (
+        <Button
+          onClick={onOpen}
+          variant="transparent"
+          color="#BFBFBF"
+          fontSize="14px"
+          py="0"
+          h="fit-content"
+        >
+          + Add a tag...
+        </Button>
+      )}
     </Flex>
   );
 };
