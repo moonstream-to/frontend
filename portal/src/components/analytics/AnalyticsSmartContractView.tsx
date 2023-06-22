@@ -6,6 +6,8 @@ import useMoonToast from "../../hooks/useMoonToast";
 import { getQueryDescription, getRandomQueries } from "../../mocks";
 import http from "../../utils/httpMoonstream";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
+import AnalyticsChainSelector from "./AnalyticsChainSelector";
+import AnalyticsEOADetails from "./AnalyticsEOADetails";
 import AnalyticsQueryView from "./AnalyticsQueryView";
 import AnalyticsSmartContractDetails from "./AnalyticsSmartContractDetails";
 import AnalyticsSmartContractQueries, { QueryInterface } from "./AnalyticsSmartContractQueries";
@@ -16,6 +18,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const [selectedIdx, setSelectedIdx] = useState(-1);
 
   const [queries, setQueries] = useState<QueryInterface[]>([]);
+  const [eoaChain, setEoaChain] = useState("");
 
   useEffect(() => {
     setSelectedIdx(-1);
@@ -35,7 +38,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     });
   };
 
-  const chainName = address.subscription_type_id.split("_")[0];
+  const chainName = address.type === "eoa" ? eoaChain : address.subscription_type_id.split("_")[0];
 
   const templates = useQuery(
     ["queryTemplates", address],
@@ -66,7 +69,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
   const toast = useMoonToast();
   const getQueries = () => {
-    console.log("userQueries");
     return http({
       method: "GET",
       url: `${API}/queries/list`,
@@ -104,7 +106,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     const templatesArray = templates.data ? templates.data : [];
     const userQueriesArray = userQueries.data ? userQueries.data : [];
     setQueries([...templatesArray, ...userQueriesArray]);
-    console.log("qq", templatesArray, userQueriesArray);
   }, [templates.data, userQueries.data]);
 
   return (
@@ -120,33 +121,38 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     >
       <Flex direction="column" p="30px" gap="30px" w="100%">
         <Text variant="title">{address.label}</Text>
-        <AnalyticsAddressTags
-          tags={address.tags}
-          chainName={chainName}
-          onAdd={handleAddTag}
-          onDelete={(t: string) => handleDeleteTag(t)}
-        />
+        {address.type === "smartcontract" && (
+          <AnalyticsAddressTags
+            tags={address.tags}
+            chainName={chainName}
+            onAdd={handleAddTag}
+            onDelete={(t: string) => handleDeleteTag(t)}
+          />
+        )}
         <Text variant="text" pr="160px">
           {address.description}
         </Text>
-        <AnalyticsSmartContractDetails
-          address={address.address}
-          id={address.id}
-          chain={chainName}
-          isAbi={address.abi === "True"}
-        />
+        {address.type === "smartcontract" ? (
+          <AnalyticsSmartContractDetails
+            address={address.address}
+            id={address.id}
+            chain={chainName}
+            isAbi={address.abi === "True"}
+          />
+        ) : (
+          <AnalyticsEOADetails address={address.address} created_at={address.created_at} />
+        )}
         <Flex justifyContent="space-between" alignItems="center" gap="20px">
           <Text variant="title2">Analytics</Text>
           {(userQueries.isLoading || templates.isLoading) && <Spinner size="sm" />}
           <Spacer />
-          {/* {(templates.isLoading || userQueries.isLoading) && <Spinner />}
-          {templates.data && <Text>{templates.data.length}</Text>}
-          {userQueries.data && <Text>{userQueries.data.length}</Text>} */}
-          {/* <Text>{queries.length}</Text> */}
           <Text my="auto" color="#F88F78" fontSize="14px" cursor="pointer">
             Request new
           </Text>
         </Flex>
+        {address.type === "eoa" && (
+          <AnalyticsChainSelector selectedChain={eoaChain} setSelectedChain={setEoaChain} />
+        )}
         {queries && (
           <AnalyticsSmartContractQueries
             queries={queries}
