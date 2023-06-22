@@ -38,12 +38,22 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const chainName = address.subscription_type_id.split("_")[0];
 
   const templates = useQuery(
-    ["queryTemplates"],
+    ["queryTemplates", address],
     () => {
       return http({
         method: "GET",
         url: `${API}/queries/templates`,
-      }).then((res) => res.data.queries);
+      }).then((res) => {
+        const EOAQueries = res.data.interfaces?.EOA;
+        const queries = res.data.queries;
+        if (address.type === "smartcontract") {
+          return queries.filter(
+            (query: any) => !EOAQueries.some((q: any) => q.context_url === query.context_url),
+          );
+        } else {
+          return EOAQueries;
+        }
+      });
     },
     {
       ...queryCacheProps,
@@ -60,18 +70,20 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     return http({
       method: "GET",
       url: `${API}/queries/list`,
-    }).then((res) =>
-      res.data.map((q: { name: string }) => {
+    }).then((res) => {
+      console.log(res.data);
+      return res.data.map((q: { name: string }) => {
         return { title: q.name.split("_").join(" "), context_url: q.name };
-      }),
-    );
+      });
+    });
   };
 
-  const userQueries = useQuery(["queries"], getQueries, {
+  const userQueries = useQuery(["queries", address], getQueries, {
     ...queryCacheProps,
     onError: (error) => {
       toast(error.message, "error");
     },
+    enabled: address.type === "smartcontract",
   });
 
   // const mockQueries = useQuery(["smartContractQueries", address.id], getMockQueries(address.id), {
