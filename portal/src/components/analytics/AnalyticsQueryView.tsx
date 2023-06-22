@@ -1,6 +1,6 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Spinner, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
@@ -48,6 +48,15 @@ const AnalyticsQueryView = ({
     });
   };
 
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    queryClient.invalidateQueries("queryData");
+    queryData.refetch();
+    setParams([]);
+    setQueryStatus("");
+    setResult("");
+  }, [query]);
+
   const getMockQuery = () => {
     return new Promise((_, resolve) => {
       setTimeout(() => {
@@ -58,7 +67,7 @@ const AnalyticsQueryView = ({
     });
   };
 
-  const queryData = useQuery(["queryData", query.context_url], getQuery, {
+  const queryData = useQuery(["queryData", query], getQuery, {
     ...queryCacheProps,
     onError: (error: Error) => {
       console.log(error);
@@ -175,6 +184,7 @@ const AnalyticsQueryView = ({
     <Flex direction="column" gap="20px" fontSize="14px">
       <Flex justifyContent="space-between" alignItems="center">
         <Text variant="title3">{query.title.split("-").join(" ")}</Text>
+        {(queryData.isLoading || queryData.isFetching) && <Spinner />}
         <RxReload onClick={() => queryData.refetch()} />
         <Button
           variant="runButton"
@@ -183,7 +193,7 @@ const AnalyticsQueryView = ({
           p="6px 20px"
           fontSize="14px"
           h="30px"
-          disabled={!isValidArray(params)}
+          disabled={!isValidArray(params) || queryData.isLoading || queryData.isFetching}
           onClick={handleRun}
         >
           Run
