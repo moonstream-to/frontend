@@ -1,5 +1,4 @@
-import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Flex, Spacer } from "@chakra-ui/react";
 
 export interface QueryInterface {
   title: string;

@@ -5,9 +5,7 @@ import useUser from "../../contexts/UserContext";
 
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
-import { getDescriptionForTitle, getRandomTags, getRandomTitle } from "../../mocks";
 import { SubscriptionsService } from "../../services";
-import http from "../../utils/httpMoonstream";
 
 type AnalyticsContextType = {
   addresses: any;
@@ -62,22 +60,16 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const getSubscriptions = () => {
     return SubscriptionsService.getSubscriptions()
       .then((res) => {
-        console.log(res);
         return res;
       })
       .then((res) => res.data.subscriptions.sort(compare))
       .then((array) =>
         array.map((i: any) => {
-          // const label = getRandomTitle();
           const created_at = new Date(i.created_at);
-          // const description = getDescriptionForTitle(label);
           return {
             ...i,
-            // tags: getRandomTags(),
             type: i.subscription_type_id !== "externaly_owned_account" ? "smartcontract" : "eoa",
             created_at: created_at.toLocaleDateString(),
-            // description,
-            // label,
           };
         }),
       );
@@ -91,24 +83,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     enabled: !!user,
   });
 
-  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
-  // const getQueries = () =>
-  //   http({
-  //     method: "GET",
-  //     url: `${API}/queries/list`,
-  //   }).then((res) => {
-  //     console.log(res.data);
-  //     return res.data;
-  //   });
-
   const queries = undefined;
-  // const queries = useQuery(["queries"], getQueries, {
-  //   ...queryCacheProps,
-  //   onError: (error) => {
-  //     toast(error.message, "error");
-  //   },
-  //   enabled: !!user,
-  // });
 
   const value = {
     addresses,

@@ -10,8 +10,6 @@ import {
 import PoolDetailsRow from "../PoolDetailsRow";
 import AnalyticsABIView from "./AnalyticsABIView";
 
-const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
-
 const AnalyticsSmartContractDetails = ({
   address,
   chain,
@@ -24,15 +22,7 @@ const AnalyticsSmartContractDetails = ({
   isAbi: boolean;
 }) => {
   return (
-    <Flex
-      flex="1 1 0px"
-      direction="column"
-      gap="10px"
-      p="15px"
-      borderRadius="10px"
-      bg="#232323"
-      // maxW="595px"
-    >
+    <Flex flex="1 1 0px" direction="column" gap="10px" p="15px" borderRadius="10px" bg="#232323">
       <Accordion allowMultiple>
         <AccordionItem border="none">
           <AccordionButton p="0">
@@ -40,7 +30,6 @@ const AnalyticsSmartContractDetails = ({
               justifyContent="space-between"
               w="100%"
               textAlign="right"
-              // pr="10px"
               fontWeight="700"
               fontSize="16px"
             >

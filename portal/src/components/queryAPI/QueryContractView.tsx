@@ -52,9 +52,6 @@ const QueryContractView = ({ contract }: { contract: any }) => {
     onError: (error: Error) => {
       console.log(error);
     },
-    onSuccess: (data: any) => {
-      console.log(data);
-    },
     enabled: !!contract.abi,
   });
 

@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 
-// import useQueryAPI from "../../contexts/QueryAPIContext";
-
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import useAnalytics from "../../contexts/AnalyticsContext";
@@ -44,7 +42,10 @@ const AnalyticsAddressesListItem = ({
       return;
     }
 
-    if (address.tags.some((tag: string) => tag.toLocaleLowerCase().includes(lowCaseFilter))) {
+    if (
+      address.tags &&
+      address.tags.some((tag: string) => tag.toLocaleLowerCase().includes(lowCaseFilter))
+    ) {
       setIsShow(true);
       return;
     }

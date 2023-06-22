@@ -4,14 +4,12 @@ import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
-import { getRandomParameters } from "../../mocks";
 import http from "../../utils/httpMoonstream";
 import AnalyticsQueryParameters from "./AnalyticsQueryParameters";
 import AnalyticsQueryResults from "./AnalyticsQueryResults";
 import { QueryInterface } from "./AnalyticsSmartContractQueries";
 import { isValidArray } from "./validateParameters";
 import QueryAPIResult from "../queryAPI/QueryAPIResult";
-import { RxReload } from "react-icons/rx";
 
 const AnalyticsQueryView = ({
   query,
@@ -40,9 +38,6 @@ const AnalyticsQueryView = ({
     }).then((res) => {
       const parameters = {
         ...res.data.parameters,
-        // start_timestamp: "qq",
-        // end_timestamp: "qq",
-        // event: "qq",
       };
       delete parameters.address; //Using address from subscription, not from input
       if (type === "eoa") {
@@ -61,16 +56,6 @@ const AnalyticsQueryView = ({
     setQueryStatus("");
     setResult("");
   }, [query]);
-
-  const getMockQuery = () => {
-    return new Promise((_, resolve) => {
-      setTimeout(() => {
-        resolve({
-          data: { parameters: ["start_timestamp", "end_timestamp", ...getRandomParameters()] }, //TODO wrong response
-        });
-      }, Math.floor(Math.random() * 5000));
-    });
-  };
 
   const queryData = useQuery(["queryData", query], getQuery, {
     ...queryCacheProps,
@@ -196,7 +181,6 @@ const AnalyticsQueryView = ({
       <Flex justifyContent="space-between" alignItems="center">
         <Text variant="title3">{query.title.split("-").join(" ")}</Text>
         {(queryData.isLoading || queryData.isFetching) && <Spinner />}
-        <RxReload onClick={() => queryData.refetch()} />
         <Button
           variant="runButton"
           color="#4d4d4d"
@@ -204,7 +188,12 @@ const AnalyticsQueryView = ({
           p="6px 20px"
           fontSize="14px"
           h="30px"
-          disabled={!isValidArray(params) || queryData.isLoading || queryData.isFetching}
+          disabled={
+            !isValidArray(params) ||
+            queryData.isLoading ||
+            queryData.isFetching ||
+            queryStatus !== ""
+          }
           onClick={handleRun}
         >
           Run

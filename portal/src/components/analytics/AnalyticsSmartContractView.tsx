@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
-import { getQueryDescription, getRandomQueries } from "../../mocks";
 import http from "../../utils/httpMoonstream";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 import AnalyticsChainSelector from "./AnalyticsChainSelector";
@@ -11,8 +10,6 @@ import AnalyticsEOADetails from "./AnalyticsEOADetails";
 import AnalyticsQueryView from "./AnalyticsQueryView";
 import AnalyticsSmartContractDetails from "./AnalyticsSmartContractDetails";
 import AnalyticsSmartContractQueries, { QueryInterface } from "./AnalyticsSmartContractQueries";
-
-const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
 const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const [selectedIdx, setSelectedIdx] = useState(-1);
@@ -30,12 +27,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
 
   const handleDeleteTag = (tag: string) => {
     // TODO delete tag from DB
-  };
-
-  const getMockQueries = (id: string) => () => {
-    return getRandomQueries().map((query: string) => {
-      return { title: query, context_url: "", description: getQueryDescription(query) };
-    });
   };
 
   const chainName = address.type === "eoa" ? eoaChain : address.subscription_type_id.split("_")[0];
@@ -73,7 +64,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
       method: "GET",
       url: `${API}/queries/list`,
     }).then((res) => {
-      console.log(res.data);
       return res.data.map((q: { name: string }) => {
         return { title: q.name.split("_").join(" "), context_url: q.name };
       });
@@ -85,18 +75,8 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     onError: (error) => {
       toast(error.message, "error");
     },
-    enabled: address.type === "smartcontract",
+    enabled: false && address.type === "smartcontract",
   });
-
-  // const mockQueries = useQuery(["smartContractQueries", address.id], getMockQueries(address.id), {
-  //   ...queryCacheProps,
-  //   onError: (error: Error) => {
-  //     console.log(error);
-  //   },
-  //   onSuccess: (data: any) => {
-  //     console.log(data);
-  //   },
-  // });
 
   useEffect(() => {
     setSelectedIdx(-1);

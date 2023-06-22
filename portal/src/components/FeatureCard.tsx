@@ -22,7 +22,6 @@ const FeatureCard = ({
         bg="#353535"
         borderRadius="20px"
         w="215px"
-        h="372px"
         color="white"
         textAlign="center"
         border="2px solid white"
