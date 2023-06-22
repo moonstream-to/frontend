@@ -20,8 +20,8 @@ export const SITEMAP = [
     children: [
       {
         title: "Features",
-        path: "https://moonstream.to/features",
-        type: PAGETYPE.EXTERNAL,
+        path: "/features",
+        type: PAGETYPE.CONTENT,
       },
       {
         title: "Case studies",
@@ -30,8 +30,8 @@ export const SITEMAP = [
       },
       {
         title: "Whitepapers",
-        path: "https://moonstream.to/whitepapers",
-        type: PAGETYPE.EXTERNAL,
+        path: "/whitepapers",
+        type: PAGETYPE.CONTENT,
       },
       {
         title: "Blog",
@@ -53,7 +53,7 @@ export const SITEMAP = [
       },
       {
         title: "Status",
-        path: "https://moonstream.to/status",
+        path: "/status",
         type: PAGETYPE.CONTENT,
       },
     ],
@@ -66,7 +66,7 @@ export const SITEMAP = [
     children: [
       {
         title: "Team",
-        path: "https://moonstream.to/team",
+        path: "/team",
         type: PAGETYPE.CONTENT,
       },
     ],
@@ -100,6 +100,8 @@ export const MAX_INT =
 
 export const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`; //TODO delete
 export const AWS_ASSETS_PATH_CF = "https://static.simiotics.com/moonstream/assets";
+
+export const AWS_STATIC_ASSETS_PATH = "https://static.simiotics.com/moonstream/assets";
 
 export const PORTAL_PATH = "https://portal.moonstream.to";
 

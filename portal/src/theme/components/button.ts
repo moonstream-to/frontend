@@ -187,6 +187,43 @@ const variantClaimButton = () => {
   };
 };
 
+const variantWhiteOutline = () => {
+  return {
+    color: "white",
+    border: "2px solid white",
+    borderRadius: "30px",
+    bg: "transparent",
+    p: "10px 30px",
+    fontSize: "20px",
+    textDecoration: "none",
+    _hover: {
+      backgroundColor: "transparent",
+      borderWidth: "3px",
+      p: "9px 29px",
+    },
+    _focus: {
+      backgroundColor: "transparent",
+    },
+    _active: {
+      backgroundColor: "transparent",
+    },
+  };
+};
+
+const variantSolidWhite = () => {
+  return {
+    bg: "white",
+    textColor: "black",
+    border: "none",
+    borderRadius: "30px",
+    p: "10px 30px",
+    fontSize: ["md", "md", "lg", "lg", "xl", "xl"],
+    _hover: {
+      bg: "#E6E6E6",
+    },
+  };
+};
+
 const Button = {
   // 1. We can update the base styles
   baseStyle: () => ({
@@ -218,10 +255,12 @@ const Button = {
       px: 8,
     },
   },
+
   // 3. We can add a new visual variant
   variants: {
     menuButton: variantMenuButton,
     plainOrange: variantPlainOrange,
+    whiteOutline: variantWhiteOutline,
     orangeGradient: variantOrangeGradient,
     wyrmButton: variantWyrmButton,
     selector: variantSelector,
@@ -230,6 +269,7 @@ const Button = {
     runButton: variantRun,
     transparent: variantTransparent,
     claimButton: variantClaimButton,
+    solidWhite: variantSolidWhite,
   },
 };
 export default Button;
