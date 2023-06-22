@@ -131,7 +131,7 @@ const PoolDetailsRow = ({
           <Text
             fontWeight="700"
             position="absolute"
-            top="-40px"
+            bottom="-40px"
             left="69%"
             transform="translate(-50%, 0)"
             bg="#2d2d2d"
