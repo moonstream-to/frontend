@@ -1,33 +1,49 @@
 import Head from "next/head";
 
-import { Center, Flex } from "@chakra-ui/react";
+import { Center, Flex, Text } from "@chakra-ui/react";
 
 import FeatureCard from "../../src/components/FeatureCard";
 import Layout from "../../src/components/layout";
-import { AWS_ASSETS_PATH } from "../../src/constants";
+import { AWS_ASSETS_PATH, AWS_ASSETS_PATH_CF } from "../../src/constants";
 import useUser from "../../src/contexts/UserContext";
 import NeedAuthorizationView from "../../src/components/NeedAuthorizationView";
 import LayoutLanding from "../../src/components/layoutLanding";
 
 const assets = {
-  airdrop: `${AWS_ASSETS_PATH}/open-lootbox.png`,
-  dropper: `${AWS_ASSETS_PATH}/airdrop.png`,
-  terminus: `${AWS_ASSETS_PATH}/Terminus.png`,
-  games: `${AWS_ASSETS_PATH}/minigames-card.png`,
+  airdrop: `${AWS_ASSETS_PATH_CF}/open-lootbox.png`,
+  dropper: `${AWS_ASSETS_PATH_CF}/airdrop.png`,
+  terminus: `${AWS_ASSETS_PATH_CF}/Terminus.png`,
+  games: `${AWS_ASSETS_PATH_CF}/gofp-card.png`,
+  analytics: `${AWS_ASSETS_PATH}/analytics-card.png`,
 };
 
 const features = [
   {
+    name: "Analytics",
+    description: "Make informed decisions for your crypto gaming experience",
+    image: assets.analytics,
+    href: "portal/analytics",
+  },
+  {
+    name: "Drops",
+    description: "Manage loyalty programs and distribute player rewards",
+    image: assets.dropper,
+    href: "portal/dropper",
+  },
+];
+
+const tools = [
+  {
     name: "Terminus",
-    description: "Manage your access lists and more",
+    description: "Create tokens with built-in permissions for game items, badges and more",
     image: assets.terminus,
     href: "portal/terminus",
   },
   {
-    name: "Dropper",
-    description: "Distribute rewards to your players",
-    image: assets.dropper,
-    href: "portal/dropper",
+    name: "Garden of Forking Paths",
+    description: "Start your adventure at Garden of Forking Paths",
+    image: assets.games,
+    href: "portal/games/garden",
   },
 ];
 
@@ -41,11 +57,23 @@ export default function Home() {
     <>
       {!user && (
         <LayoutLanding home={false} title="Moonstream: portal">
-          <Flex direction="column" mx="auto" my="40px">
+          <Flex direction="column" mx="auto" my="40px" gap="30px">
             <NeedAuthorizationView />
-            <Flex gap="40px" py="40px" justifyContent="center">
+            <Text textAlign="center" variant="title">
+              Products
+            </Text>
+
+            <Flex gap="40px" py="10px" justifyContent="center">
               {features.map((feature) => (
                 <FeatureCard feature={feature} key={feature.name} disabled />
+              ))}
+            </Flex>
+            <Text textAlign="center" variant="title">
+              Tools
+            </Text>
+            <Flex gap="40px" py="10px" justifyContent="center">
+              {tools.map((feature) => (
+                <FeatureCard feature={feature} key={feature.name} />
               ))}
             </Flex>
           </Flex>
@@ -59,10 +87,23 @@ export default function Home() {
             <link rel="icon" href="/favicon.png" />
           </Head>
           <Center>
-            <Flex gap="40px" py="40px" justifyContent="center">
-              {features.map((feature) => (
-                <FeatureCard feature={feature} key={feature.name} />
-              ))}
+            <Flex direction="column" mx="auto" my="40px" gap="30px">
+              <Text variant="title" textAlign="center">
+                Products
+              </Text>
+              <Flex gap="40px" py="40px" justifyContent="center">
+                {features.map((feature) => (
+                  <FeatureCard feature={feature} key={feature.name} />
+                ))}
+              </Flex>
+              <Text textAlign="center" variant="title">
+                Tools
+              </Text>
+              <Flex gap="40px" py="10px" justifyContent="center">
+                {tools.map((feature) => (
+                  <FeatureCard feature={feature} key={feature.name} />
+                ))}
+              </Flex>
             </Flex>
           </Center>
         </Layout>
