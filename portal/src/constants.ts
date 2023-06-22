@@ -105,7 +105,7 @@ export const AWS_STATIC_ASSETS_PATH = "https://static.simiotics.com/moonstream/a
 
 export const PORTAL_PATH = "https://portal.moonstream.to";
 
-export type ChainName = "ethereum" | "localhost" | "mumbai" | "polygon" | "wyrm" | "xdai";
+export type ChainName = "ethereum" | "localhost" | "mumbai" | "polygon" | "wyrm" | "gnosis";
 export type ChainId = 1 | 1337 | 80001 | 137 | 322 | 100;
 
 // map chain names to image paths
@@ -115,7 +115,7 @@ const chainNameToImagePath: Record<ChainName, string> = {
   mumbai: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
   polygon: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
   wyrm: `${AWS_ASSETS_PATH_CF}/icons/wyrm-small-fill.png`,
-  xdai: `${AWS_ASSETS_PATH_CF}/icons/xdai-outline.png`,
+  gnosis: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
 };
 
 // map chain IDs to image paths
@@ -125,7 +125,7 @@ const chainIdToImagePath: Record<ChainId, string> = {
   80001: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
   137: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
   322: `${AWS_ASSETS_PATH_CF}/icons/wyrm-small-fill.png`,
-  100: `${AWS_ASSETS_PATH_CF}/icons/xdai-outline.png`,
+  100: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
 };
 
 export const getChainImage = (identifier: ChainName | ChainId): string | undefined => {

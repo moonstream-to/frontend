@@ -2,7 +2,7 @@ import { Image } from "@chakra-ui/image";
 import { Flex, Text } from "@chakra-ui/layout";
 import { useEffect } from "react";
 import { ChainName, getChainImage } from "../../constants";
-const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
+const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "gnosis", "wyrm"];
 
 const AnalyticsChainSelector = ({
   selectedChain,

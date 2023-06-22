@@ -2,7 +2,7 @@ import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import styles from "./AddressesPlaceholder.module.css";
 
-const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "xdai", "wyrm"];
+const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "gnosis", "wyrm"];
 
 const AddressesPlaceholder = () => {
   return (
