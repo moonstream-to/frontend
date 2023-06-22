@@ -67,13 +67,15 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
       })
       .then((res) => res.data.subscriptions.sort(compare))
       .then((array) =>
-        array.map((i: object) => {
+        array.map((i: any) => {
           const label = getRandomTitle();
+          const created_at = new Date(i.created_at);
           // const description = getDescriptionForTitle(label);
           return {
             ...i,
             // tags: getRandomTags(),
-            // type: "smartcontract",
+            type: Math.round(Math.random()) ? "smartcontract" : "eoa",
+            created_at: created_at.toLocaleDateString(),
             // description,
             // label,
           };
