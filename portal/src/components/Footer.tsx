@@ -53,10 +53,12 @@ const Footer = ({ home }: { home?: boolean }) => {
             {!isMobileView && (
               <>
                 <Flex justifyContent="start">
-                  <Link href="https://moonstream.to/privacy-policy">Privacy policy</Link>
-                  <Link href="https://moonstream.to/tos" ml="20px">
-                    Terms of Service
-                  </Link>
+                  <RouterLink href="/policy">
+                    <Text>Privacy policy</Text>
+                  </RouterLink>
+                  <RouterLink href="/terms">
+                    <Text ml="20px">Terms of Service</Text>
+                  </RouterLink>
                 </Flex>
                 <Text fontSize={"sm"}>
                   © {new Date().getFullYear()} Moonstream.to All&nbsp;rights&nbsp;reserved
@@ -100,7 +102,7 @@ const Footer = ({ home }: { home?: boolean }) => {
                   key={`footer-list-column-${colIndex}`}
                 >
                   <>
-                    <Text>{category.title}</Text>
+                    <Text fontWeight="700">{category.title}</Text>
                     {category.children.map((linkItem, linkItemIndex) => {
                       return (
                         <RouterLink

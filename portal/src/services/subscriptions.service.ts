@@ -47,17 +47,22 @@ export const createSubscription =
     type,
     label,
     color,
+    abi,
   }: {
     address: string;
     type: string;
     label: string;
     color: string;
+    abi?: string;
   }) => {
     const data = new FormData();
     data.append("address", address);
     data.append("subscription_type_id", type);
     data.append("color", color);
     data.append("label", label);
+    if (abi) {
+      data.append("abi", abi);
+    }
     return http({
       method: "POST",
       url: `${API}/subscriptions/`,

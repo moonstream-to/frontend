@@ -166,7 +166,6 @@ const QueryAPIQueryView = () => {
       method: "GET",
       url: `${API}/queries/${query.name}/query`,
     }).then((res) => {
-      console.log(res.data);
       return res.data;
     });
 
@@ -179,7 +178,6 @@ const QueryAPIQueryView = () => {
   });
 
   useEffect(() => {
-    console.log(queryData.data?.parameters);
     if (queryData.data?.parameters) {
       const newParams = Object.keys(queryData.data.parameters).map((k) => {
         return { key: k, value: "" };
@@ -218,18 +216,7 @@ const QueryAPIQueryView = () => {
               {query.name}
             </Text>
           </Flex>
-          {queryData.data && (
-            <Tag name={queryData.data.approved ? "approved" : "not approved"} />
-            // <Flex direction="column" gap="15px">
-            //   {queryData.data.tags && (
-            //     <Flex gap="10px">
-            //       {queryData.data.tags.map((tag: string, idx: number) => (
-            //         <Tag key={idx} name={tag} />
-            //       ))}
-            //     </Flex>
-            //   )}
-            // </Flex>
-          )}
+          {queryData.data && <Tag name={queryData.data.approved ? "approved" : "not approved"} />}
           {!queryData.data &&
             (queryData.isLoading ? <Spinner h="20px" w="20px" /> : <Flex minH="20px" />)}
           <Flex direction="column" p="0px" overflowY="auto" gap="20px">
@@ -237,7 +224,6 @@ const QueryAPIQueryView = () => {
               <Text fontSize="20px" fontWeight="700" userSelect="none">
                 Inputs
               </Text>
-              {/* <AiOutlinePlusCircle cursor="pointer" size="24" onClick={() => addParam()} /> */}
             </Flex>
             <Flex gap="0" w="100%">
               <Flex direction="column" gap="10px" fontSize="18px" w="100%">

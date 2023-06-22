@@ -12,6 +12,7 @@ interface DetailsProps extends HTMLAttributes<HTMLElement> {
   displayFull?: boolean;
   canBeCopied?: boolean;
   range?: { atStart: number; atEnd: number };
+  [x: string]: any;
 }
 
 const PoolDetailsRow = ({
@@ -57,6 +58,7 @@ const PoolDetailsRow = ({
           fontFamily="Jet Brains Mono, monospace"
           fontWeight="400"
           fontSize="18px"
+          {...props}
         >
           {valueString}
         </Text>
@@ -107,7 +109,7 @@ const PoolDetailsRow = ({
   return (
     <Flex justifyContent="space-between" gap="10px" {...props}>
       {type && (
-        <Text fontWeight="400" fontSize="18px">
+        <Text fontWeight="400" fontSize="18px" {...props}>
           {type}
         </Text>
       )}
@@ -129,13 +131,14 @@ const PoolDetailsRow = ({
           <Text
             fontWeight="700"
             position="absolute"
-            top="-40px"
+            bottom="-40px"
             left="69%"
             transform="translate(-50%, 0)"
             bg="#2d2d2d"
             borderRadius="8px"
             p="5px 10px"
             border="2px solid #BBBBBB"
+            zIndex="100"
           >
             copied
           </Text>

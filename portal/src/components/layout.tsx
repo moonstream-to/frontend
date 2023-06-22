@@ -5,6 +5,8 @@ import { Flex, Spacer } from "@chakra-ui/react";
 import BreadcrumbView from "./BreadcrumbView";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+import useUser from "../contexts/UserContext";
+import NeedAuthorizationView from "./NeedAuthorizationView";
 
 const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
 
@@ -19,6 +21,7 @@ export default function Layout({
   home?: boolean;
   title?: string;
 }) {
+  const { user, isLoading } = useUser();
   return (
     <div>
       <Head>
@@ -40,7 +43,7 @@ export default function Layout({
           <Navbar home={home} px="7%" />
           <BreadcrumbView />
         </Flex>
-        {children}
+        {user ? children : isLoading ? "" : <NeedAuthorizationView />}
         <Spacer />
         <Footer home={home} />
       </Flex>

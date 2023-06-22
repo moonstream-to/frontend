@@ -6,14 +6,14 @@ import { useMutation, useQuery } from "react-query";
 import axios from "axios";
 import { Button, Center, Flex, Input, Spacer, Text } from "@chakra-ui/react";
 
-import Layout from "../../src/components/layout";
-import Spinner from "../../src/components/Spinner/Spinner";
-import Web3Context from "../../src/contexts/Web3Context/context";
-import { ENTITY_API } from "../../src/constants";
-import useMoonToast from "../../src/hooks/useMoonToast";
-import hookCommon from "../../src/hooks/hookCommon";
-import CollectionRow from "../../src/components/CollectionRow";
-import { ErrorAPI } from "../../src/hooks/hookCommon";
+import Layout from "../../../src/components/layout";
+import Spinner from "../../../src/components/Spinner/Spinner";
+import Web3Context from "../../../src/contexts/Web3Context/context";
+import { ENTITY_API } from "../../../src/constants";
+import useMoonToast from "../../../src/hooks/useMoonToast";
+import hookCommon from "../../../src/hooks/hookCommon";
+import CollectionRow from "../../../src/components/CollectionRow";
+import { ErrorAPI } from "../../../src/hooks/hookCommon";
 
 const Airdrop = () => {
   const toast = useMoonToast();

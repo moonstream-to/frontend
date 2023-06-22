@@ -10,15 +10,19 @@ import colors from "./foundations/colors";
 import Button from "./components/button";
 import Menu from "./components/menu";
 import Text from "./components/text";
+import IconButton from "./components/iconButton";
+import { radioTheme } from "./components/radio";
 
 const overrides = {
   breakpoints,
   colors,
   // Other foundational style overrides go here
   components: {
+    Radio: radioTheme,
     Button,
     Menu,
     Text,
+    IconButton,
     Input: {
       variants: {
         address: {
@@ -28,6 +32,12 @@ const overrides = {
             fontSize: "min(18px, 9px + 0.7vw)",
             w: "42ch",
             px: "1ch",
+          },
+        },
+        text: {
+          field: {
+            border: "1px solid white",
+            bg: "transparent",
           },
         },
       },

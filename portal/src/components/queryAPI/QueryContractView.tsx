@@ -16,6 +16,7 @@ import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import PoolDetailsRow from "../PoolDetailsRow";
 import http from "../../utils/httpMoonstream";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const icons = {
   ethScan: `${AWS_ASSETS_PATH}/icons/database-load.png`,
@@ -50,9 +51,6 @@ const QueryContractView = ({ contract }: { contract: any }) => {
     ...queryCacheProps,
     onError: (error: Error) => {
       console.log(error);
-    },
-    onSuccess: (data: any) => {
-      console.log(data);
     },
     enabled: !!contract.abi,
   });
@@ -143,6 +141,11 @@ const QueryContractView = ({ contract }: { contract: any }) => {
             <Text fontSize="24px" fontWeight="700">
               {contract.label}
             </Text>
+            {!deleteSubscription.isLoading ? (
+              <DeleteIcon onClick={() => deleteSubscription.mutate(contract.id)} />
+            ) : (
+              <Spinner />
+            )}
           </Flex>
           {contract.subscription_type_id && (
             <Flex gap="10px">

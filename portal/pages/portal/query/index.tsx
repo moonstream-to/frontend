@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
-import { QueryAPIProvider } from "../../src/contexts/QueryAPIContext";
-import Layout from "../../src/components/layout";
+import { QueryAPIProvider } from "../../../src/contexts/QueryAPIContext";
+import Layout from "../../../src/components/layout";
 
-import QueryAPIView from "../../src/components/queryAPI/QueryAPIView";
+import QueryAPIView from "../../../src/components/queryAPI/QueryAPIView";
 
 const Query = () => {
   useEffect(() => {

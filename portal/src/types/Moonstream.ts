@@ -31,7 +31,7 @@ export interface MoonstreamWeb3ProviderInterface {
   polygonClient: Web3;
   wyrmClient: Web3;
   mumbaiClient: Web3;
-  onConnectWalletClick: React.MouseEventHandler<HTMLButtonElement>;
+  onConnectWalletClick: () => void;
   buttonText: string;
   WALLET_STATES: WalletStatesInterface;
   account: string;
