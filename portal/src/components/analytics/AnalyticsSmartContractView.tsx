@@ -1,4 +1,4 @@
-import { Flex, Spacer, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Link, Spacer, Spinner, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
@@ -126,9 +126,11 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           <Text variant="title2">Analytics</Text>
           {(userQueries.isLoading || templates.isLoading) && <Spinner size="sm" />}
           <Spacer />
-          <Text my="auto" color="#F88F78" fontSize="14px" cursor="pointer">
-            Request new
-          </Text>
+          <Link isExternal href="https://discord.gg/K56VNUQGvA" _hover={{ textDecoration: "none" }}>
+            <Text my="auto" color="#F88F78" fontSize="14px" cursor="pointer">
+              Request new
+            </Text>
+          </Link>
         </Flex>
         {address.type === "eoa" && (
           <AnalyticsChainSelector selectedChain={eoaChain} setSelectedChain={setEoaChain} />

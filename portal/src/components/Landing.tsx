@@ -182,11 +182,11 @@ const Landing = () => {
                           fontSize={["16px", "16px", "20px"]}
                         >
                           <Center>
-                            <RouterLink href="/contact">
+                            {/* <RouterLink href="/contact">
                               <Button variant="orangeGradient" px={["20px", "20px", "30px"]}>
                                 Get Started
                               </Button>
-                            </RouterLink>
+                            </RouterLink> */}
                           </Center>
                           <Center>
                             <Link isExternal href="https://discord.gg/K56VNUQGvA">
