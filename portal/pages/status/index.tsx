@@ -45,13 +45,25 @@ const Status = () => {
   return (
     <>
       <LayoutLanding home={false} title="Moonstream: Status page">
-        <Flex mx="auto" py="40px" direction="column" justifyContent="space-between" minW="700px">
+        <Flex
+          px={{ base: "10px", sm: "7%" }}
+          mx="auto"
+          py="40px"
+          direction="column"
+          justifyContent="space-between"
+        >
           <Text fontSize="24px" fontWeight="700" mb="30px" textAlign="center">
             Status page
           </Text>
           {status.isLoading && <Spinner mx="auto" />}
           {status.data && (
-            <Flex direction="column" w="100%" mx="auto" gap="15px">
+            <Flex
+              direction="column"
+              w="100%"
+              mx="auto"
+              gap="15px"
+              fontSize={{ base: "12px", sm: "18px" }}
+            >
               {status.data.map((service: any, idx: number) => (
                 <StatusRow key={idx} service={service} />
               ))}

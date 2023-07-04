@@ -18,7 +18,7 @@ import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
 import SignUp from "./SignUp";
 
-const Account = () => {
+const Account = ({ ...props }: { [x: string]: any }) => {
   const { user } = useUser();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
@@ -43,6 +43,7 @@ const Account = () => {
               _focus={{
                 outline: "none",
               }}
+              {...props}
             >
               Log in
             </Button>
@@ -54,6 +55,7 @@ const Account = () => {
             maxH="36px"
             variant="plainOrange"
             onClick={() => setIsSignUpOpen(true)}
+            {...props}
           >
             Sign up
           </Button>
@@ -62,7 +64,7 @@ const Account = () => {
       {isLoggingOut && <Spinner />}
       {user && !isLoggingOut && (
         <Menu>
-          <MenuButton>
+          <MenuButton {...props}>
             <Flex gap="5px" alignItems="center">
               <BsPerson />
               Account

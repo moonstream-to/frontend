@@ -527,7 +527,7 @@ const Landing = () => {
                 <Heading {...HEADING_PROPS} textAlign="center" as="h2" pb={10}>
                   FAQ
                 </Heading>
-                <Accordion defaultIndex={[-1]} allowMultiple allowToggle>
+                <Accordion defaultIndex={[-1]} allowMultiple>
                   <FAQCard
                     heading="I’m a game designer. What can Moonstream engine do for me?"
                     headingProps={HEADING_PROPS}
