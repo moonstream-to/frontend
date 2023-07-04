@@ -23,7 +23,7 @@ const StatusRow = ({
   const Status = () => (
     <Flex
       justifyContent="space-between"
-      fontWeight="700"
+      fontFamily="JetBrains Mono, monospace"
       w="100%"
       gap={{ base: "10px", sm: "50px" }}
     >
@@ -39,7 +39,7 @@ const StatusRow = ({
   }
 
   return (
-    <Accordion allowToggle w="100%" p="0">
+    <Accordion allowToggle w="100%" p="0" fontFamily="JetBrains Mono, monospace">
       <AccordionItem border="none">
         <h2>
           <AccordionButton _expanded={{ bg: "none" }} p="0">
@@ -47,7 +47,6 @@ const StatusRow = ({
               flex="1"
               textAlign="left"
               fontSize={{ base: "12px", sm: "18px" }}
-              fontWeight="700"
               textTransform="capitalize"
               pr={{ base: "10px", sm: "50px" }}
             >
@@ -55,7 +54,6 @@ const StatusRow = ({
             </Box>
             <Text
               fontSize={{ base: "12px", sm: "18px" }}
-              fontWeight="700"
               color={service.isHealthy ? healthyStatusColor : downStatusColor}
             >
               {service.isHealthy ? healthyStatusText : downStatusText}
