@@ -91,6 +91,26 @@ const AnalyticsNewAddressView = () => {
 
   const isChainValid = type === "regularAccount" || !!chainName;
 
+  const handleSave = () => {
+    let JSONForSave = "";
+    if (isInputsValid()) {
+      try {
+        if (abi) {
+          JSONForSave = JSON.stringify(JSON.parse(abi));
+        }
+        createSubscription.mutate({
+          type: type === "smartcontract" ? `${chainName}_${type}` : "externaly_owned_account",
+          address,
+          label: title,
+          color: "#000000",
+          abi: JSONForSave,
+        });
+      } catch (e: any) {
+        toast(e.message, "error", 7000);
+      }
+    }
+  };
+
   useEffect(() => {
     setShowInvalid(false);
   }, [address, title, type, chainName]);
@@ -273,22 +293,7 @@ const AnalyticsNewAddressView = () => {
               Cancel
             </Button>
           )}
-          <Button
-            variant="saveButton"
-            minW="220px"
-            onClick={() => {
-              if (isInputsValid()) {
-                createSubscription.mutate({
-                  type:
-                    type === "smartcontract" ? `${chainName}_${type}` : "externaly_owned_account",
-                  address,
-                  label: title,
-                  color: "#000000",
-                  abi,
-                });
-              }
-            }}
-          >
+          <Button variant="saveButton" minW="220px" onClick={handleSave}>
             {!createSubscription.isLoading ? <Text>Watch</Text> : <Spinner />}
           </Button>
         </Flex>

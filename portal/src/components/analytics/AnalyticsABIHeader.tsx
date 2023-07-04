@@ -29,7 +29,7 @@ const AnalyticsABIHeader = ({
           <Text fontSize="14px">{`We are loading ABI from ${ABILoader.name}. Please wait or paste it below manually.`}</Text>
         </Flex>
       )}
-      {abi.isFetching && !abi.data && <Spinner ml="10px" p="0" h="20px" w="17px" />}
+      {abi.isFetching && <Spinner ml="10px" p="0" h="20px" w="17px" />}
 
       {ABIStatus === "error" && (
         <Flex justifyContent="space-between" fontSize="14px">
