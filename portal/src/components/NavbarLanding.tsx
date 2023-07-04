@@ -27,7 +27,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
       <ButtonGroup
         h="100%"
         variant="link"
-        spacing={isBaseView ? (isVerySmallView ? "8px" : "40px") : "16px"}
+        spacing={isSmallView ? (isVerySmallView ? "8px" : "40px") : "16px"}
         justifyContent="center"
       >
         {SITEMAP.map((item, idx) => {
@@ -98,7 +98,10 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
   };
 
   const router = useRouter();
-  const [isBaseView, isVerySmallView] = useMediaQuery(["(max-width: 768px)", "(max-width: 400px)"]);
+  const [isSmallView, isVerySmallView] = useMediaQuery([
+    "(max-width: 1000px)",
+    "(max-width: 400px)",
+  ]);
 
   return (
     <Flex
@@ -128,7 +131,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
             alt="Logo"
           />
         </RouterLink>
-        {!isBaseView && <NavbarMenu />}
+        {!isSmallView && <NavbarMenu />}
         <Flex justifyContent="end" w="160px" gap={{ base: "5px", sm: "15px" }} alignItems="center">
           {!router.asPath.includes("portal") && (
             <RouterLink href="/portal">
@@ -153,7 +156,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
           <Account fontSize={isVerySmallView ? "12px" : "16px"} />
         </Flex>
       </Flex>
-      {isBaseView && <NavbarMenu />}
+      {isSmallView && <NavbarMenu />}
     </Flex>
   );
 };

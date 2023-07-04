@@ -10,6 +10,7 @@ import {
   MenuItem,
   Divider,
   Spinner,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import LoginButton from "./LoginButton";
@@ -22,6 +23,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
   const { user } = useUser();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isSmallView] = useMediaQuery(["(max-width: 500px)"]);
 
   return (
     <>
@@ -36,7 +38,6 @@ const Account = ({ ...props }: { [x: string]: any }) => {
               p="5px 15px"
               fontSize="16px"
               fontWeight="400"
-              minW="90px"
               _hover={{
                 bg: "#353535",
               }}
@@ -48,17 +49,19 @@ const Account = ({ ...props }: { [x: string]: any }) => {
               Log in
             </Button>
           </LoginButton>
-          <Button
-            fontSize="16px"
-            fontWeight="400"
-            p="5px 15px"
-            maxH="36px"
-            variant="plainOrange"
-            onClick={() => setIsSignUpOpen(true)}
-            {...props}
-          >
-            Sign up
-          </Button>
+          {!isSmallView && (
+            <Button
+              fontSize="16px"
+              fontWeight="400"
+              p="5px 15px"
+              maxH="36px"
+              variant="plainOrange"
+              onClick={() => setIsSignUpOpen(true)}
+              {...props}
+            >
+              Sign up
+            </Button>
+          )}
         </Flex>
       )}
       {isLoggingOut && <Spinner />}
