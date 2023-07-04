@@ -20,7 +20,7 @@ const Status = () => {
     });
     const list = response.data.map((s: any) => {
       let name = s.normalized_name;
-      if (name === "") {
+      if (!name) {
         name = s.name.replace(/_/g, " ").replace(/api/g, "API");
       }
       const details = Object.keys(s.response)
