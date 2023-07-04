@@ -1,6 +1,7 @@
 import RouterLink from "next/link";
+import { useRouter } from "next/router";
 
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Button,
   Image,
@@ -12,45 +13,23 @@ import {
   Portal,
   MenuList,
   MenuItem,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { AWS_STATIC_ASSETS_PATH, PAGETYPE, SITEMAP } from "../constants";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import Account from "./Account";
-import { useRouter } from "next/router";
 const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
 
 const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log(router.asPath);
-  }, [router.asPath]);
-  return (
-    <Flex
-      alignItems="center"
-      id="NavbarLanding"
-      minH="56px"
-      maxH="56px"
-      bgColor="#1A1D22"
-      w="100%"
-      overflow="hidden"
-      justifyContent="space-between"
-      borderBottom="1px solid white"
-      {...props}
-    >
-      <RouterLink href="/" passHref>
-        {/* {home ? ()} */}
-        <Link
-          as={Image}
-          w="160px"
-          h="auto"
-          justifyContent="left"
-          src={PRIMARY_MOON_LOGO_URL}
-          alt="Logo"
-        />
-      </RouterLink>
-      <ButtonGroup h="100%" variant="link" spacing={4} justifyContent="center">
+  const NavbarMenu = () => {
+    return (
+      <ButtonGroup
+        h="100%"
+        variant="link"
+        spacing={isBaseView ? (isVerySmallView ? "8px" : "40px") : "16px"}
+        justifyContent="center"
+      >
         {SITEMAP.map((item, idx) => {
           return (
             <React.Fragment key={`Fragment-${idx}`}>
@@ -81,7 +60,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
                       {item.children.map((child, idx) => (
                         <MenuItem
                           key={`menu-${idx}`}
-                          as={"div"} // change this
+                          as={"div"}
                           cursor="pointer"
                           onClick={() => {
                             if (child.type === PAGETYPE.EXTERNAL) {
@@ -115,26 +94,66 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
           );
         })}
       </ButtonGroup>
-      <Flex justifyContent="end" w="160px" gap="15px" alignItems="center">
-        {!router.asPath.includes("portal") && (
-          <RouterLink href="/portal">
-            <Button
-              variant="whiteOutline"
-              fontSize="14px"
-              p="5px 10px"
-              h="fit-content"
-              borderRadius="10px"
-              borderWidth="1px"
-              _hover={{
-                backgroundColor: "transparent",
-              }}
-            >
-              Portal
-            </Button>
-          </RouterLink>
-        )}
-        <Account />
+    );
+  };
+
+  const router = useRouter();
+  const [isBaseView, isVerySmallView] = useMediaQuery(["(max-width: 768px)", "(max-width: 400px)"]);
+
+  return (
+    <Flex
+      direction="column"
+      gap="10px"
+      w="100%"
+      py="14px"
+      borderBottom="1px solid white"
+      {...props}
+    >
+      <Flex
+        alignItems="center"
+        id="NavbarLanding"
+        bgColor="#1A1D22"
+        w="100%"
+        overflow="hidden"
+        justifyContent="space-between"
+      >
+        <RouterLink href="/" passHref>
+          {/* {home ? ()} */}
+          <Link
+            as={Image}
+            w="160px"
+            h="auto"
+            justifyContent="left"
+            src={PRIMARY_MOON_LOGO_URL}
+            alt="Logo"
+          />
+        </RouterLink>
+        {!isBaseView && <NavbarMenu />}
+        <Flex justifyContent="end" w="160px" gap={{ base: "5px", sm: "15px" }} alignItems="center">
+          {!router.asPath.includes("portal") && (
+            <RouterLink href="/portal">
+              <Button
+                variant="whiteOutline"
+                mb={isVerySmallView ? "3px" : "0"}
+                fontWeight="700"
+                p={isVerySmallView ? "2px 5px" : "5px 10px"}
+                h="100%"
+                borderRadius="10px"
+                borderWidth="1px"
+                fontSize={isVerySmallView ? "12px" : "16px"}
+                _hover={{
+                  backgroundColor: "transparent",
+                }}
+                borderStyle={isVerySmallView ? "none" : "none"}
+              >
+                Portal
+              </Button>
+            </RouterLink>
+          )}
+          <Account fontSize={isVerySmallView ? "12px" : "16px"} />
+        </Flex>
       </Flex>
+      {isBaseView && <NavbarMenu />}
     </Flex>
   );
 };
