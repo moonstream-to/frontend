@@ -115,7 +115,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
       bg="#2d2d2d"
       w="100%"
       minH="100%"
-      maxW="800px"
       minW="800px"
       direction="column"
       overflowY="auto"
