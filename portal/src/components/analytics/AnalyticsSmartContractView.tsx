@@ -1,8 +1,11 @@
-import { Flex, Link, Spacer, Spinner, Text } from "@chakra-ui/react";
+import { EditIcon } from "@chakra-ui/icons";
+import { Flex, IconButton, Input, Link, Spacer, Spinner, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
+import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 import AnalyticsChainSelector from "./AnalyticsChainSelector";
@@ -16,6 +19,8 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
 
   const [queries, setQueries] = useState<QueryInterface[]>([]);
   const [eoaChain, setEoaChain] = useState("");
+  const [newTitle, setNewTitle] = useState("");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   useEffect(() => {
     setSelectedIdx(-1);
@@ -29,7 +34,8 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     // TODO delete tag from DB
   };
 
-  const chainName = address.type === "eoa" ? eoaChain : address.subscription_type_id.split("_")[0];
+  const chainName =
+    address?.type === "eoa" ? eoaChain : address?.subscription_type_id.split("_")[0];
 
   const templates = useQuery(
     ["queryTemplates", address],
@@ -88,6 +94,21 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     setQueries([...templatesArray, ...userQueriesArray]);
   }, [templates.data, userQueries.data]);
 
+  const queryClient = useQueryClient();
+  const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
+    onError: (error: Error) => toast(error.message, "error"),
+    onSuccess: () => {
+      setIsEditingTitle(false);
+      queryClient.invalidateQueries("subscriptions");
+    },
+  });
+
+  const handleTitleChange = () => {
+    if (newTitle !== address.label && newTitle) {
+      updateSubscription.mutate({ id: address.id, label: newTitle });
+    }
+  };
+
   return (
     <Flex
       borderRadius="20px"
@@ -100,7 +121,55 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
       overflowY="auto"
     >
       <Flex direction="column" p="30px" gap="30px" w="100%">
-        <Text variant="title">{address.label}</Text>
+        {isEditingTitle ? (
+          <Flex gap="15px" alignItems="center">
+            <Input
+              variant="text"
+              fontSize="18px"
+              borderRadius="10px"
+              _placeholder={{ fontSize: "16px" }}
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="Enter new title"
+              w="100%"
+              autoFocus
+            />
+            {updateSubscription.isLoading ? (
+              <Spinner w="16px" h="16px" />
+            ) : (
+              <IconButton
+                variant="transparent"
+                minWidth="0"
+                aria-label="save"
+                icon={<AiOutlineCheck />}
+                isDisabled={newTitle === "" || newTitle === address.label}
+                onClick={() => handleTitleChange()}
+              />
+            )}
+            <IconButton
+              variant="transparent"
+              aria-label="close"
+              minWidth="0"
+              icon={<AiOutlineClose />}
+              isDisabled={updateSubscription.isLoading}
+              onClick={() => {
+                setNewTitle("");
+                setIsEditingTitle(false);
+              }}
+            />
+          </Flex>
+        ) : (
+          <Flex gap="15px" alignItems="baseline">
+            <Text variant="title">{address.label}</Text>
+            <EditIcon
+              cursor="pointer"
+              onClick={() => {
+                setNewTitle(address.label);
+                setIsEditingTitle(true);
+              }}
+            />
+          </Flex>
+        )}
         {address.type === "smartcontract" && (
           <AnalyticsAddressTags
             tags={address.tags}
@@ -109,9 +178,9 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             onDelete={(t: string) => handleDeleteTag(t)}
           />
         )}
-        <Text variant="text" pr="160px">
+        {/* <Text variant="text" pr="160px">
           {address.description}
-        </Text>
+        </Text> */}
         {address.type === "smartcontract" ? (
           <AnalyticsSmartContractDetails
             address={address.address}
