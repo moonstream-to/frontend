@@ -260,7 +260,7 @@ const AnalyticsNewAddressView = () => {
             w="100%"
           />
         </Flex>
-        <Flex direction="column" gap="10px">
+        {/* <Flex direction="column" gap="10px">
           <Text variant="label">Description</Text>
           <Textarea
             fontSize="18px"
@@ -271,7 +271,7 @@ const AnalyticsNewAddressView = () => {
             placeholder="Enter description"
             w="100%"
           />
-        </Flex>
+        </Flex> */}
         {type === "smartcontract" && chainName && web3.utils.isAddress(address) && (
           <Flex borderRadius="10px" border="1px solid white" p="20px">
             <AnalyticsABIView
