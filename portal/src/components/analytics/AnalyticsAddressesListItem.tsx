@@ -6,6 +6,8 @@ import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import { AWS_ASSETS_PATH_CF, getChainImage } from "../../constants";
+import { useQuery } from "react-query";
+import http from "../../utils/httpMoonstream";
 
 const AnalyticsAddressesListItem = ({
   address,
@@ -20,6 +22,7 @@ const AnalyticsAddressesListItem = ({
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
   const { selectedAddressId, setSelectedAddressId, filter } = useAnalytics();
+  const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
     if (address && types) {
@@ -58,6 +61,36 @@ const AnalyticsAddressesListItem = ({
     setIsShow(false);
   }, [address, filter]);
 
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+
+  const jobs = useQuery(
+    ["jobs", address.id],
+    async () => {
+      const res = await http({
+        method: "GET",
+        url: `${API}/subscriptions/${address.id}/jobs`,
+      });
+
+      const status = res.data.map((j: any) => {
+        return {
+          type: j.tags.includes("type:event") ? "event" : "function",
+          finished: j.tags.includes("historical_crawl_status:finished"),
+        };
+      });
+      console.log(status);
+      setStatusMessage(
+        `events: ${status.filter((s) => s.type === "event" && s.finished).length} from ${
+          status.filter((s) => s.type === "event").length
+        }\nfunctions: ${status.filter((s) => s.type === "function" && s.finished).length} from ${
+          status.filter((s) => s.type === "function").length
+        }`,
+      );
+    },
+    {
+      enabled: !!address.id && address.type === "smartcontract",
+    },
+  );
+
   const chainName = address.subscription_type_id.split("_")[0];
 
   return (
@@ -91,7 +124,7 @@ const AnalyticsAddressesListItem = ({
             ) : (
               <Image h="20px" w="20px" alt="" src={`${AWS_ASSETS_PATH_CF}/icons/account.png`} />
             )}
-            <Text fontSize="14px" lineHeight="18px">
+            <Text fontSize="14px" lineHeight="18px" title={statusMessage}>
               {address.label}
             </Text>
           </Flex>
