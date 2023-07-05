@@ -5,6 +5,8 @@ import { Button, Flex, Image, Spinner, Text } from "@chakra-ui/react";
 import { AWS_ASSETS_PATH } from "../../constants";
 import useMoonToast from "../../hooks/useMoonToast";
 
+const numberOfCharactersToShow = 10000;
+
 const icons = {
   download: `${AWS_ASSETS_PATH}/icons/file-down.png`,
 };
@@ -46,6 +48,10 @@ const QueryAPIResult = ({
     }
   };
 
+  const resultToShow = `${result.slice(0, numberOfCharactersToShow)}${
+    result.length > numberOfCharactersToShow ? "\n\n ... more in the file" : ""
+  }`;
+
   return (
     <Flex
       direction="column"
@@ -75,7 +81,7 @@ const QueryAPIResult = ({
           </Button>
         )}
       </Flex>
-      {result && <MyJsonComponent json={result} readOnly={true} />}
+      {result && <MyJsonComponent json={resultToShow} readOnly={true} />}
     </Flex>
   );
 };
