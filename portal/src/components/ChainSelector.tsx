@@ -42,7 +42,7 @@ const ChainSelector = () => {
               src={assets[web3Provider.targetChain?.name as keyof typeof assets] ?? ''}
             ></Image>
           ) : (
-            ""
+            undefined
           )
         }
         color="white"
