@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
+
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { EditIcon } from "@chakra-ui/icons";
 import { Flex, IconButton, Input, Link, Spacer, Spinner, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+
 import useAnalytics from "../../contexts/AnalyticsContext";
-import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
@@ -45,46 +46,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const chainName =
     address?.type === "eoa" ? eoaChain : address?.subscription_type_id.split("_")[0];
 
-  // const templates = useQuery(
-  //   ["queryTemplates", address],
-  //   () => {
-  //     return http({
-  //       method: "GET",
-  //       url: `${API}/queries/templates`,
-  //     }).then((res) => {
-  //       console.log(res.data);
-  //       const EOAQueries = res.data.interfaces?.EOA;
-  //       const queries = res.data.queries;
-  //       if (address.type === "smartcontract") {
-  //         return queries.filter(
-  //           (query: any) => !EOAQueries.some((q: any) => q.context_url === query.context_url),
-  //         );
-  //       } else {
-  //         return EOAQueries;
-  //       }
-  //     });
-  //   },
-  //   {
-  //     ...queryCacheProps,
-  //     onError: (error: Error) => {
-  //       console.log(error);
-  //     },
-  //   },
-  // );
-
-  // const supportredInterfaces = useQuery(["supportedInterfaces", address], () => {
-  //   return http({
-  //     method: "GET",
-  //     url: `${API}/subscriptions/supported_interfaces`,
-  //     params: {
-  //       address: address.address,
-  //       blockchain: chainName,
-  //     },
-  //   })
-  //     .then((res) => console.log(res))
-  //     .catch((e) => console.log(e));
-  // });
-
   function removeDuplicatesByContextURL(array: QueryInterface[]) {
     const uniqueArray = [];
     const seenContextIds = new Set();
@@ -100,7 +61,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   }
 
   const supportedQueries = useQuery(
-    ["supportedQueries", address],
+    ["supportedQueries", address.id],
     async () => {
       if (address.type === "smartcontract") {
         const supportedInterfaces = await http({
@@ -116,11 +77,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           selectors.push(supportedInterfaces[key].selector),
         );
         const queries: QueryInterface[] = [];
-        // if (Object.keys(supportedInterfaces).length === 0) {
-        //   Object.keys(templates.data)
-        //     .filter((key: string) => key !== "EOA")
-        //     .forEach((key: string) => selectors.push(key));
-        // }
         Object.keys(templates.data)
           .filter((selector) => selectors.includes(selector))
           .forEach((key) => templates.data[key].forEach((q: QueryInterface) => queries.push(q)));
@@ -132,41 +88,10 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     {
       enabled: !!templates.data,
       onSuccess: (data: QueryInterface[]) => {
-        setQueries(removeDuplicatesByContextURL(data));
+        setQueries(removeDuplicatesByContextURL(data)); //TODO use query cash
       },
     },
   );
-
-  // const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
-  // const toast = useMoonToast();
-  // const getQueries = () => {
-  //   return http({
-  //     method: "GET",
-  //     url: `${API}/queries/list`,
-  //   }).then((res) => {
-  //     return res.data.map((q: { name: string }) => {
-  //       return { title: q.name.split("_").join(" "), context_url: q.name };
-  //     });
-  //   });
-  // };
-
-  // const userQueries = useQuery(["queries", address], getQueries, {
-  //   ...queryCacheProps,
-  //   onError: (error) => {
-  //     toast(error.message, "error");
-  //   },
-  //   enabled: false && address.type === "smartcontract",
-  // });
-
-  // useEffect(() => {
-  //   setSelectedIdx(-1);
-  // }, [address.address]);
-
-  // useEffect(() => {
-  //   const templatesArray = templates.data ? templates.data : [];
-  //   const userQueriesArray = userQueries.data ? userQueries.data : [];
-  //   setQueries([...templatesArray, ...userQueriesArray]);
-  // }, [templates.data, userQueries.data]);
 
   const queryClient = useQueryClient();
   const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
@@ -243,9 +168,11 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             onDelete={(t: string) => handleDeleteTag(t)}
           />
         )}
-        {/* <Text variant="text" pr="160px">
-          {address.description}
-        </Text> */}
+        {address.description && (
+          <Text variant="text" pr="160px">
+            {address.description}
+          </Text>
+        )}
         {address.type === "smartcontract" ? (
           <AnalyticsSmartContractDetails
             address={address.address}
