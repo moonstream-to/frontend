@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Spacer, Text } from "@chakra-ui/react";
 
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import { AWS_ASSETS_PATH_CF, getChainImage } from "../../constants";
-import { useQuery } from "react-query";
-import http from "../../utils/httpMoonstream";
 
 const AnalyticsAddressesListItem = ({
   address,
@@ -21,8 +19,7 @@ const AnalyticsAddressesListItem = ({
   const [type, setType] = useState<{ icon_url?: string }>({});
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
-  const { selectedAddressId, setSelectedAddressId, filter } = useAnalytics();
-  const [statusMessage, setStatusMessage] = useState("");
+  const { selectedAddressId, setSelectedAddressId, filter, statuses } = useAnalytics();
 
   useEffect(() => {
     if (address && types) {
@@ -61,39 +58,6 @@ const AnalyticsAddressesListItem = ({
     setIsShow(false);
   }, [address, filter]);
 
-  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
-
-  // const jobs = useQuery(
-  //   ["jobs", address.id],
-  //   async () => {
-  //     const res = await http({
-  //       method: "GET",
-  //       url: `${API}/subscriptions/${address.id}/jobs`,
-  //     });
-
-  //     const statuses = res.data.map((job: any) => {
-  //       return {
-  //         type: job.tags.includes("type:event") ? "event" : "function",
-  //         finished:
-  //           job.tags.includes("historical_crawl_status:finished") ||
-  //           !job.tags.some((t: string) => t.includes("historical_crawl_status")),
-  //       };
-  //     });
-  //     console.log(statuses);
-  //     console.log(res);
-  //     setStatusMessage(
-  //       `events: ${statuses.filter((s: Status) => s.type === "event" && s.finished).length} from ${
-  //         statuses.filter((s: Status) => s.type === "event").length
-  //       }\nfunctions: ${statuses.filter((s: Status) => s.type === "function" && s.finished).length} from ${
-  //         statuses.filter((s: Status) => s.type === "function").length
-  //       }`,
-  //     );
-  //   },
-  //   {
-  //     enabled: !!address.id && address.type === "smartcontract",
-  //   },
-  // );
-
   const chainName = address.subscription_type_id.split("_")[0];
 
   return (
@@ -127,9 +91,19 @@ const AnalyticsAddressesListItem = ({
             ) : (
               <Image h="20px" w="20px" alt="" src={`${AWS_ASSETS_PATH_CF}/icons/account.png`} />
             )}
-            <Text fontSize="14px" lineHeight="18px" title={statusMessage}>
+            <Text fontSize="14px" lineHeight="18px">
               {address.label}
             </Text>
+            <Spacer />
+            {statuses[address.id] && (
+              <Text
+                fontSize="12px"
+                whiteSpace="nowrap"
+                color={statuses[address.id].loaded ? "#6DD08E" : "#F8D672"}
+              >
+                {statuses[address.id].loaded ? "Ready to use" : "Data is loading..."}
+              </Text>
+            )}
           </Flex>
 
           <Flex gap="5px" wrap="wrap">
