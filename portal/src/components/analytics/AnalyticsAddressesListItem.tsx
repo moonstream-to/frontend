@@ -19,7 +19,7 @@ const AnalyticsAddressesListItem = ({
   const [type, setType] = useState<{ icon_url?: string }>({});
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
-  const { selectedAddressId, setSelectedAddressId, filter, statuses } = useAnalytics();
+  const { selectedAddressId, setSelectedAddressId, filter } = useAnalytics();
 
   useEffect(() => {
     if (address && types) {
@@ -95,15 +95,6 @@ const AnalyticsAddressesListItem = ({
               {address.label}
             </Text>
             <Spacer />
-            {statuses[address.id] && (
-              <Text
-                fontSize="12px"
-                whiteSpace="nowrap"
-                color={statuses[address.id].loaded ? "#6DD08E" : "#F8D672"}
-              >
-                {statuses[address.id].loaded ? "Ready to use" : "Data is loading..."}
-              </Text>
-            )}
           </Flex>
 
           <Flex gap="5px" wrap="wrap">

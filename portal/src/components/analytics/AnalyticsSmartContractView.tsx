@@ -11,7 +11,6 @@ import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 import AnalyticsChainSelector from "./AnalyticsChainSelector";
-import AnalyticsCrawlingStatus from "./AnalyticsCrawlingStatus";
 import AnalyticsEOADetails from "./AnalyticsEOADetails";
 import AnalyticsQueryView from "./AnalyticsQueryView";
 import AnalyticsSmartContractDetails from "./AnalyticsSmartContractDetails";
@@ -193,7 +192,6 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             </Text>
           </Link>
         </Flex>
-        {address.type !== "eoa" && <AnalyticsCrawlingStatus address={address} />}
         {address.type === "eoa" && (
           <AnalyticsChainSelector selectedChain={eoaChain} setSelectedChain={setEoaChain} />
         )}

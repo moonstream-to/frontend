@@ -8,14 +8,6 @@ import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
 import http from "../../utils/httpMoonstream";
 
-type CrawlingStatus = {
-  methodsNumber: number;
-  methodsLoaded: number;
-  eventsNumber: number;
-  eventsLoaded: number;
-  loaded: boolean;
-};
-
 type AnalyticsContextType = {
   addresses: any;
   queries: any;
@@ -35,8 +27,6 @@ type AnalyticsContextType = {
   setSelectedQueryId: (arg0: number) => void;
   reset: () => void;
   templates: any;
-  jobs: any;
-  statuses: Record<string, CrawlingStatus>;
 };
 
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefined); //TODO
@@ -51,12 +41,6 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
 
-  interface Status {
-    type: "event" | "function";
-    finished: boolean;
-  }
-
-  const [statuses, setStatuses] = useState<Record<string, CrawlingStatus>>({});
   const reset = () => {
     setSelectedAddressId(0);
     setSelectedQueryId(0);
@@ -122,47 +106,6 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     enabled: !!user,
   });
 
-  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-  const jobs = useQuery(
-    ["jobs", addresses.data],
-    async () => {
-      addresses.data
-        .filter((address: any) => address.type !== "eoa")
-        .forEach(async (address: any, index: number) => {
-          await delay(index * 1000);
-          const res = await http({
-            method: "GET",
-            url: `${API}/subscriptions/${address.id}/jobs`,
-          });
-          const jobsList = res.data.map((job: any) => {
-            return {
-              type: job.tags.includes("type:event") ? "event" : "function",
-              finished:
-                job.tags.includes("historical_crawl_status:finished") ||
-                !job.tags.some((t: string) => t.includes("historical_crawl_status")),
-            };
-          });
-          const status: CrawlingStatus = {
-            loaded: !jobsList.some((s: Status) => !s.finished),
-            eventsNumber: jobsList.filter((s: Status) => s.type === "event").length,
-            eventsLoaded: jobsList.filter((s: Status) => s.type === "event" && s.finished).length,
-            methodsNumber: jobsList.filter((s: Status) => s.type === "function").length,
-            methodsLoaded: jobsList.filter((s: Status) => s.type === "function" && s.finished)
-              .length,
-          };
-          setStatuses((prevState) => ({
-            ...prevState,
-            [address.id]: status,
-          }));
-        });
-    },
-    {
-      enabled: !!addresses.data,
-      refetchOnWindowFocus: false,
-    },
-  );
-
   const queries = undefined;
 
   const value = {
@@ -184,8 +127,6 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     setSelectedQueryId,
     reset,
     templates,
-    jobs,
-    statuses,
   };
 
   return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>;
