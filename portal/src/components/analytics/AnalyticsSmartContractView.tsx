@@ -116,11 +116,11 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           selectors.push(supportedInterfaces[key].selector),
         );
         const queries: QueryInterface[] = [];
-        if (Object.keys(supportedInterfaces).length === 0) {
-          Object.keys(templates.data)
-            .filter((key: string) => key !== "EOA")
-            .forEach((key: string) => selectors.push(key));
-        }
+        // if (Object.keys(supportedInterfaces).length === 0) {
+        //   Object.keys(templates.data)
+        //     .filter((key: string) => key !== "EOA")
+        //     .forEach((key: string) => selectors.push(key));
+        // }
         Object.keys(templates.data)
           .filter((selector) => selectors.includes(selector))
           .forEach((key) => templates.data[key].forEach((q: QueryInterface) => queries.push(q)));
