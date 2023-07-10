@@ -63,33 +63,36 @@ const AnalyticsAddressesListItem = ({
 
   const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
-  const jobs = useQuery(
-    ["jobs", address.id],
-    async () => {
-      const res = await http({
-        method: "GET",
-        url: `${API}/subscriptions/${address.id}/jobs`,
-      });
+  // const jobs = useQuery(
+  //   ["jobs", address.id],
+  //   async () => {
+  //     const res = await http({
+  //       method: "GET",
+  //       url: `${API}/subscriptions/${address.id}/jobs`,
+  //     });
 
-      const status = res.data.map((j: any) => {
-        return {
-          type: j.tags.includes("type:event") ? "event" : "function",
-          finished: j.tags.includes("historical_crawl_status:finished"),
-        };
-      });
-      console.log(status);
-      setStatusMessage(
-        `events: ${status.filter((s) => s.type === "event" && s.finished).length} from ${
-          status.filter((s) => s.type === "event").length
-        }\nfunctions: ${status.filter((s) => s.type === "function" && s.finished).length} from ${
-          status.filter((s) => s.type === "function").length
-        }`,
-      );
-    },
-    {
-      enabled: !!address.id && address.type === "smartcontract",
-    },
-  );
+  //     const statuses = res.data.map((job: any) => {
+  //       return {
+  //         type: job.tags.includes("type:event") ? "event" : "function",
+  //         finished:
+  //           job.tags.includes("historical_crawl_status:finished") ||
+  //           !job.tags.some((t: string) => t.includes("historical_crawl_status")),
+  //       };
+  //     });
+  //     console.log(statuses);
+  //     console.log(res);
+  //     setStatusMessage(
+  //       `events: ${statuses.filter((s: Status) => s.type === "event" && s.finished).length} from ${
+  //         statuses.filter((s: Status) => s.type === "event").length
+  //       }\nfunctions: ${statuses.filter((s: Status) => s.type === "function" && s.finished).length} from ${
+  //         statuses.filter((s: Status) => s.type === "function").length
+  //       }`,
+  //     );
+  //   },
+  //   {
+  //     enabled: !!address.id && address.type === "smartcontract",
+  //   },
+  // );
 
   const chainName = address.subscription_type_id.split("_")[0];
 
