@@ -133,16 +133,7 @@ const AnalyticsNewAddressView = () => {
   };
 
   return (
-    <Flex
-      borderRadius="20px"
-      bg="#2d2d2d"
-      w="100%"
-      minH="100%"
-      maxW="800px"
-      minW="800px"
-      direction="column"
-      overflowY="auto"
-    >
+    <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" direction="column" overflowY="auto">
       <Flex direction="column" p="30px" gap="30px" w="100%">
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title"> Watch new address</Text>
@@ -163,7 +154,7 @@ const AnalyticsNewAddressView = () => {
         />
         <Flex direction="column" gap="10px">
           <Text variant="label">Address</Text>
-          <Flex justifyContent="space-between" gap="10px" alignItems="center">
+          <Flex justifyContent="start" gap="10px" alignItems="center">
             <Input
               variant="address"
               fontSize="18px"

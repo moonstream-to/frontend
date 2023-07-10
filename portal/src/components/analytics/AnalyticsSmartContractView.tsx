@@ -184,15 +184,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   };
 
   return (
-    <Flex
-      borderRadius="20px"
-      bg="#2d2d2d"
-      w="100%"
-      minH="100%"
-      minW="800px"
-      direction="column"
-      overflowY="auto"
-    >
+    <Flex borderRadius="20px" bg="#2d2d2d" minH="100%" w="100%" direction="column" overflowY="auto">
       <Flex direction="column" p="30px" gap="30px" w="100%">
         {isEditingTitle ? (
           <Flex gap="15px" alignItems="center">
