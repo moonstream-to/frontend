@@ -6,6 +6,7 @@ import useUser from "../../contexts/UserContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
+import http from "../../utils/httpMoonstream";
 
 type AnalyticsContextType = {
   addresses: any;
@@ -25,6 +26,7 @@ type AnalyticsContextType = {
   selectedQueryId: number;
   setSelectedQueryId: (arg0: number) => void;
   reset: () => void;
+  templates: any;
 };
 
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefined); //TODO
@@ -38,6 +40,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const [isCreatingAddress, setIsCreatingAddress] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
+
   const reset = () => {
     setSelectedAddressId(0);
     setSelectedQueryId(0);
@@ -75,6 +78,26 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
       );
   };
 
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+
+  const templates = useQuery(
+    ["queryTemplates"],
+    () => {
+      return http({
+        method: "GET",
+        url: `${API}/queries/templates`,
+      }).then((res) => {
+        return res.data.interfaces;
+      });
+    },
+    {
+      ...queryCacheProps,
+      onError: (error: Error) => {
+        console.log(error);
+      },
+    },
+  );
+
   const addresses = useQuery(["subscriptions"], getSubscriptions, {
     ...queryCacheProps,
     onError: (error) => {
@@ -103,6 +126,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     selectedQueryId,
     setSelectedQueryId,
     reset,
+    templates,
   };
 
   return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>;

@@ -1,3 +1,6 @@
+import { useContext, useEffect, useState } from "react";
+
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { CloseIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -12,13 +15,12 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
 import { AWS_ASSETS_PATH_CF, ChainName, getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
+import http from "../../utils/httpMoonstream";
 import AnalyticsABIView from "./AnalyticsABIView";
 import AnalyticsAddressTags from "./AnalyticsAddressTags";
 const metamaskIcon = `${AWS_ASSETS_PATH_CF}/icons/metamask.png`;
@@ -110,6 +112,31 @@ const AnalyticsNewAddressView = () => {
       }
     }
   };
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+
+  const addressType = useQuery(
+    ["addressType", address],
+    () => {
+      return http({
+        method: "GET",
+        url: `${API}/subscriptions/is_contract?address=${address}`,
+      })
+        .then((res) => {
+          setType("smartcontract");
+          setChainName(Object.keys(res.data.contract_info)[0]);
+          return res.data;
+        })
+        .catch((e: any) => {
+          console.log(e);
+          setType("regularAccount");
+          setChainName("");
+        });
+    },
+    {
+      enabled: web3.utils.isAddress(address),
+      retry: false,
+    },
+  );
 
   useEffect(() => {
     setShowInvalid(false);
@@ -133,16 +160,7 @@ const AnalyticsNewAddressView = () => {
   };
 
   return (
-    <Flex
-      borderRadius="20px"
-      bg="#2d2d2d"
-      w="100%"
-      minH="100%"
-      maxW="800px"
-      minW="800px"
-      direction="column"
-      overflowY="auto"
-    >
+    <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" direction="column" overflowY="auto">
       <Flex direction="column" p="30px" gap="30px" w="100%">
         <Flex justifyContent="space-between" alignItems="center">
           <Text variant="title"> Watch new address</Text>
@@ -163,7 +181,7 @@ const AnalyticsNewAddressView = () => {
         />
         <Flex direction="column" gap="10px">
           <Text variant="label">Address</Text>
-          <Flex justifyContent="space-between" gap="10px" alignItems="center">
+          <Flex justifyContent="start" gap="10px" alignItems="center">
             <Input
               variant="address"
               fontSize="18px"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Spacer, Text } from "@chakra-ui/react";
 
 import ChainTag from "../ChainTag";
 import Tag from "../Tag";
@@ -94,6 +94,7 @@ const AnalyticsAddressesListItem = ({
             <Text fontSize="14px" lineHeight="18px">
               {address.label}
             </Text>
+            <Spacer />
           </Flex>
 
           <Flex gap="5px" wrap="wrap">
