@@ -1,5 +1,5 @@
 import { Button, Flex, Spinner, Text } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import queryCacheProps from "../../hooks/hookCommon";
@@ -10,6 +10,7 @@ import AnalyticsQueryResults from "./AnalyticsQueryResults";
 import { QueryInterface } from "./AnalyticsSmartContractQueries";
 import { isValidArray } from "./validateParameters";
 import QueryAPIResult from "../queryAPI/QueryAPIResult";
+import AnalyticsQueryContent from "./AnalyticsQueryContent";
 
 const AnalyticsQueryView = ({
   query,
@@ -26,6 +27,7 @@ const AnalyticsQueryView = ({
   const [result, setResult] = useState("");
   const [queryStatus, setQueryStatus] = useState("");
   const [filename, setFilename] = useState("");
+
   const runQueryRef = useRef(false);
   const toast = useMoonToast();
 
@@ -168,12 +170,10 @@ const AnalyticsQueryView = ({
   };
 
   const setParam = (idx: number, key: string, value: string) => {
-    setParams((prev) => {
-      const newParams = [...prev];
-      const param = newParams[idx];
-      newParams[idx][key as keyof typeof param] = value;
-      return newParams;
-    });
+    const newParams = [...params];
+    const param = newParams[idx];
+    newParams[idx][key as keyof typeof param] = value;
+    setParams(newParams);
   };
 
   return (
@@ -199,7 +199,8 @@ const AnalyticsQueryView = ({
           Run
         </Button>
       </Flex>
-      <Text>{query.description}</Text>
+      {query.description && <Text>{query.description}</Text>}
+      <AnalyticsQueryContent content={query.content} />
       {params.length > 0 && <AnalyticsQueryParameters params={params} setParam={setParam} />}
       {result === "" && queryStatus === "" && <AnalyticsQueryResults />}
       {(queryStatus || result) && (
