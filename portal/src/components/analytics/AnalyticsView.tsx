@@ -24,7 +24,7 @@ const AnalyticsView = () => {
   return (
     <Center>
       {user && (
-        <Flex gap="30px" py="30px" px="7%" minH="760px" maxW="90%" minW="90%">
+        <Flex gap="30px" py="30px" px={{ base: 0, xl: "5%", "2xl": "10%" }} minH="760px" minW="90%">
           <AnalyticsAddressesView />
           {addresses.data?.length > 0 && !isCreatingAddress && (
             <AnalyticsSmartContractView address={addresses.data[selectedAddressId]} />
