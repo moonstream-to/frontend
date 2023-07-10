@@ -160,7 +160,6 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     {
       enabled: !!addresses.data,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
     },
   );
 
