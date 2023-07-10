@@ -70,7 +70,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
           <MenuButton {...props}>
             <Flex gap="5px" alignItems="center">
               <BsPerson />
-              Account
+              {user.username.length > 13 ? user.username.slice(0, 11) + "..." : user.username}
             </Flex>
           </MenuButton>
           <MenuList borderRadius="10px" border="1px solid white" minW="fit-content" p="20px">
