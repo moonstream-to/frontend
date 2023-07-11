@@ -1,13 +1,17 @@
-import { Box, Flex, Input, Text } from "@chakra-ui/react";
-import TimestampInput from "../TimestampInput";
-import { isValid } from "./validateParameters";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import ParamInput from "../ParamInput";
+import { QueryInterface } from "./AnalyticsSmartContractQueries";
 
 const AnalyticsQueryParameters = ({
   params,
   setParam,
+  query,
+  abi,
 }: {
   params: { key: string; value: string }[];
   setParam: (idx: number, key: string, value: string) => void;
+  query: QueryInterface;
+  abi: any;
 }) => {
   return (
     <Flex direction="column" gap="10px">
@@ -26,25 +30,12 @@ const AnalyticsQueryParameters = ({
           >
             {param.key}
           </Box>
-          {param.key?.includes("timestamp") ? (
-            <TimestampInput
-              timestamp={param.value ?? ""}
-              setTimestamp={(newValue: string) => setParam(idx, "value", String(newValue))}
-            />
-          ) : (
-            <Input
-              flex="2"
-              h="40px"
-              variant="address"
-              border="1px solid #4D4D4D"
-              borderColor={
-                isValid(param.key, param.value) || !param.value ? "#4d4d4d" : "error.500"
-              }
-              value={param.value}
-              onChange={(e) => setParam(idx, "value", e.target.value)}
-              mr="10px"
-            />
-          )}
+          <ParamInput
+            param={param}
+            onChange={(newValue) => setParam(idx, "value", String(newValue))}
+            query={query}
+            abi={abi}
+          />
         </Flex>
       ))}
     </Flex>

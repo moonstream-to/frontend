@@ -17,11 +17,13 @@ const AnalyticsQueryView = ({
   address,
   chainName,
   type,
+  abi,
 }: {
   query: QueryInterface;
   address: string;
   chainName: string;
   type: string;
+  abi: string;
 }) => {
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   const [result, setResult] = useState("");
@@ -201,7 +203,9 @@ const AnalyticsQueryView = ({
       </Flex>
       {query.description && <Text>{query.description}</Text>}
       <AnalyticsQueryContent content={query.content} />
-      {params.length > 0 && <AnalyticsQueryParameters params={params} setParam={setParam} />}
+      {params.length > 0 && (
+        <AnalyticsQueryParameters query={query} abi={abi} params={params} setParam={setParam} />
+      )}
       {result === "" && queryStatus === "" && <AnalyticsQueryResults />}
       {(queryStatus || result) && (
         <QueryAPIResult

@@ -26,6 +26,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const [eoaChain, setEoaChain] = useState("");
   const [newTitle, setNewTitle] = useState("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [abi, setABI] = useState("");
 
   const { templates } = useAnalytics();
 
@@ -178,6 +179,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             id={address.id}
             chain={chainName}
             isAbi={address.abi === "True"}
+            setABI={setABI}
           />
         ) : (
           <AnalyticsEOADetails address={address.address} created_at={address.created_at} />
@@ -208,6 +210,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             address={address.address}
             chainName={chainName}
             type={address.type}
+            abi={abi}
           />
         )}
       </Flex>
