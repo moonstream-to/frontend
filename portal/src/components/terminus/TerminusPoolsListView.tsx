@@ -2,9 +2,15 @@
 import { useContext, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Button,
   Checkbox,
   Flex,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -26,6 +32,8 @@ import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import { useRouter } from "next/router";
 import { MAX_INT } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
+import useLink from "../../hooks/useLink";
+import PoolDetailsRow from "../PoolDetailsRow";
 
 const TerminusPoolsListView = () => {
   const toast = useToast();
@@ -47,6 +55,10 @@ const TerminusPoolsListView = () => {
     isTransferable: boolean;
     isBurnable: boolean;
   }>({ capacity: "", isTransferable: true, isBurnable: true });
+
+  const [newPoolURI, setNewPoolURI] = useState("");
+
+  const headerMeta = ["name", "description", "image", "attributes"];
 
   useEffect(() => {
     const queryPoolId =
@@ -85,14 +97,22 @@ const TerminusPoolsListView = () => {
       capacity,
       isBurnable,
       isTransferable,
+      poolURI,
     }: {
       capacity: string;
       isBurnable: boolean;
       isTransferable: boolean;
-    }) =>
-      terminusFacet.methods
+      poolURI: string;
+    }) => {
+      if (poolURI) {
+        return terminusFacet.methods
+          .createPoolV2(capacity, isTransferable, isBurnable, poolURI)
+          .send({ from: web3ctx.account });
+      }
+      return terminusFacet.methods
         .createPoolV1(capacity, isTransferable, isBurnable)
-        .send({ from: web3ctx.account }),
+        .send({ from: web3ctx.account });
+    },
     {
       ...commonProps,
       onSuccess: () => {
@@ -122,12 +142,17 @@ const TerminusPoolsListView = () => {
       });
       return;
     }
+    if (newPoolURI) {
+    }
     newPool.mutate({
       capacity: newPoolProps.capacity,
       isTransferable: newPoolProps.isTransferable,
       isBurnable: newPoolProps.isBurnable,
+      poolURI: newPoolURI,
     });
   };
+
+  const newMetadata = useLink({ link: newPoolURI });
 
   return (
     <Flex
@@ -168,10 +193,88 @@ const TerminusPoolsListView = () => {
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent bg="#181818" color="white" border="1px solid white">
+        <ModalContent bg="#181818" color="white" border="1px solid white" minW="800px">
           <ModalHeader>New pool</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody w="700px">
+            <Input
+              value={newPoolURI}
+              type="text"
+              placeholder="poolURI"
+              onChange={(e) => setNewPoolURI(e.target.value)}
+              mb={4}
+            />
+            {newMetadata.data && (
+              <Accordion allowToggle mt={-4} mb={4}>
+                <AccordionItem border="none">
+                  <AccordionButton justifyContent="end">
+                    Metadata preview
+                    <AccordionIcon />
+                  </AccordionButton>
+                  <AccordionPanel>
+                    <Flex direction="column" gap="10px" borderRadius="10px" bg="#232323" p="20px">
+                      {newMetadata.data?.name && (
+                        <Text fontWeight="700" fontSize="24px" mb="20px">
+                          {newMetadata.data.name}
+                        </Text>
+                      )}
+                      {newMetadata.data?.image && (
+                        <Image
+                          w="140px"
+                          h="140px"
+                          borderRadius="20px"
+                          src={newMetadata.data.image}
+                          alt="image"
+                        />
+                      )}
+                      {newMetadata.data?.description && (
+                        <Text fontWeight="400" fontSize="18px" mb="20px">
+                          {newMetadata.data.description}
+                        </Text>
+                      )}
+                      <Text fontWeight="700" mt="20px">
+                        Metadata:
+                      </Text>
+                      {Object.keys(newMetadata.data)
+                        .filter((key) => !headerMeta.includes(key))
+                        .map((key) => {
+                          return (
+                            <PoolDetailsRow
+                              key={key}
+                              ml="10px"
+                              type={key}
+                              value={String(newMetadata.data[key])}
+                            />
+                          );
+                        })}
+                      {newMetadata.data?.attributes && (
+                        <>
+                          <Text fontWeight="700" mt="20px">
+                            Attributes:
+                          </Text>
+
+                          {newMetadata.data.attributes.map(
+                            (attribute: { trait_type: string; value: string }) => (
+                              <PoolDetailsRow
+                                key={attribute.trait_type}
+                                type={attribute.trait_type}
+                                value={String(attribute.value)}
+                                ml="10px"
+                              />
+                            ),
+                          )}
+                        </>
+                      )}
+                    </Flex>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            )}
+            {!newMetadata.data && (
+              <Text color="error.500" mb={4}>
+                Can&apos;t fetch metadata
+              </Text>
+            )}
             <Flex gap={3}>
               <Input
                 onChange={(e) =>
