@@ -197,11 +197,58 @@ const TerminusPoolsListView = () => {
           <ModalHeader>New pool</ModalHeader>
           <ModalCloseButton />
           <ModalBody w="700px">
+            <Flex gap={3}>
+              <Input
+                onChange={(e) =>
+                  setNewPoolProps((prev) => {
+                    return { ...prev, capacity: e.target.value };
+                  })
+                }
+                placeholder="capacity"
+                type="number"
+                value={newPoolProps.capacity}
+                mb={4}
+              />
+              <Button
+                colorScheme="purple"
+                onClick={() => {
+                  setNewPoolProps((prev) => {
+                    return { ...prev, capacity: MAX_INT };
+                  });
+                }}
+              >
+                MAX_INT
+              </Button>
+            </Flex>
+            <Checkbox
+              colorScheme="white"
+              mr={3}
+              onChange={(e) =>
+                setNewPoolProps((prev) => {
+                  return { ...prev, isBurnable: e.target.checked };
+                })
+              }
+              isChecked={newPoolProps.isBurnable}
+            >
+              Burnable
+            </Checkbox>
+            <Checkbox
+              colorScheme="white"
+              onChange={(e) =>
+                setNewPoolProps((prevState) => {
+                  return { ...prevState, isTransferable: e.target.checked };
+                })
+              }
+              isChecked={newPoolProps.isTransferable}
+            >
+              Transferable
+            </Checkbox>
             <Input
               value={newPoolURI}
               type="text"
               placeholder="poolURI"
               onChange={(e) => setNewPoolURI(e.target.value)}
+              mt={4}
               mb={4}
             />
             {newMetadata.data && (
@@ -270,57 +317,11 @@ const TerminusPoolsListView = () => {
                 </AccordionItem>
               </Accordion>
             )}
-            {!newMetadata.data && (
+            {!newMetadata.data && newPoolURI && (
               <Text color="error.500" mb={4}>
                 Can&apos;t fetch metadata
               </Text>
             )}
-            <Flex gap={3}>
-              <Input
-                onChange={(e) =>
-                  setNewPoolProps((prev) => {
-                    return { ...prev, capacity: e.target.value };
-                  })
-                }
-                placeholder="capacity"
-                type="number"
-                value={newPoolProps.capacity}
-                mb={4}
-              />
-              <Button
-                colorScheme="purple"
-                onClick={() => {
-                  setNewPoolProps((prev) => {
-                    return { ...prev, capacity: MAX_INT };
-                  });
-                }}
-              >
-                MAX_INT
-              </Button>
-            </Flex>
-            <Checkbox
-              colorScheme="white"
-              mr={3}
-              onChange={(e) =>
-                setNewPoolProps((prev) => {
-                  return { ...prev, isBurnable: e.target.checked };
-                })
-              }
-              isChecked={newPoolProps.isBurnable}
-            >
-              Burnable
-            </Checkbox>
-            <Checkbox
-              colorScheme="white"
-              onChange={(e) =>
-                setNewPoolProps((prevState) => {
-                  return { ...prevState, isTransferable: e.target.checked };
-                })
-              }
-              isChecked={newPoolProps.isTransferable}
-            >
-              Transferable
-            </Checkbox>
           </ModalBody>
 
           <ModalFooter>
