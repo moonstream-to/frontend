@@ -43,8 +43,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     // TODO delete tag from DB
   };
 
-  const chainName =
-    address?.type === "eoa" ? eoaChain : address?.subscription_type_id.split("_")[0];
+  const chainName = address?.type === "eoa" ? eoaChain : address.chainName; //address?.subscription_type_id.split("_")[0];
 
   function removeDuplicatesByContextURL(array: QueryInterface[]) {
     const uniqueArray = [];
@@ -69,7 +68,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           url: `${API}/subscriptions/supported_interfaces`,
           params: {
             address: address.address,
-            blockchain: chainName,
+            blockchain: chainName === "gnosis" ? "xdai" : chainName,
           },
         }).then((res) => res.data.interfaces);
         const selectors: string[] = ["any"];

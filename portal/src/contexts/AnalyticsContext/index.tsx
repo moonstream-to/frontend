@@ -17,8 +17,8 @@ type AnalyticsContextType = {
   setFilter: (arg0: string) => void;
   selectedAddressId: number;
   setSelectedAddressId: (arg0: number) => void;
-  types: any;
-  setTypes: (arg0: any) => void;
+  // types: any;
+  // setTypes: (arg0: any) => void;
   isCreatingAddress: boolean;
   setIsCreatingAddress: (arg0: boolean) => void;
   isEditingContract: boolean;
@@ -36,7 +36,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const [filter, setFilter] = useState("");
   const [selectedAddressId, setSelectedAddressId] = useState(0);
   const [selectedQueryId, setSelectedQueryId] = useState(0);
-  const [types, setTypes] = useState([]);
+  // const [types, setTypes] = useState([]);
   const [isCreatingAddress, setIsCreatingAddress] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
@@ -73,6 +73,10 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
             ...i,
             type: i.subscription_type_id !== "externaly_owned_account" ? "smartcontract" : "eoa",
             created_at: created_at.toLocaleDateString(),
+            chainName:
+              i.subscription_type_id.split("_")[0] === "xdai"
+                ? "gnosis"
+                : i.subscription_type_id.split("_")[0],
           };
         }),
       );
@@ -117,8 +121,8 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     setFilter,
     selectedAddressId,
     setSelectedAddressId,
-    types,
-    setTypes,
+    // types,
+    // setTypes,
     isCreatingAddress,
     setIsCreatingAddress,
     isEditingContract,

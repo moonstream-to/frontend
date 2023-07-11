@@ -100,8 +100,9 @@ const AnalyticsNewAddressView = () => {
         if (abi) {
           JSONForSave = JSON.stringify(JSON.parse(abi));
         }
+        const chain = chainName === "gnosis" ? "xdai" : chainName;
         createSubscription.mutate({
-          type: type === "smartcontract" ? `${chainName}_${type}` : "externaly_owned_account",
+          type: type === "smartcontract" ? `${chain}_${type}` : "externaly_owned_account",
           address,
           label: title,
           color: "#000000",
@@ -123,7 +124,9 @@ const AnalyticsNewAddressView = () => {
       })
         .then((res) => {
           setType("smartcontract");
-          setChainName(Object.keys(res.data.contract_info)[0]);
+          let contractChain = Object.keys(res.data.contract_info)[0];
+          if (contractChain === "xdai") contractChain = "gnosis";
+          setChainName(contractChain);
           return res.data;
         })
         .catch((e: any) => {
