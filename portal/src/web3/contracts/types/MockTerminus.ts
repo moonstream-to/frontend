@@ -102,6 +102,13 @@ export interface MockTerminus extends BaseContract {
       _burnable: boolean,
     ): NonPayableTransactionObject<string>;
 
+    createPoolV2(
+      _capacity: number | string | BN,
+      _transferable: boolean,
+      _burnable: boolean,
+      poolURI: string,
+    ): NonPayableTransactionObject<string>;
+
     createSimplePool(_capacity: number | string | BN): NonPayableTransactionObject<string>;
 
     isApprovedForAll(account: string, operator: string): NonPayableTransactionObject<boolean>;
