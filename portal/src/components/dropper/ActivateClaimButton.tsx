@@ -57,7 +57,7 @@ const ActivateClaimButton: React.FC<ActivateClaimButtonProps> = ({ dropState }) 
       bg={buttonColor}
       _hover={{ bg: hoverColor }}
       onClick={() => setActive.mutate(mutationAction)}
-      disabled={Boolean(buttonLabel) || setActive.isLoading}
+      isDisabled={Boolean(buttonLabel) || setActive.isLoading}
     >
       {buttonText}
     </Button>

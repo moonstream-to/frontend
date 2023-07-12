@@ -53,7 +53,7 @@ const AnalyticsAddressesView = () => {
         onClick={() => {
           setIsCreatingAddress(true);
         }}
-        disabled={isCreatingAddress}
+        isDisabled={isCreatingAddress}
       >
         + Watch new address
       </Button>

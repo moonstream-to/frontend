@@ -220,7 +220,7 @@ const TokensList = () => {
                     title={token.id === userToken ? "current token" : ""}
                     aria-label="delete"
                     icon={<DeleteIcon h="15px" />}
-                    disabled={token.id === userToken}
+                    isDisabled={token.id === userToken}
                     cursor="pointer"
                     onClick={() => deleteToken.mutate(token.id)}
                     _hover={{ bg: "transparent" }}
