@@ -15,11 +15,13 @@ const AnalyticsSmartContractDetails = ({
   chain,
   id,
   isAbi,
+  setABI,
 }: {
   address: string;
   chain: string;
   id: string;
   isAbi: boolean;
+  setABI?: (arg0: string) => void;
 }) => {
   return (
     <Flex flex="1 1 0px" direction="column" gap="10px" p="15px" borderRadius="10px" bg="#232323">
@@ -48,7 +50,13 @@ const AnalyticsSmartContractDetails = ({
           <AccordionPanel p="0">
             <Flex direction="column" mt="20px">
               <Flex w="100%" bg="#4D4D4D" h="1px" mt="20px" mb="12px" />
-              <AnalyticsABIView address={address} id={id} chain={chain} isAbi={isAbi} />
+              <AnalyticsABIView
+                address={address}
+                id={id}
+                chain={chain}
+                isAbi={isAbi}
+                setABI={setABI}
+              />
             </Flex>
           </AccordionPanel>
         </AccordionItem>

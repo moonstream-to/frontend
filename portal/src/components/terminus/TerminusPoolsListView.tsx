@@ -186,7 +186,7 @@ const TerminusPoolsListView = () => {
           fontSize="20px"
           color="#2d2d2d"
           onClick={onOpen}
-          disabled={newPool.isLoading}
+          isDisabled={newPool.isLoading}
         >
           {newPool.isLoading ? <Spinner /> : "+ Add new"}
         </Button>

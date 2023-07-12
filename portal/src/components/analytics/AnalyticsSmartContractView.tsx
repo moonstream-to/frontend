@@ -22,16 +22,15 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
 
   const [selectedIdx, setSelectedIdx] = useState(-1);
 
-  const [queries, setQueries] = useState<QueryInterface[]>([]);
   const [eoaChain, setEoaChain] = useState("");
   const [newTitle, setNewTitle] = useState("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [abi, setABI] = useState("");
 
   const { templates } = useAnalytics();
 
   useEffect(() => {
     setSelectedIdx(-1);
-    setQueries([]);
   }, [address]);
 
   const handleAddTag = (newTag: string) => {
@@ -42,8 +41,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     // TODO delete tag from DB
   };
 
-  const chainName =
-    address?.type === "eoa" ? eoaChain : address?.subscription_type_id.split("_")[0];
+  const chainName = address?.type === "eoa" ? eoaChain : address.chainName; //address?.subscription_type_id.split("_")[0];
 
   function removeDuplicatesByContextURL(array: QueryInterface[]) {
     const uniqueArray = [];
@@ -68,7 +66,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           url: `${API}/subscriptions/supported_interfaces`,
           params: {
             address: address.address,
-            blockchain: chainName,
+            blockchain: chainName === "gnosis" ? "xdai" : chainName,
           },
         }).then((res) => res.data.interfaces);
         const selectors: string[] = ["any"];
@@ -79,16 +77,14 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         Object.keys(templates.data)
           .filter((selector) => selectors.includes(selector))
           .forEach((key) => templates.data[key].forEach((q: QueryInterface) => queries.push(q)));
-        return queries;
+        return removeDuplicatesByContextURL(queries);
       } else {
         return templates.data["EOA"];
       }
     },
     {
       enabled: !!templates.data,
-      onSuccess: (data: QueryInterface[]) => {
-        setQueries(removeDuplicatesByContextURL(data)); //TODO use query cash
-      },
+      staleTime: 50000,
     },
   );
 
@@ -108,7 +104,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   };
 
   return (
-    <Flex borderRadius="20px" bg="#2d2d2d" minH="100%" w="100%" direction="column" overflowY="auto">
+    <Flex borderRadius="20px" bg="#2d2d2d" minH="100%" w="100%" direction="column">
       <Flex direction="column" p="30px" gap="30px" w="100%">
         {isEditingTitle ? (
           <Flex gap="15px" alignItems="center">
@@ -178,13 +174,14 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             id={address.id}
             chain={chainName}
             isAbi={address.abi === "True"}
+            setABI={setABI}
           />
         ) : (
           <AnalyticsEOADetails address={address.address} created_at={address.created_at} />
         )}
         <Flex justifyContent="space-between" alignItems="center" gap="20px">
           <Text variant="title2">Analytics</Text>
-          {(supportedQueries.isFetching || templates.isLoading) && <Spinner size="sm" />}
+          {(supportedQueries.isLoading || templates.isLoading) && <Spinner size="sm" />}
           <Spacer />
           <Link isExternal href="https://discord.gg/K56VNUQGvA" _hover={{ textDecoration: "none" }}>
             <Text my="auto" color="#F88F78" fontSize="14px" cursor="pointer">
@@ -195,19 +192,20 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         {address.type === "eoa" && (
           <AnalyticsChainSelector selectedChain={eoaChain} setSelectedChain={setEoaChain} />
         )}
-        {queries && (
+        {supportedQueries.data && (
           <AnalyticsSmartContractQueries
-            queries={queries}
+            queries={supportedQueries.data}
             selectedIdx={selectedIdx}
             onChange={setSelectedIdx}
           />
         )}
-        {queries && selectedIdx > -1 && (
+        {supportedQueries.data && selectedIdx > -1 && (
           <AnalyticsQueryView
-            query={queries[selectedIdx]}
+            query={supportedQueries.data[selectedIdx]}
             address={address.address}
             chainName={chainName}
             type={address.type}
+            abi={abi}
           />
         )}
       </Flex>

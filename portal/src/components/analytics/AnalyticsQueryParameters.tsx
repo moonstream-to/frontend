@@ -1,52 +1,47 @@
-import { Box, Flex, Input, Text } from "@chakra-ui/react";
-import TimestampInput from "../TimestampInput";
-import { isValid } from "./validateParameters";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import ParamInput from "../ParamInput";
+import { QueryInterface } from "./AnalyticsSmartContractQueries";
 
 const AnalyticsQueryParameters = ({
-  params,
-  setParam,
+  setValue,
+  query,
+  abi,
+  fields,
+  values,
 }: {
-  params: { key: string; value: string }[];
-  setParam: (idx: number, key: string, value: string) => void;
+  setValue: (idx: number, value: string) => void;
+  query: QueryInterface;
+  abi: any;
+  fields: string[];
+  values: string[];
 }) => {
   return (
     <Flex direction="column" gap="10px">
       <Text variant="title3" mb="5px">
         Parameters
       </Text>
-      {params.map((param, idx: number) => (
-        <Flex key={idx} gap="0px" minW="100%" alignItems="center" pr="1.5px">
-          <Box
-            bg="transparent"
-            color="#94C2FA"
-            fontFamily="Jet Brains Mono, monospace"
-            p="7px 15px"
-            fontSize="16px"
-            minW="20ch"
-          >
-            {param.key}
-          </Box>
-          {param.key?.includes("timestamp") ? (
-            <TimestampInput
-              timestamp={param.value ?? ""}
-              setTimestamp={(newValue: string) => setParam(idx, "value", String(newValue))}
+      {fields &&
+        fields.map((field, idx: number) => (
+          <Flex key={idx} gap="0px" minW="100%" alignItems="center" pr="1.5px">
+            <Box
+              bg="transparent"
+              color="#94C2FA"
+              fontFamily="Jet Brains Mono, monospace"
+              p="7px 15px"
+              fontSize="16px"
+              minW="20ch"
+            >
+              {field}
+            </Box>
+            <ParamInput
+              onChange={(newValue) => setValue(idx, String(newValue))}
+              query={query}
+              abi={abi}
+              field={fields[idx]}
+              value={values[idx]}
             />
-          ) : (
-            <Input
-              flex="2"
-              h="40px"
-              variant="address"
-              border="1px solid #4D4D4D"
-              borderColor={
-                isValid(param.key, param.value) || !param.value ? "#4d4d4d" : "error.500"
-              }
-              value={param.value}
-              onChange={(e) => setParam(idx, "value", e.target.value)}
-              mr="10px"
-            />
-          )}
-        </Flex>
-      ))}
+          </Flex>
+        ))}
     </Flex>
   );
 };

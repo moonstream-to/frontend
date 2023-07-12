@@ -10,22 +10,22 @@ import { AWS_ASSETS_PATH_CF, getChainImage } from "../../constants";
 const AnalyticsAddressesListItem = ({
   address,
   idx,
-  types,
-}: {
+}: // types,
+{
   address: any;
   idx: number;
-  types: any;
+  // types: any;
 }) => {
-  const [type, setType] = useState<{ icon_url?: string }>({});
+  // const [type, setType] = useState<{ icon_url?: string }>({});
   const [isShow, setIsShow] = useState(true);
   const [selected, setSelected] = useState(false);
   const { selectedAddressId, setSelectedAddressId, filter } = useAnalytics();
 
-  useEffect(() => {
-    if (address && types) {
-      setType(types.find(({ id }: { id: string }) => id === address.subscription_type_id) ?? {});
-    }
-  }, [address, types]);
+  // useEffect(() => {
+  //   if (address && types) {
+  //     setType(types.find(({ id }: { id: string }) => id === address.subscription_type_id) ?? {});
+  //   }
+  // }, [address, types]);
 
   useEffect(() => {
     setSelected(idx === selectedAddressId);
@@ -50,7 +50,7 @@ const AnalyticsAddressesListItem = ({
       return;
     }
 
-    if (address.subscription_type_id.toLowerCase().includes(lowCaseFilter)) {
+    if (address.chainName.toLowerCase().includes(lowCaseFilter)) {
       setIsShow(true);
       return;
     }
@@ -58,7 +58,7 @@ const AnalyticsAddressesListItem = ({
     setIsShow(false);
   }, [address, filter]);
 
-  const chainName = address.subscription_type_id.split("_")[0];
+  const chainName = address.chainName; // subscription_type_id.split("_")[0];
 
   return (
     <>
@@ -76,7 +76,7 @@ const AnalyticsAddressesListItem = ({
           <Flex gap="10px" alignItems="center">
             {address.type === "smartcontract" ? (
               <>
-                {type && type.icon_url ? (
+                {chainName ? (
                   <Image
                     h="20px"
                     w="20px"

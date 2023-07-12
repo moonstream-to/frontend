@@ -8,19 +8,20 @@ import Item from "./AnalyticsAddressesListItem";
 import useAnalytics from "../../contexts/AnalyticsContext";
 
 const AnalyticsAddressesList = () => {
-  const { setTypes, addresses } = useAnalytics();
+  const { addresses } = useAnalytics();
 
-  const getTypes = async () => {
-    const response = await SubscriptionsService.getTypes();
-    return response.data;
-  };
+  // const getTypes = async () => {
+  //   const response = await SubscriptionsService.getTypes();
+  //   return response.data;
+  // };
 
-  const types = useQuery(["subscription_types"], getTypes, {
-    ...queryCacheProps,
-    onSuccess(data: any) {
-      setTypes(data.subscription_types);
-    },
-  });
+  // const types = useQuery(["subscription_types"], getTypes, {
+  //   ...queryCacheProps,
+  //   onSuccess(data: any) {
+  //     console.log(data);
+  //     setTypes(data.subscription_types);
+  //   },
+  // });
 
   if (addresses.isLoading) {
     return <Spinner />;
@@ -35,7 +36,7 @@ const AnalyticsAddressesList = () => {
               key={address.id}
               idx={idx}
               address={address}
-              types={types.data?.subscription_types ?? undefined}
+              // types={types.data?.subscription_types ?? undefined}
             />
           ))}
         </Flex>

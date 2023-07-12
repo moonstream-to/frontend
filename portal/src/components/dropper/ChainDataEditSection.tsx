@@ -112,13 +112,13 @@ const ChainDataEditSection: React.FC<ChainDataEditSectionProps> = ({
           icon={<AiOutlineUndo />}
           variant="cancelButton"
           mb="15px"
-          disabled={!isChainDataChanged || isMutationLoading}
+          isDisabled={!isChainDataChanged || isMutationLoading}
           onClick={revertChainDataChanges}
         />
         <Button
           variant="saveButton"
           mb="15px"
-          disabled={!isChainDataChanged || isMutationLoading}
+          isDisabled={!isChainDataChanged || isMutationLoading}
           onClick={handleSendClick}
           w="200px"
         >

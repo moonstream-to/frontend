@@ -159,14 +159,18 @@ const AnalyticsABIView = ({
         <Flex gap="20px" position="absolute" zIndex="2" bottom="15px" right="15px">
           <Button
             variant="cancelButton"
-            disabled={updateSubscription.isLoading}
+            isDisabled={updateSubscription.isLoading}
             onClick={() => {
               setJSONForEdit(abi.data ?? "");
             }}
           >
             Cancel
           </Button>
-          <Button variant="saveButton" disabled={updateSubscription.isLoading} onClick={handleSave}>
+          <Button
+            variant="saveButton"
+            isDisabled={updateSubscription.isLoading}
+            onClick={handleSave}
+          >
             {updateSubscription.isLoading ? <Spinner /> : "Save"}
           </Button>
         </Flex>
