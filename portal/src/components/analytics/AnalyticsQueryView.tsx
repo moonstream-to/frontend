@@ -203,7 +203,7 @@ const AnalyticsQueryView = ({
       </Flex>
       {query.description && <Text>{query.description}</Text>}
       <AnalyticsQueryContent content={query.content} />
-      {queryData.data?.parameters && (
+      {queryData.data?.parameters && values.length && (
         <AnalyticsQueryParameters
           key={paramsKey}
           query={query}
