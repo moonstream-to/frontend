@@ -188,6 +188,7 @@ const AnalyticsNewAddressView = () => {
             <Input
               variant="address"
               fontSize="18px"
+              w="45ch"
               borderRadius="10px"
               _placeholder={{ fontSize: "16px" }}
               value={address}
