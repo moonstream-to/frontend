@@ -4,38 +4,41 @@ import { isValid } from "./analytics/validateParameters";
 import TimestampInput from "./TimestampInput";
 
 const ParamInput = ({
-  param,
   onChange,
   query,
   abi,
+  field,
+  value,
 }: {
-  param: { key: string; value: string };
   query: QueryInterface;
   abi?: any;
   onChange: (value: string) => void;
+  field: string;
+  value: string;
 }) => {
   const options: string[] = [];
+  if (!field) return <></>;
 
   if (query.title === "contract_events" && abi) {
     JSON.parse(abi).forEach((obj: any) => {
-      if (obj.type === "event" && obj[param.key]) {
-        options.push(obj[param.key]);
+      if (obj.type === "event" && obj[field]) {
+        options.push(obj[field]);
       }
     });
   } else {
-    if (query.title === "contract_transactions") {
+    if (query.title === "contract_transactions" && abi) {
       JSON.parse(abi).forEach((obj: any) => {
-        if (obj.outputs?.length === 0 && obj[param.key]) {
-          options.push(obj[param.key]);
+        if (obj.type === "function" && obj.stateMutability !== "view" && obj[field]) {
+          options.push(obj[field]);
         }
       });
     }
   }
 
-  if (param.key?.includes("timestamp")) {
+  if (field.includes("timestamp")) {
     return (
       <TimestampInput
-        timestamp={param.value ?? ""}
+        timestamp={value ?? ""}
         setTimestamp={(newValue: string) => onChange(String(newValue))}
       />
     );
@@ -43,7 +46,8 @@ const ParamInput = ({
 
   if (options.length) {
     return (
-      <Select placeholder="">
+      <Select placeholder="" value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value=""></option>
         {options.map((option, idx) => (
           <option key={idx} value={option}>
             {option}
@@ -59,8 +63,8 @@ const ParamInput = ({
       h="40px"
       variant="address"
       border="1px solid #4D4D4D"
-      borderColor={isValid(param.key, param.value) || !param.value ? "#4d4d4d" : "error.500"}
-      value={param.value}
+      borderColor={isValid(field, value) || !value ? "#4d4d4d" : "error.500"}
+      value={value}
       onChange={(e) => onChange(e.target.value)}
       mr="10px"
     />

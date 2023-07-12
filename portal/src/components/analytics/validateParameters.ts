@@ -85,6 +85,6 @@ export const isValid = (name: string, value: string): boolean => {
   }
 };
 
-export const isValidArray = (params: { key: string; value: string }[]): boolean => {
-  return params.every((param) => param.value !== "" && isValid(param.key, param.value));
+export const isValidArray = (fields: string[], values: string[]): boolean => {
+  return fields.every((field, idx) => values[idx] !== "" && isValid(field, values[idx]));
 };

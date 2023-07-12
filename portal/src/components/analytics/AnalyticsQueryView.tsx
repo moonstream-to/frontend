@@ -1,6 +1,6 @@
 import { Button, Flex, Spinner, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import axios from "axios";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
@@ -25,10 +25,11 @@ const AnalyticsQueryView = ({
   type: string;
   abi: string;
 }) => {
-  const [params, setParams] = useState<{ key: string; value: string }[]>([]);
+  const [values, setValues] = useState<string[]>([]);
   const [result, setResult] = useState("");
   const [queryStatus, setQueryStatus] = useState("");
   const [filename, setFilename] = useState("");
+  const [paramsKey, setParamsKey] = useState(Date.now());
 
   const runQueryRef = useRef(false);
   const toast = useMoonToast();
@@ -52,30 +53,26 @@ const AnalyticsQueryView = ({
     });
   };
 
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    queryClient.invalidateQueries("queryData");
-    queryData.refetch();
-    setParams([]);
-    setQueryStatus("");
-    setResult("");
-  }, [query]);
-
-  const queryData = useQuery(["queryData", query], getQuery, {
+  const queryData = useQuery(["queryData", query.context_url], getQuery, {
     ...queryCacheProps,
     onError: (error: Error) => {
       console.log(error);
     },
-    onSuccess: (data) => {
-      if (data.parameters) {
-        const newParams = Object.keys(data.parameters).map((key) => {
-          return { key, value: getDefaultValue(key) };
-        });
-        setParams(newParams);
-      }
-    },
     enabled: !!query.context_url,
+    staleTime: 50000,
   });
+
+  useEffect(() => {
+    if (queryData.data?.parameters) {
+      const newValues = Object.keys(queryData.data.parameters).map((key) => {
+        return getDefaultValue(key);
+      });
+      setValues(newValues);
+    }
+    setQueryStatus("");
+    setResult("");
+    setParamsKey(Date.now());
+  }, [queryData.data, query]);
 
   const getDefaultValue = (key: string) => {
     switch (key) {
@@ -100,7 +97,10 @@ const AnalyticsQueryView = ({
     runQueryRef.current = true;
 
     const paramsObj: any = {};
-    params.forEach((param) => (paramsObj[param.key] = param.value));
+    Object.keys(queryData.data.parameters).forEach(
+      (param, idx) => (paramsObj[param] = values[idx]),
+    );
+    console.log(paramsObj);
     const requestTimestamp = new Date().toUTCString();
     if (type === "smartcontract") {
       paramsObj.address = address;
@@ -171,18 +171,17 @@ const AnalyticsQueryView = ({
     return new Promise((_, reject) => reject(new Error("interrupted by user")));
   };
 
-  const setParam = (idx: number, key: string, value: string) => {
-    const newParams = [...params];
-    const param = newParams[idx];
-    newParams[idx][key as keyof typeof param] = value;
-    setParams(newParams);
+  const setValue = (idx: number, value: string) => {
+    const newValues = [...values];
+    newValues[idx] = value;
+    setValues(newValues);
   };
 
   return (
     <Flex direction="column" gap="20px" fontSize="14px">
       <Flex justifyContent="space-between" alignItems="center">
         <Text variant="title3">{query.title.split("-").join(" ")}</Text>
-        {(queryData.isLoading || queryData.isFetching) && <Spinner />}
+        {queryData.isLoading && <Spinner />}
         <Button
           variant="runButton"
           color="#4d4d4d"
@@ -190,8 +189,9 @@ const AnalyticsQueryView = ({
           p="6px 20px"
           fontSize="14px"
           h="30px"
-          disabled={
-            !isValidArray(params) ||
+          isDisabled={
+            !queryData.data ||
+            !isValidArray(Object.keys(queryData.data?.parameters), values) ||
             queryData.isLoading ||
             queryData.isFetching ||
             queryStatus !== ""
@@ -203,8 +203,15 @@ const AnalyticsQueryView = ({
       </Flex>
       {query.description && <Text>{query.description}</Text>}
       <AnalyticsQueryContent content={query.content} />
-      {params.length > 0 && (
-        <AnalyticsQueryParameters query={query} abi={abi} params={params} setParam={setParam} />
+      {queryData.data?.parameters && (
+        <AnalyticsQueryParameters
+          key={paramsKey}
+          query={query}
+          abi={abi}
+          setValue={setValue}
+          fields={Object.keys(queryData.data.parameters)}
+          values={values}
+        />
       )}
       {result === "" && queryStatus === "" && <AnalyticsQueryResults />}
       {(queryStatus || result) && (
