@@ -19,6 +19,9 @@ const AnalyticsAddressesView = () => {
       gap="30px"
       flexDirection="column"
       opacity={isCreatingAddress ? 0.4 : 1}
+      position="absolute"
+      top="30"
+      bottom="30"
     >
       <Text variant="title">Addresses</Text>
       {addresses.data?.length > 0 && (
