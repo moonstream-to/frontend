@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { useQueryClient } from "react-query";
-import { Center, Flex, Text } from "@chakra-ui/react";
+import { Center, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 
 import useUser from "../../contexts/UserContext";
 import AnalyticsAddressesView from "./AnalyticsAddressesView";
@@ -13,6 +13,8 @@ const AnalyticsView = () => {
   const { isCreatingAddress, reset, addresses, selectedAddressId } = useAnalytics();
   const { user } = useUser();
   const queryClient = useQueryClient();
+
+  const [isTallScreen] = useMediaQuery("(min-height: 1080px)");
 
   useEffect(() => {
     if (!user) {
@@ -28,9 +30,10 @@ const AnalyticsView = () => {
           gap="30px"
           py="30px"
           px={{ base: 0, xl: "5%", "2xl": "10%" }}
-          minH="760px"
+          minH={isTallScreen ? "calc(100vh - 320px)" : "760px"}
           minW="90%"
           position="relative"
+          alignSelf="stretch"
         >
           <AnalyticsAddressesView />
           <Flex minW="400px" />
