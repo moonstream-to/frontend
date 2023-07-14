@@ -112,6 +112,9 @@ const colors = {
   error: {
     500: "#EE8686",
   },
+  accent: {
+    500: "#F88F78",
+  },
 };
 
 export default colors;

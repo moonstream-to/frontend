@@ -1,15 +1,29 @@
-import { Button, Container, Link, useMediaQuery } from "@chakra-ui/react";
+import { Button, Container, Link, OrderedList, useMediaQuery } from "@chakra-ui/react";
 
 import FeatureCard from "../../src/components/FeatureCardLarge";
 import { AWS_STATIC_ASSETS_PATH } from "../../src/constants";
 import LayoutLanding from "../../src/components/layoutLanding";
 
-const assets = {
-  airdrop: `${AWS_STATIC_ASSETS_PATH}/airdrop.png`,
-  openLootbox: `${AWS_STATIC_ASSETS_PATH}/open-lootbox.png`,
-  craftingRecipe: `${AWS_STATIC_ASSETS_PATH}/crafting-recipe.png`,
-  minigame: `${AWS_STATIC_ASSETS_PATH}/minigame.png`,
-};
+export const MoonstreamFeatures = [
+  {
+    name: "Analytics",
+    description: "Monitor on- and off-chain player activity",
+    image: `${AWS_STATIC_ASSETS_PATH}/analytics-card.png`,
+    href: "portal/analytics",
+  },
+  {
+    name: "Leaderboards",
+    description: "Assign scores to player activity",
+    image: `${AWS_STATIC_ASSETS_PATH}/Terminus.png`,
+    // href: "portal/dropper",
+  },
+  {
+    name: "Drops",
+    description: "Automate on-chain rewards for leaderboard positions",
+    image: `${AWS_STATIC_ASSETS_PATH}/airdrop.png`,
+    href: "portal/dropper",
+  },
+];
 
 const Features = () => {
   const [isBaseView] = useMediaQuery("(max-width: 768px)");
@@ -39,9 +53,65 @@ const Features = () => {
         )}
         <FeatureCard
           pt="0px"
-          id="airdrops"
-          headingText="Airdrops"
-          image={assets["airdrop"]}
+          id="analytics"
+          headingText={MoonstreamFeatures[0].name}
+          image={MoonstreamFeatures[0].image}
+          cardOrder={1}
+          isMobile={isBaseView}
+        >
+          <>
+            Get live actionable data about player activity in your game. Moonstream Analytics
+            combines both on-chain data and off-chain data from your game server.
+            <br />
+            <br />
+            Transparency is key in web3 space. That’s where Moonstream’s web3 game analytics come
+            in. Watch a smart contract or a wallet activity in real-time. Create public data streams
+            to help players build strategies.
+            <br />
+            <br />
+            Influence your game’s economy based on data:
+            <OrderedList>
+              <li>Create loyalty programs and reputation systems.</li>
+              <li>Predict the changes in supply and price of different tokens.</li>
+              <li>
+                Study competitors and capture the most valuable users from competing economies.
+              </li>
+              <li>Secure your smart contracts.</li>
+            </OrderedList>
+          </>
+        </FeatureCard>
+        <FeatureCard
+          id="leaderboards"
+          headingText={MoonstreamFeatures[1].name}
+          image={MoonstreamFeatures[1].image}
+          cardOrder={-1}
+          isMobile={isBaseView}
+        >
+          <>
+            Use Moonstream-backed Leaderboards to automate web3 game rewards.
+            <br />
+            <br />
+            Display the gaming data you crawled with Moonstream Analytics. Instead of a boring list
+            of wallets and their scores, you can have leaderboards for NFTs, or even just game
+            accounts (usernames, emails, etc.). Show players their scores and rewards on your
+            website or game client.
+            <br />
+            <br />
+            Use Leaderboards as a game design tool. Add a competitive element to your game
+            mechanics: create engagement for specific gameplay elements by attaching Leaderboards to
+            them.
+            <br />
+            <br />
+            Leaderboards have been extensively used by Crypto Unicorns for launching popular gaming
+            events since 2022 and are being implemented by projects like Crypto-Guilds and MetaBoy.
+            <br />
+            <br />
+          </>
+        </FeatureCard>
+        <FeatureCard
+          id="drops"
+          headingText={MoonstreamFeatures[2].name}
+          image={MoonstreamFeatures[2].image}
           cardOrder={1}
           isMobile={isBaseView}
         >
@@ -52,65 +122,13 @@ const Features = () => {
             <br />
             <br />
             Our smart contracts and APIs handle the rest. Integrate your frontends or game clients
-            with our APIs for full control over the claim experience. Use Moonstream-backed
-            leaderboards to automatically reward players for their on-chain activity.
+            with our APIs for full control over the claim experience.
             <br />
             <br />
             Gaming projects have used Moonstream to drop over $80,000,000 worth of tokens and items
             to date.
-          </>
-        </FeatureCard>
-        <FeatureCard
-          id="minigames"
-          headingText="Minigames"
-          image={assets["minigame"]}
-          cardOrder={-1}
-          isMobile={isBaseView}
-        >
-          <>
-            Use Moonstream to deploy on-chain minigames into your project. Our growing minigame
-            library contains games of various genres. Use these minigames as faucets to tokens into
-            your economy, and as sinks to take tokens out of your economy.
             <br />
             <br />
-            Our minigame smart contracts process over $700,000,000 per month in transaction volume.
-          </>
-        </FeatureCard>
-        <FeatureCard
-          id="lootboxes"
-          headingText="Lootboxes"
-          image={assets["openLootbox"]}
-          cardOrder={1}
-          isMobile={isBaseView}
-        >
-          <>
-            Use Moonstream Lootboxes to reward your players on-chain for completing quests,
-            defeating bosses, or improving your community. Lootboxes can hold ERC20 tokens, items,
-            consumables, or NFTs. Moonstream Lootboxes can be randomized using Chainlink VRF and you
-            have full control over drop rates.
-            <br />
-            <br />
-            There are currently over 14,000 Moonstream Lootboxes in circulation.
-          </>
-        </FeatureCard>
-        <FeatureCard
-          id="crafting"
-          headingText="Crafting"
-          image={assets["craftingRecipe"]}
-          cardOrder={-1}
-          isMobile={isBaseView}
-          pb="40px"
-        >
-          <>
-            Use Moonstream to set up a fully on-chain crafting system and give your players the
-            power to create new items in your game economy. Productive players are the key to
-            sustainable blockchain games, and Moonstream Crafting allows your players to act as
-            producers.
-            <br />
-            <br />
-            Upload your crafting recipes as spreadsheets and watch as players craft items that
-            breathe life into your economy. Moonstream Crafting is an alpha feature of our engine.
-            Reach out to us on Discord for early access.
           </>
         </FeatureCard>
       </Container>

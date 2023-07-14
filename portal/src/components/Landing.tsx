@@ -1,6 +1,5 @@
 import RouterLink from "next/link";
 import React, { Suspense } from "react";
-import NextLink from "next/link";
 import {
   Fade,
   Flex,
@@ -17,15 +16,16 @@ import {
   VStack,
   Accordion,
   Icon,
-  Spacer,
-  SimpleGrid,
   Button,
 } from "@chakra-ui/react";
 import { HiOutlineChatAlt2 } from "react-icons/hi";
 
-import TrustedBadge from "./TrustedBadge";
 import FAQCard from "./FAQCard";
-import { AWS_STATIC_ASSETS_PATH } from "../constants";
+import { AWS_STATIC_ASSETS_PATH, DISCORD_LINK } from "../constants";
+import FeatureCard from "./FeatureCard";
+import MoonstreamMetrics from "./landing/MoonstreamMetrics";
+import TrustedBy from "./landing/TrustedBy";
+import UpcomingIntegrations from "./landing/UpcomingIntegrations";
 
 const HEADING_PROPS = {
   fontWeight: "700",
@@ -33,81 +33,75 @@ const HEADING_PROPS = {
 };
 
 const assets = {
-  airdrop: `${AWS_STATIC_ASSETS_PATH}/airdrop.png`,
-  arbitrum: `${AWS_STATIC_ASSETS_PATH}/arbitrum_logo.png`,
-  background720: `${AWS_STATIC_ASSETS_PATH}/background720.png`,
-  background1920: `${AWS_STATIC_ASSETS_PATH}/background720.png`,
-  background2880: `${AWS_STATIC_ASSETS_PATH}/background720.png`,
-  background3840: `${AWS_STATIC_ASSETS_PATH}/background720.png`,
-  bc101: `${AWS_STATIC_ASSETS_PATH}/featured_by/blockchain-101-white.png`,
-  bulliverse: `${AWS_STATIC_ASSETS_PATH}/bullieverse_logo.png`,
-  cgcConference: `${AWS_STATIC_ASSETS_PATH}/featured_by/cgc_conference_2022_logo.jpg`,
-  championsAscension: `${AWS_STATIC_ASSETS_PATH}/featured_by/champions.png`,
-  cointelegraph: `${AWS_STATIC_ASSETS_PATH}/featured_by/cointelegraph-white.png`,
-  craftingRecipe: `${AWS_STATIC_ASSETS_PATH}/crafting-recipe.png`,
-  cryptoGuilds: `${AWS_STATIC_ASSETS_PATH}/crypto_guilds_logo.png`,
-  cryptoinsiders: `${AWS_STATIC_ASSETS_PATH}/featured_by/crypto-insiders-white.png`,
-  cryptoslate: `${AWS_STATIC_ASSETS_PATH}/featured_by/cryptoslate-white.png`,
-  cryptoUnicorns: `${AWS_STATIC_ASSETS_PATH}/crypto_unicorns_logo.png`,
-  educativesessions: `${AWS_STATIC_ASSETS_PATH}/featured_by/educative-white.png`,
-  ethereum_blockchain: `${AWS_STATIC_ASSETS_PATH}/ethereum_blockchain_logo.png`,
-  evmos: `${AWS_STATIC_ASSETS_PATH}/evmos_logo.png`,
-  forte: `${AWS_STATIC_ASSETS_PATH}/forte_logo.png`,
-  game7io: `${AWS_STATIC_ASSETS_PATH}/featured_by/game7io_logo.png`,
-  gnosis: `${AWS_STATIC_ASSETS_PATH}/gnosis_chain_logo.png`,
-  laguna: `${AWS_STATIC_ASSETS_PATH}/featured_by/laguna_logo.svg`,
-  meetup: `${AWS_STATIC_ASSETS_PATH}/featured_by/meetup-white.png`,
-  minigame: `${AWS_STATIC_ASSETS_PATH}/minigame.png`,
-  openLootbox: `${AWS_STATIC_ASSETS_PATH}/open-lootbox.png`,
-  optimism: `${AWS_STATIC_ASSETS_PATH}/optimism_logo.png`,
-  orangedao: `${AWS_STATIC_ASSETS_PATH}/featured_by/orangedao_logo.png`,
-  polygon: `${AWS_STATIC_ASSETS_PATH}/polygon_blockchain_logo.png`,
-  tech_crunch_winner: `${AWS_STATIC_ASSETS_PATH}/tc_crypto_sessions_transparent.png`,
+  openSource: `${AWS_STATIC_ASSETS_PATH}/icons/open-source-icon.png`,
 };
+
+export const MoonstreamFeatures = [
+  {
+    name: "Analytics",
+    description: "Monitor on- and off-chain player activity",
+    image: `${AWS_STATIC_ASSETS_PATH}/analytics-card.png`,
+    href: "/features/#analytics",
+  },
+  {
+    name: "Leaderboards",
+    description: "Assign scores to player activity",
+    image: `${AWS_STATIC_ASSETS_PATH}/Terminus.png`,
+    href: "/features/#leaderboards",
+  },
+  {
+    name: "Drops",
+    description: "Automate on-chain rewards for leaderboard positions",
+    image: `${AWS_STATIC_ASSETS_PATH}/airdrop.png`,
+    href: "features/#drops",
+  },
+];
+
+const featuredBy = [
+  {
+    name: "TechCrunch",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/tech-crunch-logo.png`,
+    w: 103,
+    h: 14.65,
+  },
+  {
+    name: "Cointelegraph",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/cointelegraph-logo.png`,
+    w: 103,
+    h: 20.81,
+  },
+  // { name: "in", img: `${AWS_STATIC_ASSETS_PATH}/logos/be-in-crypto.png`, w: 18, h: 19 }, //should be 72
+  { name: "gam3r", img: `${AWS_STATIC_ASSETS_PATH}/logos/gam3r-logo.png`, w: 73, h: 19 },
+  {
+    name: "cryptoslate",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/cryptoslate-logo.png`,
+    w: 98,
+    h: 16,
+  },
+  {
+    name: "crypto reporter",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/crypto-reporter-logo.png`,
+    w: 97,
+    h: 23,
+  },
+  {
+    name: "101 blockchain",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/101-blockchain-logo.png`,
+    w: 41,
+    h: 23,
+  },
+  { name: "educative", img: `${AWS_STATIC_ASSETS_PATH}/logos/educative-logo.png`, w: 85, h: 18 },
+  { name: "CGC X", img: `${AWS_STATIC_ASSETS_PATH}/logos/cgc-X-logo.png`, w: 41, h: 25.5 },
+  {
+    name: "crypto insiders",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/crypto-insiders-logo.png`,
+    w: 94,
+    h: 16,
+  },
+];
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
-  const cardBackgroundColor = "#353535";
-
-  const Feature = ({
-    title,
-    altText,
-    image,
-    href,
-  }: {
-    title: string;
-    altText: string;
-    image: string;
-    href: string;
-  }) => {
-    return (
-      <Box>
-        <RouterLink href={href}>
-          <Stack
-            h="100%"
-            transition={"1s"}
-            p={4}
-            alignItems="center"
-            borderRadius="12px"
-            borderColor="white"
-            bgColor={cardBackgroundColor}
-            borderWidth={"1px"}
-            _hover={{ transform: "scale(1.05)", transition: "0.42s" }}
-            cursor="pointer"
-          >
-            <ChakraImage objectFit="contain" src={image} alt={altText} />
-            <Heading
-              textAlign="center"
-              fontSize={["md", "md", "lg", "lg", null]}
-              fontWeight="normal"
-            >
-              {title}
-            </Heading>
-          </Stack>
-        </RouterLink>
-      </Box>
-    );
-  };
 
   return (
     <Suspense fallback="">
@@ -139,31 +133,10 @@ const Landing = () => {
                   <Box bgPos="bottom" bgSize="cover" boxSize="full">
                     <Flex align="center" justify="center" boxSize="full" pb={10} flexDir="column">
                       <Stack textAlign="center" alignItems="center" w="100%">
-                        <Link
-                          mb={["40px", "40px", "60px"]}
-                          isExternal
-                          href="https://www.crypto-reporter.com/press-releases/moonstream-to-wins-techcrunch-pitch-off-earning-a-spot-at-disrupt-2023-39287/
-                      "
-                        >
-                          <ChakraImage
-                            src={assets.tech_crunch_winner}
-                            w={["213px", "213px", "272px"]}
-                            h={["49px", "49px", "59px"]}
-                            cursor="pointer"
-                            bg="#46C370"
-                            borderRadius="10px"
-                            _hover={{
-                              bg: "#3BB563",
-                            }}
-                          />
-                        </Link>
-                        <Box
-                          fontSize={["30px", "30px", "50px"]}
-                          fontWeight="700"
-                          maxW="613px"
-                          mt="0px"
-                        >
-                          Build, Scale, and Monitor Your Game&apos;s Economy
+                        <Box fontSize={["30px", "30px", "50px"]} fontWeight="700" mt="0px">
+                          Open source infrastructure
+                          <br />
+                          for healthy game economies
                         </Box>
                         <chakra.span
                           pb={[2, 6]}
@@ -172,9 +145,8 @@ const Landing = () => {
                           color="white"
                           maxW={[null, "85%", "75%", "55%"]}
                         >
-                          Moonstream provides economic infrastructure for web3 games. Gather
-                          actionable data with our web3 data analytics. Act on it with our on-chain
-                          mechanics. Watch your economy flourish.
+                          Create economic loops that reward your players with Moonstream’s
+                          analytics, leaderboards, and drops. Watch your game economy flourish.
                         </chakra.span>
                         <Stack
                           direction={["column", "row", "row", "row", "row", "row"]}
@@ -182,14 +154,7 @@ const Landing = () => {
                           fontSize={["16px", "16px", "20px"]}
                         >
                           <Center>
-                            {/* <RouterLink href="/contact">
-                              <Button variant="orangeGradient" px={["20px", "20px", "30px"]}>
-                                Get Started
-                              </Button>
-                            </RouterLink> */}
-                          </Center>
-                          <Center>
-                            <Link isExternal href="https://discord.gg/K56VNUQGvA">
+                            <Link isExternal href={DISCORD_LINK}>
                               <Button variant="whiteOutline" px={["20px", "20px", "30px"]}>
                                 Join our Discord
                               </Button>
@@ -197,177 +162,21 @@ const Landing = () => {
                           </Center>
                         </Stack>
                       </Stack>
-                      <Grid
-                        maxW="737px"
-                        textAlign={["center", "center", "left"]}
-                        gridTemplateColumns={["1fr 1fr", "1fr 1fr", "auto auto"]}
-                        gridGap={["20px", "20px", "40px"]}
-                      >
-                        <Flex direction={["column", "column", "row"]} minW={["50%", "50%", "0px"]}>
-                          <Text
-                            fontSize={["24", "24", "40"]}
-                            fontWeight="500"
-                            pr={["0px", "0px", "20px"]}
-                          >
-                            &gt;$4b
-                          </Text>
-                          <Center>
-                            <Text
-                              fontSize={["14px", "14px", "18px"]}
-                              lineHeight={["18px", "18px", "23px"]}
-                            >
-                              transaction volume
-                              <br />
-                              and growing
-                            </Text>
-                          </Center>
-                        </Flex>
-                        <Flex direction={["column", "column", "row"]}>
-                          <Text
-                            fontSize={["24", "24", "40"]}
-                            fontWeight="500"
-                            pr={["0px", "0px", "20px"]}
-                          >
-                            &gt;44k
-                          </Text>
-                          <Center>
-                            <Text
-                              fontSize={["14px", "14px", "18px"]}
-                              lineHeight={["18px", "18px", "23px"]}
-                            >
-                              active users in game economies
-                              <br />
-                              built with our engine
-                            </Text>
-                          </Center>
-                        </Flex>
-                      </Grid>
+
+                      <MoonstreamMetrics />
                     </Flex>
                   </Box>
                 </chakra.header>
               </GridItem>
-
+              {/* trusted by */}
               <GridItem py={[4, 8]} colSpan={12}>
-                <VStack bgColor="white" rounded="3xl" textColor="#1A1D22" py={10}>
-                  <Heading
-                    as="h3"
-                    {...HEADING_PROPS}
-                    fontSize={["2xl", null]}
-                    fontWeight="semibold"
-                    textAlign="center"
-                    px="20px"
-                  >
-                    <Text>Trusted by visionaries</Text>
-                    <Text>in the industry</Text>
-                  </Heading>
-                  <Flex wrap="wrap" direction="row" justifyContent="center" pb={[4, 10]}>
-                    <Suspense fallback={""}>
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="Champions Ascension"
-                        ImgURL={assets["championsAscension"]}
-                        boxURL="https://www.champions.io/"
-                      />
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="Crypto Guilds"
-                        ImgURL={assets["cryptoGuilds"]}
-                        boxURL="https://crypto-guilds.com/"
-                      />
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="Crypto Unicorns"
-                        ImgURL={assets["cryptoUnicorns"]}
-                        boxURL="https://www.cryptounicorns.fun/"
-                      />
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="game7io"
-                        ImgURL={assets["game7io"]}
-                        boxURL="https://game7.io/"
-                      />
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="orangedao"
-                        ImgURL={assets["orangedao"]}
-                        boxURL="https://lfg.orangedao.xyz/"
-                      />
-                    </Suspense>
-                  </Flex>
-                  <Heading
-                    as="h3"
-                    {...HEADING_PROPS}
-                    fontSize={["2xl", null]}
-                    fontWeight="semibold"
-                    textAlign="center"
-                    px="20px"
-                  >
-                    Supported blockchains
-                  </Heading>
-                  <Flex wrap="wrap" direction="row" justifyContent="center" pb={[4, 10]}>
-                    <Suspense fallback={""}>
-                      <TrustedBadge
-                        scaling={0.5}
-                        pt="10px"
-                        name="polygon"
-                        ImgURL={assets["polygon"]}
-                        boxURL="https://polygon.technology/"
-                      />
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="ethereum"
-                        ImgURL={assets["ethereum_blockchain"]}
-                        boxURL="https://ethereum.org/"
-                      />
-                      <TrustedBadge
-                        scaling={0.6}
-                        pt="8px"
-                        name="gnosis"
-                        ImgURL={assets["gnosis"]}
-                        boxURL="https://gnosis.io/"
-                      />
-                    </Suspense>
-                  </Flex>
-                  <Heading
-                    as="h3"
-                    {...HEADING_PROPS}
-                    fontSize={["2xl", null]}
-                    fontWeight="semibold"
-                    textAlign="center"
-                    px="20px"
-                  >
-                    Upcoming Integrations
-                  </Heading>
-                  <Flex wrap="wrap" direction="row" justifyContent="center">
-                    <Suspense fallback={""}>
-                      <TrustedBadge
-                        scaling={0.8}
-                        name="forte"
-                        ImgURL={assets["forte"]}
-                        boxURL="https://www.forte.io/"
-                      />
-                      <TrustedBadge
-                        scaling={0.6}
-                        name="optimism"
-                        ImgURL={assets["optimism"]}
-                        boxURL="https://www.optimism.io/"
-                      />
-                      <TrustedBadge
-                        scaling={0.6}
-                        name="evmos"
-                        ImgURL={assets["evmos"]}
-                        boxURL="https://evmos.org/"
-                      />
-                      <TrustedBadge
-                        scaling={0.6}
-                        name="arbitrum"
-                        ImgURL={assets["arbitrum"]}
-                        boxURL="https://bridge.arbitrum.io/"
-                      />
-                    </Suspense>
-                  </Flex>
-                </VStack>
+                <TrustedBy />
               </GridItem>
+              {/*upcoming integrations */}
+              <GridItem colSpan={12}>
+                <UpcomingIntegrations />
+              </GridItem>
+              {/* features */}
               <GridItem colSpan={12} pt={12} textColor="white">
                 <Heading {...HEADING_PROPS} textAlign="center" pb={6} as="h2">
                   Features
@@ -375,44 +184,22 @@ const Landing = () => {
                 <Center fontSize={["md", "md", null]} py={4}>
                   <VStack>
                     <Text textAlign="center" display="inline-block" w={["100%", "100%", "70%"]}>
-                      Lootboxes, crafting recipes, deck building, you name it! With Moonstream
-                      Engine you can deploy on-chain mechanics with one click. Read our Use Cases or
-                      explore the features to know more.
+                      Slowed down by building your own tools for web3 game economy design? Don’t be,
+                      Moonstream already has game design tools that you can use.
                     </Text>
                   </VStack>
                 </Center>
-                <SimpleGrid
-                  columns={[2, 2, 4, null]}
-                  justifyContent={["flex-end", "flex-end", "center"]}
-                  w="100%"
-                  spacing={["20px", "20px", "40px"]}
-                  paddingTop="20px"
+                <Flex
+                  direction={{ base: "column", sm: "row" }}
+                  gap={{ base: "20px", sm: "40px" }}
+                  justifyContent="center"
+                  alignItems="center"
+                  my={{ base: "40px", sm: "60px" }}
                 >
-                  <Feature
-                    title="Assemble Lootboxes"
-                    altText="Lootboxes"
-                    image={assets["openLootbox"]}
-                    href="/features/#lootboxes"
-                  />
-                  <Feature
-                    title="Create Crafting Recipes"
-                    altText="Crafting Recipes"
-                    image={assets["craftingRecipe"]}
-                    href="/features/#crafting"
-                  />
-                  <Feature
-                    title="Deploy Minigames"
-                    altText="Minigames"
-                    image={assets["minigame"]}
-                    href="/features/#minigames"
-                  />
-                  <Feature
-                    title="Manage Airdrops"
-                    altText="Airdrops"
-                    image={assets["airdrop"]}
-                    href="/features/#airdrops"
-                  />
-                </SimpleGrid>
+                  {MoonstreamFeatures.map((f, idx) => (
+                    <FeatureCard key={idx} feature={f} />
+                  ))}
+                </Flex>
                 <Center py={8}>
                   <Stack direction={["column", "column", "row", "row", "row", "row"]} pb={4}>
                     <Center>
@@ -428,6 +215,42 @@ const Landing = () => {
                   </Stack>
                 </Center>
               </GridItem>
+              {/* open source */}
+              <GridItem colSpan={12}>
+                <Flex
+                  direction="column"
+                  borderRadius="40px"
+                  border="1px solid white"
+                  p={{ base: "30px", sm: "40px 60px" }}
+                  gap="30px"
+                  justifyContent="center"
+                  textAlign="center"
+                  alignItems="center"
+                >
+                  <Text fontSize="30px" fontWeight="700">
+                    Transparent and Open Source
+                  </Text>
+                  <Flex
+                    direction={{ base: "column", sm: "row" }}
+                    gap={{ base: "20px", sm: "20px", md: "30px" }}
+                    maxW="650px"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <ChakraImage src={assets.openSource} h="50px" alt="" />
+                    <Text fontSize={{ base: "16px", sm: "18px" }}>
+                      We build our technology in the open. Consider giving us a star on&nbsp;GitHub
+                      to support innovation in the web3 gaming space ⭐
+                    </Text>
+                  </Flex>
+                  <Flex direction={{ base: "column", sm: "row" }} gap="20px">
+                    <Link href="https://github.com/moonstream-to" isExternal>
+                      <Button variant="whiteOutline">Visit GitHub</Button>
+                    </Link>
+                  </Flex>
+                </Flex>
+              </GridItem>
+              {/* workflow */}
               <GridItem py={[4, 10]} colSpan={12}>
                 <Heading {...HEADING_PROPS} textAlign="center" pb={[4, 14]} as="h2">
                   Our Workflow
@@ -464,8 +287,12 @@ const Landing = () => {
                     </Flex>
                     <Flex>
                       <chakra.span fontSize={["md", "md", null]} display="inline-block">
-                        Sign up to get whitelisted. We&apos;ll reach out to you within 3 days to
-                        schedule a call or make a partnership proposal.
+                        Reach out to us on{" "}
+                        <Link isExternal href={DISCORD_LINK} _hover={{ color: "accent.500" }}>
+                          Discord
+                        </Link>
+                        . We&apos;ll get back to you within 3 days to schedule a call or make a
+                        partnership proposal.
                       </chakra.span>
                     </Flex>
                   </VStack>
@@ -482,9 +309,8 @@ const Landing = () => {
                     </Flex>
                     <Flex mb={5}>
                       <chakra.span fontSize={["md", "md", null]} display="inline-block">
-                        During onboarding pick game mechanics that you&apos;d like to deploy.
-                        Moonstream Engine provides you with back-end tools to put them on the
-                        blockchain.
+                        Onboard and create utility for your web3 game integration. Moonstream has
+                        the best tools for game design to get you started.
                       </chakra.span>
                     </Flex>
                   </VStack>
@@ -523,79 +349,46 @@ const Landing = () => {
                   </Text>
                 </Center>
               </GridItem>
+              {/* faq */}
               <GridItem py={[4, 10]} colSpan={12}>
                 <Heading {...HEADING_PROPS} textAlign="center" as="h2" pb={10}>
                   FAQ
                 </Heading>
                 <Accordion defaultIndex={[-1]} allowMultiple>
                   <FAQCard
-                    heading="I’m a game designer. What can Moonstream engine do for me?"
+                    heading="Can I set it up by myself?"
                     headingProps={HEADING_PROPS}
                     panelContent={
                       <>
-                        {" "}
-                        Moonstream is a hassle-free way to ultimate game design and superb user
-                        experience. You’ll be able to add on-chain mechanics from our web app into
-                        your project within a click.
+                        Yes and no. We are actively working to make all of our products self-serve
+                        in the near future. For now, you&apos;ll need to get in{" "}
+                        <Link isExternal href={DISCORD_LINK} _hover={{ color: "accent.500" }}>
+                          contact
+                        </Link>{" "}
+                        with us to start using Moonstream.
                         <br />
                         <br />
-                        Imagine you had a menu of ready-to-use game functionalities... That’s what
-                        Moonstream Engine is about.
+                        However, you can already use our{" "}
+                        <RouterLink href="/portal/analytics"> web3 Analytics </RouterLink>after
+                        registering an account.
                       </>
                     }
                   />
                   <FAQCard
-                    heading="What on-chain mechanics are we talking about?"
+                    heading="Can I use just one or two of Moonstream’s features?"
                     headingProps={HEADING_PROPS}
-                    panelContent={
-                      <>
-                        {" "}
-                        Use Moonstream to add minigames, in-game items, airdrops, lootboxes, loyalty
-                        programs, leaderboards, crafting, and some other mechanics into your game.
-                        If you want to add something that’s not on the list - feel free to discuss
-                        it with the team.
-                        <br />
-                        <br />
-                        Once you contact us to discuss your project, we’ll provide you with options.
-                      </>
-                    }
+                    panelContent={<>Yes, you can.</>}
                   />
                   <FAQCard
-                    heading="I’m a game developer. How will I benefit?"
+                    heading="Can I create on-chain loyalty programs with Moonstream tools? "
                     headingProps={HEADING_PROPS}
                     panelContent={
                       <>
-                        {" "}
-                        Moonstream removes the complexity of smart contact development. It will save
-                        you weeks of time. Moonstream Engine is your backend.
+                        Yes, you definitely can. <br />
                         <br />
-                        <br />
-                        You can find code examples below on this page. Integration is easy even if
-                        you have no experience with web3.
-                      </>
-                    }
-                  />
-                  <FAQCard
-                    heading="Is it free?"
-                    headingProps={HEADING_PROPS}
-                    panelContent={
-                      <>
-                        {" "}
-                        Everything we build is open source and free to self-host or modify.
-                        <Link
-                          href="https://github.com/bugout-dev/moonstream"
-                          textColor="white"
-                          isExternal
-                        >
-                          {" "}
-                          <u>Here&apos;s</u>{" "}
-                        </Link>
-                        our GitHub. We’ll be happy to help you get set up.
-                        <br />
-                        <br />
-                        We also have a managed option, where we manage the smart contracts and the
-                        APIs. This is free for indie projects. For larger projects, please reach out
-                        to @zomglings on Discord for a quote.
+                        Get player activity data with Analytics, assign scores to that activity.
+                        Display those scores with Leaderboards. Minimize manual work by dropping
+                        rewards automatically with Drops.
                       </>
                     }
                   />
@@ -628,59 +421,41 @@ const Landing = () => {
                           <u>here</u>
                         </Link>{" "}
                         is our full report on it.
-                        <br />
-                        <br />
-                        We’re working on V2 of the dataset above. You can collaborate with us and
-                        become a co-author, just @moonstream on Discord to connect with the team.{" "}
-                        <Link
-                          href="https://scratched-molybdenum-f03.notion.site/NFT-dataset-v2-33a2900cce3840c0bc048bbc4a0425f8"
-                          isExternal
-                        >
-                          <u>Here</u>
-                        </Link>{" "}
-                        you can find sample V2 datasets.
                       </>
                     }
                   />
                   <FAQCard
-                    heading="What is the Sign Up button for?"
+                    heading="I don’t see the blockchain I need in the supported blockchains, can you add it?"
                     headingProps={HEADING_PROPS}
                     panelContent={
                       <>
-                        One of the tools we built is the Analytics platform. With it game designers,
-                        developers, data scientists and crypto enthusiasts can create dashboards to
-                        track on-chain activity and gain insights into web3 economy and its health.
-                        <br />
-                        <br />
-                        <Link
-                          href="https://voracious-gerbil-120.notion.site/Creating-dashboard-for-a-smart-contract-288b1bfa64984b109b79895f69129fce"
-                          isExternal
-                        >
-                          <u>Here&apos;s</u>
-                        </Link>{" "}
-                        a tutorial on how to use the tool.
-                        <br />
-                        <br />
-                        You can get access to our analytics platform by signing up for a Moonstream
-                        account on our website. It’s free.
+                        If it’s an EVM compatible blockchain we can add it in a couple of days.
+                        Contact us to make it happen!
                       </>
                     }
                   />
                   <FAQCard
-                    heading="I’m a player. Does Moonstream have anything for me?"
+                    heading="Is it free? Where can I see the pricing?"
                     headingProps={HEADING_PROPS}
                     panelContent={
                       <>
-                        The next big thing coming out soon is for players.{" "}
-                        <Link href="https://discord.gg/K56VNUQGvA">
-                          <u>Join us on Discord</u>{" "}
+                        The tools are{" "}
+                        <Link
+                          isExternal
+                          href="https://github.com/moonstream-to"
+                          _hover={{ color: "accent.500" }}
+                        >
+                          {" "}
+                          open source
                         </Link>
-                        for early access.
+                        . If you prefer to onboard and get support, please contact us to get the
+                        pricing information.
                       </>
                     }
                   />
                 </Accordion>
               </GridItem>
+              {/* featured by */}
               <GridItem py={10} colSpan={12} textColor="white">
                 <Heading
                   as="h2"
@@ -689,101 +464,32 @@ const Landing = () => {
                   pb={10}
                   fontWeight="semibold"
                 >
-                  Featured by{" "}
+                  Featured by
                 </Heading>
                 <Center>
                   <Flex
                     wrap="wrap"
                     direction="row"
-                    rounded={["lg", "xl", "2xl", "3xl", "4xl", "4xl"]}
                     justifyContent="center"
+                    gap="20px"
+                    columnGap={{ base: "20px", sm: "50px" }}
+                    rowGap={{ base: "20px", sm: "40px" }}
+                    px={{ base: "22px", sm: "54px", md: "72px", l: "101px" }}
                   >
-                    <Suspense fallback={""}>
-                      <TrustedBadge
-                        scaling={0.7}
-                        name="cointelegraph"
-                        caseURL=""
-                        ImgURL={assets["cointelegraph"]}
-                        boxURL="https://cointelegraph.com/news/17-of-addresses-snapped-up-80-of-all-ethereum-nfts-since-april"
+                    {featuredBy.map((f) => (
+                      <ChakraImage
+                        key={f.name}
+                        src={f.img}
+                        alt={f.name}
+                        alignSelf="center"
+                        justifySelf="center"
+                        w={{ base: f.w, sm: f.w * 1.8, md: f.w * 2 }}
                       />
-                      <TrustedBadge
-                        scaling={0.5}
-                        name="CryptoInsiders"
-                        ImgURL={assets["cryptoinsiders"]}
-                        boxURL="https://www.crypto-insiders.nl/nieuws/altcoin/17-van-ethereum-whales-bezitten-meer-dan-80-van-alle-nfts-op-de-blockchain/"
-                      />
-                      <TrustedBadge
-                        scaling={0.5}
-                        name="cryptoslate"
-                        ImgURL={assets["cryptoslate"]}
-                        boxURL="https://cryptoslate.com/should-investors-care-80-of-all-nfts-belong-to-17-of-addresses/"
-                      />
-                      <TrustedBadge
-                        scaling={0.7}
-                        name="bc101"
-                        ImgURL={assets["meetup"]}
-                        boxURL="https://www.meetup.com/SF-Bay-Area-Data-Science-Initiative/events/283215538/"
-                      />
-                      <TrustedBadge
-                        name="educative sessions"
-                        scaling={0.5}
-                        ImgURL={assets["educativesessions"]}
-                        boxURL="https://youtu.be/DN8zRzJuy0M"
-                      />
-                      <TrustedBadge
-                        scaling={0.5}
-                        name="bc101"
-                        ImgURL={assets["bc101"]}
-                        boxURL="https://blockchain101.com/"
-                      />
-                      <TrustedBadge
-                        scaling={0.5}
-                        name="cgc2022"
-                        ImgURL={assets["cgcConference"]}
-                        boxURL="https://www.cgc.one/"
-                      />
-                    </Suspense>
+                    ))}
                   </Flex>
                 </Center>
               </GridItem>
               <GridItem pt={10} pb={20} colSpan={12}>
-                <Stack
-                  direction={["column", "column", "row"]}
-                  alignItems="center"
-                  bgColor={lightOrangeColor}
-                  borderWidth="2px"
-                  borderColor="white"
-                  borderRadius="30px"
-                  textColor="white"
-                  px={[0, 10]}
-                  py={6}
-                  mb={8}
-                >
-                  <Box>
-                    <Heading
-                      as="h2"
-                      fontSize={["4xl", "4xl", null]}
-                      letterSpacing="wide"
-                      px={2}
-                      pb={1}
-                      textAlign={["center", "center", "left"]}
-                    >
-                      Sign up to grow your economy
-                    </Heading>
-                    <Text
-                      fontSize={["sm", "sm", "md", "md", null]}
-                      px={2}
-                      py={4}
-                      textAlign={["center", "center", "left"]}
-                    >
-                      {`Answer 5 questions about your project to get whitelisted.`}
-                    </Text>
-                  </Box>
-                  <Spacer />
-                  <NextLink href="/contact">
-                    <Button variant="solidWhite">Boost my game economy</Button>
-                  </NextLink>
-                </Stack>
                 <Flex
                   w="100%"
                   alignItems="center"

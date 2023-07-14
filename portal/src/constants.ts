@@ -105,6 +105,8 @@ export const AWS_STATIC_ASSETS_PATH = "https://static.simiotics.com/moonstream/a
 
 export const PORTAL_PATH = "https://portal.moonstream.to";
 
+export const DISCORD_LINK = "https://discord.gg/K56VNUQGvA";
+
 export type ChainName = "ethereum" | "localhost" | "mumbai" | "polygon" | "wyrm" | "gnosis";
 export type ChainId = 1 | 1337 | 80001 | 137 | 322 | 100;
 
