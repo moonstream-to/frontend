@@ -47,9 +47,9 @@ const ParamInput = ({
   if (options.length) {
     return (
       <Select placeholder="" value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value=""></option>
+        <option style={{ color: "white", backgroundColor: "#383838" }} value=""></option>
         {options.map((option, idx) => (
-          <option key={idx} value={option}>
+          <option style={{ color: "white", backgroundColor: "#383838" }} key={idx} value={option}>
             {option}
           </option>
         ))}
