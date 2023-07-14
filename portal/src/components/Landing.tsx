@@ -1,6 +1,5 @@
 import RouterLink from "next/link";
 import React, { Suspense } from "react";
-import NextLink from "next/link";
 import {
   Fade,
   Flex,
@@ -103,47 +102,6 @@ const featuredBy = [
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
-  const cardBackgroundColor = "#353535";
-
-  const Feature = ({
-    title,
-    altText,
-    image,
-    href,
-  }: {
-    title: string;
-    altText: string;
-    image: string;
-    href: string;
-  }) => {
-    return (
-      <Box>
-        <RouterLink href={href}>
-          <Stack
-            h="100%"
-            transition={"1s"}
-            p={4}
-            alignItems="center"
-            borderRadius="12px"
-            borderColor="white"
-            bgColor={cardBackgroundColor}
-            borderWidth={"1px"}
-            _hover={{ transform: "scale(1.05)", transition: "0.42s" }}
-            cursor="pointer"
-          >
-            <ChakraImage objectFit="contain" src={image} alt={altText} />
-            <Heading
-              textAlign="center"
-              fontSize={["md", "md", "lg", "lg", null]}
-              fontWeight="normal"
-            >
-              {title}
-            </Heading>
-          </Stack>
-        </RouterLink>
-      </Box>
-    );
-  };
 
   return (
     <Suspense fallback="">
@@ -175,12 +133,7 @@ const Landing = () => {
                   <Box bgPos="bottom" bgSize="cover" boxSize="full">
                     <Flex align="center" justify="center" boxSize="full" pb={10} flexDir="column">
                       <Stack textAlign="center" alignItems="center" w="100%">
-                        <Box
-                          fontSize={["30px", "30px", "50px"]}
-                          fontWeight="700"
-                          // maxW="613px"
-                          mt="0px"
-                        >
+                        <Box fontSize={["30px", "30px", "50px"]} fontWeight="700" mt="0px">
                           Open source infrastructure
                           <br />
                           for healthy game economies
@@ -200,13 +153,6 @@ const Landing = () => {
                           pb={10}
                           fontSize={["16px", "16px", "20px"]}
                         >
-                          <Center>
-                            {/* <RouterLink href="/contact">
-                              <Button variant="orangeGradient" px={["20px", "20px", "30px"]}>
-                                Get Started
-                              </Button>
-                            </RouterLink> */}
-                          </Center>
                           <Center>
                             <Link isExternal href={DISCORD_LINK}>
                               <Button variant="whiteOutline" px={["20px", "20px", "30px"]}>
@@ -537,8 +483,6 @@ const Landing = () => {
                         alt={f.name}
                         alignSelf="center"
                         justifySelf="center"
-                        // w={f.w}
-                        // h={{ base: f.h, sm: f.h * 1.8, md: f.h * 2 }}
                         w={{ base: f.w, sm: f.w * 1.8, md: f.w * 2 }}
                       />
                     ))}
