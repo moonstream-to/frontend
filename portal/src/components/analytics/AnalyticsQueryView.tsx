@@ -100,7 +100,6 @@ const AnalyticsQueryView = ({
     Object.keys(queryData.data.parameters).forEach(
       (param, idx) => (paramsObj[param] = values[idx]),
     );
-    console.log(paramsObj);
     const requestTimestamp = new Date().toUTCString();
     if (type === "smartcontract") {
       paramsObj.address = address;
@@ -165,7 +164,7 @@ const AnalyticsQueryView = ({
         return response; //TODO handle not 404 || 304 errors
       } catch (e) {
         console.log(e);
-        await new Promise((r) => setTimeout(r, 5000));
+        await new Promise((r) => setTimeout(r, 3000));
       }
     }
     return new Promise((_, reject) => reject(new Error("interrupted by user")));

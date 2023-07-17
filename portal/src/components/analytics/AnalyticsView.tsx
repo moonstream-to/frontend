@@ -8,6 +8,7 @@ import AnalyticsAddressesView from "./AnalyticsAddressesView";
 import useAnalytics from "../../contexts/AnalyticsContext";
 import AnalyticsNewAddressView from "./AnalyticsNewAddressView";
 import AnalyticsSmartContractView from "./AnalyticsSmartContractView";
+import { HiOutlineRefresh } from "react-icons/hi";
 
 const AnalyticsView = () => {
   const { isCreatingAddress, reset, addresses, selectedAddressId } = useAnalytics();
@@ -41,6 +42,26 @@ const AnalyticsView = () => {
             <AnalyticsSmartContractView address={addresses.data[selectedAddressId]} />
           )}
           {(isCreatingAddress || addresses.data?.length === 0) && <AnalyticsNewAddressView />}
+          {(addresses.isLoading || addresses.isError) && (
+            <Flex
+              borderRadius="20px"
+              bg="#2d2d2d"
+              w="100%"
+              minH="100%"
+              direction="column"
+              overflowY="auto"
+              p="30px"
+            >
+              {addresses.isError && (
+                <Flex gap="20px" alignItems="center">
+                  <Text color="error.500" fontSize="20px" fontWeight="700">
+                    Can&apos;t load addresses: {addresses.error.message}
+                  </Text>
+                  <HiOutlineRefresh onClick={() => addresses.refetch()} />
+                </Flex>
+              )}
+            </Flex>
+          )}
         </Flex>
       )}
       {!user && (
