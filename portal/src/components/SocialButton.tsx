@@ -10,7 +10,11 @@ const SocialButton = ({ children, label, href }: SocialButtonProps) => {
   return (
     <Button
       minWidth="0"
+      minH="0"
+      maxH="24px"
+      h="fit-content"
       paddingInline="0"
+      py="0"
       bg="transparent"
       cursor={"pointer"}
       onClick={() => {
