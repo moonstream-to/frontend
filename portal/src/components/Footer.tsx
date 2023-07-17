@@ -14,21 +14,57 @@ import {
 } from "@chakra-ui/react";
 
 import SocialButton from "./SocialButton";
-import { SITEMAP } from "../constants";
+import { AWS_STATIC_ASSETS_PATH, SITEMAP } from "../constants";
 
 const LINKS_SIZES = {
   fontWeight: "300",
   fontSize: "md",
 };
 
-const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
-const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`;
+const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
+const BGA_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/logos/bga-logo.png`;
+
+const BGA = () => {
+  <Flex
+    borderRadius="10px"
+    border="2px solid white"
+    p="10px"
+    gap="5px"
+    justifyContent="center"
+    alignItems="center"
+    w="fit-content"
+  >
+    <Text>Member of</Text>
+    <ChakraImage src={BGA_LOGO_URL} h="15px" alt="BGA" />
+  </Flex>;
+};
 
 const Footer = ({ home }: { home?: boolean }) => {
   const [isMobileView] = useMediaQuery("(max-width: 767px)");
   return (
     <Box textColor="white" borderTop="1px" borderColor="white" px="7%" mx="auto" minW="100vw">
       <Container as={Stack} py={10} px="0px" maxW="1238px">
+        <Text
+          textAlign="center"
+          bg="#101114"
+          p="10px 15px"
+          borderRadius="10px"
+          mb="40px"
+          fontSize={{ base: "16px", sm: "18px" }}
+        >
+          If you like Moonstream,{" "}
+          <Link
+            isExternal
+            href="https://github.com/moonstream-to/"
+            _hover={{ color: "accent.500" }}
+            fontWeight="700"
+          >
+            {" "}
+            give us a star on GitHub!
+          </Link>{" "}
+          ⭐
+        </Text>
+
         <Flex direction={["column", "column", "row"]}>
           <Stack spacing={6}>
             <Box pb={isMobileView ? "40px" : "0px"}>
@@ -77,19 +113,23 @@ const Footer = ({ home }: { home?: boolean }) => {
             </Text>
             <Flex width="158px" justifyContent="space-between">
               <SocialButton label={"Discord"} href={"https://discord.gg/K56VNUQGvA"}>
-                <ChakraImage maxW="26px" src={`${AWS_ASSETS_PATH}/icons/discord-logo.png`} />
+                <ChakraImage
+                  maxW="26px"
+                  src={`${AWS_STATIC_ASSETS_PATH}/icons/discord-logo.png`}
+                  _hover={{ scale: "0.1" }}
+                />
               </SocialButton>
               <SocialButton label={"Twitter"} href={"https://twitter.com/moonstreamto"}>
-                <ChakraImage maxW="24px" src={`${AWS_ASSETS_PATH}/icons/twitter-logo.png`} />
+                <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/icons/twitter-logo.png`} />
               </SocialButton>
-              <SocialButton label={"Github"} href={"https://github.com/bugout-dev/moonstream"}>
-                <ChakraImage maxW="24px" src={`${AWS_ASSETS_PATH}/icons/github-logo.png`} />
+              <SocialButton label={"Github"} href={"https://github.com/moonstream-to/api"}>
+                <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/icons/github-logo.png`} />
               </SocialButton>
               <SocialButton
                 label={"LinkedIn"}
                 href={"https://www.linkedin.com/company/moonstream/"}
               >
-                <ChakraImage maxW="24px" src={`${AWS_ASSETS_PATH}/icons/linkedin-logo.png`} />
+                <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/logos/linkedin.svg`} />
               </SocialButton>
             </Flex>
           </Flex>
