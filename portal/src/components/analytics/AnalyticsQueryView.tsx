@@ -63,6 +63,7 @@ const AnalyticsQueryView = ({
   });
 
   useEffect(() => {
+    setValues([]); //TODO check beh. in dev mode
     if (queryData.data?.parameters) {
       const newValues = Object.keys(queryData.data.parameters).map((key) => {
         return getDefaultValue(key);
