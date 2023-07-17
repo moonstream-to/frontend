@@ -9,8 +9,9 @@ interface SocialButtonProps {
 const SocialButton = ({ children, label, href }: SocialButtonProps) => {
   return (
     <Button
+      minWidth="0"
+      paddingInline="0"
       bg="transparent"
-      rounded={"full"}
       cursor={"pointer"}
       onClick={() => {
         window.open(href);

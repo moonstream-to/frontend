@@ -24,25 +24,48 @@ const LINKS_SIZES = {
 const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
 const BGA_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/logos/bga-logo.png`;
 
-const BGA = () => {
-  <Flex
-    borderRadius="10px"
-    border="2px solid white"
-    p="10px"
-    gap="5px"
-    justifyContent="center"
-    alignItems="center"
-    w="fit-content"
-  >
-    <Text>Member of</Text>
-    <ChakraImage src={BGA_LOGO_URL} h="15px" alt="BGA" />
-  </Flex>;
+const LegalInfo = ({ ...props }) => {
+  return (
+    <Flex direction="column" gap="20px">
+      <Flex
+        borderRadius="10px"
+        border="2px solid white"
+        p="10px"
+        gap="5px"
+        justifyContent="center"
+        alignItems="center"
+        w="fit-content"
+        {...props}
+      >
+        <Text>Member of</Text>
+        <ChakraImage src={BGA_LOGO_URL} h="15px" alt="BGA" />
+      </Flex>
+      <Flex justifyContent="start">
+        <RouterLink href="/policy">
+          <Text>Privacy policy</Text>
+        </RouterLink>
+        <RouterLink href="/terms">
+          <Text ml="20px">Terms of Service</Text>
+        </RouterLink>
+      </Flex>
+      <Text fontSize={{ base: "14px" }}>
+        © {new Date().getFullYear()} Moonstream.to All&nbsp;rights&nbsp;reserved
+      </Text>
+    </Flex>
+  );
 };
 
 const Footer = ({ home }: { home?: boolean }) => {
-  const [isMobileView] = useMediaQuery("(max-width: 767px)");
+  const [isMobileView, isDesktopView] = useMediaQuery(["(max-width: 767px)", "min-width: 1024px"]);
   return (
-    <Box textColor="white" borderTop="1px" borderColor="white" px="7%" mx="auto" minW="100vw">
+    <Box
+      textColor="white"
+      borderTop="1px"
+      borderColor="white"
+      px={{ base: "22px", sm: "7%" }}
+      mx="auto"
+      minW="100vw"
+    >
       <Container as={Stack} py={10} px="0px" maxW="1238px">
         <Text
           textAlign="center"
@@ -111,7 +134,7 @@ const Footer = ({ home }: { home?: boolean }) => {
             <Text fontWeight="semibold" mb="20px">
               Follow Us
             </Text>
-            <Flex width="158px" justifyContent="space-between">
+            <Flex gap="20px" justifyContent="start">
               <SocialButton label={"Discord"} href={"https://discord.gg/K56VNUQGvA"}>
                 <ChakraImage
                   maxW="26px"
@@ -140,9 +163,12 @@ const Footer = ({ home }: { home?: boolean }) => {
                   ml={["0px", "0px", "5vw", "100px"]}
                   align={"flex-start"}
                   key={`footer-list-column-${colIndex}`}
+                  gap="10px"
                 >
                   <>
-                    <Text fontWeight="700">{category.title}</Text>
+                    <Text fontWeight="700" fontSize="16px" mb="10px">
+                      {category.title}
+                    </Text>
                     {category.children.map((linkItem, linkItemIndex) => {
                       return (
                         <RouterLink
@@ -159,11 +185,7 @@ const Footer = ({ home }: { home?: boolean }) => {
               );
             })}
           </Flex>
-          {isMobileView && (
-            <Text fontSize={"sm"}>
-              © {new Date().getFullYear()} Moonstream.to All&nbsp;rights&nbsp;reserved
-            </Text>
-          )}
+          {isMobileView && <LegalInfo m="auto" />}
         </Flex>
       </Container>
     </Box>
