@@ -102,9 +102,16 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     },
   );
 
+  const getError = () => {
+    return new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("mock error")), 3000);
+    });
+  };
+
   const addresses = useQuery(["subscriptions"], getSubscriptions, {
     ...queryCacheProps,
-    onError: (error) => {
+    retry: 2,
+    onError: (error: any) => {
       toast(error.message, "error");
     },
     enabled: !!user,

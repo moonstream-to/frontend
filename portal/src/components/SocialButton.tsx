@@ -7,16 +7,17 @@ interface SocialButtonProps {
 }
 
 const SocialButton = ({ children, label, href }: SocialButtonProps) => {
-  // const { buttonReport } = useContext(AnalyticsContext)
   return (
     <Button
-      // bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
+      minWidth="0"
+      minH="0"
+      maxH="24px"
+      h="fit-content"
+      paddingInline="0"
+      py="0"
       bg="transparent"
-      rounded={"full"}
       cursor={"pointer"}
-      // maxW='30px'
       onClick={() => {
-        // buttonReport(label, 'footer', 'landing')
         window.open(href);
       }}
       display={"inline-flex"}
@@ -24,7 +25,7 @@ const SocialButton = ({ children, label, href }: SocialButtonProps) => {
       justifyContent={"center"}
       transition={"background 0.3s ease"}
       _hover={{
-        bg: "black",
+        transform: "scale(1.1)",
       }}
     >
       <VisuallyHidden>{label}</VisuallyHidden>

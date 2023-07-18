@@ -7,6 +7,7 @@ export const queryCacheProps = {
   refetchOnReconnect: false,
   retry: (failureCount: number, error: any) => {
     const status = error?.response?.status;
+    if (failureCount > 2) return false;
     return status === 404 || status === 403 ? false : true;
   },
 };
