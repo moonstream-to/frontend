@@ -20,6 +20,7 @@ const useSignUp = () => {
       // router.push("/welcome", undefined, { shallow: false });
     },
     onError: (error: Error) => {
+      console.log(error);
       toast(error.message, "error");
     },
   });
