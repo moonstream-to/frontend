@@ -1,9 +1,8 @@
 import { Image } from "@chakra-ui/image";
 import { Flex, Text } from "@chakra-ui/layout";
 import { useEffect } from "react";
-import { ChainName, getChainImage } from "../../constants";
+import { getChainImage } from "../../constants";
 import useAnalytics from "../../contexts/AnalyticsContext";
-// const chainNames: ChainName[] = ["ethereum", "polygon", "mumbai", "gnosis", "wyrm"];
 
 const AnalyticsChainSelector = ({
   selectedChain,
@@ -13,14 +12,17 @@ const AnalyticsChainSelector = ({
   setSelectedChain: (arg0: string) => void;
 }) => {
   const { blockchains } = useAnalytics();
+
   useEffect(() => {
-    if (selectedChain === "" && blockchains.data) {
+    if (selectedChain === "" && blockchains.data?.length) {
       setSelectedChain(blockchains.data[0].name);
     }
-  }, []);
+  }, [blockchains.data]);
+
   if (!blockchains.data) {
     return <></>;
   }
+
   return (
     <Flex wrap="wrap" gap="10px" borderBottom="1px solid #4c4c4c" w="fit-content" p="0">
       {blockchains.data.map(
