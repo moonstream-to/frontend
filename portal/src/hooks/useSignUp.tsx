@@ -19,9 +19,12 @@ const useSignUp = () => {
       getUser();
       // router.push("/welcome", undefined, { shallow: false });
     },
-    onError: (error: Error) => {
-      console.log(error);
-      toast(error.message, "error");
+    onError: (error: any) => {
+      let message = error.response.data?.detail ?? error.message;
+      if (error.response?.data?.detail?.slice(0, 3) === "409") {
+        message = "username or email already exists";
+      }
+      toast(message, "error", 5000);
     },
   });
 
