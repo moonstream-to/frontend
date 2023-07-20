@@ -40,6 +40,7 @@ const DropperV2DropsList = ({
         MULTICALL2_CONTRACT_ADDRESSES[
           String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
         ];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const dropperContract = new web3.eth.Contract(dropperAbi) as any;
       dropperContract.options.address = contractAddress ?? "";
 

@@ -43,6 +43,7 @@ const DropperV2ContractView = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getState = (address: any, ctx: any) => async () => {
     const web3 = ctx.web3;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const dropper = new web3.eth.Contract(dropperAbi) as any;
     dropper.options.address = address;
     // console.log("11,", dropper.methods);
