@@ -10,6 +10,7 @@ export default function Document() {
         />
         <link href="https://fonts.googleapis.com/css?family=Space Grotesk" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet" />
+        <link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet" />
       </Head>
       <body>
         <Main />
