@@ -5,9 +5,9 @@ import { Flex, Select, Skeleton, SkeletonCircle, Spinner, Text } from "@chakra-u
 
 import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
-const multicallABI = require("../web3/abi/Multicall2.json");
+const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
-const dropperAbi = require("../web3/abi/DropperV2.json");
+const dropperAbi = require("../../web3/abi/DropperV2.json");
 // import { Dropper } from "../web3/contracts/types/Dropper";
 import DropperClaimsListItem from "../DropperClaimsListItem";
 import useDrops from "../../hooks/useDrops";
@@ -18,14 +18,14 @@ const DropperV2DropsList = ({
   setSelected,
   onChange,
   filter,
-  queryClaimId,
+  queryDropId,
 }: {
   contractAddress: string;
   selected: number;
   setSelected: (arg0: number) => void;
   onChange: (id: string, metadata: unknown) => void;
   filter: string;
-  queryClaimId: number | undefined;
+  queryDropId: number | undefined;
 }) => {
   const { chainId, web3 } = useContext(Web3Context);
   const web3ctx = useContext(Web3Context);
@@ -33,8 +33,8 @@ const DropperV2DropsList = ({
 
   const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress });
 
-  const claimsList = useQuery(
-    ["claimsList", contractAddress, chainId, queryClaimId],
+  const dropsList = useQuery(
+    ["dropsList", contractAddress, chainId, queryDropId],
     async () => {
       const MULTICALL2_CONTRACT_ADDRESS =
         MULTICALL2_CONTRACT_ADDRESSES[
@@ -49,14 +49,14 @@ const DropperV2DropsList = ({
       const uriQueries = [];
 
       const LIMIT = Number(MAX_INT);
-      let totalClaims;
+      let totalDrops;
       try {
-        totalClaims = await dropperContract.methods.numDrops().call();
+        totalDrops = await dropperContract.methods.numDrops().call();
       } catch (e) {
         console.log(e);
-        totalClaims = 0;
+        totalDrops = 0;
       }
-      for (let i = 1; i <= Math.min(LIMIT, Number(totalClaims)); i += 1) {
+      for (let i = 1; i <= Math.min(LIMIT, Number(totalDrops)); i += 1) {
         uriQueries.push({
           target: contractAddress,
           callData: dropperContract.methods.dropUri(i).encodeABI(),
@@ -98,15 +98,15 @@ const DropperV2DropsList = ({
   );
 
   useEffect(() => {
-    if (selected < 1 && claimsList.data) {
-      setSelected(claimsList.data.length);
+    if (selected < 1 && dropsList.data) {
+      setSelected(dropsList.data.length);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claimsList.data, selected]);
+  }, [dropsList.data, selected]);
 
   return (
     <>
-      {claimsList.data && (
+      {dropsList.data && (
         <Flex direction="column" gap="15px" h="100%" overflowY="auto">
           {adminClaims.isLoading && <Spinner />}
           {adminClaims.data?.length > 0 && (
@@ -130,26 +130,26 @@ const DropperV2DropsList = ({
               </Select>
             </Flex>
           )}
-          {claimsList.isLoading &&
+          {dropsList.isLoading &&
             Array.from(Array(5)).map((_, idx) => (
               <Flex key={idx} gap="15px">
                 <SkeletonCircle minH="27px" startColor="#2d2d2d" endColor="#222222" />
                 <Skeleton bg="red" minH="27px" w="250px" startColor="#2d2d2d" endColor="#222222" />
               </Flex>
             ))}
-          {claimsList.data.map((claim: { uri: string; id: number }) => (
+          {dropsList.data.map((drop: { uri: string; id: number }) => (
             <DropperClaimsListItem
-              key={claim.id}
+              key={drop.id}
               address={contractAddress}
-              claimId={String(claim.id)}
-              selected={claim.id === selected}
-              inQuery={claim.id === queryClaimId}
-              uri={claim.uri}
+              claimId={String(drop.id)}
+              selected={drop.id === selected}
+              inQuery={drop.id === queryDropId}
+              uri={drop.uri}
               onChange={onChange}
               filter={filter}
               statusFilter={statusFilter}
               dropState={adminClaims.data?.find(
-                (dbClaim: { drop_number: number }) => dbClaim.drop_number === claim.id,
+                (dbClaim: { drop_number: number }) => dbClaim.drop_number === drop.id,
               )}
             />
           ))}

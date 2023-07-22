@@ -5,17 +5,14 @@ import { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
 
-import Layout from "../../../src/components/layout";
-import DropperContractView from "../../../src/components/DropperContractView";
 import Web3Context from "../../../src/contexts/Web3Context/context";
 import useDropperContract from "../../../src/hooks/useDropper.sol";
-import DropperClaimsListView from "../../../src/components/DropperClaimsListView";
-import DropperClaimView from "../../../src/components/DropperClaimView";
 import { TokenInterface } from "../../../src/types/Moonstream";
 import useRecentAddresses from "../../../src/hooks/useRecentAddresses";
 import ContractRow from "../../../src/components/ContractRow";
 import DropperV2ContractView from "./DropperV2ContractView";
 import DropperV2DropView from "./DropperV2DropView";
+import DropperV2DropsListView from "./DropperV2DropsListView";
 
 const DropperV2View = () => {
   const router = useRouter();
@@ -147,7 +144,7 @@ const DropperV2View = () => {
             <DropperV2ContractView address={contractAddress} addRecentAddress={addRecentAddress} />
             <Flex gap="40px" maxH="700px">
               {contractState.data && (
-                <DropperClaimsListView
+                <DropperV2DropsListView
                   contractAddress={contractAddress}
                   contractState={contractState}
                   onChange={handleClick}

@@ -59,42 +59,42 @@ const DropperV2DropView = ({
     }
   }, [metadata?.image]);
 
-  const [dropState, setDropState] = useState<
-    | {
-        deadline: string;
-        id: string;
-        terminusAddress: string;
-        terminusPoolId: string;
-        active: boolean;
-      }
-    | undefined
-  >(undefined);
+  // const [dropState, setDropState] = useState<
+  //   | {
+  //       deadline: string;
+  //       id: string;
+  //       terminusAddress: string;
+  //       terminusPoolId: string;
+  //       active: boolean;
+  //     }
+  //   | undefined
+  // >(undefined);
 
-  useEffect(() => {
-    if (adminClaims.data) {
-      const claimState = adminClaims.data.find(
-        (claim: { drop_number: number }) => claim.drop_number === Number(claimId),
-      );
-      if (claimState) {
-        const {
-          id,
-          claim_block_deadline: deadline,
-          terminus_address: terminusAddress,
-          terminus_pool_id: terminusPoolId,
-          active,
-        } = claimState;
-        setDropState({
-          id,
-          terminusAddress,
-          terminusPoolId,
-          deadline,
-          active,
-        });
-      } else {
-        setDropState(undefined);
-      }
-    }
-  }, [adminClaims.data, claimId]);
+  // useEffect(() => {
+  //   if (adminClaims.data) {
+  //     const claimState = adminClaims.data.find(
+  //       (claim: { drop_number: number }) => claim.drop_number === Number(claimId),
+  //     );
+  //     if (claimState) {
+  //       const {
+  //         id,
+  //         claim_block_deadline: deadline,
+  //         terminus_address: terminusAddress,
+  //         terminus_pool_id: terminusPoolId,
+  //         active,
+  //       } = claimState;
+  //       // setDropState({
+  //       //   id,
+  //       //   terminusAddress,
+  //       //   terminusPoolId,
+  //       //   deadline,
+  //       //   active,
+  //       // });
+  //     } else {
+  //       // setDropState(undefined);
+  //     }
+  //   }
+  // }, [adminClaims.data, claimId]);
 
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
@@ -103,8 +103,8 @@ const DropperV2DropView = ({
     ["1", "Mint Terminus"],
   ]);
 
-  const claimState = useQuery(
-    ["claimState", address, claimId, chainId],
+  const dropState = useQuery(
+    ["dropState", address, claimId, chainId],
     async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const dropperContract = new web3.eth.Contract(dropperAbi) as any;
@@ -151,7 +151,7 @@ const DropperV2DropView = ({
         toggleEdit={() => setIsEdit(!isEdit)}
       />
 
-      {!!claimState.data && (
+      {!!dropState.data && (
         <>
           {metadata?.name && (
             <Text fontWeight="700" fontSize="24px" mb="20px">
@@ -198,20 +198,20 @@ const DropperV2DropView = ({
                 </Button>
               </Flex>
             )} */}
-            {claimState.data?.drop && !isEdit && (
+            {dropState.data?.drop && !isEdit && (
               <DropV2Data
                 metadata={metadata}
-                claimState={claimState}
+                claimState={dropState}
                 // dropState={dropState}
                 excludeFields={headerMeta}
                 PORTAL_PATH={PORTAL_PATH}
               />
             )}
-            {dropState && !isEdit && <ClaimantsView claimId={dropState.id} />}
+            {/* {dropState && !isEdit && <ClaimantsView claimId={dropState.id} />} */}
           </Flex>
         </>
       )}
-      {claimState.isLoading && (
+      {dropState.isLoading && (
         <Flex alignItems="center" justifyContent="center" h="100%">
           <Spinner h="50px" w="50px" />
         </Flex>

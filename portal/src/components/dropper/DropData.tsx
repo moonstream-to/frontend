@@ -12,7 +12,7 @@ const DropData: React.FC<DropDataProps> = ({
 }) =>
   claimState.data?.claim && (
     <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
-      <PoolDetailsRow type="Token address" value={claimState.data.claim[1]} />
+      <PoolDetailsRow canBeCopied type="Token address" value={claimState.data.claim[1]} />
       <PoolDetailsRow type="Drop type" value={claimState.data.dropType} />
 
       <PoolDetailsRow type="Signer" value={claimState.data.signer} />
@@ -27,6 +27,7 @@ const DropData: React.FC<DropDataProps> = ({
           <PoolDetailsRow
             href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.terminusAddress}&poolId=${dropState.terminusPoolId}`}
             type="Terminus address"
+            canBeCopied
             value={String(dropState.terminusAddress)}
           />
 
