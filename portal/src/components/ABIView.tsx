@@ -2,6 +2,9 @@ import {
   Button,
   Flex,
   Input,
+  InputGroup,
+  InputRightAddon,
+  InputRightElement,
   Menu,
   MenuButton,
   MenuGroup,
@@ -12,7 +15,8 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { useQuery } from "react-query";
 import Web3 from "web3";
@@ -27,6 +31,7 @@ const ABIView = () => {
   const [abiObject, setAbiObject] = useState([]);
   const [filter, setFilter] = useState("function");
   const [search, setSearch] = useState("");
+  const [savedSearch, setSavedSearch] = useState("");
   const [src, setSrc] = useState(
     "",
     // "0x8d528e98A69FE27b11bb02Ac264516c4818C3942",
@@ -34,6 +39,7 @@ const ABIView = () => {
   );
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const web3 = new Web3();
 
   const colorScheme = {
@@ -62,18 +68,26 @@ const ABIView = () => {
     }
   }, [abi]);
 
-  const stateMutabilities = abiObject.reduce(
-    (acc: string[], item: { stateMutability: string }) =>
-      item.stateMutability && !acc.includes(item.stateMutability)
-        ? acc.concat(item.stateMutability)
-        : acc,
-    [],
+  const stateMutabilities = useMemo(
+    () =>
+      abiObject.reduce(
+        (acc: string[], item: { stateMutability: string }) =>
+          item.stateMutability && !acc.includes(item.stateMutability)
+            ? acc.concat(item.stateMutability)
+            : acc,
+        [],
+      ),
+    [abiObject],
   );
 
-  const types = abiObject.reduce(
-    (acc: string[], item: { type: string }) =>
-      item.type && !acc.includes(item.type) ? acc.concat(item.type) : acc,
-    [],
+  const types = useMemo(
+    () =>
+      abiObject.reduce(
+        (acc: string[], item: { type: string }) =>
+          item.type && !acc.includes(item.type) ? acc.concat(item.type) : acc,
+        [],
+      ),
+    [abiObject],
   );
 
   const filterFunction = search
@@ -162,7 +176,8 @@ const ABIView = () => {
         {inputs.map((input, idx) => (
           <>
             <span style={{ color: colorScheme.param }}>{input.name}</span>
-            {input.name && ": "}
+            {input.name && ":"}
+            {input.name && <span>&nbsp;</span>}
             {getType(input)}
             {idx + 1 < inputs.length && ",  "}
           </>
@@ -182,7 +197,9 @@ const ABIView = () => {
         {outputs.map((output, idx) => (
           <>
             <span style={{ color: colorScheme.param }}>{output.name}</span>
-            {output.name && ": "}
+            {output.name && ":"}
+            {output.name && <span>&nbsp;</span>}
+
             {getType(output)}
             {idx + 1 < outputs.length && ",  "}
           </>
@@ -197,6 +214,20 @@ const ABIView = () => {
       getABIQuery.refetch();
     }
   }, [src, getABIQuery.refetch]);
+
+  const handleKeyDown = (e: any) => {
+    if (e.keyCode === 46 || e.keyCode === 8) {
+      setSrc("");
+    }
+  };
+
+  const handlePaste = (e: any) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    if (pastedText) {
+      setSrc(pastedText);
+    }
+  };
 
   return (
     <Flex
@@ -246,16 +277,19 @@ const ABIView = () => {
           </Menu>
         </Flex>
 
-        <Flex w="100" minH="40px" bg="#282a36" boxShadow="0px 2px 2px black">
+        <Flex w="100" minH="40px" bg="#282a36" boxShadow="0px 2px 2px black" position="relative">
           {" "}
           <Input
-            placeholder="url, github url or contract address"
+            placeholder="url or contract address"
             value={src}
-            onChange={(e) => setSrc(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
             border="none"
             _focus={{ border: "none" }}
             _active={{ border: "none" }}
             _focusVisible={{ border: "none" }}
+            minW="90vw"
+            w="90vw"
           />
         </Flex>
         <Flex width="100%" h="3px" bg="transparent" />
@@ -288,8 +322,12 @@ const ABIView = () => {
               px="20px"
               onClick={() => {
                 setFilter(type);
-                setSearch("");
+                if (search) {
+                  setSavedSearch(search);
+                  setSearch("");
+                }
               }}
+              color={filter === type && !search ? "white" : "#7b7f8b"}
               bg={filter === type && !search ? "#282a36" : "#262626"}
               h="100%"
               alignItems="center"
@@ -302,19 +340,55 @@ const ABIView = () => {
           ))}
           {abiObject.length > 0 && (
             <Flex
-              borderTop={search ? "1px solid #ff54a2" : "none"}
+              // borderTop={search ? "1px solid #ff54a2" : "none"}
               alignItems={"center"}
               h="100%"
               bg={search ? "#282a36" : "#262626"}
               cursor="default"
             >
-              <Text pl="60px" pr="10px" bg={search ? "#282a36" : "#262626"}>
+              <Text
+                pl="60px"
+                pr="10px"
+                bg={search ? "#282a36" : "#262626"}
+                color={search ? "white" : "#7b7f8b"}
+                onClick={() => {
+                  setSearch(savedSearch);
+                  searchRef.current?.focus();
+                }}
+                cursor="pointer"
+              >
                 Search
               </Text>
             </Flex>
           )}
           {abiObject.length > 0 && (
-            <Input value={search} onChange={(e) => setSearch(e.target.value)} />
+            <InputGroup>
+              <Input
+                border="none"
+                borderBottom="1px solid #777777"
+                borderRadius="0"
+                ref={searchRef}
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setSavedSearch(e.target.value);
+                }}
+                _focus={{ border: "none", borderBottom: "1px solid #777777" }}
+                _active={{ border: "none", borderBottom: "1px solid #777777" }}
+                _focusVisible={{ border: "none", borderBottom: "1px solid #777777" }}
+                spellCheck="false"
+              />
+              <InputRightElement>
+                <AiOutlineClose
+                  cursor="pointer"
+                  color="#BBBBBB"
+                  onClick={() => {
+                    setSavedSearch("");
+                    setSearch("");
+                  }}
+                />
+              </InputRightElement>
+            </InputGroup>
           )}
         </Flex>
         <Flex
@@ -341,7 +415,14 @@ const ABIView = () => {
             {abiObject
               .filter(filterFunction)
               .map((item: { name: string; inputs: any[]; outputs: any[] }, idx) => (
-                <Text key={idx}>
+                <Text
+                  key={idx}
+                  mt="5px"
+                  border="0px solid white"
+                  textIndent="-20px"
+                  ml="20px"
+                  pr="20px"
+                >
                   <span style={{ color: colorScheme.name }}>{item.name}</span>
                   {":  ("}
                   <Inputs inputs={item.inputs} />
