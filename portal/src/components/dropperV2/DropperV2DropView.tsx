@@ -20,6 +20,7 @@ import DropHeader from "../dropper/DropHeader";
 import EditDrop from "../dropper/EditDrop";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
+import DropperV2EditDrop from "./DropperV2EditDrop";
 
 const DropperV2DropView = ({
   address,
@@ -110,13 +111,13 @@ const DropperV2DropView = ({
       const dropperContract = new web3.eth.Contract(dropperAbi) as any;
       dropperContract.options.address = address ?? "";
       const drop = await dropperContract.methods.getDrop(claimId).call();
-      const dropUri = await dropperContract.methods.dropUri(claimId).call(); //TODO take from ClaimsList
+      const uri = await dropperContract.methods.dropUri(claimId).call(); //TODO take from ClaimsList
       const dropAuthorization = await dropperContract.methods.getDropAuthorization(claimId).call();
       const dropStatus = await dropperContract.methods.dropStatus(claimId).call();
       // const signer = await dropperContract.methods.getSignerForClaim(claimId).call(); //TODO MULTICALL?
       // const dropType = dropTypes.get(claim[3]) ?? "undefined";
-      console.log({ drop, dropUri, dropAuthorization, dropStatus });
-      return { drop, dropUri, dropAuthorization, dropStatus };
+      console.log({ drop, uri, dropAuthorization, dropStatus });
+      return { drop, uri, dropAuthorization, dropStatus };
     },
     {
       ...queryCacheProps,
@@ -176,28 +177,19 @@ const DropperV2DropView = ({
                 </ReactMarkdown>
               )}
             </Flex>
-            {/* {dropState && claimState.data && isEdit && (
+            {dropState && isEdit && (
               <Flex direction="column" gap="20px" mb="20px">
-                <EditDrop
+                <DropperV2EditDrop
                   address={address}
-                  claimId={claimId}
-                  active={dropState.active}
-                  dbData={{
-                    terminusAddress: dropState.terminusAddress,
-                    terminusPoolId: String(dropState.terminusPoolId),
-                    deadline: String(dropState.deadline),
-                    claimUUID: dropState.id,
-                  }}
-                  chainData={{
-                    uri: claimState.data.claimUri,
-                    signer: claimState.data.signer,
-                  }}
+                  dropId={claimId}
+                  // active={dropState.active}
+                  dropState={dropState.data}
                 />
                 <Button alignSelf="end" variant="cancelButton" onClick={() => setIsEdit(false)}>
                   Cancel
                 </Button>
               </Flex>
-            )} */}
+            )}
             {dropState.data?.drop && !isEdit && (
               <DropV2Data
                 metadata={metadata}

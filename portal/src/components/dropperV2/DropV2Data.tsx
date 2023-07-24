@@ -70,8 +70,8 @@ const DropV2Data: React.FC<DropDataProps> = ({
           {/* <PoolDetailsRow type="Signer" value={claimState.data.signer} /> */}
           <PoolDetailsRow
             type="Metadata uri"
-            href={claimState.data.dropUri}
-            value={claimState.data.dropUri}
+            href={claimState.data.uri}
+            value={claimState.data.uri}
             mt="10px"
           />
           {metadata && <MetadataPanel metadata={metadata} excludeFields={excludeFields} />}
