@@ -3,7 +3,6 @@ import {
   Flex,
   Input,
   InputGroup,
-  InputRightAddon,
   InputRightElement,
   Menu,
   MenuButton,
@@ -12,11 +11,13 @@ import {
   MenuList,
   Spinner,
   Text,
+  Icon,
+  Spacer,
 } from "@chakra-ui/react";
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineClose, AiOutlineSave } from "react-icons/ai";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { useQuery } from "react-query";
 import Web3 from "web3";
@@ -32,6 +33,7 @@ const ABIView = () => {
   const [filter, setFilter] = useState("function");
   const [search, setSearch] = useState("");
   const [savedSearch, setSavedSearch] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [src, setSrc] = useState(
     "",
     // "0x8d528e98A69FE27b11bb02Ac264516c4818C3942",
@@ -60,7 +62,6 @@ const ABIView = () => {
         const newAbiObject = JSON.parse(abi).map((item: { type: string }) =>
           item.type === "constructor" ? { ...item, name: "constructor" } : { ...item },
         );
-
         setAbiObject(newAbiObject.filter((item: { name: string; type: string }) => item.name));
       }
     } catch {
@@ -97,12 +98,15 @@ const ABIView = () => {
     : (item: { type: string }) => item.type === filter;
 
   const getFromUrl = (url: string) => {
-    axios.get(url).then((res) => {
+    return axios.get(url).then((res) => {
       if (res.data) {
         try {
           setAbi(JSON.stringify(res.data, null, "\t"));
-        } catch (e) {
+        } catch (e: any) {
           console.log(e);
+          return new Promise((_, reject) => {
+            reject(new Error("Not valid JSON"));
+          });
         }
       }
       return res.data;
@@ -137,6 +141,10 @@ const ABIView = () => {
           return new Promise((_, reject) => reject(new Error(e.message)));
         }
       });
+    } else {
+      return new Promise((_, reject) => {
+        reject(new Error("ABI not found"));
+      });
     }
   };
 
@@ -150,6 +158,7 @@ const ABIView = () => {
 
   const getABIQuery = useQuery(["getABI", src], getABI, {
     enabled: false,
+    retry: false,
     onSuccess: () => {
       const name = web3.utils.isAddress(src)
         ? src.slice(0, 8) + "..." + src.slice(-6)
@@ -175,7 +184,9 @@ const ABIView = () => {
       <>
         {inputs.map((input, idx) => (
           <>
-            <span style={{ color: colorScheme.param }}>{input.name}</span>
+            <span key={idx} style={{ color: colorScheme.param }}>
+              {input.name}
+            </span>
             {input.name && ":"}
             {input.name && <span>&nbsp;</span>}
             {getType(input)}
@@ -195,14 +206,14 @@ const ABIView = () => {
       <>
         {outputs.length > 1 && "["}
         {outputs.map((output, idx) => (
-          <>
+          <React.Fragment key={idx}>
             <span style={{ color: colorScheme.param }}>{output.name}</span>
             {output.name && ":"}
             {output.name && <span>&nbsp;</span>}
 
             {getType(output)}
             {idx + 1 < outputs.length && ",  "}
-          </>
+          </React.Fragment>
         ))}
         {outputs.length > 1 && "]"}
       </>
@@ -233,10 +244,10 @@ const ABIView = () => {
     <Flex
       gap="0px"
       mt="30px"
-      px={{ base: 0, xl: "5%", "2xl": "10%" }}
+      px="0"
       minH="calc(100vh - 20px)"
       maxH="calc(100vh - 20px)"
-      minW="90%"
+      minW="100vw"
       position="relative"
       alignSelf="stretch"
       ref={scrollRef}
@@ -277,20 +288,21 @@ const ABIView = () => {
           </Menu>
         </Flex>
 
-        <Flex w="100" minH="40px" bg="#282a36" boxShadow="0px 2px 2px black" position="relative">
-          {" "}
-          <Input
-            placeholder="url or contract address"
-            value={src}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            border="none"
-            _focus={{ border: "none" }}
-            _active={{ border: "none" }}
-            _focusVisible={{ border: "none" }}
-            minW="90vw"
-            w="90vw"
-          />
+        <Flex
+          w="100"
+          minH="40px"
+          bg="#282a36"
+          boxShadow="0px 2px 2px black"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          {getABIQuery.isError && (
+            <Text pl="20px" color="error.500">
+              {getABIQuery.error?.message}
+            </Text>
+          )}
+          <Spacer />
+          <Icon as={AiOutlineSave} mr="33px" />
         </Flex>
         <Flex width="100%" h="3px" bg="transparent" />
 
@@ -340,7 +352,6 @@ const ABIView = () => {
           ))}
           {abiObject.length > 0 && (
             <Flex
-              // borderTop={search ? "1px solid #ff54a2" : "none"}
               alignItems={"center"}
               h="100%"
               bg={search ? "#282a36" : "#262626"}
@@ -400,9 +411,21 @@ const ABIView = () => {
           bg="#282a36"
           boxShadow="0px 2px 2px black"
         >
-          <Text color="#7b7f8b" fontSize="16px">
-            {src}
-          </Text>
+          <Input
+            placeholder="paste url or contract address"
+            value={src}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            border="none"
+            _focus={{ border: "none" }}
+            _active={{ border: "none" }}
+            _focusVisible={{ border: "none" }}
+            _placeholder={{ color: "#7b7f8b" }}
+            minW="100%"
+            w="100%"
+            spellCheck="false"
+            color={getABIQuery.isError ? "error.500" : "#7b7f8b"}
+          />
         </Flex>
         {abiObject && (
           <Flex
