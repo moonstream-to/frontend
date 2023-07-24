@@ -199,7 +199,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             onChange={setSelectedIdx}
           />
         )}
-        {supportedQueries.data && selectedIdx > -1 && (
+        {supportedQueries.data && selectedIdx > -1 && supportedQueries.data[selectedIdx] && (
           <AnalyticsQueryView
             query={supportedQueries.data[selectedIdx]}
             address={address.address}
