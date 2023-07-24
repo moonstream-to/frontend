@@ -7,10 +7,7 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
   Text,
   useDisclosure,
@@ -18,7 +15,6 @@ import {
 
 import Web3Context from "../../contexts/Web3Context/context";
 import { useRouter } from "next/router";
-import { MAX_INT } from "../../constants";
 import DropperV2DropsList from "./DropperV2DropsList";
 import DropperV2NewDrop from "./DropperV2NewDrop";
 
@@ -40,6 +36,7 @@ const DropperV2DropsListView = ({
   const [queryDropId, setQueryDropId] = useState<number | undefined>(undefined);
   const [filter, setFilter] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [adminOnly, setAdminOnly] = useState(false);
   const web3ctx = useContext(Web3Context);
 
   useEffect(() => {
@@ -69,6 +66,7 @@ const DropperV2DropsListView = ({
         borderRadius="10px"
         p="8px 15px"
       />
+      <Checkbox isChecked={adminOnly} onChange={(e) => setAdminOnly(e.target.checked)} />
 
       <DropperV2DropsList
         contractAddress={contractAddress}
@@ -77,6 +75,7 @@ const DropperV2DropsListView = ({
         selected={selected}
         filter={filter}
         queryDropId={queryDropId ?? undefined}
+        adminOnly={adminOnly}
       />
 
       {contractState && (

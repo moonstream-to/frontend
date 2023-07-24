@@ -8,6 +8,8 @@ import queryCacheProps from "../../hooks/hookCommon";
 const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+
 // import { Dropper } from "../web3/contracts/types/Dropper";
 import DropperClaimsListItem from "../DropperClaimsListItem";
 import useDrops from "../../hooks/useDrops";
@@ -19,6 +21,7 @@ const DropperV2DropsList = ({
   onChange,
   filter,
   queryDropId,
+  adminOnly,
 }: {
   contractAddress: string;
   selected: number;
@@ -26,6 +29,7 @@ const DropperV2DropsList = ({
   onChange: (id: string, metadata: unknown) => void;
   filter: string;
   queryDropId: number | undefined;
+  adminOnly: boolean;
 }) => {
   const { chainId, web3 } = useContext(Web3Context);
   const web3ctx = useContext(Web3Context);
@@ -47,9 +51,11 @@ const DropperV2DropsList = ({
       const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
 
       const uriQueries = [];
+      const dropAuthQueries = [];
+      const dropStatusQueries = [];
 
       const LIMIT = Number(MAX_INT);
-      let totalDrops;
+      let totalDrops: string | number;
       try {
         totalDrops = await dropperContract.methods.numDrops().call();
       } catch (e) {
@@ -63,27 +69,73 @@ const DropperV2DropsList = ({
         });
       }
 
+      for (let i = 1; i <= Math.min(LIMIT, Number(totalDrops)); i += 1) {
+        dropAuthQueries.push({
+          target: contractAddress,
+          callData: dropperContract.methods.getDropAuthorization(i).encodeABI(),
+        });
+      }
+      for (let i = 1; i <= Math.min(LIMIT, Number(totalDrops)); i += 1) {
+        dropStatusQueries.push({
+          target: contractAddress,
+          callData: dropperContract.methods.dropStatus(i).encodeABI(),
+        });
+      }
+
       return multicallContract.methods
-        .tryAggregate(false, uriQueries)
+        .tryAggregate(false, uriQueries.concat(dropAuthQueries).concat(dropStatusQueries))
         .call()
         .then((results: string[]) => {
-          return results.map((result, idx) => {
-            let parsed;
+          // return results.map((result, idx) => {
+          const parsedResults = [];
+          let parsedUri;
+          for (let i = 0; i < Number(totalDrops); i += 1) {
             try {
-              parsed = web3.utils.hexToUtf8(result[1]).split("https://")[1];
-              if (!parsed) {
+              parsedUri = web3.utils.hexToUtf8(results[i][1]).split("https://")[1];
+              if (!parsedUri) {
                 throw "not an address";
               }
-              parsed = "https://" + parsed;
+              parsedUri = "https://" + parsedUri;
             } catch (e) {
               console.log(e);
-              parsed = undefined;
+              parsedUri = undefined;
             }
-            return { uri: parsed, id: idx + 1 };
-          });
+            const { poolId, terminusAddress } = web3.eth.abi.decodeParameter(
+              { tuple: { terminusAddress: "address", poolId: "uint256" } },
+              results[i + Number(totalDrops)][1],
+            );
+            const active = web3.eth.abi.decodeParameter(
+              "bool",
+              results[i + Number(totalDrops) * 2][1],
+            );
+            parsedResults.push({ uri: parsedUri, id: i + 1, poolId, terminusAddress, active });
+          }
+          return parsedResults;
         })
-        .then((parsedResults: string[]) => {
-          return parsedResults.reverse();
+        .then(async (parsedResults: any) => {
+          const terminusContract = new web3.eth.Contract(terminusAbi) as any;
+
+          const balanceQueries = parsedResults.map((drop: any) => {
+            terminusContract.options.address = drop.terminusAddress;
+            return {
+              target: drop.terminusAddress,
+              callData: terminusContract.methods
+                .balanceOf(web3ctx.account, drop.poolId)
+                .encodeABI(),
+            };
+          });
+          const balances = await multicallContract.methods
+            .tryAggregate(false, balanceQueries)
+            .call()
+            .then((results: any[]) =>
+              results.map((result: any) => web3.eth.abi.decodeParameter("uint256", result[1])),
+            );
+          return parsedResults
+            .map((drop: any, idx: number) => {
+              console.log({ ...drop, admin: Number(balances[idx]) > 0 });
+              return { ...drop, admin: balances[idx] > 0 };
+            })
+            .reverse();
         });
     },
     {
@@ -137,22 +189,24 @@ const DropperV2DropsList = ({
                 <Skeleton bg="red" minH="27px" w="250px" startColor="#2d2d2d" endColor="#222222" />
               </Flex>
             ))}
-          {dropsList.data.map((drop: { uri: string; id: number }) => (
-            <DropperClaimsListItem
-              key={drop.id}
-              address={contractAddress}
-              claimId={String(drop.id)}
-              selected={drop.id === selected}
-              inQuery={drop.id === queryDropId}
-              uri={drop.uri}
-              onChange={onChange}
-              filter={filter}
-              statusFilter={statusFilter}
-              dropState={adminClaims.data?.find(
-                (dbClaim: { drop_number: number }) => dbClaim.drop_number === drop.id,
-              )}
-            />
-          ))}
+          {dropsList.data
+            .filter((drop: { admin: boolean }) => !adminOnly || drop.admin)
+            .map((drop: { uri: string; id: number }) => (
+              <DropperClaimsListItem
+                key={drop.id}
+                address={contractAddress}
+                claimId={String(drop.id)}
+                selected={drop.id === selected}
+                inQuery={drop.id === queryDropId}
+                uri={drop.uri}
+                onChange={onChange}
+                filter={filter}
+                statusFilter={statusFilter}
+                dropState={adminClaims.data?.find(
+                  (dbClaim: { drop_number: number }) => dbClaim.drop_number === drop.id,
+                )}
+              />
+            ))}
         </Flex>
       )}
     </>
