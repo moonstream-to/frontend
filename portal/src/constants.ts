@@ -103,7 +103,7 @@ export const AWS_ASSETS_PATH_CF = "https://static.simiotics.com/moonstream/asset
 
 export const AWS_STATIC_ASSETS_PATH = "https://static.simiotics.com/moonstream/assets";
 
-export const PORTAL_PATH = "https://portal.moonstream.to";
+export const PORTAL_PATH = "https://moonstream.to/portal";
 
 export const DISCORD_LINK = "https://discord.gg/K56VNUQGvA";
 
