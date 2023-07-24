@@ -27,6 +27,10 @@ const overrides = {
       variants: {
         address: {
           field: {
+            _placeholder: {
+              color: "#AAAAAA",
+              fontSize: "14px",
+            },
             border: "1px solid white",
             bg: "transparent",
             fontSize: "min(18px, 9px + 0.7vw)",

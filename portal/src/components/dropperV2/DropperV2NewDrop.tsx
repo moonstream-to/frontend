@@ -63,16 +63,6 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
     authorizationPoolId: number;
     uri: string;
   }) => {
-    console.log(
-      tokenType,
-      tokenAddress,
-      tokenId,
-      amount,
-      authorizationTokenAddress,
-      authorizationPoolId,
-      uri,
-    );
-    // if (2 > 1) return;
     const dropperContract = new web3.eth.Contract(dropperAbi) as any;
     dropperContract.options.address = address ?? "";
 
@@ -92,7 +82,7 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
   const createDropMutation = useMutation(createDrop, {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
-      console.log("success");
+      onClose();
       queryClient.invalidateQueries("dropsList");
       queryClient.invalidateQueries("dropperContract");
     },
@@ -149,9 +139,9 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
 
   return (
     <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" direction="column" overflowY="auto">
-      <Flex direction="column" p="30px" gap="16px" w="100%">
+      <Flex direction="column" p="30px" gap="20px" w="100%">
         <Flex justifyContent="space-between" alignItems="center">
-          <Text variant="title"> Watch new address</Text>
+          <Text variant="title"> New Drop</Text>
           <IconButton
             variant="transparent"
             aria-label="close"
@@ -159,14 +149,13 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             onClick={onClose}
           />
         </Flex>
-        <Flex gap="10px">
+        <Text variant="title3" mb="-15px">
+          Token:
+        </Text>
+        <Flex gap="20px">
           <Flex direction="column" gap="10px">
-            <Text variant="label">Token&nbsp;type</Text>
-            <Select
-              w="fit-content"
-              value={tokenType}
-              onChange={(e) => setTokenType(e.target.value)}
-            >
+            <Text variant="label">type</Text>
+            <Select w="20ch" value={tokenType} onChange={(e) => setTokenType(e.target.value)}>
               {Object.keys(dropTypes).map((type) => (
                 <option key={type} value={dropTypes[type as keyof typeof dropTypes]}>
                   {type}
@@ -175,31 +164,61 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             </Select>
           </Flex>
           <Flex direction="column" gap="10px">
-            <Text variant="label">Token address</Text>
+            <Text variant="label">address</Text>
             <Input
               variant="address"
               fontSize="18px"
               w="45ch"
               borderRadius="10px"
-              _placeholder={{ fontSize: "16px" }}
               value={tokenAddress}
               onChange={(e) => setTokenAddress(e.target.value)}
               borderColor={!showInvalid || isTokenAddressValid ? "white" : "error.500"}
-              placeholder="Enter token address"
+              placeholder="token address"
             />
           </Flex>
           <Flex direction="column" gap="10px">
-            <Text variant="label">Token&nbsp;Id</Text>
+            <Text variant="label">Id</Text>
             <Input
               variant="address"
               fontSize="18px"
-              w="5ch"
+              w="8ch"
               borderRadius="10px"
-              _placeholder={{ fontSize: "16px" }}
               value={tokenId}
               onChange={(e) => setTokenId(e.target.value)}
               borderColor={!showInvalid || isTokenIdValid ? "white" : "error.500"}
-              placeholder="Enter token ID"
+              placeholder="token ID"
+            />
+          </Flex>
+        </Flex>
+
+        <Text variant="title3" mb="-15px" mt="10px">
+          Authorization:
+        </Text>
+        <Flex gap="20px">
+          <Flex direction="column" gap="10px">
+            <Text variant="label">address</Text>
+            <Input
+              variant="address"
+              fontSize="18px"
+              w="45ch"
+              borderRadius="10px"
+              value={authorizationTokenAddress}
+              onChange={(e) => setAuthorizationTokenAddress(e.target.value)}
+              borderColor={!showInvalid || isAuthorizationTokenAddressValid ? "white" : "error.500"}
+              placeholder="authorization token address"
+            />
+          </Flex>
+          <Flex direction="column" gap="10px">
+            <Text variant="label">pool Id</Text>
+            <Input
+              variant="address"
+              fontSize="18px"
+              w="8ch"
+              borderRadius="10px"
+              value={authorizationPoolId}
+              onChange={(e) => setAuthorizationPoolId(e.target.value)}
+              borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
+              placeholder="pool Id"
             />
           </Flex>
         </Flex>
@@ -210,39 +229,10 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             fontSize="18px"
             w="45ch"
             borderRadius="10px"
-            _placeholder={{ fontSize: "16px" }}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             borderColor={!showInvalid || isAmountValid ? "white" : "error.500"}
-            placeholder="Enter amount"
-          />
-        </Flex>
-        <Flex direction="column" gap="10px">
-          <Text variant="label">Authorization Token Address</Text>
-          <Input
-            variant="address"
-            fontSize="18px"
-            w="45ch"
-            borderRadius="10px"
-            _placeholder={{ fontSize: "16px" }}
-            value={authorizationTokenAddress}
-            onChange={(e) => setAuthorizationTokenAddress(e.target.value)}
-            borderColor={!showInvalid || isAuthorizationTokenAddressValid ? "white" : "error.500"}
-            placeholder="Enter Authorization Token Address"
-          />
-        </Flex>
-        <Flex direction="column" gap="10px">
-          <Text variant="label">Authorization Pool Id</Text>
-          <Input
-            variant="address"
-            fontSize="18px"
-            w="45ch"
-            borderRadius="10px"
-            _placeholder={{ fontSize: "16px" }}
-            value={authorizationPoolId}
-            onChange={(e) => setAuthorizationPoolId(e.target.value)}
-            borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
-            placeholder="Authorization Pool Id"
+            placeholder="amount"
           />
         </Flex>
         <Flex direction="column" gap="10px">
@@ -252,11 +242,10 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             fontSize="18px"
             w="45ch"
             borderRadius="10px"
-            _placeholder={{ fontSize: "16px" }}
             value={uri}
             onChange={(e) => setUri(e.target.value)}
             // borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
-            placeholder="uri"
+            placeholder="https://"
           />
         </Flex>
         {newMetadata.data && (
