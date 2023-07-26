@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Button, IconButton } from "@chakra-ui/button";
 import { Flex } from "@chakra-ui/layout";
@@ -13,10 +13,11 @@ import { DropChainData } from "../../types";
 // import { Dropper } from "../../web3/contracts/types/Dropper";
 import useValidation from "../dropper/useValidation";
 import EditRow from "../dropper/EditRow";
+import ActivateDropButton from "./ActivateDropButton";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
-const chainKeys: (keyof DropChainData)[] = ["uri"];
+const chainKeys: (keyof DropV2ChainData)[] = ["uri", "terminusAddress", "poolId"];
 
 interface ChainDataEditSectionProps {
   chainData: any;
@@ -24,6 +25,13 @@ interface ChainDataEditSectionProps {
   handleError: (error: unknown) => void;
   dropId: string;
 }
+
+type DropV2ChainData = {
+  uri: string;
+  terminusAddress: string;
+  poolId: string;
+  dropStatus: boolean;
+};
 
 const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
   address,
@@ -33,7 +41,7 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
 }) => {
   const toast = useMoonToast();
   const { web3, account } = useContext(Web3Context);
-  const [newChainData, setNewChainData] = useState<DropChainData>({ ...chainData });
+  const [newChainData, setNewChainData] = useState<DropV2ChainData>({ ...chainData });
   const [isChainDataChanged, setIsChainDataChanged] = useState(false);
   const { errors: validationErrors, validateChainData, isValid } = useValidation();
   const dropperContract = new web3.eth.Contract(dropperAbi) as any;
@@ -43,8 +51,8 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
   const commonMutationOptions = {
     onSuccess: () => {
       toast("Successfully updated drop", "success");
-      queryClient.invalidateQueries("claimsList");
-      queryClient.invalidateQueries("claimState");
+      queryClient.invalidateQueries("dropsList");
+      queryClient.invalidateQueries("dropState");
     },
     onError: handleError,
   };
@@ -55,13 +63,25 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
     commonMutationOptions,
   );
 
+  const setDropAuthorization = useMutation(
+    ({ terminusAddress, poolId }: { terminusAddress: string; poolId: number }) =>
+      dropperContract.methods
+        .setDropAuthorization(dropId, terminusAddress, poolId)
+        .send({ from: account }),
+    commonMutationOptions,
+  );
+
   // const setClaimSigner = useMutation(
   //   ({ signer }: { signer: string }) =>
   //     dropperContract.methods.setSignerForClaim(dropId, signer).send({ from: account }),
   //   commonMutationOptions,
   // );
 
-  const isMutationLoading = setDropURI.isLoading; //|| setClaimSigner.isLoading;
+  useEffect(() => {
+    console.log(chainData);
+  });
+
+  const isMutationLoading = setDropURI.isLoading || setDropAuthorization.isLoading;
 
   const handleChangeChainData = <T extends keyof DropChainData>(
     key: T,
@@ -88,6 +108,15 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
       if (newChainData.uri !== chainData.uri) {
         await setDropURI.mutateAsync({ uri: newChainData.uri });
       }
+      if (
+        newChainData.terminusAddress !== chainData.terminusAddress ||
+        newChainData.poolId !== chainData.poolId
+      ) {
+        await setDropAuthorization.mutateAsync({
+          terminusAddress: newChainData.terminusAddress,
+          poolId: Number(newChainData.poolId),
+        });
+      }
 
       // if (newChainData.signer !== chainData.signer) {
       //   await setClaimSigner.mutateAsync({ signer: newChainData.signer });
@@ -101,6 +130,14 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
 
   return (
     <>
+      <Flex justifyContent="end" mb="10px">
+        <ActivateDropButton
+          dropState={{ active: chainData.active, dropId }}
+          handleError={handleError}
+          dropperContract={dropperContract}
+          account={account}
+        />
+      </Flex>
       {chainKeys.map((key) => (
         <EditRow
           key={key}

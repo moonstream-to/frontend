@@ -113,11 +113,11 @@ const DropperV2DropView = ({
       const drop = await dropperContract.methods.getDrop(claimId).call();
       const uri = await dropperContract.methods.dropUri(claimId).call(); //TODO take from ClaimsList
       const dropAuthorization = await dropperContract.methods.getDropAuthorization(claimId).call();
-      const dropStatus = await dropperContract.methods.dropStatus(claimId).call();
+      const active = await dropperContract.methods.dropStatus(claimId).call();
       // const signer = await dropperContract.methods.getSignerForClaim(claimId).call(); //TODO MULTICALL?
       // const dropType = dropTypes.get(claim[3]) ?? "undefined";
-      console.log({ drop, uri, dropAuthorization, dropStatus });
-      return { drop, uri, dropAuthorization, dropStatus };
+      console.log({ drop, uri, dropAuthorization, active });
+      return { drop, uri, dropAuthorization, active };
     },
     {
       ...queryCacheProps,
@@ -193,7 +193,7 @@ const DropperV2DropView = ({
             {dropState.data?.drop && !isEdit && (
               <DropV2Data
                 metadata={metadata}
-                claimState={dropState}
+                dropState={dropState}
                 // dropState={dropState}
                 excludeFields={headerMeta}
                 PORTAL_PATH={PORTAL_PATH}

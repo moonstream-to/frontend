@@ -3,6 +3,7 @@ import { Flex } from "@chakra-ui/react";
 import { EditDropProps } from "../../types";
 import DropperV2ChainDataEdit from "./DropperV2ChainDataEdit";
 import { useEffect } from "react";
+import ActivateDropButton from "./ActivateDropButton";
 
 const DropperV2EditDrop = ({
   dropState,
@@ -28,11 +29,13 @@ const DropperV2EditDrop = ({
 
   return (
     <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
-      {/* <Flex justifyContent="end" mb="10px">
-        <ActivateClaimButton dropState={{ id: dbData.claimUUID, active }} />
-      </Flex> */}
       <DropperV2ChainDataEdit
-        chainData={dropState}
+        chainData={{
+          uri: dropState.uri,
+          terminusAddress: dropState.dropAuthorization.terminusAddress,
+          poolId: dropState.dropAuthorization.poolId,
+          active: dropState.active,
+        }}
         address={address}
         dropId={dropId}
         handleError={handleError}

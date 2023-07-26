@@ -66,7 +66,10 @@ const DropperV2DropsListView = ({
         borderRadius="10px"
         p="8px 15px"
       />
-      <Checkbox isChecked={adminOnly} onChange={(e) => setAdminOnly(e.target.checked)} />
+      <Flex gap="15px" mb="-20px">
+        <Text>admin only</Text>
+        <Checkbox isChecked={adminOnly} onChange={(e) => setAdminOnly(e.target.checked)} />
+      </Flex>
 
       <DropperV2DropsList
         contractAddress={contractAddress}

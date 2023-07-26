@@ -13,6 +13,7 @@ const terminusAbi = require("../../web3/abi/MockTerminus.json");
 // import { Dropper } from "../web3/contracts/types/Dropper";
 import DropperClaimsListItem from "../DropperClaimsListItem";
 import useDrops from "../../hooks/useDrops";
+import DropperV2ClaimsListItem from "./DropperV2ClaimsListItem";
 
 const DropperV2DropsList = ({
   contractAddress,
@@ -160,28 +161,28 @@ const DropperV2DropsList = ({
     <>
       {dropsList.data && (
         <Flex direction="column" gap="15px" h="100%" overflowY="auto">
-          {adminClaims.isLoading && <Spinner />}
-          {adminClaims.data?.length > 0 && (
-            <Flex alignItems="center" fontSize="18px">
-              <Text>Drop state:</Text>
-              <Select
-                fontSize="18px"
-                w="fit-content"
-                border="none"
-                _focus={{ border: "none" }}
-                _hover={{ border: "none" }}
-                _active={{ border: "none" }}
-                _focusVisible={{ border: "none" }}
-                textAlign="center"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </Select>
-            </Flex>
-          )}
+          {/* {adminClaims.isLoading && <Spinner />} */}
+          {/* {dropsList.data?.length > 0 && ( */}
+          <Flex alignItems="center" fontSize="18px">
+            <Text>Drop state:</Text>
+            <Select
+              fontSize="18px"
+              w="fit-content"
+              border="none"
+              _focus={{ border: "none" }}
+              _hover={{ border: "none" }}
+              _active={{ border: "none" }}
+              _focusVisible={{ border: "none" }}
+              textAlign="center"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </Select>
+          </Flex>
+          {/* )} */}
           {dropsList.isLoading &&
             Array.from(Array(5)).map((_, idx) => (
               <Flex key={idx} gap="15px">
@@ -192,7 +193,7 @@ const DropperV2DropsList = ({
           {dropsList.data
             .filter((drop: { admin: boolean }) => !adminOnly || drop.admin)
             .map((drop: { uri: string; id: number }) => (
-              <DropperClaimsListItem
+              <DropperV2ClaimsListItem
                 key={drop.id}
                 address={contractAddress}
                 claimId={String(drop.id)}
@@ -202,9 +203,7 @@ const DropperV2DropsList = ({
                 onChange={onChange}
                 filter={filter}
                 statusFilter={statusFilter}
-                dropState={adminClaims.data?.find(
-                  (dbClaim: { drop_number: number }) => dbClaim.drop_number === drop.id,
-                )}
+                dropState={drop}
               />
             ))}
         </Flex>

@@ -4,15 +4,31 @@ import MetadataPanel from "../MetadataPanel";
 import { DropDataProps } from "../../types";
 import { useEffect } from "react";
 
-const DropV2Data: React.FC<DropDataProps> = ({
-  claimState,
+type DropStateType = {
+  data: {
+    drop: any;
+    dropAuthorization: any;
+    uri: string;
+    active: boolean;
+  };
+};
+
+type DropV2DataProps = {
+  dropState: DropStateType;
+  metadata: Record<string, any>;
+  excludeFields: string[];
+  PORTAL_PATH: string;
+};
+
+const DropV2Data: React.FC<DropV2DataProps> = ({
   // dropState,
+  dropState,
   metadata,
   excludeFields,
   PORTAL_PATH,
 }) => {
   useEffect(() => {
-    console.log(claimState);
+    console.log(dropState);
   }, []);
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
@@ -22,11 +38,11 @@ const DropV2Data: React.FC<DropDataProps> = ({
   ]);
   return (
     <>
-      {claimState.data?.drop && (
+      {dropState.data?.drop && (
         <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
           <PoolDetailsRow
             type="Drop status"
-            value={claimState.data.dropStatus ? "active" : "inactive"}
+            value={dropState.data.active ? "active" : "inactive"}
           />
           <Text fontSize="18px" fontWeight="700" mt="10px">
             Token
@@ -34,17 +50,17 @@ const DropV2Data: React.FC<DropDataProps> = ({
           <Flex direction="column" gap="10px" p="0" pl="15px">
             <PoolDetailsRow
               type="Type"
-              value={dropTypes.get(claimState.data.drop.tokenType) ?? "unknown"}
+              value={dropTypes.get(dropState.data.drop.tokenType) ?? "unknown"}
             />
 
             <PoolDetailsRow
               type="Address"
               displayFull
               canBeCopied
-              value={claimState.data.drop.tokenAddress}
+              value={dropState.data.drop.tokenAddress}
             />
-            <PoolDetailsRow type="Id" value={claimState.data.drop.tokenId} />
-            <PoolDetailsRow type="Amount" value={claimState.data.drop.amount} />
+            <PoolDetailsRow type="Id" value={dropState.data.drop.tokenId} />
+            <PoolDetailsRow type="Amount" value={dropState.data.drop.amount} />
           </Flex>
           <Text fontSize="18px" fontWeight="700" mt="10px">
             Authorization
@@ -53,25 +69,25 @@ const DropV2Data: React.FC<DropDataProps> = ({
             <PoolDetailsRow
               displayFull
               canBeCopied
-              href={`${PORTAL_PATH}/terminus/?contractAddress=${claimState.data.dropAuthorization.terminusAddress}&poolId=${claimState.data.dropAuthorization.poolId}`}
+              href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.data.dropAuthorization.terminusAddress}&poolId=${dropState.data.dropAuthorization.poolId}`}
               type="Terminus address"
-              value={String(claimState.data.dropAuthorization.terminusAddress)}
+              value={String(dropState.data.dropAuthorization.terminusAddress)}
             />
 
             <PoolDetailsRow
-              href={`${PORTAL_PATH}/terminus/?contractAddress=${claimState.data.dropAuthorization.terminusAddress}&poolId=${claimState.data.dropAuthorization.poolId}`}
+              href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.data.dropAuthorization.terminusAddress}&poolId=${dropState.data.dropAuthorization.poolId}`}
               type="Terminus Pool"
-              value={String(claimState.data.dropAuthorization.poolId)}
+              value={String(dropState.data.dropAuthorization.poolId)}
             />
           </Flex>
 
-          {/* <PoolDetailsRow type="Drop type" value={claimState.data.dropType} /> */}
+          {/* <PoolDetailsRow type="Drop type" value={dropState.data.dropType} /> */}
 
-          {/* <PoolDetailsRow type="Signer" value={claimState.data.signer} /> */}
+          {/* <PoolDetailsRow type="Signer" value={dropState.data.signer} /> */}
           <PoolDetailsRow
             type="Metadata uri"
-            href={claimState.data.uri}
-            value={claimState.data.uri}
+            href={dropState.data.uri}
+            value={dropState.data.uri}
             mt="10px"
           />
           {metadata && <MetadataPanel metadata={metadata} excludeFields={excludeFields} />}

@@ -59,7 +59,8 @@ const DropperV2ContractView = ({
     // const paused = await dropper.methods.dropStatus().call();
     console.log(numClaims);
     const dropperVersion = await dropper.methods.dropperVersion().call();
-    console.log(dropperVersion);
+    // const admin = await dropper.methods.adminTerminusInfo().call();
+    // console.log(admin);
 
     return { ERC20_TYPE, ERC721_TYPE, ERC1155_TYPE, numClaims, dropperVersion };
   };
@@ -137,6 +138,7 @@ const DropperV2ContractView = ({
               <PoolDetailsRow type={"Number of drops"} value={contractState.data.numClaims} />
             </Flex>
           )}
+          {/* {contractState.data?.admin && <Text></Text>} */}
           {(contractState.isError || connectionStatus !== CONNECTION_ERRORS.CONNECTED) &&
             !contractState.isLoading &&
             !contractState.data && (
