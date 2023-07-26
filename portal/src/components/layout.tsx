@@ -16,10 +16,12 @@ export default function Layout({
   children,
   home,
   title,
+  needAuthorization = true,
 }: {
   children: React.ReactNode;
   home?: boolean;
   title?: string;
+  needAuthorization?: boolean;
 }) {
   const { user, isLoading } = useUser();
   return (
@@ -43,7 +45,7 @@ export default function Layout({
           <Navbar home={home} px="7%" />
           <BreadcrumbView />
         </Flex>
-        {user ? children : isLoading ? "" : <NeedAuthorizationView />}
+        {user || !needAuthorization ? children : isLoading ? "" : <NeedAuthorizationView />}
         <Spacer />
         <Footer home={home} />
       </Flex>
