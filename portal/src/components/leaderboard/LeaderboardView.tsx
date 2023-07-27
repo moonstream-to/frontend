@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import LeaderboardRank from "./LeaderboardRank";
 import LeaderboardScoreItem from "./LeaderboardScoreItem";
 import LeaderboardAddressItem from "./LeaderboardAddressItem";
+import UserWeb3AddressInput from "../UserWeb3AddressInput";
 
 import {
   Box,
@@ -81,7 +82,7 @@ const LeaderboardView = () => {
   const windowAroundAddress = useQuery(
     ["fetch_address_window", leaderboardId, currentAccount],
     () => {
-      if (currentAccount != ZERO_ADDRESS) {
+      if (currentAccount != "" && currentAccount != ZERO_ADDRESS) {
         return fetchAddressWindow(leaderboardId, currentAccount).then((res) => {
           console.log(res);
           return res.data;
@@ -169,18 +170,28 @@ const LeaderboardView = () => {
           </UnorderedList>
         </Box>
         <Box
+          w="100%"
           px="20px"
+          py="10px"
           mb="30px"
           fontWeight="700"
           border="3px solid white"
           bgColor="#232323"
           rounded="lg"
         >
+          <UserWeb3AddressInput
+            value={currentAccount}
+            setAddress={(address) => {
+              setCurrentAccount(address);
+            }}
+            showInvalid={true}
+          />
           <Flex
             textAlign="left"
             width="100%"
             justifyContent="space-between"
             p={["5px", "5px", "10px"]}
+            my="10px"
             alignItems="center"
             borderBottom="1px solid white"
             fontSize={["12px", "14px", "20px"]}
@@ -203,6 +214,7 @@ const LeaderboardView = () => {
                   <Flex
                     textAlign="left"
                     width="100%"
+                    bgColor={item.address == currentAccount ? "#454545" : "inherit"}
                     justifyContent="space-between"
                     py={["5px", "5px", "10px"]}
                     alignItems="center"
@@ -212,10 +224,7 @@ const LeaderboardView = () => {
                       <LeaderboardRank rank={item.rank} />
                     </GridItem>
                     <GridItem width="100%" fontWeight="700" mr="100px">
-                      <LeaderboardAddressItem
-                        address={item.address}
-                        you={item.address == currentAccount}
-                      />
+                      <LeaderboardAddressItem address={item.address} />
                     </GridItem>
                     <GridItem
                       my="auto"
@@ -227,9 +236,12 @@ const LeaderboardView = () => {
                   </Flex>
                 );
               })}
+              {windowAroundAddress.data.length == 0 && (
+                <Text>No leaderboard information for account {currentAccount}</Text>
+              )}
             </Flex>
           ) : (
-            <></>
+            <Spinner alignSelf="center" color="#bfbfbf" />
           )}
         </Box>
         <Box>
@@ -261,6 +273,7 @@ const LeaderboardView = () => {
                   <Flex
                     textAlign="left"
                     width="100%"
+                    bgColor={item.address == currentAccount ? "#454545" : "inherit"}
                     justifyContent="space-between"
                     py={["5px", "5px", "10px"]}
                     alignItems="center"
@@ -270,10 +283,7 @@ const LeaderboardView = () => {
                       <LeaderboardRank rank={item.rank} />
                     </GridItem>
                     <GridItem width="100%" fontWeight="400" mr="100px">
-                      <LeaderboardAddressItem
-                        address={item.address}
-                        you={item.address == currentAccount}
-                      />
+                      <LeaderboardAddressItem address={item.address} />
                     </GridItem>
                     <GridItem
                       my="auto"
