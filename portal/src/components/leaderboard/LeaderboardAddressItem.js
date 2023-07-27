@@ -1,16 +1,7 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 
-const buildOpenseaLink = (address) => {
-  return `https://opensea.io/${address}`;
-};
-
-const LeaderboardAddressItem = ({ address }) => {
-  return (
-    // <Link p="0px" _hover={{ bgColor: "#454545" }} href={buildOpenseaLink(address)} isExternal>
-    <Text>{address}</Text>
-
-    // </Link>
-  );
+const LeaderboardAddressItem = ({ address, trimAddress = false }) => {
+  return <Text>{trimAddress ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}</Text>;
 };
 
 export default LeaderboardAddressItem;

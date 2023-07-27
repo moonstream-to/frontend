@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { useRouter } from "next/router";
-// import { getLayout } from "moonstream-components/src/layoutsForPlay/EngineLayout";
+
+import React, { useContext, useEffect } from "react";
+import { useQuery } from "react-query";
 import LeaderboardRank from "./LeaderboardRank";
 import LeaderboardScoreItem from "./LeaderboardScoreItem";
 import LeaderboardAddressItem from "./LeaderboardAddressItem";
@@ -13,27 +13,19 @@ import {
   Heading,
   Flex,
   Text,
-  Image,
-  Spacer,
-  Link,
   Spinner,
   HStack,
   GridItem,
   UnorderedList,
   ListItem,
+  useMediaQuery,
 } from "@chakra-ui/react";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 import Web3 from "web3";
 
 import http from "../../utils/http";
 import queryCacheProps from "../../hooks/hookCommon";
 import Web3Context from "../../contexts/Web3Context/context";
-
-const playAssetPath = "https://s3.amazonaws.com/static.simiotics.com/play";
-const assets = {
-  shadowcornsLogo: `${playAssetPath}/cu/shadowcorns-logo.png`,
-};
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -46,6 +38,10 @@ const LeaderboardView = () => {
   const [currentAccount, setCurrentAccount] = React.useState(ZERO_ADDRESS);
   const web3ctx = useContext(Web3Context);
 
+  const [isVerySmallScreen, isSmallScreen] = useMediaQuery([
+    "(max-width: 440px)",
+    "(max-width: 810px)",
+  ]);
   // Boomland: 56d5ecc4-b214-4af5-b320-d56cd5fbc3da
   const fetchLeaders = async (id: string, pageLimit: number, pageOffset: number) => {
     return http(
@@ -84,7 +80,6 @@ const LeaderboardView = () => {
     () => {
       if (currentAccount != "" && currentAccount != ZERO_ADDRESS) {
         return fetchAddressWindow(leaderboardId, currentAccount).then((res) => {
-          console.log(res);
           return res.data;
         });
       } else {
@@ -105,45 +100,24 @@ const LeaderboardView = () => {
   const panelBackground = "#2D2D2D";
 
   return (
-    <Box className="Dashboard" py={["10px", "20px", "30px"]} bgColor="#1A1D22" maxW="1200px">
+    <Box
+      className="Dashboard"
+      py={["10px", "20px", "30px"]}
+      p={{ base: "5px", sm: "15px" }}
+      bgColor="#1A1D22"
+      maxW="1200px"
+    >
       <Flex
         borderRadius="20px"
         bgColor={panelBackground}
         p={[2, 4, 10]}
         direction="column"
-        fontSize={["xs", "sm", "lg"]}
+        fontSize={{ base: "12px", sm: "16px", md: "18px" }}
       >
         <Flex alignItems="center" direction={["column", "column", "row"]}>
           <HStack>
-            {/* <Image ml={2} alt={"Shadowcorns"} h="50px" src={assets["shadowcornsLogo"]} /> */}
             <Heading fontSize={["lg", "2xl"]}>Boomland Leaderboard</Heading>
           </HStack>
-          {/* <Spacer />
-          <Flex
-            w={["100%", "100%", "228px"]}
-            justifyContent={["start", "start", "end"]}
-            mt={["10px", "10px", 0]}
-          >
-            <Link
-              verticalAlign="middle"
-              fontSize={["xs", "sm", "lg"]}
-              py={["2px", "5px", "10px"]}
-              px={["4px", "10px", "20px"]}
-              borderRadius="40px"
-              href={"https://medium.com/@lagunagames/shadowcorns-throwing-shade-4a887d8737bf"}
-              _hover={{
-                bg: "#232323",
-                textTransform: "none",
-              }}
-              isExternal
-            >
-              <Flex alignItems="center">
-                {" "}
-                <Box>About the event</Box>
-                <InfoOutlineIcon ml={[0.5, 1.25, 2.5]} />
-              </Flex>
-            </Link>
-          </Flex> */}
         </Flex>
         <Box my={["10px", "20px", "30px"]} fontSize={["14px", "14px", "18px"]}>
           <Text>Scoring: </Text>
@@ -169,20 +143,21 @@ const LeaderboardView = () => {
         </Box>
         <Box
           w="100%"
-          px="20px"
+          px={{ base: "5px", sm: "20px" }}
           py="10px"
           mb="30px"
           fontWeight="700"
           border="3px solid white"
+          borderWidth={{ base: "1px", sm: "2px", md: "3px" }}
           bgColor="#232323"
           rounded="lg"
         >
           <UserWeb3AddressInput
             value={currentAccount}
-            setAddress={(address) => {
-              setCurrentAccount(address);
-            }}
+            setAddress={setCurrentAccount}
             showInvalid={true}
+            column={isSmallScreen}
+            fontSize={isVerySmallScreen ? "10px" : "14px"}
           />
           <Flex
             textAlign="left"
@@ -199,15 +174,16 @@ const LeaderboardView = () => {
             </GridItem>
             <GridItem mr="auto">Player</GridItem>
             <GridItem
-              maxW={["50px", "50px", "140px", "200px"]}
-              minW={["50px", "50px", "140px", "200px"]}
+              maxW={["50px", "50px", "120px", "200px"]}
+              minW={["50px", "50px", "120px", "200px"]}
+              textAlign="end"
             >
               Score
             </GridItem>
           </Flex>
           {windowAroundAddress.data ? (
             <Flex flexDir="column">
-              {windowAroundAddress.data.map((item: any, idx: any) => {
+              {windowAroundAddress.data.map((item: any, idx: number) => {
                 return (
                   <Flex
                     textAlign="left"
@@ -221,13 +197,16 @@ const LeaderboardView = () => {
                     <GridItem maxW={["45px", "45px", "125px"]} minW={["45px", "45px", "125px"]}>
                       <LeaderboardRank rank={item.rank} />
                     </GridItem>
-                    <GridItem width="100%" fontWeight="700" mr="100px">
-                      <LeaderboardAddressItem address={item.address} />
+                    <GridItem width="100%" fontWeight="700" mr="10px">
+                      <LeaderboardAddressItem
+                        address={item.address}
+                        trimAddress={isVerySmallScreen}
+                      />
                     </GridItem>
                     <GridItem
                       my="auto"
-                      maxW={["50px", "50px", "140px", "200px"]}
-                      minW={["50px", "50px", "140px", "200px"]}
+                      maxW={["50px", "50px", "120px", "200px"]}
+                      minW={["50px", "50px", "120px", "200px"]}
                     >
                       <LeaderboardScoreItem score={item.score} pointsData={item.points_data} />
                     </GridItem>
@@ -258,15 +237,16 @@ const LeaderboardView = () => {
             </GridItem>
             <GridItem mr="auto">Player</GridItem>
             <GridItem
-              maxW={["50px", "50px", "140px", "200px"]}
-              minW={["50px", "50px", "140px", "200px"]}
+              maxW={["50px", "50px", "120px", "200px"]}
+              minW={["50px", "50px", "120px", "200px"]}
+              textAlign="end"
             >
               Score
             </GridItem>
           </Flex>
           {leaders.data ? (
             <Flex flexDir="column">
-              {leaders.data.map((item: any, idx: any) => {
+              {leaders.data.map((item: any, idx: number) => {
                 return (
                   <Flex
                     textAlign="left"
@@ -280,14 +260,17 @@ const LeaderboardView = () => {
                     <GridItem maxW={["45px", "45px", "125px"]} minW={["45px", "45px", "125px"]}>
                       <LeaderboardRank rank={item.rank} />
                     </GridItem>
-                    <GridItem width="100%" fontWeight="400" mr="100px">
-                      <LeaderboardAddressItem address={item.address} />
+                    <GridItem width="100%" fontWeight="400" mr="10px">
+                      <LeaderboardAddressItem
+                        address={item.address}
+                        trimAddress={isVerySmallScreen}
+                      />
                     </GridItem>
                     <GridItem
                       my="auto"
                       fontWeight="400"
-                      maxW={["50px", "50px", "140px", "200px"]}
-                      minW={["50px", "50px", "140px", "200px"]}
+                      maxW={["50px", "50px", "120px", "200px"]}
+                      minW={["50px", "50px", "120px", "200px"]}
                     >
                       <LeaderboardScoreItem score={item.score} pointsData={item.points_data} />
                     </GridItem>
@@ -304,5 +287,4 @@ const LeaderboardView = () => {
   );
 };
 
-// Leaderboard.getLayout = getLayout;
 export default LeaderboardView;

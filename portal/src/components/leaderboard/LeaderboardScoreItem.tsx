@@ -2,7 +2,7 @@ import React from "react";
 import { Flex, Text, Spacer } from "@chakra-ui/react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
-const LeaderboardScoreItem = ({ score, pointsData }: { score: any; pointsData: any }) => {
+const LeaderboardScoreItem = ({ score, pointsData }: { score: number; pointsData: any }) => {
   const [showBreakdown, setShowBreakdown] = React.useState<boolean>(false);
 
   const sortPoints = (points: any) => {
@@ -23,7 +23,7 @@ const LeaderboardScoreItem = ({ score, pointsData }: { score: any; pointsData: a
   };
 
   return (
-    <Flex width="100%" justifyContent="space-between">
+    <Flex width="100%" justifyContent="end" position="relative">
       <Flex align="center">
         <Text mr="10px">{score}</Text>
         <Flex
@@ -34,23 +34,20 @@ const LeaderboardScoreItem = ({ score, pointsData }: { score: any; pointsData: a
             setShowBreakdown(false);
           }}
         >
-          <AiOutlineQuestionCircle />
+          <AiOutlineQuestionCircle color={showBreakdown ? "#fff39f" : "white"} />
         </Flex>
-        <Flex display={showBreakdown ? "block" : "none"} ml="-400px" mt="-400px">
-          <Flex
-            w="300px"
-            border="1px solid white"
-            bgColor="#232323"
-            rounded="md"
-            p="10px"
-            position="absolute"
-            flexDir="column"
-          >
+        <Flex
+          display={showBreakdown ? "block" : "none"}
+          position="absolute"
+          zIndex="2"
+          right="25px"
+        >
+          <Flex border="1px solid white" bgColor="#232323" rounded="md" p="10px" flexDir="column">
             <Text>Score Details</Text>
-            {Object.keys(sortPoints(pointsData)).map((key: any, idx: any) => {
+            {Object.keys(sortPoints(pointsData)).map((key: string, idx: number) => {
               return (
-                <Flex key={idx}>
-                  <Text fontSize="md">{key}</Text>
+                <Flex key={idx} gap="15px">
+                  <Text fontSize={{ base: "14px", sm: "18px" }}>{key}</Text>
                   <Spacer />
                   <Text>{pointsData[key]}</Text>
                 </Flex>

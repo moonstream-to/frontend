@@ -9,6 +9,8 @@ interface UserWeb3AddressInputProps {
   value: string;
   setAddress: (arg0: string) => void;
   showInvalid: boolean;
+  column?: boolean;
+  fontSize: string;
   [x: string]: any;
 }
 
@@ -16,6 +18,8 @@ const UserWeb3AddressInput: React.FC<UserWeb3AddressInputProps> = ({
   value,
   setAddress,
   showInvalid,
+  column = false,
+  fontSize,
   ...props
 }) => {
   const { web3, account, onConnectWalletClick } = useContext(Web3Context);
@@ -45,17 +49,22 @@ const UserWeb3AddressInput: React.FC<UserWeb3AddressInputProps> = ({
   }, [account]);
 
   return (
-    <Flex direction="column" gap="10px">
+    <Flex direction="column" gap="10px" fontSize={fontSize}>
       <Text variant="label">Address</Text>
-      <Flex justifyContent="start" gap="10px" alignItems="center">
+      <Flex
+        justifyContent="start"
+        gap="10px"
+        alignItems={column ? "start" : "center"}
+        direction={column ? "column" : "row"}
+      >
         <Input
           variant="address"
-          fontSize="18px"
+          fontSize={fontSize}
+          w="42ch"
           spellCheck={false}
-          w="45ch"
           borderRadius="10px"
           borderColor={!showInvalid || isAddressValid ? "white" : "error.500"}
-          _placeholder={{ fontSize: "16px" }}
+          _placeholder={{ fontSize: "12px" }}
           value={value}
           onChange={(e) => setAddress(e.target.value)}
           {...props}
@@ -69,10 +78,16 @@ const UserWeb3AddressInput: React.FC<UserWeb3AddressInputProps> = ({
               borderRadius="10px"
               border="1px solid white"
               onClick={() => loadFromMetamask()}
+              fontSize={fontSize}
             >
-              <Flex gap="10px">
+              <Flex gap="10px" alignItems="center">
                 Load from metamask
-                <Image h="18px" w="20px" alt="metamask" src={metamaskIcon} />
+                <Image
+                  w={{ base: "16px", sm: "20px" }}
+                  h={{ base: "14px", sm: "18px" }}
+                  alt="metamask"
+                  src={metamaskIcon}
+                />
               </Flex>
             </Button>
           </>
