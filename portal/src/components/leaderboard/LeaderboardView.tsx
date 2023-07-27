@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useRouter } from "next/router";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import LeaderboardRank from "./LeaderboardRank";
 import LeaderboardScoreItem from "./LeaderboardScoreItem";
@@ -32,7 +32,7 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const LeaderboardView = () => {
   const router = useRouter();
-  const leaderboardId = router.query["leaderboard_id"] as string;
+  const [leaderboardId, setLeaderboardId] = useState("");
   const [limit, setLimit] = React.useState<number>(10);
   const [offset, setOffset] = React.useState<number>(0);
   const [currentAccount, setCurrentAccount] = React.useState(ZERO_ADDRESS);
@@ -42,6 +42,13 @@ const LeaderboardView = () => {
     "(max-width: 440px)",
     "(max-width: 810px)",
   ]);
+
+  useEffect(() => {
+    setLeaderboardId(
+      typeof router.query.leaderboardId === "string" ? router.query.leaderboardId : "",
+    );
+  }, [router.query.leaderboardId]);
+
   // Boomland: 56d5ecc4-b214-4af5-b320-d56cd5fbc3da
   const fetchLeaders = async (id: string, pageLimit: number, pageOffset: number) => {
     return http(
@@ -66,7 +73,6 @@ const LeaderboardView = () => {
   const leaders = useQuery(
     ["fetch_leaders", leaderboardId, limit, offset],
     () => {
-      console.log("Fetching leaders" + leaderboardId);
       return fetchLeaders(leaderboardId, limit, offset).then((res) => {
         return res.data;
       });
@@ -74,7 +80,7 @@ const LeaderboardView = () => {
     {
       ...queryCacheProps,
       keepPreviousData: true,
-      enabled: !!router.query.id,
+      enabled: !!leaderboardId,
     },
   );
 
@@ -97,7 +103,7 @@ const LeaderboardView = () => {
     },
     {
       ...queryCacheProps,
-      enabled: !!router.query.id,
+      enabled: !!leaderboardId,
     },
   );
 
@@ -114,7 +120,7 @@ const LeaderboardView = () => {
     },
     {
       ...queryCacheProps,
-      enabled: !!router.query.id,
+      enabled: !!leaderboardId,
     },
   );
 
