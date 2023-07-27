@@ -32,8 +32,7 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const LeaderboardView = () => {
   const router = useRouter();
-  const leaderboardId = router.query.id as string;
-
+  const leaderboardId = router.query["leaderboard_id"] as string;
   const [limit, setLimit] = React.useState<number>(10);
   const [offset, setOffset] = React.useState<number>(0);
   const [currentAccount, setCurrentAccount] = React.useState(ZERO_ADDRESS);
@@ -67,6 +66,7 @@ const LeaderboardView = () => {
   const leaders = useQuery(
     ["fetch_leaders", leaderboardId, limit, offset],
     () => {
+      console.log("Fetching leaders" + leaderboardId);
       return fetchLeaders(leaderboardId, limit, offset).then((res) => {
         return res.data;
       });
