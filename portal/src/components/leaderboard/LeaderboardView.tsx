@@ -26,6 +26,7 @@ import Web3 from "web3";
 import http from "../../utils/http";
 import queryCacheProps from "../../hooks/hookCommon";
 import Web3Context from "../../contexts/Web3Context/context";
+import LeaderboardPaginator from "./LeaderboardPaginator";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -33,8 +34,8 @@ const LeaderboardView = () => {
   const router = useRouter();
   const leaderboardId = router.query.id as string;
 
-  const [limit] = React.useState<number>(10);
-  const [offset] = React.useState<number>(0);
+  const [limit, setLimit] = React.useState<number>(10);
+  const [offset, setOffset] = React.useState<number>(0);
   const [currentAccount, setCurrentAccount] = React.useState(ZERO_ADDRESS);
   const web3ctx = useContext(Web3Context);
 
@@ -72,6 +73,31 @@ const LeaderboardView = () => {
     },
     {
       ...queryCacheProps,
+      keepPreviousData: true,
+      enabled: !!router.query.id,
+    },
+  );
+
+  const fetchLength = async (id: string) => {
+    return http(
+      {
+        method: "GET",
+        url: `  https://engineapi.moonstream.to/leaderboard/count/addresses/?leaderboard_id=${id}`,
+      },
+      true,
+    );
+  };
+
+  const leadersLength = useQuery(
+    ["leadersLength", leaderboardId],
+    () => {
+      return fetchLength(leaderboardId).then((res) => {
+        return res.data.count;
+      });
+    },
+    {
+      ...queryCacheProps,
+      enabled: !!router.query.id,
     },
   );
 
@@ -88,6 +114,7 @@ const LeaderboardView = () => {
     },
     {
       ...queryCacheProps,
+      enabled: !!router.query.id,
     },
   );
 
@@ -282,6 +309,13 @@ const LeaderboardView = () => {
             <Spinner alignSelf="center" color="#bfbfbf" />
           )}
         </Box>
+        {leadersLength.data && (
+          <LeaderboardPaginator
+            onOffsetChange={setOffset}
+            onPageSizeChange={setLimit}
+            count={leadersLength.data}
+          />
+        )}
       </Flex>
     </Box>
   );
