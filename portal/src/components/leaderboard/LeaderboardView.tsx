@@ -45,9 +45,9 @@ const LeaderboardView = () => {
 
   useEffect(() => {
     setLeaderboardId(
-      typeof router.query.leaderboardId === "string" ? router.query.leaderboardId : "",
+      typeof router.query.leaderboard_id === "string" ? router.query.leaderboard_id : "",
     );
-  }, [router.query.leaderboardId]);
+  }, [router.query.leaderboard_id]);
 
   // Boomland: 56d5ecc4-b214-4af5-b320-d56cd5fbc3da
   const fetchLeaders = async (id: string, pageLimit: number, pageOffset: number) => {
