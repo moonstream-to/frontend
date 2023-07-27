@@ -17,11 +17,13 @@ export default function Layout({
   home,
   title,
   needAuthorization = true,
+  showBreadcrumb = true,
 }: {
   children: React.ReactNode;
   home?: boolean;
   title?: string;
   needAuthorization?: boolean;
+  showBreadcrumb?: boolean;
 }) {
   const { user, isLoading } = useUser();
   return (
@@ -43,7 +45,7 @@ export default function Layout({
       <Flex minH="100vh" flexDirection="column" justifyContent="start">
         <Flex direction="column">
           <Navbar home={home} px="7%" />
-          <BreadcrumbView />
+          {showBreadcrumb && <BreadcrumbView />}
         </Flex>
         {user || !needAuthorization ? children : isLoading ? "" : <NeedAuthorizationView />}
         <Spacer />

@@ -10,7 +10,7 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <Layout home={false}>
+    <Layout home={false} needAuthorization={false} showBreadcrumb={false}>
       <Center>
         <LeaderboardView />
       </Center>
