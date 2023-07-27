@@ -87,6 +87,8 @@ const LeaderboardView = () => {
           console.log(res);
           return res.data;
         });
+      } else {
+        return [];
       }
     },
     {
@@ -99,10 +101,6 @@ const LeaderboardView = () => {
       setCurrentAccount(web3ctx.account);
     }
   }, [web3ctx.account]);
-
-  useEffect(() => {
-    setCurrentAccount("0x34139E7C2abE6b78E5c7ebB3a324F7B6f3d92659");
-  }, []);
 
   const panelBackground = "#2D2D2D";
 
