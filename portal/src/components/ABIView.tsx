@@ -13,17 +13,22 @@ import {
   Text,
   Icon,
   Spacer,
+  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineClose, AiOutlineSave } from "react-icons/ai";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { useQuery } from "react-query";
 import Web3 from "web3";
-import { chains } from "../contexts/Web3Context";
+import Web3Provider, { chains } from "../contexts/Web3Context";
+import Web3Context from "../contexts/Web3Context/context";
+import chainByChainId from "../contexts/Web3Context/";
 import useRecentAddresses from "../hooks/useRecentAddresses";
 import http from "../utils/httpMoonstream";
+import CallABIFunction from "./abiView/CallABIFunction";
+const dropperAbi = require("../web3/abi/DropperV2.json");
 
 const JSONEdit = dynamic(() => import("./JSONEdit2"), { ssr: false });
 
@@ -34,6 +39,9 @@ const ABIView = () => {
   const [search, setSearch] = useState("");
   const [savedSearch, setSavedSearch] = useState("");
   const [loadingMessage, setLoadingMessage] = useState("");
+  const [recentTransactions, setRecentTransactions] = useState([]);
+  const [recentTransactionsChain, setRecentTransactionsChain] = useState("");
+
   const [src, setSrc] = useState(
     "",
     // "0x8d528e98A69FE27b11bb02Ac264516c4818C3942",
@@ -42,7 +50,11 @@ const ABIView = () => {
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const web3 = new Web3();
+  // const web3 = new Web3();
+  const web3ctx = useContext(Web3Context);
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [fnToCall, setFnToCall] = useState<{ name: string; inputs: any[] } | null>(null);
+  const web3 = web3ctx.web3;
 
   const colorScheme = {
     name: "#a188cc",
@@ -116,6 +128,7 @@ const ABIView = () => {
   const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
   const getFromAddress = async (address: string) => {
+    console.log("address: ", address);
     const chain = await http({
       method: "GET",
       url: `${API}/subscriptions/is_contract?address=${address}`,
@@ -129,6 +142,7 @@ const ABIView = () => {
         console.log(e);
         return undefined;
       });
+    console.log(address, chain);
     if (chain && chains[chain as keyof typeof chains]?.ABIScan?.url) {
       return axios({
         method: "GET",
@@ -167,6 +181,116 @@ const ABIView = () => {
     },
   });
 
+  interface RequestParameters {
+    url?: string;
+    headers?: any;
+    method?: string;
+    mode?: string;
+  }
+
+  const getFromPresignedURL = async (url: string, requestTimestamp: string) => {
+    let triesLeft = 5;
+    const requestParameters: RequestParameters = {
+      url: url,
+      headers: {
+        "If-Modified-Since": requestTimestamp,
+      },
+      method: "GET",
+    };
+    while (triesLeft) {
+      triesLeft = triesLeft - 1;
+      try {
+        const response = await axios(requestParameters);
+        return response; //TODO handle not 404 || 304 errors
+      } catch (e) {
+        console.log(e);
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+    }
+    // return new Promise((_, reject) => reject(new Error("interrupted by user")));
+  };
+
+  const { account, chainId } = useContext(Web3Context);
+
+  const getTransactions = async ({ queryKey }: { queryKey: any[] }) => {
+    const [_, account] = queryKey;
+    const end_timestamp = String(Math.floor(Date.now() / 1000));
+    const date = new Date(Date.now());
+    let newMonth = date.getUTCMonth() - 1;
+    if (newMonth === -1) {
+      newMonth = 11;
+    }
+    date.setMonth(newMonth);
+    const start_timestamp = String(Math.floor(date.getTime() / 1000));
+    const paramsObj = {
+      start_timestamp,
+      end_timestamp,
+      // user_address: "0x99F1117F13e072b299942037E6A5d1469912B47A",
+      user_address: account,
+    };
+    const requestTimestamp = new Date().toUTCString();
+    const chainName = Object.values(chains).find((chain) => chain.chainId === chainId)?.name ?? "";
+    // https://api.moonstream.to/queries/template_contract_addresses_deployment/update_data
+    console.log("to call presURL");
+    const presignedUrl = await http({
+      method: "POST",
+      url: `${API}/queries/template_address_transactions/update_data`,
+      data: {
+        blockchain: chainName,
+        params: { ...paramsObj },
+      },
+    })
+      .then(async (res: any) => {
+        return res.data;
+      })
+      .catch((e: Error) => {
+        // toast(e.message, "error");
+      });
+
+    if (presignedUrl?.url) {
+      try {
+        const addresses = await getFromPresignedURL(presignedUrl.url, requestTimestamp).then(
+          (res: any) => {
+            const txs = res.data?.data?.filter((tx: any) => tx.to_address);
+            const addresses = txs.map((tx: any) => tx.to_address);
+            const addressesSet = new Set(addresses);
+            setRecentTransactions([...addressesSet]);
+            setRecentTransactionsChain(chainName);
+            return [...addressesSet, "0x8d528e98A69FE27b11bb02Ac264516c4818C3942"];
+          },
+        );
+        let idx = 0;
+        while (idx < addresses.length && abi.length === 0) {
+          try {
+            const res = await getFromAddress(addresses[idx] as string);
+            // setSrc(addresses[idx] as string);
+            idx = addresses.length;
+          } catch (e) {
+            await new Promise((r) => setTimeout(r, 3000));
+          }
+          idx += 1;
+        }
+      } catch (e: any) {
+        console.log(e);
+      }
+    } else {
+      console.log("error");
+    }
+  };
+
+  const abiFromTransactionsQuery = useQuery(
+    ["deployedContracts", "0x99F1117F13e072b299942037E6A5d1469912B47A"],
+    getTransactions,
+    {
+      onSuccess: (data: any) => {
+        console.log(data);
+      },
+      onError: (e: any) => {
+        console.log(e);
+      },
+      retry: false,
+    },
+  );
   const getType = (token: any) => {
     if (token.type != "tuple") return <span style={{ color: "#97e1f1" }}>{token.type}</span>;
 
@@ -183,15 +307,13 @@ const ABIView = () => {
     return (
       <>
         {inputs.map((input, idx) => (
-          <>
-            <span key={idx} style={{ color: colorScheme.param }}>
-              {input.name}
-            </span>
+          <React.Fragment key={idx}>
+            <span style={{ color: colorScheme.param }}>{input.name}</span>
             {input.name && ":"}
             {input.name && <span>&nbsp;</span>}
             {getType(input)}
             {idx + 1 < inputs.length && ",  "}
-          </>
+          </React.Fragment>
         ))}
       </>
     );
@@ -240,6 +362,11 @@ const ABIView = () => {
     }
   };
 
+  const handleItemClick = async (name: string, inputs: any[]) => {
+    setFnToCall({ name, inputs });
+    onOpen();
+  };
+
   return (
     <Flex
       gap="0px"
@@ -252,6 +379,13 @@ const ABIView = () => {
       alignSelf="stretch"
       ref={scrollRef}
     >
+      <CallABIFunction
+        isOpen={isOpen}
+        onClose={onClose}
+        name={fnToCall?.name}
+        inputs={fnToCall?.inputs}
+        abi={abiObject}
+      />
       <Flex bg="#262626" w="100%" minH="100%" direction="column" overflowY="auto" p="0px" flex="1">
         <Flex
           width="100%"
@@ -272,15 +406,27 @@ const ABIView = () => {
               _active={{ bg: "transparent" }}
               _focus={{ bg: "transparent" }}
             >
-              <Button variant="transparent" _hover={{ bg: "transparent" }}>
-                <RxDotsHorizontal />
-              </Button>
+              {/* <Button variant="transparent" _hover={{ bg: "transparent" }}> */}
+              <RxDotsHorizontal />
+              {/* </Button> */}
             </MenuButton>
             <MenuList zIndex="7">
-              <MenuGroup title="Recent">
+              <MenuGroup title="Recent" color="#CCCCCC">
                 {recentAddresses.map((recent, idx) => (
-                  <MenuItem key={idx} title={recent.src} onClick={() => setSrc(recent.src)}>
+                  <MenuItem
+                    color="#AAAAAA"
+                    key={idx}
+                    title={recent.src}
+                    onClick={() => setSrc(recent.src)}
+                  >
                     <Text>{recent.name}</Text>
+                  </MenuItem>
+                ))}
+              </MenuGroup>
+              <MenuGroup color="#CCCCCC" title={`Recent txs on ${recentTransactionsChain}`}>
+                {recentTransactions.map((tx, idx) => (
+                  <MenuItem color="#AAAAAA" key={idx} title={tx} onClick={() => setSrc(tx)}>
+                    <Text>{tx.slice(0, 6) + "..." + tx.slice(-4)}</Text>
                   </MenuItem>
                 ))}
               </MenuGroup>
@@ -299,6 +445,11 @@ const ABIView = () => {
           {getABIQuery.isError && (
             <Text pl="20px" color="error.500">
               {getABIQuery.error?.message}
+            </Text>
+          )}
+          {abiFromTransactionsQuery.isLoading && (
+            <Text ml="40px" placeSelf="center" color="#BBBBBB">
+              checking transactions...
             </Text>
           )}
           <Spacer />
@@ -413,7 +564,7 @@ const ABIView = () => {
         >
           <Input
             placeholder="paste url or contract address"
-            value={src}
+            defaultValue={src}
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
             border="none"
@@ -445,6 +596,7 @@ const ABIView = () => {
                   textIndent="-20px"
                   ml="20px"
                   pr="20px"
+                  onClick={() => handleItemClick(item.name, item.inputs)}
                 >
                   <span style={{ color: colorScheme.name }}>{item.name}</span>
                   {":  ("}
