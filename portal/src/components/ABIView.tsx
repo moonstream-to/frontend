@@ -41,6 +41,7 @@ const ABIView = () => {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [recentTransactionsChain, setRecentTransactionsChain] = useState("");
+  const [loadedFromTx, setLoadedFromTx] = useState("");
 
   const [src, setSrc] = useState(
     "",
@@ -53,7 +54,11 @@ const ABIView = () => {
   // const web3 = new Web3();
   const web3ctx = useContext(Web3Context);
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [fnToCall, setFnToCall] = useState<{ name: string; inputs: any[] } | null>(null);
+  const [fnToCall, setFnToCall] = useState<{
+    name: string;
+    inputs: any[];
+    stateMutability: string;
+  } | null>(null);
   const web3 = web3ctx.web3;
 
   const colorScheme = {
@@ -163,6 +168,7 @@ const ABIView = () => {
   };
 
   const getABI = () => {
+    setLoadedFromTx("");
     if (web3.utils.isAddress(src)) {
       return getFromAddress(src);
     } else {
@@ -263,7 +269,7 @@ const ABIView = () => {
         while (idx < addresses.length && abi.length === 0) {
           try {
             const res = await getFromAddress(addresses[idx] as string);
-            // setSrc(addresses[idx] as string);
+            setLoadedFromTx(addresses[idx] as string);
             idx = addresses.length;
           } catch (e) {
             await new Promise((r) => setTimeout(r, 3000));
@@ -289,6 +295,7 @@ const ABIView = () => {
         console.log(e);
       },
       retry: false,
+      enabled: false,
     },
   );
   const getType = (token: any) => {
@@ -362,8 +369,8 @@ const ABIView = () => {
     }
   };
 
-  const handleItemClick = async (name: string, inputs: any[]) => {
-    setFnToCall({ name, inputs });
+  const handleItemClick = async (name: string, inputs: any[], stateMutability: string) => {
+    setFnToCall({ name, inputs, stateMutability });
     onOpen();
   };
 
@@ -385,6 +392,7 @@ const ABIView = () => {
         name={fnToCall?.name}
         inputs={fnToCall?.inputs}
         abi={abiObject}
+        stateMutability={fnToCall?.stateMutability ?? ""}
       />
       <Flex bg="#262626" w="100%" minH="100%" direction="column" overflowY="auto" p="0px" flex="1">
         <Flex
@@ -452,6 +460,12 @@ const ABIView = () => {
               checking transactions...
             </Text>
           )}
+          {loadedFromTx && (
+            <Text ml="40px" placeSelf="center" color="#BBBBBB">
+              {loadedFromTx}
+            </Text>
+          )}
+
           <Spacer />
           <Icon as={AiOutlineSave} mr="33px" />
         </Flex>
@@ -586,9 +600,17 @@ const ABIView = () => {
             overflowY="auto"
             fontFamily="Cascadia code, sans-serif"
           >
-            {abiObject
-              .filter(filterFunction)
-              .map((item: { name: string; inputs: any[]; outputs: any[] }, idx) => (
+            {abiObject.filter(filterFunction).map(
+              (
+                item: {
+                  type: string;
+                  stateMutability: string;
+                  name: string;
+                  inputs: any[];
+                  outputs: any[];
+                },
+                idx,
+              ) => (
                 <Text
                   key={idx}
                   mt="5px"
@@ -596,7 +618,9 @@ const ABIView = () => {
                   textIndent="-20px"
                   ml="20px"
                   pr="20px"
-                  onClick={() => handleItemClick(item.name, item.inputs)}
+                  onClick={() => handleItemClick(item.name, item.inputs, item.stateMutability)}
+                  w="fit-content"
+                  cursor={item.type === "function" ? "pointer" : "default"}
                 >
                   <span style={{ color: colorScheme.name }}>{item.name}</span>
                   {":  ("}
@@ -604,7 +628,8 @@ const ABIView = () => {
                   {item.outputs ? ") => " : ")"}
                   {item.outputs && <Outputs outputs={item.outputs} />}
                 </Text>
-              ))}
+              ),
+            )}
           </Flex>
         )}
       </Flex>
