@@ -10,8 +10,8 @@ type EditRowProps = {
 
 const EditRow: React.FC<EditRowProps> = ({ title, onChange, value, validationError }) => {
   return (
-    <Flex justifyContent="space-between" alignItems="center">
-      <Text>{title}</Text>
+    <Flex justifyContent="space-between" alignItems="center" gap="5px">
+      <Text whiteSpace="nowrap">{title}</Text>
       <Input
         w="50ch"
         fontSize="16px"
