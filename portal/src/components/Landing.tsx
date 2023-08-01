@@ -288,7 +288,12 @@ const Landing = () => {
                     <Flex>
                       <chakra.span fontSize={["md", "md", null]} display="inline-block">
                         Reach out to us on{" "}
-                        <Link isExternal href={DISCORD_LINK} _hover={{ color: "accent.500" }}>
+                        <Link
+                          isExternal
+                          href={DISCORD_LINK}
+                          textDecoration="underline"
+                          _hover={{ color: "accent.500" }}
+                        >
                           Discord
                         </Link>
                         . We&apos;ll get back to you within 3 days to schedule a call or make a
@@ -362,15 +367,25 @@ const Landing = () => {
                       <>
                         Yes and no. We are actively working to make all of our products self-serve
                         in the near future. For now, you&apos;ll need to get in{" "}
-                        <Link isExternal href={DISCORD_LINK} _hover={{ color: "accent.500" }}>
+                        <Link
+                          isExternal
+                          href={DISCORD_LINK}
+                          textDecoration="underline"
+                          _hover={{ color: "accent.500" }}
+                        >
                           contact
                         </Link>{" "}
                         with us to start using Moonstream.
                         <br />
                         <br />
                         However, you can already use our{" "}
-                        <RouterLink href="/portal/analytics"> web3 Analytics </RouterLink>after
-                        registering an account.
+                        <RouterLink
+                          style={{ textDecoration: "underline" }}
+                          href="/portal/analytics"
+                        >
+                          web3 Analytics
+                        </RouterLink>{" "}
+                        after registering an account.
                       </>
                     }
                   />
@@ -429,8 +444,16 @@ const Landing = () => {
                     headingProps={HEADING_PROPS}
                     panelContent={
                       <>
-                        If it’s an EVM compatible blockchain we can add it in a couple of days.
-                        Contact us to make it happen!
+                        If it’s an EVM compatible blockchain we can add it in a couple of days.{" "}
+                        <Link
+                          isExternal
+                          href={DISCORD_LINK}
+                          textDecoration="underline"
+                          _hover={{ color: "accent.500" }}
+                        >
+                          Contact us
+                        </Link>{" "}
+                        to make it happen!
                       </>
                     }
                   />
@@ -448,8 +471,16 @@ const Landing = () => {
                           {" "}
                           open source
                         </Link>
-                        . If you prefer to onboard and get support, please contact us to get the
-                        pricing information.
+                        . If you prefer to onboard and get support, please{" "}
+                        <Link
+                          isExternal
+                          href={DISCORD_LINK}
+                          textDecoration="underline"
+                          _hover={{ color: "accent.500" }}
+                        >
+                          contact us
+                        </Link>{" "}
+                        to get the pricing information.
                       </>
                     }
                   />
