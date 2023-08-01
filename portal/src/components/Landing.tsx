@@ -17,6 +17,7 @@ import {
   Accordion,
   Icon,
   Button,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { HiOutlineChatAlt2 } from "react-icons/hi";
 
@@ -102,6 +103,7 @@ const featuredBy = [
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
+  const [is768View] = useMediaQuery(["(min-width: 768px)"]);
 
   return (
     <Suspense fallback="">
@@ -131,37 +133,44 @@ const Landing = () => {
               <GridItem colSpan={12} id="Header grid item">
                 <chakra.header boxSize="full" mb={0}>
                   <Box bgPos="bottom" bgSize="cover" boxSize="full">
-                    <Flex align="center" justify="center" boxSize="full" pb={10} flexDir="column">
-                      <Stack textAlign="center" alignItems="center" w="100%">
-                        <Box fontSize={["30px", "30px", "50px"]} fontWeight="700" mt="0px">
-                          Open source infrastructure
-                          <br />
-                          for healthy game economies
+                    <Flex
+                      align="center"
+                      justify="center"
+                      boxSize="full"
+                      flexDir="column"
+                      gap={{ base: "40px", sm: "60px" }}
+                    >
+                      <Stack
+                        textAlign="center"
+                        alignItems="center"
+                        w="100%"
+                        gap={{ base: "20px", sm: "40px" }}
+                      >
+                        <Box
+                          fontSize={["30px", "30px", "50px"]}
+                          fontWeight="700"
+                          mt="0px"
+                          lineHeight="1"
+                        >
+                          Everything you need {is768View && <br />}for on-chain game design
                         </Box>
                         <chakra.span
-                          pb={[2, 6]}
                           fontSize={["md", "md", "md", "md", null]}
                           display="inline-block"
                           color="white"
                           maxW={[null, "85%", "75%", "55%"]}
                         >
-                          Create economic loops that reward your players with Moonstream’s
-                          analytics, leaderboards, and drops. Watch your game economy flourish.
+                          Access infrastructure tools and systems to build a healthy web3 game
+                          economy.
                         </chakra.span>
-                        <Stack
-                          direction={["column", "row", "row", "row", "row", "row"]}
-                          pb={10}
-                          fontSize={["16px", "16px", "20px"]}
-                        >
-                          <Center>
-                            <Link isExternal href={DISCORD_LINK}>
-                              <Button variant="whiteOutline" px={["20px", "20px", "30px"]}>
-                                Join our Discord
-                              </Button>
-                            </Link>
-                          </Center>
-                        </Stack>
                       </Stack>
+                      <Center>
+                        <Link isExternal href={DISCORD_LINK}>
+                          <Button variant="whiteOutline" px={["20px", "20px", "30px"]}>
+                            Join our Discord
+                          </Button>
+                        </Link>
+                      </Center>
 
                       <MoonstreamMetrics />
                     </Flex>
