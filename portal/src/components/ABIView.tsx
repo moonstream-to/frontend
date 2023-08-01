@@ -295,7 +295,7 @@ const ABIView = () => {
         console.log(e);
       },
       retry: false,
-      enabled: false,
+      // enabled: false,
     },
   );
   const getType = (token: any) => {
@@ -457,7 +457,7 @@ const ABIView = () => {
           )}
           {abiFromTransactionsQuery.isLoading && (
             <Text ml="40px" placeSelf="center" color="#BBBBBB">
-              checking transactions...
+              searching...
             </Text>
           )}
           {loadedFromTx && (

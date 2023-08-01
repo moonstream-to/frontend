@@ -179,7 +179,7 @@ const CallABIFunction = ({
                 placeSelf="end"
                 onClick={handleClick}
               >
-                {callQuery.isFetching || sendMutation.isLoading ? (
+                {callQuery.isLoading || callQuery.isFetching || sendMutation.isLoading ? (
                   <Spinner />
                 ) : stateMutability === "view" ? (
                   ".call"
@@ -191,7 +191,7 @@ const CallABIFunction = ({
             {/* {callQuery.data && <Text>{JSON.stringify(callQuery.data, null, "\t")}</Text>} */}
 
             {callQuery.isError && <Text>{JSON.stringify(callQuery.error, null, "\t")}</Text>}
-            {callQuery.data && (
+            {(callQuery.data || callQuery.data === false) && (
               <JSONEdit
                 json={JSON.stringify(callQuery.data, null, "\t")}
                 readOnly
