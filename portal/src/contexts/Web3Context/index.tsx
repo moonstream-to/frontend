@@ -78,7 +78,7 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
     rpcs: ["https://mainnet.infura.io/v3/"],
     ABIScan: {
       name: "etherscan",
-      url: "http://api.etherscan.io/api?module=contract&action=getabi",
+      url: "https://api.etherscan.io/api?module=contract&action=getabi",
     },
   },
   localhost: {
