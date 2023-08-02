@@ -21,6 +21,7 @@ import EditDrop from "../dropper/EditDrop";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
 import DropperV2EditDrop from "./DropperV2EditDrop";
+import DropperV2ClaimsView from "./DropperV2ClaimsView";
 
 const DropperV2DropView = ({
   address,
@@ -151,6 +152,7 @@ const DropperV2DropView = ({
         isEdit={isEdit}
         toggleEdit={() => setIsEdit(!isEdit)}
       />
+      <DropperV2ClaimsView />
 
       {!!dropState.data && (
         <>
