@@ -39,10 +39,12 @@ const LegalInfo = ({ ...props }) => {
       </Flex>
       <Flex justifyContent="start">
         <RouterLink href="/policy">
-          <Text>Privacy policy</Text>
+          <Text _hover={{ color: "accent.500" }}>Privacy policy</Text>
         </RouterLink>
         <RouterLink href="/terms">
-          <Text ml="20px">Terms of Service</Text>
+          <Text ml="20px" _hover={{ color: "accent.500" }}>
+            Terms of Service
+          </Text>
         </RouterLink>
       </Flex>
       <Text fontSize={{ base: "14px" }}>
@@ -97,7 +99,9 @@ const Menu = () => {
                     href={linkItem.path}
                     key={`footer-list-link-item-${linkItemIndex}-col-${colIndex}`}
                   >
-                    <Text {...LINKS_SIZES}>{linkItem.title}</Text>
+                    <Text {...LINKS_SIZES} _hover={{ color: "accent.500" }}>
+                      {linkItem.title}
+                    </Text>
                   </RouterLink>
                 );
               })}

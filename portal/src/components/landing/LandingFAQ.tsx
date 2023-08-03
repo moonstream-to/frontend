@@ -36,7 +36,7 @@ const LandingFAQ = () => {
               <br />
               However, you can already use our{" "}
               <RouterLink style={{ textDecoration: "underline" }} href="/portal/analytics">
-                web3 Analytics
+                <chakra.span _hover={{ color: "accent.500" }}>web3 Analytics</chakra.span>
               </RouterLink>{" "}
               after registering an account.
             </>
@@ -63,7 +63,11 @@ const LandingFAQ = () => {
           panelContent={
             <>
               You can use{" "}
-              <Link href="https://github.com/bugout-dev/moonworm" isExternal>
+              <Link
+                _hover={{ color: "accent.500" }}
+                href="https://github.com/bugout-dev/moonworm"
+                isExternal
+              >
                 <u>Moonworm</u>
               </Link>
               , our free open source tool, to build datasets of on-chain data related to market
@@ -72,11 +76,16 @@ const LandingFAQ = () => {
               <br />
               We also have a dataset with on-chain activity from the Ethereum NFT market (April 1 to
               September 25, 2021){" "}
-              <Link href="https://www.kaggle.com/datasets/simiotic/ethereum-nfts" isExternal>
+              <Link
+                _hover={{ color: "accent.500" }}
+                href="https://www.kaggle.com/datasets/simiotic/ethereum-nfts"
+                isExternal
+              >
                 <u>here</u>
               </Link>
               . And{" "}
               <Link
+                _hover={{ color: "accent.500" }}
                 href="https://github.com/bugout-dev/moonstream/blob/main/datasets/nfts/papers/ethereum-nfts.pdf"
                 isExternal
               >

@@ -32,13 +32,15 @@ const step = (i: number) => {
     <Flex direction="column" gap="40px" key={i} textAlign="center">
       {i < 3 ? (
         <Text fontSize="24px" fontWeight="700">
-          `Step ${i + 1}`
+          {`Step ${i + 1}`}
         </Text>
       ) : (
         <Center
           w="100%"
           bg="linear-gradient(92.04deg, #FFD337 36.28%, rgba(48, 222, 76, 0.871875) 43.18%, rgba(114, 162, 255, 0.91) 50.43%, rgba(255, 160, 245, 0.86) 55.02%, rgba(255, 101, 157, 0.71) 60.64%, rgba(255, 97, 154, 0.59) 64.7%), #1A1D22;"
           backgroundClip="text"
+          fontSize="24px"
+          fontWeight="700"
         >
           Enjoy
         </Center>
@@ -67,7 +69,7 @@ const LandingWorkflow = () => {
         <Icon as={HiOutlineChatAlt2} w={6} h={6} mr={2}></Icon>
         <Text fontSize="18px">
           Have something to discuss before signing up?{" "}
-          <Link href="https://discord.gg/K56VNUQGvA" isExternal>
+          <Link href="https://discord.gg/K56VNUQGvA" isExternal _hover={{ color: "accent.500" }}>
             <u>Join our Discord</u>{" "}
           </Link>
           to get in touch with the team (@zomglings).
