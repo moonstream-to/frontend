@@ -1,24 +1,6 @@
 import RouterLink from "next/link";
 
-import {
-  Fade,
-  Flex,
-  Heading,
-  Box,
-  chakra,
-  Stack,
-  Link,
-  Center,
-  Grid,
-  Text,
-  GridItem,
-  Image as ChakraImage,
-  VStack,
-  Accordion,
-  Icon,
-  Button,
-  useMediaQuery,
-} from "@chakra-ui/react";
+import { Flex, Link, Text, Button } from "@chakra-ui/react";
 import FeatureCard from "../FeatureCard";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 
@@ -71,7 +53,7 @@ const LandingFeatures = () => {
           <FeatureCard key={idx} feature={f} />
         ))}
       </Flex>
-      <Flex direction={{ base: "column", sm: "row" }} gap="20px">
+      <Flex direction={{ base: "column", sm: "row" }} gap="20px" alignItems="center">
         <RouterLink href="/features">
           <Button variant="plainOrange">Learn more about our features</Button>
         </RouterLink>

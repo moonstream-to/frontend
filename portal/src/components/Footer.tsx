@@ -20,7 +20,7 @@ const LINKS_SIZES = {
 };
 
 const PRIMARY_MOON_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/moonstream-full-logo-2022.png`;
-const BGA_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/logos/bga-logo.png`;
+const BGA_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/logos/bga-logo-1.png`;
 
 const LegalInfo = ({ ...props }) => {
   return (
