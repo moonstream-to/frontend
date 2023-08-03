@@ -60,7 +60,6 @@ const UpcomingIntegrations = ({ ...props }) => {
             <Image
               src={assets[chain.name as keyof typeof assets]}
               alt={chain.name}
-              filter="invert(100%)"
               h={{ base: `${chain.h}px`, sm: `${chain.h * 1.45}px` }}
             />
           </Link>

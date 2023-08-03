@@ -35,8 +35,13 @@ const LandingFAQ = () => {
               <br />
               <br />
               However, you can already use our{" "}
-              <RouterLink style={{ textDecoration: "underline" }} href="/portal/analytics">
-                <chakra.span _hover={{ color: "accent.500" }}>web3 Analytics</chakra.span>
+              <RouterLink href="/portal/analytics">
+                <chakra.span
+                  style={{ textDecoration: "underline" }}
+                  _hover={{ color: "accent.500", textDecoration: "underline" }}
+                >
+                  web3 Analytics
+                </chakra.span>
               </RouterLink>{" "}
               after registering an account.
             </>
@@ -121,6 +126,7 @@ const LandingFAQ = () => {
                 isExternal
                 href="https://github.com/moonstream-to"
                 _hover={{ color: "accent.500" }}
+                textDecoration="underline"
               >
                 {" "}
                 open source
