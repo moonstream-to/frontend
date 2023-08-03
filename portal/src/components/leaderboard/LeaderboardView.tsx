@@ -28,6 +28,9 @@ import queryCacheProps from "../../hooks/hookCommon";
 import Web3Context from "../../contexts/Web3Context/context";
 import LeaderboardPaginator from "./LeaderboardPaginator";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const LeaderboardView = () => {
@@ -88,7 +91,17 @@ const LeaderboardView = () => {
     return http(
       {
         method: "GET",
-        url: `  https://engineapi.moonstream.to/leaderboard/count/addresses/?leaderboard_id=${id}`,
+        url: `https://engineapi.moonstream.to/leaderboard/count/addresses/?leaderboard_id=${id}`,
+      },
+      true,
+    );
+  };
+
+  const fetchLeaderboardInfo = async (id: string) => {
+    return http(
+      {
+        method: "GET",
+        url: `https://engineapi.moonstream.to/leaderboard/info?leaderboard_id=${id}`,
       },
       true,
     );
@@ -124,6 +137,19 @@ const LeaderboardView = () => {
     },
   );
 
+  const leaderboardInfo = useQuery(
+    ["fetch_leaderboard_info", leaderboardId, currentAccount],
+    () => {
+      return fetchLeaderboardInfo(leaderboardId).then((res) => {
+        return res.data;
+      });
+    },
+    {
+      ...queryCacheProps,
+      enabled: !!leaderboardId,
+    },
+  );
+
   useEffect(() => {
     if (Web3.utils.isAddress(web3ctx.account)) {
       setCurrentAccount(web3ctx.account);
@@ -149,30 +175,15 @@ const LeaderboardView = () => {
       >
         <Flex alignItems="center" direction={["column", "column", "row"]}>
           <HStack>
-            <Heading fontSize={["lg", "2xl"]}>Boomland Leaderboard</Heading>
+            <Heading fontSize={["lg", "2xl"]}>{leaderboardInfo.data?.title}</Heading>
           </HStack>
         </Flex>
         <Box my={["10px", "20px", "30px"]} fontSize={["14px", "14px", "18px"]}>
-          <Text>Scoring: </Text>
-          <UnorderedList>
-            <ListItem>
-              Upgrade - uncommon upgrades worth 10 points, rare 20, epic 50, legendary 100
-            </ListItem>
-            <ListItem>Opening chest - price of chest divided by 100.</ListItem>
-            <ListItem>Earning bgem - 1 point per 1k earned</ListItem>
-            <ListItem>
-              Getting a shard - 1 point for common, 5 points for uncommon, 6 points for rare, 7
-              points for epic, 10 points for legendary.
-            </ListItem>
-            <ListItem>
-              Getting equipment - 1 point for common, 5 points for uncommon, 6 points for rare, 7
-              points for epic, 10 point for legendary.
-            </ListItem>
-            <ListItem>
-              Getting an artifact - 1 point for common, 5 points for uncommon, 6 points for rare, 7
-              points for epic, 10 point for legendary.
-            </ListItem>
-          </UnorderedList>
+          {leaderboardInfo.data && (
+            <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+              {atob(leaderboardInfo.data.description)}
+            </ReactMarkdown>
+          )}
         </Box>
         <Box
           w="100%"
