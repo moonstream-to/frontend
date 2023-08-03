@@ -25,7 +25,7 @@ const AnalyticsAddressTags = ({
   return (
     <Flex gap="5px" h="24px" wrap="wrap" alignItems="center">
       {onAdd && <AddTagModal isOpen={isOpen} onClose={onClose} onAddTag={handleAddTag} />}
-      {chainName && <Tag name={chainName} h="24px" bg="#94C2FA" textTransform="capitalize" />}
+      {chainName && <Tag name={chainName} h="24px" bg="#94C2FA" />}
       {tags &&
         tags.map((tag: string, idx: number) => (
           <Tag

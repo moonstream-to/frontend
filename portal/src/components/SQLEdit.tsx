@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import AceEditor from "react-ace";
 
-import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/mode-sql";
 import "ace-builds/src-noconflict/theme-twilight";
 import "brace/ext/searchbox";
 
-const MyJsonComponent = ({
-  json,
+const SQLEdit = ({
+  sql,
   onChange,
-  readOnly = false,
+  readOnly = true,
+  ...props
 }: {
-  json: string;
+  sql: string;
   onChange?: (arg0: any) => void;
   readOnly?: boolean;
+  [x: string]: any;
 }) => {
   const handleJsonChange = (newValue: string) => {
     if (onChange) {
@@ -23,12 +25,13 @@ const MyJsonComponent = ({
   return (
     <AceEditor
       style={{
-        backgroundColor: json ? "#2d2d2d" : "#232323",
-        borderRadius: "5px",
+        backgroundColor: "#232323",
+        borderRadius: "10px",
         fontSize: "14px",
         padding: "10px",
+        ...props,
       }}
-      mode="json"
+      mode="sql"
       theme="twilight"
       onChange={handleJsonChange}
       onLoad={function (editor) {
@@ -37,15 +40,15 @@ const MyJsonComponent = ({
         editor.renderer.setScrollMargin(20, 20, 0, 0);
         editor.setReadOnly(readOnly);
       }}
-      name="json-editor"
+      name="sql-editor"
       editorProps={{ $blockScrolling: true }}
-      value={json}
+      value={sql}
       height="300px"
       width="100%"
       setOptions={{ useWorker: false }}
-      placeholder="Paste your ABI here"
+      {...props}
     />
   );
 };
 
-export default MyJsonComponent;
+export default SQLEdit;

@@ -6,6 +6,7 @@ import useUser from "../../contexts/UserContext";
 import queryCacheProps from "../../hooks/hookCommon";
 import useMoonToast from "../../hooks/useMoonToast";
 import { SubscriptionsService } from "../../services";
+import http from "../../utils/httpMoonstream";
 
 type AnalyticsContextType = {
   addresses: any;
@@ -16,8 +17,7 @@ type AnalyticsContextType = {
   setFilter: (arg0: string) => void;
   selectedAddressId: number;
   setSelectedAddressId: (arg0: number) => void;
-  types: any;
-  setTypes: (arg0: any) => void;
+  blockchains: any;
   isCreatingAddress: boolean;
   setIsCreatingAddress: (arg0: boolean) => void;
   isEditingContract: boolean;
@@ -25,6 +25,7 @@ type AnalyticsContextType = {
   selectedQueryId: number;
   setSelectedQueryId: (arg0: number) => void;
   reset: () => void;
+  templates: any;
 };
 
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefined); //TODO
@@ -34,10 +35,10 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const [filter, setFilter] = useState("");
   const [selectedAddressId, setSelectedAddressId] = useState(0);
   const [selectedQueryId, setSelectedQueryId] = useState(0);
-  const [types, setTypes] = useState([]);
   const [isCreatingAddress, setIsCreatingAddress] = useState(false);
   const [isEditingContract, setIsEditingContract] = useState(false);
   const { user } = useUser();
+
   const reset = () => {
     setSelectedAddressId(0);
     setSelectedQueryId(0);
@@ -70,17 +71,75 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
             ...i,
             type: i.subscription_type_id !== "externaly_owned_account" ? "smartcontract" : "eoa",
             created_at: created_at.toLocaleDateString(),
+            chainName: i.subscription_type_id.split("_").slice(0, -1).join("_"),
+            displayName: getChainName(i.subscription_type_id.split("_").slice(0, -1).join("_")),
           };
         }),
       );
   };
 
+  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
+
+  const templates = useQuery(
+    ["queryTemplates"],
+    () => {
+      return http({
+        method: "GET",
+        url: `${API}/queries/templates`,
+      }).then((res) => {
+        return res.data.interfaces;
+      });
+    },
+    {
+      ...queryCacheProps,
+      onError: (error: Error) => {
+        console.log(error);
+      },
+    },
+  );
+
+  const getError = () => {
+    return new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("mock error")), 3000);
+    });
+  };
+
   const addresses = useQuery(["subscriptions"], getSubscriptions, {
     ...queryCacheProps,
-    onError: (error) => {
+    retry: 2,
+    onError: (error: any) => {
       toast(error.message, "error");
     },
     enabled: !!user,
+  });
+
+  const namesMap = {
+    xdai: "Gnosis",
+    zksync_era_testnet: "zkSync Era testnet",
+  };
+
+  const getChainName = (backName: string) => {
+    if (namesMap[backName as keyof typeof namesMap]) {
+      return namesMap[backName as keyof typeof namesMap];
+    }
+    return backName.slice(0, 1).toUpperCase() + backName.slice(1);
+  };
+
+  const getBlockchains = async () => {
+    const response = await SubscriptionsService.getTypes();
+    return response.data.subscription_types
+      .filter((type: { blockchain: string }) => type.blockchain !== "Any")
+      .map((type: any) => {
+        return {
+          name: type.blockchain,
+          displayName: getChainName(type.blockchain),
+          image: type.icon_url,
+        };
+      });
+  };
+
+  const blockchains = useQuery(["subscription_types"], getBlockchains, {
+    ...queryCacheProps,
   });
 
   const queries = undefined;
@@ -94,8 +153,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     setFilter,
     selectedAddressId,
     setSelectedAddressId,
-    types,
-    setTypes,
+    blockchains,
     isCreatingAddress,
     setIsCreatingAddress,
     isEditingContract,
@@ -103,6 +161,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     selectedQueryId,
     setSelectedQueryId,
     reset,
+    templates,
   };
 
   return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>;

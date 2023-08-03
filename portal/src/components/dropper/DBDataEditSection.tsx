@@ -78,7 +78,7 @@ const DBDataEditSection: React.FC<{
           icon={<AiOutlineUndo />}
           variant="cancelButton"
           mb="15px"
-          disabled={!isDBDataChanged || updateClaim.isLoading}
+          isDisabled={!isDBDataChanged || updateClaim.isLoading}
           onClick={revertDBDataChanges}
         />
         <Button
@@ -86,7 +86,7 @@ const DBDataEditSection: React.FC<{
           alignSelf="end"
           mb="15px"
           w="200px"
-          disabled={!isDBDataChanged || updateClaim.isLoading}
+          isDisabled={!isDBDataChanged || updateClaim.isLoading}
           onClick={handleSaveClick}
         >
           {updateClaim.isLoading ? <Spinner /> : "Save"}

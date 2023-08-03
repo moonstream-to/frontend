@@ -55,7 +55,7 @@ const FeatureCardLarge: React.FC<FeatureCardLargeProps> = ({
           </VStack>
         </GridItem>
         <GridItem
-          order={[2, 2, 2 * cardOrder]}
+          order={[2, 2, 2, 2 * cardOrder]}
           justifyContent="right"
           alignContent="center"
           h="auto"

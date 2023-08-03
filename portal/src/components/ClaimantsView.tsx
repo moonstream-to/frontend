@@ -309,7 +309,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 _hover={{ bg: "#3f3f3f" }}
                 icon={<Icon as={AiOutlineVerticalRight} />}
                 onClick={() => setClaimantsPage(0)}
-                disabled={claimantsPage < 1}
+                isDisabled={claimantsPage < 1}
               />
               <IconButton
                 bg="transparent"
@@ -317,7 +317,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 _hover={{ bg: "#3f3f3f" }}
                 icon={<Icon as={AiOutlineArrowLeft} />}
                 onClick={() => setClaimantsPage(claimantsPage - 1)}
-                disabled={claimantsPage < 1}
+                isDisabled={claimantsPage < 1}
               />
               <Text px="20px">{displayingPages}</Text>
               <IconButton
@@ -326,7 +326,7 @@ const ClaimantsView = ({ claimId }: { claimId: string }) => {
                 _hover={{ bg: "#3f3f3f" }}
                 icon={<Icon as={AiOutlineArrowRight} />}
                 onClick={() => setClaimantsPage(claimantsPage + 1)}
-                disabled={!claimants.data || claimants.data.length < claimantsPageSize}
+                isDisabled={!claimants.data || claimants.data.length < claimantsPageSize}
               />
             </Flex>
             <Flex gap="15px" alignItems="center" id="paginator">

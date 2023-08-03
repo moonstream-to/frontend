@@ -11,14 +11,6 @@ import StatusRow from "../../src/components/Status/StatusRow";
 
 const BUGOUT_STATUS_URL = process.env.NEXT_PUBLIC_BUGOUT_STATUS_URL;
 
-const serviceNames = new Map([
-  ["moonstream_api", "Backend server"],
-  ["moonstream_crawlers", "Crawlers server"],
-  ["moonstream_node_balancer", "Node balancer server"],
-  ["moonstream_database", "Database server"],
-  ["moonstream_database_replica", "Database replica server"],
-]);
-
 const Status = () => {
   const toast = useMoonToast();
   const getServerListStatus = async () => {
@@ -27,7 +19,10 @@ const Status = () => {
       url: `${BUGOUT_STATUS_URL}/status`,
     });
     const list = response.data.map((s: any) => {
-      const name = serviceNames.get(s.name) ?? s.name.replace(/_/g, " ").replace(/api/g, "API");
+      let name = s.normalized_name;
+      if (!name) {
+        name = s.name.replace(/_/g, " ").replace(/api/g, "API");
+      }
       const details = Object.keys(s.response)
         .filter((key) => key !== "status")
         .map((key) => {
@@ -50,13 +45,25 @@ const Status = () => {
   return (
     <>
       <LayoutLanding home={false} title="Moonstream: Status page">
-        <Flex mx="auto" py="40px" direction="column" justifyContent="space-between" minW="700px">
+        <Flex
+          px={{ base: "10px", sm: "7%" }}
+          mx="auto"
+          py="40px"
+          direction="column"
+          justifyContent="space-between"
+        >
           <Text fontSize="24px" fontWeight="700" mb="30px" textAlign="center">
             Status page
           </Text>
           {status.isLoading && <Spinner mx="auto" />}
           {status.data && (
-            <Flex direction="column" w="100%" mx="auto" gap="15px">
+            <Flex
+              direction="column"
+              w="100%"
+              mx="auto"
+              gap="15px"
+              fontSize={{ base: "12px", sm: "18px" }}
+            >
               {status.data.map((service: any, idx: number) => (
                 <StatusRow key={idx} service={service} />
               ))}

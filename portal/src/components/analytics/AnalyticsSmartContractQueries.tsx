@@ -4,6 +4,7 @@ export interface QueryInterface {
   title: string;
   context_url: string;
   description: string;
+  content: string;
 }
 
 const AnalyticsSmartContractQueries = ({

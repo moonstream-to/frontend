@@ -157,7 +157,7 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
                 aria-label="cancel"
                 icon={<Icon as={existingClaimant ? AiOutlineSave : AiOutlineCheck} />}
                 _hover={{ bg: "#3f3f3f" }}
-                disabled={!inputIsCorrect}
+                isDisabled={!inputIsCorrect}
                 onClick={() =>
                   addClaimants.mutate({
                     claimants: [{ address: newAddress, amount: Number(newAmount) }],
@@ -172,7 +172,7 @@ const NewClaimantView = ({ claimId, onClose }: { claimId: string; onClose: () =>
               aria-label="cancel"
               icon={<SmallCloseIcon />}
               onClick={() => onDoneAdding()}
-              disabled={addClaimants.isLoading}
+              isDisabled={addClaimants.isLoading}
               _hover={{ bg: "#3f3f3f" }}
             />
           </Flex>

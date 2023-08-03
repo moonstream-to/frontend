@@ -11,7 +11,7 @@ export const getTypes = () =>
 export const getSubscriptions = () =>
   http({
     method: "GET",
-    url: `${API}/subscriptions/`,
+    url: `${API}/subscriptions/?limit=500`,
   });
 
 export const create = ({

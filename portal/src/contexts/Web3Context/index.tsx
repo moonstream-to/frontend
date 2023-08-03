@@ -78,7 +78,7 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
     rpcs: ["https://mainnet.infura.io/v3/"],
     ABIScan: {
       name: "etherscan",
-      url: "http://api.etherscan.io/api?module=contract&action=getabi",
+      url: "https://api.etherscan.io/api?module=contract&action=getabi",
     },
   },
   localhost: {
@@ -96,8 +96,8 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
       "https://matic-testnet-archive-rpc.bwarelabs.com",
     ],
     ABIScan: {
-      name: "polygonscan",
-      url: "https://api.polygonscan.com/api?module=contract&action=getabi",
+      name: "api-testnet.polygonscan",
+      url: "https://api-testnet.polygonscan.com/api?module=contract&action=getabi",
     },
   },
   polygon: {
@@ -120,6 +120,15 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
     chainId: 322,
     name: "wyrm",
     rpcs: ["https://wyrm.constellationchain.xyz/http"],
+  },
+  gnosis: {
+    chainId: 100,
+    name: "gnosis",
+    rpcs: ["https://gnosis.api.onfinality.io/public"],
+    ABIScan: {
+      name: "gnosisscan",
+      url: "https://api.gnosisscan.io/api?module=contract&action=getabi",
+    },
   },
 };
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Flex, Image, Text } from "@chakra-ui/react";
+import { Flex, Image, Spacer, Text } from "@chakra-ui/react";
 
 const FeatureCard = ({
   feature,
@@ -27,6 +27,7 @@ const FeatureCard = ({
         border="2px solid white"
         cursor="pointer"
         filter={disabled ? "grayscale(100%)" : ""}
+        minH="386px"
       >
         <Image src={feature.image} w="170px" h="170px" alt={feature.name} mb="40px" />
         <Text fontSize="20px" fontWeight="500" mb="10px">

@@ -289,7 +289,7 @@ const TerminusPoolView = () => {
                 value={newUri}
                 onChange={(e) => setNewUri(e.target.value)}
                 type="url"
-                disabled={setPoolURI.isLoading}
+                isDisabled={setPoolURI.isLoading}
               />
               <Button
                 bg="gray.0"
@@ -297,7 +297,7 @@ const TerminusPoolView = () => {
                 fontSize="18px"
                 color="#2d2d2d"
                 onClick={handleNewUri}
-                disabled={setPoolURI.isLoading}
+                isDisabled={setPoolURI.isLoading}
               >
                 {setPoolURI.isLoading ? <Spinner /> : "Save"}
               </Button>

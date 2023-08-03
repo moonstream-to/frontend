@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Flex, Text } from "@chakra-ui/layout";
 import { Button, Image, Spinner } from "@chakra-ui/react";
 import useMoonToast from "../../hooks/useMoonToast";
@@ -47,9 +47,12 @@ const AnalyticsABIView = ({
     }).then((res) => JSON.stringify(JSON.parse(res.data?.abi), null, "\t"));
   };
 
-  const abi = useQuery(["subscriptonABI", id], getSubscriptionABI(id), {
+  const abi = useQuery(["subscriptionABI", id], getSubscriptionABI(id), {
     onError: (error: Error) => {
       console.log(error);
+    },
+    onSuccess: (data): any => {
+      setJSONForEdit(data);
     },
     enabled: id !== "-1" && isAbi,
     retry: false,
@@ -95,9 +98,11 @@ const AnalyticsABIView = ({
   const isABIfromScan = scannedABI === JSONForEdit && scannedABI !== "";
 
   const toast = useMoonToast();
+  const queryClient = useQueryClient();
   const updateSubscription = useMutation(SubscriptionsService.modifySubscription(), {
     onError: (error: Error) => toast(error.message, "error"),
     onSuccess: () => {
+      queryClient.invalidateQueries("subscriptionABI");
       abi.refetch();
     },
   });
@@ -130,18 +135,11 @@ const AnalyticsABIView = ({
     }
   }, [JSONForEdit, abi.data]);
 
-  useEffect(() => {
-    if (!JSONForEdit && abi.data) {
-      setJSONForEdit(abi.data);
-    }
-  }, [abi.data]);
-
   const handleSave = () => {
+    let JSONForSave = "";
     try {
-      if (JSONForEdit !== JSON.stringify(JSON.parse(JSONForEdit), null, "\t")) {
-        throw new Error("not valid JSON");
-      }
-      updateSubscription.mutate({ id, abi: JSONForEdit });
+      JSONForSave = JSON.stringify(JSON.parse(JSONForEdit));
+      updateSubscription.mutate({ id, abi: JSONForSave });
     } catch (e: any) {
       toast(e.message, "error", 7000);
     }
@@ -161,14 +159,18 @@ const AnalyticsABIView = ({
         <Flex gap="20px" position="absolute" zIndex="2" bottom="15px" right="15px">
           <Button
             variant="cancelButton"
-            disabled={updateSubscription.isLoading}
+            isDisabled={updateSubscription.isLoading}
             onClick={() => {
               setJSONForEdit(abi.data ?? "");
             }}
           >
             Cancel
           </Button>
-          <Button variant="saveButton" disabled={updateSubscription.isLoading} onClick={handleSave}>
+          <Button
+            variant="saveButton"
+            isDisabled={updateSubscription.isLoading}
+            onClick={handleSave}
+          >
             {updateSubscription.isLoading ? <Spinner /> : "Save"}
           </Button>
         </Flex>

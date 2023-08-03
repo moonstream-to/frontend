@@ -8,7 +8,7 @@ const FAQCard = ({
   panelContent,
 }: {
   heading: string;
-  headingProps: any;
+  headingProps?: any;
   panelContent: ReactNode;
 }) => {
   const iconColor = "#F56646";
@@ -19,7 +19,7 @@ const FAQCard = ({
         <>
           <AccordionButton px={0}>
             <Box flex="1" textAlign="left">
-              <Heading {...headingProps} as="h3" fontSize={["md", "md", "lg", "lg", null]}>
+              <Heading as="h3" fontSize={["md", "md", "lg", "lg", null]}>
                 {heading}
               </Heading>
             </Box>
