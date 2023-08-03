@@ -3,13 +3,13 @@ import LoginButton from "./LoginButton";
 
 const NeedAuthorizationView = () => {
   return (
-    <Flex direction="column" gap="60px" mx="auto" fontSize="18px" maxW="525px">
+    <Flex direction="column" gap="60px" mx="auto" fontSize="18px" maxW="600px">
       <Flex direction="column" gap="40px">
         <Text textAlign="center" fontSize="50px" lineHeight="50px" fontWeight="700">
-          Lead the future of gaming
+          Everything you need for on-chain game design
         </Text>
         <Text textAlign="center">
-          Access tools to manage your games on the blockchain. Build games and reward your players.
+          Access infrastructure tools and systems to build a healthy web3 game economy.{" "}
         </Text>
       </Flex>
       <Flex gap="20px">
