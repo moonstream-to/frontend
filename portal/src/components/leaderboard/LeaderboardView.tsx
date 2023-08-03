@@ -141,8 +141,6 @@ const LeaderboardView = () => {
     ["fetch_leaderboard_info", leaderboardId, currentAccount],
     () => {
       return fetchLeaderboardInfo(leaderboardId).then((res) => {
-        console.log("info");
-        console.log(res.data);
         return res.data;
       });
     },
@@ -181,9 +179,11 @@ const LeaderboardView = () => {
           </HStack>
         </Flex>
         <Box my={["10px", "20px", "30px"]} fontSize={["14px", "14px", "18px"]}>
-          <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
-            {leaderboardInfo.data?.description}
-          </ReactMarkdown>
+          {leaderboardInfo.data && (
+            <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+              {atob(leaderboardInfo.data.description)}
+            </ReactMarkdown>
+          )}
         </Box>
         <Box
           w="100%"
