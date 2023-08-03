@@ -1,18 +1,11 @@
 import {
-  Fade,
   Flex,
-  Heading,
   Box,
   chakra,
   Stack,
   Link,
   Center,
-  Grid,
   Text,
-  GridItem,
-  Image as ChakraImage,
-  VStack,
-  Accordion,
   Icon,
   Button,
   useMediaQuery,
@@ -45,16 +38,15 @@ const LandingHeader = () => {
         borderRadius="10px"
         w="fit-content"
         mx="auto"
-        // h="55px"
         alignItems="center"
         p="12px"
         gap="15px"
+        h="55px"
       >
         <Image src={assets.openSource} h="30px" alt="" />
         <Text fontSize="18px">Open Source</Text>
-        <Divider orientation="vertical" />
-        <Icon as={MdStarOutline} h="20px" />
-        {/* <MdStarOutline height="20px" /> */}
+        <Divider orientation="vertical" h="17px" color="#353535" />
+        {is768View && <Icon as={MdStarOutline} w="28px" h="28px" />}
       </Flex>
       <Stack textAlign="center" alignItems="center" w="100%" gap={{ base: "20px", sm: "40px" }}>
         <Box fontSize={["30px", "30px", "50px"]} fontWeight="700" mt="0px" lineHeight="1">

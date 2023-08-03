@@ -24,7 +24,6 @@ const Landing = () => {
           id="page:landing"
           textColor="white"
           px="7%"
-          py="30px"
         >
           <Flex
             direction="column"
@@ -34,8 +33,6 @@ const Landing = () => {
             overflow="initial"
             mx="auto"
             pt={0}
-            // justifyContent="center"
-            // alignItems="center"
           >
             <Suspense fallback={""}></Suspense>
             <LandingHeader />

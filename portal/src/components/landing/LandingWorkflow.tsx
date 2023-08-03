@@ -31,7 +31,17 @@ const step = (i: number) => {
   return (
     <Flex direction="column" gap="40px" key={i} textAlign="center">
       <Text fontSize="24px" fontWeight="700">
-        {i < 3 ? `Step ${i + 1}` : "Enjoy"}
+        {i < 3 ? (
+          `Step ${i + 1}`
+        ) : (
+          <Center
+            w="100%"
+            bg="linear-gradient(92.04deg, #FFD337 36.28%, rgba(48, 222, 76, 0.871875) 43.18%, rgba(114, 162, 255, 0.91) 50.43%, rgba(255, 160, 245, 0.86) 55.02%, rgba(255, 101, 157, 0.71) 60.64%, rgba(255, 97, 154, 0.59) 64.7%), #1A1D22;"
+            backgroundClip="text"
+          >
+            Enjoy
+          </Center>
+        )}
       </Text>
       {i === 1 ? step2 : <Text fontSize="18px">{content[i]}</Text>}
     </Flex>
