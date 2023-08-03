@@ -98,65 +98,69 @@ const TrustedBy = ({ ...props }) => {
       borderRadius="20px"
       bg="white"
       p={{ base: "40px 20px", sm: "60px 60px" }}
-      gap={{ base: "30px", sm: "40px" }}
+      gap={{ base: "40px", sm: "60px" }}
       fontSize="24px"
       justifyContent="center"
       alignItems="center"
       textAlign="center"
     >
-      <Text fontWeight={{ base: "700", sm: "600" }} color={{ base: "black", sm: "#1A1D22" }}>
-        Trusted by visionaries in the industry
-      </Text>
-      <Flex
-        wrap="wrap"
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        gap="20px"
-        columnGap={{ base: "20px", sm: "40px" }}
-        rowGap={{ base: "20px" }}
-        maxW="700px"
-        mb={{ base: "10px", sm: "20px" }}
-      >
-        {trustedBy.map((f) => (
-          <Link href={f.href} key={f.name} target="_blank">
-            <Image
-              src={f.img}
-              alt={f.name}
-              alignSelf="center"
-              justifySelf="center"
-              h={{ base: f.h.base, sm: f.h.sm }}
-            />
-          </Link>
-        ))}
+      <Flex direction="column" gap={{ base: "30px", sm: "40px" }}>
+        <Text fontWeight={{ base: "700", sm: "600" }} color={{ base: "black", sm: "#1A1D22" }}>
+          Trusted by visionaries in the industry
+        </Text>
+        <Flex
+          wrap="wrap"
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          gap="20px"
+          columnGap={{ base: "20px", sm: "40px" }}
+          rowGap={{ base: "20px" }}
+          maxW="700px"
+          mb={{ base: "10px", sm: "20px" }}
+        >
+          {trustedBy.map((f) => (
+            <Link href={f.href} key={f.name} target="_blank">
+              <Image
+                src={f.img}
+                alt={f.name}
+                alignSelf="center"
+                justifySelf="center"
+                h={{ base: f.h.base, sm: f.h.sm }}
+              />
+            </Link>
+          ))}
+        </Flex>
       </Flex>
-      <Text fontWeight={{ base: "700", sm: "600" }} color={{ base: "black", sm: "#1A1D22" }}>
-        Supported Blockchains
-      </Text>
+      <Flex direction="column" gap={{ base: "30px", sm: "40px" }}>
+        <Text fontWeight={{ base: "700", sm: "600" }} color={{ base: "black", sm: "#1A1D22" }}>
+          Supported Blockchains
+        </Text>
 
-      <Flex
-        wrap="wrap"
-        justifyContent="center"
-        columnGap={{ base: "20px", sm: "40px" }}
-        rowGap={{ base: "15px, sm: 20px" }}
-        maxW="510px"
-      >
-        {chains.map((chain) => (
-          <Link href={chain.href} key={chain.name} target="_blank">
-            <Flex gap="6px" alignItems="center">
-              <Box w={{ base: "28px", sm: "40px" }} h={{ base: "28px", sm: "40px" }}>
-                <Image src={assets[chain.name as keyof typeof assets]} alt={chain.name} />
-              </Box>
-              <Text
-                color="#1A1D22"
-                textTransform="uppercase"
-                fontSize={{ base: "16px", sm: "22px" }}
-              >
-                {chain.name}
-              </Text>
-            </Flex>
-          </Link>
-        ))}
+        <Flex
+          wrap="wrap"
+          justifyContent="center"
+          columnGap={{ base: "20px", sm: "40px" }}
+          rowGap={{ base: "15px, sm: 20px" }}
+          maxW="510px"
+        >
+          {chains.map((chain) => (
+            <Link href={chain.href} key={chain.name} target="_blank">
+              <Flex gap="6px" alignItems="center">
+                <Box w={{ base: "28px", sm: "40px" }} h={{ base: "28px", sm: "40px" }}>
+                  <Image src={assets[chain.name as keyof typeof assets]} alt={chain.name} />
+                </Box>
+                <Text
+                  color="#1A1D22"
+                  textTransform="uppercase"
+                  fontSize={{ base: "16px", sm: "22px" }}
+                >
+                  {chain.name}
+                </Text>
+              </Flex>
+            </Link>
+          ))}
+        </Flex>
       </Flex>
     </Flex>
   );
