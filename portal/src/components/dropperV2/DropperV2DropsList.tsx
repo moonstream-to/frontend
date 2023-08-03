@@ -36,7 +36,7 @@ const DropperV2DropsList = ({
   const web3ctx = useContext(Web3Context);
   const [statusFilter, setStatusFilter] = useState("All");
 
-  const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress });
+  // const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress });
 
   const dropsList = useQuery(
     ["dropsList", contractAddress, chainId, queryDropId],

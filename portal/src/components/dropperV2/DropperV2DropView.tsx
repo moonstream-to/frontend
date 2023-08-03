@@ -41,13 +41,13 @@ const DropperV2DropView = ({
   const web3ctx = useContext(Web3Context);
   const { addRecentAddress } = useRecentAddresses("dropper");
 
-  const { adminClaims } = useDrops({
-    dropperAddress: address,
-    ctx: web3ctx,
-  });
+  // const { adminClaims } = useDrops({
+  //   dropperAddress: address,
+  //   ctx: web3ctx,
+  // });
 
   useEffect(() => {
-    adminClaims.refetch();
+    // adminClaims.refetch();
     setIsEdit(false);
   }, [address, web3ctx.account]);
 

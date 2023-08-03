@@ -1,5 +1,6 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { useMutation, useQuery } from "react-query";
+// import http from "../../utils/http";
 import http from "../../utils/httpMoonstream";
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
@@ -9,12 +10,22 @@ const DropperV2ClaimsView = () => {
     return http({
       method: "GET",
       url: `https://engineapi.moonstream.to/metatx/contracts`,
+      // params: {
+      //   blockchain: "80001",
+      //   address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43867",
+      //   contract_type: "dropper-v0.2.0",
+      //   offset: 0,
+      //   limit: 10,
+      // },
     }).then((res) => res.data);
   };
 
   const contractsQuery = useQuery(["metatxContracts"], getContracts, {
     onSuccess: (data) => {
       console.log(data);
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
 
@@ -24,7 +35,7 @@ const DropperV2ClaimsView = () => {
       url: "https://engineapi.moonstream.to/metatx/contracts",
       data: {
         blockchain: "80001",
-        address: "0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041",
+        address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43867",
         contract_type: "dropper-v0.2.0",
       },
     });
