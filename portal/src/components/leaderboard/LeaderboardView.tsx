@@ -331,6 +331,7 @@ const LeaderboardView = () => {
             onOffsetChange={setOffset}
             onPageSizeChange={setLimit}
             count={leadersLength.data}
+            isFetching={leaders.isFetching}
           />
         )}
       </Flex>

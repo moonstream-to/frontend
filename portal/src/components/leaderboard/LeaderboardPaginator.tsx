@@ -1,13 +1,19 @@
-import { Flex, Text, Select } from "@chakra-ui/react";
+import { Flex, Text, Select, Spinner, Box } from "@chakra-ui/react";
 import { useState } from "react";
 
 type props = {
   onPageSizeChange: (arg0: number) => void;
   onOffsetChange: (arg0: number) => void;
   count: number;
+  isFetching: boolean;
 };
 
-const LeaderboardPaginator: React.FC<props> = ({ onPageSizeChange, onOffsetChange, count }) => {
+const LeaderboardPaginator: React.FC<props> = ({
+  onPageSizeChange,
+  onOffsetChange,
+  count,
+  isFetching,
+}) => {
   const _pageOptions = ["10", "25", "50", "500"];
   const [pageSize, setPageSize] = useState(Number(_pageOptions[0]));
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,7 +94,7 @@ const LeaderboardPaginator: React.FC<props> = ({ onPageSizeChange, onOffsetChang
           {_pageOptions.map((pageSize: string) => {
             return (
               <option
-                style={{ color: "white", backgroundColor: "#383838" }}
+                style={{ color: "white", backgroundColor: "#2D2d2d" }}
                 key={`paginator-options-pagesize-${pageSize}`}
                 value={pageSize}
               >
@@ -99,6 +105,7 @@ const LeaderboardPaginator: React.FC<props> = ({ onPageSizeChange, onOffsetChang
         </Select>
         <Text>per page</Text>
       </Flex>
+      {isFetching ? <Spinner h="20px" w="20px" color="#999999" /> : <Box h="20px" w="20px" />}
     </Flex>
   );
 };
