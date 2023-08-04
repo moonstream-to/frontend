@@ -87,7 +87,11 @@ const LeaderboardPaginator: React.FC<props> = ({ onPageSizeChange, onOffsetChang
         >
           {_pageOptions.map((pageSize: string) => {
             return (
-              <option key={`paginator-options-pagesize-${pageSize}`} value={pageSize}>
+              <option
+                style={{ color: "white", backgroundColor: "#383838" }}
+                key={`paginator-options-pagesize-${pageSize}`}
+                value={pageSize}
+              >
                 {pageSize}
               </option>
             );
