@@ -142,7 +142,7 @@ const DropperV2View = () => {
         {contractAddress && (
           <>
             <DropperV2ContractView address={contractAddress} addRecentAddress={addRecentAddress} />
-            <Flex gap="40px" maxH="700px">
+            <Flex gap="40px">
               {contractState.data && (
                 <DropperV2DropsListView
                   contractAddress={contractAddress}

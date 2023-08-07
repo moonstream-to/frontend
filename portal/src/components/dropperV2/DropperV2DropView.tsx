@@ -152,7 +152,6 @@ const DropperV2DropView = ({
         isEdit={isEdit}
         toggleEdit={() => setIsEdit(!isEdit)}
       />
-      <DropperV2ClaimsView />
 
       {!!dropState.data && (
         <>
@@ -161,7 +160,7 @@ const DropperV2DropView = ({
               {metadata.name}
             </Text>
           )}
-          <Flex direction="column" gap="20px" overflowY="auto" id="claim-content">
+          <Flex direction="column" gap="20px" id="claim-content">
             <Flex gap="20px">
               {metadata?.image && (
                 <Image
@@ -205,6 +204,8 @@ const DropperV2DropView = ({
           </Flex>
         </>
       )}
+      <DropperV2ClaimsView address={address} />
+
       {dropState.isLoading && (
         <Flex alignItems="center" justifyContent="center" h="100%">
           <Spinner h="50px" w="50px" />
