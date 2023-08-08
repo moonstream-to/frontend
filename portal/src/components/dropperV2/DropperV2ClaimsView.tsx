@@ -6,10 +6,9 @@ import {
   GridItem,
   IconButton,
   Input,
-  InputGroup,
-  InputRightElement,
   Spinner,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -17,6 +16,7 @@ import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 // import http from "../../utils/http";
 import http from "../../utils/httpMoonstream";
+import DropperV2ClaimantsUpload from "./DropperV2ClaimantsUpload";
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
@@ -29,6 +29,12 @@ const DropperV2ClaimsView = ({
 }) => {
   const [searchAddress, setSearchAddress] = useState("");
   const [requestsFound, setRequestsFound] = useState([]);
+
+  const {
+    onToggle: onToggleUpload,
+    isOpen: isOpenUpload,
+    onClose: onCloseUpload,
+  } = useDisclosure();
 
   const [searchResult, setSearchResult] = useState<{
     result?: string | undefined;
@@ -55,7 +61,10 @@ const DropperV2ClaimsView = ({
         if (!res.data?.length) {
           throw new Error("Not found");
         }
-        const amount = res.data.reduce((acc: number, req: any) => acc + req.parameters.amount, 0);
+        const amount = res.data.reduce(
+          (acc: number, req: any) => acc + Number(req.parameters.amount),
+          0,
+        );
         setSearchResult({
           result: `${amount} token in ${res.data.length} request${
             res.data.length > 1 ? "s" : ""
@@ -94,31 +103,19 @@ const DropperV2ClaimsView = ({
     }
   };
 
-  const createRequests = () => {
-    const parameters = {
-      dropId: 1,
-      requestID: 1,
-      blockDeadline: "12312312312312313",
-      amount: 5,
-      signer: "0x9ed191DB1829371F116Deb9748c26B49467a592A",
-      signature:
-        "c4dc06dd59a1c4d315cfd449a5ba8a7cf52895608227674ef83703bc1a31369747c85d20b158ce53f58642e15551a8f9d3a435cdbfa68a51b0a3f3e43d6d26bb1c",
-    };
-    // console.log(parameters);
+  const createRequests = ({ specifications }: { specifications: any[] }) => {
     return http({
       method: "POST",
       url: "https://engineapi.moonstream.to/metatx/requests",
       data: {
         contract_address: address,
         ttl_days: 1,
-        specifications: [
-          { caller: "0x605825459E3e98565827Af31DF4cA854A7cCED28", method: "claim", parameters },
-        ],
+        specifications,
       },
     });
   };
 
-  const addClaimant = useMutation(createRequests, {
+  const addClaimants = useMutation(createRequests, {
     onSuccess: (data) => {
       console.log(data);
     },
@@ -197,15 +194,16 @@ const DropperV2ClaimsView = ({
           ))}
         </Grid>
       )}
+      <DropperV2ClaimantsUpload contractAddress={address} />
 
-      <Button
+      {/* <Button
         placeSelf="end"
         onClick={() => addClaimant.mutate()}
         variant="transparent"
         border="1px solid white"
       >
         Add
-      </Button>
+      </Button> */}
     </Flex>
   );
 };
