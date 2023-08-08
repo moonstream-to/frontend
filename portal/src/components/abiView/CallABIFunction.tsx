@@ -1,6 +1,8 @@
 import { CloseIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
+  Collapse,
   Flex,
   Input,
   Modal,
@@ -15,7 +17,6 @@ import { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
-import EditRow from "../dropper/EditRow";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
@@ -44,14 +45,9 @@ const CallABIFunction = ({
     ["callWeb3", abi, name, inputs],
     async () => {
       if (name && contractAddress) {
-        const contract = new web3ctx.web3.eth.Contract(
-          abi,
-          contractAddress,
-          // "0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041",
-        );
+        const contract = new web3ctx.web3.eth.Contract(abi, contractAddress);
         const fn = contract.methods[name];
         return fn(...values).call();
-        // console.log(res);
       } else {
         return new Promise((_, rej) => {
           rej(new Error("no function or contract address"));
@@ -70,11 +66,7 @@ const CallABIFunction = ({
 
   const send = () => {
     if (name && contractAddress) {
-      const contract = new web3ctx.web3.eth.Contract(
-        abi,
-        contractAddress,
-        // "0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041",
-      );
+      const contract = new web3ctx.web3.eth.Contract(abi, contractAddress);
       const fn = contract.methods[name];
       return fn(...values).send({ from: web3ctx.account });
     }
@@ -82,7 +74,6 @@ const CallABIFunction = ({
 
   const sendMutation = useMutation(send, {
     onSuccess: () => {
-      console.log("success");
       setTimeout(() => {
         sendMutation.reset();
       }, 5000);
@@ -110,7 +101,7 @@ const CallABIFunction = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent
         bg="#202329"
-        borderRadius="15px"
+        borderRadius="0px"
         minW="fit-content"
         p="20px"
         border="1px solid #CCCCCC"
@@ -124,13 +115,18 @@ const CallABIFunction = ({
         <ModalBody w="fit-content" px="20px">
           <Flex direction="column" gap="10px" w="100%" bg="#202329" alignItems="center">
             <Flex gap="10px" alignItems="center" justifyContent="space-between" w="100%" mb="30px">
-              <Text variant="label">On contract: </Text>
+              <Text variant="label" color="#CCCCCC">
+                On contract:{" "}
+              </Text>
               <Input
                 variant="address"
-                fontSize="18px"
+                fontSize="16px"
+                w="50ch"
                 value={contractAddress}
                 spellCheck={false}
-                borderColor="#CCCCCC"
+                borderColor="#555555"
+                color="#CCCCCC"
+                borderRadius="0"
                 onChange={(e) => {
                   setContractAddress(e.target.value);
                 }}
@@ -158,9 +154,10 @@ const CallABIFunction = ({
                         newValues[idx] = e.target.value;
                         setValues(newValues);
                       }}
-                      borderColor="#CCCCCC"
+                      borderColor="#555555"
+                      borderRadius="0"
+                      color="#CCCCCC"
                     />
-                    {/* <Text>({input.type})</Text> */}
                   </Flex>
                 ))}
               </Flex>
@@ -178,6 +175,7 @@ const CallABIFunction = ({
                 w="150px"
                 placeSelf="end"
                 onClick={handleClick}
+                borderRadius="0"
               >
                 {callQuery.isLoading || callQuery.isFetching || sendMutation.isLoading ? (
                   <Spinner />
@@ -188,10 +186,12 @@ const CallABIFunction = ({
                 )}
               </Button>
             </Flex>
-            {/* {callQuery.data && <Text>{JSON.stringify(callQuery.data, null, "\t")}</Text>} */}
-
-            {callQuery.isError && <Text>{JSON.stringify(callQuery.error, null, "\t")}</Text>}
-            {(callQuery.data || callQuery.data === false) && (
+            {callQuery.isError && (
+              <Text color="error.500" mt="20px">
+                {JSON.stringify(callQuery.error.reason, null, "\t")}
+              </Text>
+            )}
+            <Box as={Collapse} in={callQuery.data || callQuery.data === false} w="100%">
               <JSONEdit
                 json={JSON.stringify(callQuery.data, null, "\t")}
                 readOnly
@@ -205,7 +205,7 @@ const CallABIFunction = ({
                 }}
                 placeholder=""
               />
-            )}
+            </Box>
           </Flex>
         </ModalBody>
       </ModalContent>
