@@ -4,11 +4,14 @@ import {
   Button,
   Checkbox,
   Flex,
+  FormControl,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalOverlay,
+  Switch,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -66,10 +69,17 @@ const DropperV2DropsListView = ({
         borderRadius="10px"
         p="8px 15px"
       />
-      <Flex gap="15px" mb="-20px">
-        <Text>admin only</Text>
-        <Checkbox isChecked={adminOnly} onChange={(e) => setAdminOnly(e.target.checked)} />
-      </Flex>
+      <FormControl display="flex" alignItems="center">
+        <FormLabel htmlFor="email-alerts" mb="0">
+          managable only
+        </FormLabel>
+        <Switch
+          sx={{ "span.chakra-switch__track:not([data-checked])": { backgroundColor: "#666666" } }}
+          isChecked={adminOnly}
+          onChange={(e) => setAdminOnly(e.target.checked)}
+          colorScheme="green"
+        />
+      </FormControl>
 
       <DropperV2DropsList
         contractAddress={contractAddress}
