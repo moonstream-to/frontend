@@ -40,10 +40,6 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
     <>
       {dropState.data?.drop && (
         <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
-          <PoolDetailsRow
-            type="Drop status"
-            value={dropState.data.active ? "active" : "inactive"}
-          />
           <Text fontSize="18px" fontWeight="700" mt="10px">
             Token
           </Text>

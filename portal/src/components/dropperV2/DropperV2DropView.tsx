@@ -153,15 +153,18 @@ const DropperV2DropView = ({
         PORTAL_PATH={PORTAL_PATH}
         isEdit={isEdit}
         toggleEdit={() => setIsEdit(!isEdit)}
+        title={metadata?.name}
+        status={
+          dropState.data?.active === true
+            ? true
+            : dropState.data?.active === false
+            ? false
+            : undefined
+        }
       />
 
       {!!dropState.data && (
         <>
-          {metadata?.name && (
-            <Text fontWeight="700" fontSize="24px" mb="20px">
-              {metadata.name}
-            </Text>
-          )}
           <Flex direction="column" gap="20px" id="claim-content">
             <Flex gap="20px">
               {metadata?.image && (
@@ -182,12 +185,7 @@ const DropperV2DropView = ({
             </Flex>
             {dropState && isEdit && (
               <Flex direction="column" gap="20px" mb="20px">
-                <DropperV2EditDrop
-                  address={address}
-                  dropId={claimId}
-                  // active={dropState.active}
-                  dropState={dropState.data}
-                />
+                <DropperV2EditDrop address={address} dropId={claimId} dropState={dropState.data} />
                 <Button alignSelf="end" variant="cancelButton" onClick={() => setIsEdit(false)}>
                   Cancel
                 </Button>
@@ -197,7 +195,6 @@ const DropperV2DropView = ({
               <DropV2Data
                 metadata={metadata}
                 dropState={dropState}
-                // dropState={dropState}
                 excludeFields={headerMeta}
                 PORTAL_PATH={PORTAL_PATH}
               />
