@@ -27,9 +27,11 @@ const DropperV2DropView = ({
   address,
   claimId,
   metadata,
+  isContractRegistered,
 }: {
   address: string;
   claimId: string;
+  isContractRegistered: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: any;
 }) => {
@@ -204,7 +206,7 @@ const DropperV2DropView = ({
           </Flex>
         </>
       )}
-      <DropperV2ClaimsView address={address} />
+      <DropperV2ClaimsView address={address} isContractRegistered={isContractRegistered} />
 
       {dropState.isLoading && (
         <Flex alignItems="center" justifyContent="center" h="100%">

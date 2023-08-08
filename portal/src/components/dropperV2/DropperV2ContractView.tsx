@@ -9,7 +9,9 @@ import Web3Context from "../../contexts/Web3Context/context";
 
 import { supportedChains } from "../../types";
 import { chains } from "../../contexts/Web3Context";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import http from "../../utils/httpMoonstream";
+import { Button } from "@chakra-ui/react";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
 const CONNECTION_ERRORS: WalletStatesInterface = {
@@ -33,9 +35,13 @@ export interface WalletStatesInterface {
 const DropperV2ContractView = ({
   address,
   addRecentAddress,
+  isContractRegistered,
+  setIsContractRegistered,
 }: {
   address: string;
   addRecentAddress: (address: string, fields: Record<string, string>) => void;
+  isContractRegistered: boolean;
+  setIsContractRegistered: (arg0: boolean) => void;
 }) => {
   const web3ctx = useContext(Web3Context);
   // const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address });
@@ -57,12 +63,12 @@ const DropperV2ContractView = ({
     const numClaims = await dropper.methods.numDrops().call();
     // const owner = await dropper.methods.owner().call();
     // const paused = await dropper.methods.dropStatus().call();
-    console.log(numClaims);
+    // console.log(numClaims);
     const dropperVersion = await dropper.methods.dropperVersion().call();
-    // const admin = await dropper.methods.adminTerminusInfo().call();
-    // console.log(admin);
+    const admin = await dropper.methods.adminTerminusInfo().call();
+    console.log(admin);
 
-    return { ERC20_TYPE, ERC721_TYPE, ERC1155_TYPE, numClaims, dropperVersion };
+    return { ERC20_TYPE, ERC721_TYPE, ERC1155_TYPE, numClaims, dropperVersion, admin };
   };
 
   const contractState = useQuery(
@@ -96,6 +102,44 @@ const DropperV2ContractView = ({
       return chains[key as any as supportedChains].chainId == _chainId;
     });
   };
+
+  const getContracts = () => {
+    return http({
+      method: "GET",
+      url: `https://engineapi.moonstream.to/metatx/contracts`,
+    }).then((res) => res.data);
+  };
+
+  const contractsQuery = useQuery(["metatxContracts"], getContracts, {
+    onSuccess: (data) => {
+      setIsContractRegistered(
+        data.some((contract: { address: string }) => contract.address === address),
+      );
+      console.log(data);
+    },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
+
+  const registerContract = () => {
+    return http({
+      method: "POST",
+      url: "https://engineapi.moonstream.to/metatx/contracts",
+      data: {
+        blockchain: "mumbai",
+        address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43870",
+        contract_type: "dropper-v0.2.0",
+        title: "Test",
+      },
+    });
+  };
+
+  const addContract = useMutation(registerContract, {
+    onSuccess: () => {
+      contractsQuery.refetch();
+    },
+  });
 
   useEffect(() => {
     if (
@@ -136,9 +180,19 @@ const DropperV2ContractView = ({
                 value={`${contractState.data.dropperVersion["0"]} v${contractState.data.dropperVersion["1"]}`}
               />
               <PoolDetailsRow type={"Number of drops"} value={contractState.data.numClaims} />
+              <PoolDetailsRow
+                type={"Admin terminus address"}
+                value={contractState.data.admin.terminusAddress}
+                canBeCopied
+                displayFull
+              />
+              {/*TODO add links to terminus */}
+              <PoolDetailsRow
+                type={"Admin terminus pool"}
+                value={contractState.data.admin.poolId}
+              />
             </Flex>
           )}
-          {/* {contractState.data?.admin && <Text></Text>} */}
           {(contractState.isError || connectionStatus !== CONNECTION_ERRORS.CONNECTED) &&
             !contractState.isLoading &&
             !contractState.data && (
@@ -150,6 +204,27 @@ const DropperV2ContractView = ({
             )}
           {contractState.isLoading && <Spinner />}
         </Flex>
+        {!isContractRegistered ? (
+          <Flex gap="20px" placeSelf="end" position="relative">
+            <Button
+              variant="transparent"
+              fontWeight="400"
+              fontSize="18px"
+              border="1px solid white"
+              onClick={() => addContract.mutate()}
+              color={addContract.isLoading ? "#2d2d2d" : "white"}
+            >
+              Register contract
+            </Button>
+            {addContract.isLoading && (
+              <Spinner position="absolute" left="50%" top="10px" zIndex="2" h="20px" w="20px" />
+            )}
+          </Flex>
+        ) : (
+          <Flex direction="column" px={5} alignItems="end">
+            <Text>Contract is registered</Text>
+          </Flex>
+        )}
       </Flex>
     </>
   );

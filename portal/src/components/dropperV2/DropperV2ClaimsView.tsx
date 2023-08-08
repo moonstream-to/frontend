@@ -17,22 +17,28 @@ import http from "../../utils/httpMoonstream";
 
 const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
-const DropperV2ClaimsView = ({ address }: { address: string }) => {
+const DropperV2ClaimsView = ({
+  address,
+  isContractRegistered,
+}: {
+  address: string;
+  isContractRegistered: boolean;
+}) => {
   const [searchAddress, setSearchAddress] = useState("");
 
-  const getContracts = () => {
-    return http({
-      method: "GET",
-      url: `https://engineapi.moonstream.to/metatx/contracts`,
-      // params: {
-      //   blockchain: "80001",
-      //   address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43867",
-      //   contract_type: "dropper-v0.2.0",
-      //   offset: 0,
-      //   limit: 10,
-      // },
-    }).then((res) => res.data);
-  };
+  // const getContracts = () => {
+  //   return http({
+  //     method: "GET",
+  //     url: `https://engineapi.moonstream.to/metatx/contracts`,
+  //     // params: {
+  //     //   blockchain: "80001",
+  //     //   address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43867",
+  //     //   contract_type: "dropper-v0.2.0",
+  //     //   offset: 0,
+  //     //   limit: 10,
+  //     // },
+  //   }).then((res) => res.data);
+  // };
 
   const [searchResult, setSearchResult] = useState<{
     result?: string | undefined;
@@ -81,33 +87,33 @@ const DropperV2ClaimsView = ({ address }: { address: string }) => {
     }
   };
 
-  const contractsQuery = useQuery(["metatxContracts"], getContracts, {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (e) => {
-      console.log(e);
-    },
-  });
+  // const contractsQuery = useQuery(["metatxContracts"], getContracts, {
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  //   onError: (e) => {
+  //     console.log(e);
+  //   },
+  // });
 
-  const registerContract = () => {
-    return http({
-      method: "POST",
-      url: "https://engineapi.moonstream.to/metatx/contracts",
-      data: {
-        blockchain: "mumbai",
-        address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43869",
-        contract_type: "dropper-v0.2.0",
-        title: "Test",
-      },
-    });
-  };
+  // const registerContract = () => {
+  //   return http({
+  //     method: "POST",
+  //     url: "https://engineapi.moonstream.to/metatx/contracts",
+  //     data: {
+  //       blockchain: "mumbai",
+  //       address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43869",
+  //       contract_type: "dropper-v0.2.0",
+  //       title: "Test",
+  //     },
+  //   });
+  // };
 
-  const addContract = useMutation(registerContract, {
-    onSuccess: () => {
-      contractsQuery.refetch();
-    },
-  });
+  // const addContract = useMutation(registerContract, {
+  //   onSuccess: () => {
+  //     contractsQuery.refetch();
+  //   },
+  // });
 
   const createRequests = () => {
     const parameters = {
@@ -119,7 +125,7 @@ const DropperV2ClaimsView = ({ address }: { address: string }) => {
       signature:
         "c4dc06dd59a1c4d315cfd449a5ba8a7cf52895608227674ef83703bc1a31369747c85d20b158ce53f58642e15551a8f9d3a435cdbfa68a51b0a3f3e43d6d26bb1c",
     };
-    console.log(parameters);
+    // console.log(parameters);
     return http({
       method: "POST",
       url: "https://engineapi.moonstream.to/metatx/requests",
@@ -139,56 +145,42 @@ const DropperV2ClaimsView = ({ address }: { address: string }) => {
     },
   });
 
-  if (!contractsQuery.data) {
+  if (!isContractRegistered) {
     return <></>;
   }
 
   return (
     <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323" mt="20px">
-      {!contractsQuery.data.some(
-        (contract: { address: string }) => contract.address === address,
-      ) ? (
-        <Flex gap="20px">
-          <Text>Contract is not registered</Text>
-          <Button variant="whiteOutline" onClick={() => addContract.mutate()}>
-            Add contract
-          </Button>
-        </Flex>
-      ) : (
-        <Flex direction="column" gap="20px">
-          <Text>Contract is registered</Text>
-          <Flex justifyContent="start" alignItems="center">
-            <Input
-              value={searchAddress}
-              onChange={(e) => setSearchAddress(e.target.value)}
-              placeholder="search for address"
-              borderRadius="10px"
-              p="8px 15px"
-            />
+      <Flex justifyContent="start" alignItems="center">
+        <Input
+          value={searchAddress}
+          onChange={(e) => setSearchAddress(e.target.value)}
+          placeholder="search for address"
+          borderRadius="10px"
+          p="8px 15px"
+        />
 
-            <IconButton
-              icon={<SmallCloseIcon />}
-              _hover={{ color: "#ffccd4" }}
-              bg="transparent"
-              aria-label="clean"
-              onClick={() => setSearchAddress("")}
-              m="0"
-              minW="20px"
-              pl="10px"
-            />
-            <IconButton
-              _hover={{ color: "#ffccd4" }}
-              bg="transparent"
-              aria-label="search"
-              icon={<SearchIcon />}
-              minW="20px"
-              onClick={() => handleSearchClick()}
-              pl="10px"
-            />
-          </Flex>
-          <Button onClick={() => addClaimant.mutate()}>Add</Button>
-        </Flex>
-      )}
+        <IconButton
+          icon={<SmallCloseIcon />}
+          _hover={{ color: "#ffccd4" }}
+          bg="transparent"
+          aria-label="clean"
+          onClick={() => setSearchAddress("")}
+          m="0"
+          minW="20px"
+          pl="10px"
+        />
+        <IconButton
+          _hover={{ color: "#ffccd4" }}
+          bg="transparent"
+          aria-label="search"
+          icon={<SearchIcon />}
+          minW="20px"
+          onClick={() => handleSearchClick()}
+          pl="10px"
+        />
+      </Flex>
+      <Button onClick={() => addClaimant.mutate()}>Add</Button>
     </Flex>
   );
 };

@@ -25,6 +25,8 @@ const DropperV2View = () => {
   const [selected, setSelected] = useState(-1);
   const [claimMetadata, setClaimMetadata] = useState<unknown>({});
 
+  const [isContractRegistered, setIsContractRegistered] = useState(false);
+
   const handleClick = (claimId: string, metadata: unknown) => {
     setSelected(Number(claimId));
     setClaimMetadata(metadata);
@@ -141,7 +143,12 @@ const DropperV2View = () => {
         </Flex>
         {contractAddress && (
           <>
-            <DropperV2ContractView address={contractAddress} addRecentAddress={addRecentAddress} />
+            <DropperV2ContractView
+              address={contractAddress}
+              addRecentAddress={addRecentAddress}
+              isContractRegistered={isContractRegistered}
+              setIsContractRegistered={setIsContractRegistered}
+            />
             <Flex gap="40px">
               {contractState.data && (
                 <DropperV2DropsListView
@@ -157,6 +164,7 @@ const DropperV2View = () => {
                   address={contractAddress}
                   claimId={String(selected)}
                   metadata={claimMetadata}
+                  isContractRegistered={isContractRegistered}
                 />
               )}
             </Flex>
@@ -172,7 +180,7 @@ const DropperV2View = () => {
                 chainId={Number(chainId)}
                 name={name}
                 image={image}
-                type="dropper"
+                type="dropperV2"
               />
             ))}
           </Flex>
