@@ -14,9 +14,7 @@ import {
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { useContext, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
 import Web3Context from "../../contexts/Web3Context/context";
-import queryCacheProps from "../../hooks/hookCommon";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
@@ -27,6 +25,7 @@ const CallABIFunction = ({
   inputs,
   abi,
   stateMutability,
+  contractAddress,
 }: {
   name?: string;
   inputs?: any[];
@@ -34,54 +33,42 @@ const CallABIFunction = ({
   onClose: () => void;
   abi: any;
   stateMutability: string;
+  contractAddress?: string;
 }) => {
   const web3ctx = useContext(Web3Context);
   const [values, setValues] = useState<string[]>([]);
-  const [contractAddress, setContractAddress] = useState(
-    "0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041",
-  );
+  const [callOnAddress, setCallOnAddress] = useState("0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const callQuery = useQuery(
-    ["callWeb3", abi, name, inputs],
-    async () => {
-      if (name && contractAddress) {
-        const contract = new web3ctx.web3.eth.Contract(abi, contractAddress);
+  const [result, setResult] = useState<any>(undefined);
+  const [error, setError] = useState<any | undefined>(undefined);
+  const [highlightRequired, setHighlightRequired] = useState(false);
+
+  const callFunction = async (address: string, abi: any, name: string, values: any) => {
+    if (name && address && web3ctx.web3.utils.isAddress(address)) {
+      setIsLoading(true);
+      setResult(undefined);
+      try {
+        const contract = new web3ctx.web3.eth.Contract(abi, address);
         const fn = contract.methods[name];
-        return fn(...values).call();
-      } else {
-        return new Promise((_, rej) => {
-          rej(new Error("no function or contract address"));
-        });
-      }
-    },
-    {
-      ...queryCacheProps,
-      onError: (e: any) => {
-        console.log(e);
-      },
-      enabled: false,
-      keepPreviousData: false,
-    },
-  );
+        const res =
+          stateMutability === "view"
+            ? await fn(...values).call()
+            : await fn(...values).send({ from: web3ctx.account });
 
-  const send = () => {
-    if (name && contractAddress) {
-      const contract = new web3ctx.web3.eth.Contract(abi, contractAddress);
-      const fn = contract.methods[name];
-      return fn(...values).send({ from: web3ctx.account });
+        setResult(res);
+        setError(undefined);
+      } catch (e: any) {
+        setError({ message: e.message, error: e });
+        console.log(JSON.stringify(e, null, "\t"), e.message);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setHighlightRequired(true);
+      // setError("no contract address");
     }
   };
-
-  const sendMutation = useMutation(send, {
-    onSuccess: () => {
-      setTimeout(() => {
-        sendMutation.reset();
-      }, 5000);
-    },
-    onError: (e) => {
-      console.log(e);
-    },
-  });
 
   useEffect(() => {
     if (inputs) {
@@ -90,12 +77,17 @@ const CallABIFunction = ({
   }, [inputs]);
 
   const handleClick = async () => {
-    if (stateMutability === "view") {
-      callQuery.refetch();
-    } else {
-      sendMutation.mutate();
-    }
+    callFunction(callOnAddress, abi, name ?? "", values);
   };
+
+  useEffect(() => {
+    setResult(undefined);
+    setError("");
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (contractAddress !== undefined) setCallOnAddress(contractAddress);
+  }, [contractAddress, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -122,13 +114,18 @@ const CallABIFunction = ({
                 variant="address"
                 fontSize="16px"
                 w="50ch"
-                value={contractAddress}
+                value={callOnAddress}
                 spellCheck={false}
-                borderColor="#555555"
+                borderColor={
+                  highlightRequired && !web3ctx.web3.utils.isAddress(callOnAddress)
+                    ? "error.500"
+                    : "#555555"
+                }
                 color="#CCCCCC"
                 borderRadius="0"
                 onChange={(e) => {
-                  setContractAddress(e.target.value);
+                  setCallOnAddress(e.target.value);
+                  setHighlightRequired(false);
                 }}
               />
             </Flex>
@@ -163,11 +160,6 @@ const CallABIFunction = ({
               </Flex>
             )}
             <Flex gap="35px" mt="20px" placeSelf="end" alignItems="end">
-              {sendMutation.isSuccess && (
-                <Text color="#338c6e" fontWeight="700">
-                  success
-                </Text>
-              )}
               <Button
                 border="1px solid #cc0780"
                 bg="transparent"
@@ -177,23 +169,15 @@ const CallABIFunction = ({
                 onClick={handleClick}
                 borderRadius="0"
               >
-                {callQuery.isLoading || callQuery.isFetching || sendMutation.isLoading ? (
-                  <Spinner />
-                ) : stateMutability === "view" ? (
-                  ".call"
-                ) : (
-                  ".send"
-                )}
+                {isLoading ? <Spinner /> : stateMutability === "view" ? ".call" : ".send"}
               </Button>
             </Flex>
-            {callQuery.isError && (
-              <Text color="error.500" mt="20px">
-                {JSON.stringify(callQuery.error.reason, null, "\t")}
-              </Text>
-            )}
-            <Box as={Collapse} in={callQuery.data || callQuery.data === false} w="100%">
+            {!!error && <Text color="error.500">Error</Text>}
+            <Box as={Collapse} in={result !== undefined || !!error || isLoading} w="100%">
               <JSONEdit
-                json={JSON.stringify(callQuery.data, null, "\t")}
+                json={
+                  error ? JSON.stringify(error, null, "\t") : JSON.stringify(result, null, "\t")
+                }
                 readOnly
                 style={{
                   border: "1px solid #cccccc",

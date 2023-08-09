@@ -1,6 +1,7 @@
 import { Flex, Input, InputGroup, InputRightElement, Text, useDisclosure } from "@chakra-ui/react";
 import React, { useMemo, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import Web3 from "web3";
 import CallABIFunction from "./CallABIFunction";
 
 const colorScheme = {
@@ -8,6 +9,8 @@ const colorScheme = {
   param: "#fab56b",
   type: "#97e1f1",
 };
+
+const web3 = new Web3();
 
 const getType = (token: any) => {
   if (token.type != "tuple") return <span style={{ color: "#97e1f1" }}>{token.type}</span>;
@@ -136,6 +139,7 @@ const ABIViewRightPanel = ({
         name={fnToCall?.name}
         inputs={fnToCall?.inputs}
         abi={abiObject}
+        contractAddress={web3.utils.isAddress(src) ? src : ""}
         stateMutability={fnToCall?.stateMutability ?? ""}
       />
       <Flex
