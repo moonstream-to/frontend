@@ -206,6 +206,7 @@ const CallABIFunction = ({
                 onClick={handleClick}
                 borderRadius="0"
                 color="#EEEEEE"
+                isDisabled={isLoading}
               >
                 {isLoading ? <Spinner /> : stateMutability === "view" ? ".call" : ".send"}
               </Button>
