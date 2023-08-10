@@ -1,11 +1,11 @@
 import { SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
-  Button,
   Flex,
   Grid,
   GridItem,
   IconButton,
   Input,
+  Link,
   Spinner,
   Text,
   useDisclosure,
@@ -195,15 +195,15 @@ const DropperV2ClaimsView = ({
         </Grid>
       )}
       <DropperV2ClaimantsUpload contractAddress={address} />
-
-      {/* <Button
-        placeSelf="end"
-        onClick={() => addClaimant.mutate()}
-        variant="transparent"
-        border="1px solid white"
+      <Link
+        mt="-10px"
+        textDecoration="underline"
+        placeSelf="start"
+        href="https://github.com/moonstream-to/waggle"
+        isExternal
       >
-        Add
-      </Button> */}
+        Tool you can create this file with
+      </Link>
     </Flex>
   );
 };
