@@ -11,7 +11,15 @@ import { supportedChains } from "../../types";
 import { chains } from "../../contexts/Web3Context";
 import { useMutation, useQuery } from "react-query";
 import http from "../../utils/httpMoonstream";
-import { Button } from "@chakra-ui/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
+import DropperV2RegisterContract from "./DropperV2RegisterContractForm";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
 const CONNECTION_ERRORS: WalletStatesInterface = {
@@ -43,6 +51,7 @@ const DropperV2ContractView = ({
   isContractRegistered: boolean;
   setIsContractRegistered: (arg0: boolean) => void;
 }) => {
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const web3ctx = useContext(Web3Context);
   // const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address });
 
@@ -205,14 +214,27 @@ const DropperV2ContractView = ({
             )}
           {contractState.isLoading && <Spinner />}
         </Flex>
-        {!isContractRegistered ? (
+        {isContractRegistered ? (
           <Flex gap="20px" placeSelf="end" position="relative">
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalBody w="fit-content">
+                  <DropperV2RegisterContract
+                    onClose={onClose}
+                    address={address}
+                    refetch={contractsQuery.refetch}
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
             <Button
               variant="transparent"
               fontWeight="400"
               fontSize="18px"
               border="1px solid white"
-              onClick={() => addContract.mutate()}
+              // onClick={() => addContract.mutate()}
+              onClick={onOpen}
               color={addContract.isLoading ? "#2d2d2d" : "white"}
             >
               Register contract

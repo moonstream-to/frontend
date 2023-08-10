@@ -146,6 +146,7 @@ const DropperV2DropView = ({
       direction="column"
       maxW="800px"
       position="relative"
+      minH="700px"
     >
       <DropHeader
         address={address}
