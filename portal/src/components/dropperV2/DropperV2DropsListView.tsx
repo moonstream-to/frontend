@@ -56,8 +56,13 @@ const DropperV2DropsListView = ({
       gap="30px"
       p="30px"
       w="400px"
-      maxH="700px"
+      // maxH="700px"
+      minH="700px"
       color="white"
+      position="absolute"
+      top="00"
+      bottom="0"
+      zIndex="2"
     >
       <Text fontWeight="700" fontSize="24px">
         drops
