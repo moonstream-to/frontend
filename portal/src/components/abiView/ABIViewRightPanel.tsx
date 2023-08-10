@@ -1,5 +1,5 @@
 import { Flex, Input, InputGroup, InputRightElement, Text, useDisclosure } from "@chakra-ui/react";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Web3 from "web3";
 import CallABIFunction from "./CallABIFunction";
@@ -133,9 +133,16 @@ const ABIViewRightPanel = ({
     outputs: any[],
     stateMutability: string,
   ) => {
+    if (!stateMutability) {
+      return;
+    }
     setFnToCall({ name, inputs, outputs, stateMutability });
     onOpen();
   };
+
+  useEffect(() => {
+    if (types[0]) setFilter(types[0]);
+  }, [abiObject]);
 
   return (
     <Flex bg="#282a36" w="100%" minH="100%" direction="column" overflowY="auto" flex="2">
