@@ -13,8 +13,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Web3Context from "../../contexts/Web3Context/context";
+import ChainSelector from "../ChainSelector";
+import { colorScheme, getType, Outputs } from "./ABIViewRightPanel";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
@@ -23,12 +25,14 @@ const CallABIFunction = ({
   onClose,
   name,
   inputs,
+  outputs,
   abi,
   stateMutability,
   contractAddress,
 }: {
   name?: string;
-  inputs?: any[];
+  inputs: any[];
+  outputs?: any[];
   isOpen: boolean;
   onClose: () => void;
   abi: any;
@@ -38,6 +42,7 @@ const CallABIFunction = ({
   const web3ctx = useContext(Web3Context);
   const [values, setValues] = useState<string[]>([]);
   const [callOnAddress, setCallOnAddress] = useState("0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041");
+  // 0x6FF32C81600Ec625c68b0D687ba3C2681eD43867
   const [isLoading, setIsLoading] = useState(false);
 
   const [result, setResult] = useState<any>(undefined);
@@ -51,22 +56,26 @@ const CallABIFunction = ({
       try {
         const contract = new web3ctx.web3.eth.Contract(abi, address);
         const fn = contract.methods[name];
+        const valuesToSend = values.map((value: string, idx: number) => {
+          if (inputs[idx].type === "bool" && (value === "false" || value === "0")) {
+            return "";
+          }
+          return value;
+        });
         const res =
           stateMutability === "view"
             ? await fn(...values).call()
-            : await fn(...values).send({ from: web3ctx.account });
+            : await fn(...valuesToSend).send({ from: web3ctx.account });
 
         setResult(res);
         setError(undefined);
       } catch (e: any) {
         setError({ message: e.message, error: e });
-        console.log(JSON.stringify(e, null, "\t"), e.message);
       } finally {
         setIsLoading(false);
       }
     } else {
       setHighlightRequired(true);
-      // setError("no contract address");
     }
   };
 
@@ -100,13 +109,20 @@ const CallABIFunction = ({
       >
         <ModalHeader w="100%">
           <Flex justifyContent="space-between" alignItems="center">
-            <Text color="#a188cc">{name}</Text>
+            <Text color={colorScheme.name}>{name}</Text>
             <CloseIcon color="#999999" h="15px" onClick={onClose} cursor="pointer" />
           </Flex>
         </ModalHeader>
         <ModalBody w="fit-content" px="20px">
           <Flex direction="column" gap="10px" w="100%" bg="#202329" alignItems="center">
-            <Flex gap="10px" alignItems="center" justifyContent="space-between" w="100%" mb="30px">
+            <Flex gap="10px" alignItems="center" justifyContent="space-between" w="100%">
+              <Text variant="label" color="#CCCCCC">
+                On chain:{" "}
+              </Text>
+              <ChainSelector color="#CCCCCC" />
+            </Flex>
+
+            <Flex gap="10px" alignItems="center" justifyContent="space-between" w="100%" mb="20px">
               <Text variant="label" color="#CCCCCC">
                 On contract:{" "}
               </Text>
@@ -118,7 +134,7 @@ const CallABIFunction = ({
                 spellCheck={false}
                 borderColor={
                   highlightRequired && !web3ctx.web3.utils.isAddress(callOnAddress)
-                    ? "error.500"
+                    ? "#f06b6a"
                     : "#555555"
                 }
                 color="#CCCCCC"
@@ -132,14 +148,13 @@ const CallABIFunction = ({
             {inputs && !!values.length && (
               <Flex direction="column" gap="10px">
                 {inputs.map((input, idx: number) => (
-                  <Flex
-                    gap="15px"
-                    key={idx}
-                    alignItems="center"
-                    w="100%"
-                    justifyContent="space-between"
-                  >
-                    <Text color="#fab56b">{`${input.name} (${input.type}):`}</Text>
+                  <Flex gap="15px" key={idx} alignItems="center" w="100%" justifyContent="end">
+                    <Flex key={idx}>
+                      <span style={{ color: colorScheme.param }}>{input.name}</span>
+                      {input.name && ":"}
+                      {input.name && <span>&nbsp;</span>}
+                      {getType(input)}
+                    </Flex>
                     <Input
                       w="50ch"
                       fontSize="16px"
@@ -154,25 +169,47 @@ const CallABIFunction = ({
                       borderColor="#555555"
                       borderRadius="0"
                       color="#CCCCCC"
+                      spellCheck="false"
                     />
                   </Flex>
                 ))}
               </Flex>
             )}
-            <Flex gap="35px" mt="20px" placeSelf="end" alignItems="end">
+            <Flex
+              mt="30px"
+              flex="1"
+              gap="20px"
+              w="100%"
+              fontFamily="monospace"
+              alignItems="center"
+              justifyContent="end"
+            >
+              <Text
+                border="0px solid white"
+                textIndent="-14px"
+                ml="14px"
+                w="fit-content"
+                fontSize="16px"
+                maxW="450px"
+                fontWeight="400"
+                fontFamily="monospace"
+                bottom="0px"
+              >
+                {outputs ? " => " : ""}
+                {outputs && <Outputs outputs={outputs} />}
+              </Text>
               <Button
-                border="1px solid #cc0780"
+                border="1px solid #cccccc"
                 bg="transparent"
                 _hover={{ bg: "transparent", fontSize: "15px" }}
                 w="150px"
-                placeSelf="end"
                 onClick={handleClick}
                 borderRadius="0"
+                color="#EEEEEE"
               >
                 {isLoading ? <Spinner /> : stateMutability === "view" ? ".call" : ".send"}
               </Button>
             </Flex>
-            {!!error && <Text color="error.500">Error</Text>}
             <Box as={Collapse} in={result !== undefined || !!error || isLoading} w="100%">
               <JSONEdit
                 json={
