@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
 
 import Web3Context from "../../../src/contexts/Web3Context/context";
@@ -13,6 +13,8 @@ import ContractRow from "../../../src/components/ContractRow";
 import DropperV2ContractView from "./DropperV2ContractView";
 import DropperV2DropView from "./DropperV2DropView";
 import DropperV2DropsListView from "./DropperV2DropsListView";
+import http from "../../utils/httpMoonstream";
+import DropperV2ContractCard from "./DropperV2ContractCard";
 
 const DropperV2View = () => {
   const router = useRouter();
@@ -52,6 +54,22 @@ const DropperV2View = () => {
   }, [contractAddress]);
 
   const { chainId, web3, signAccessToken } = useContext(Web3Context);
+
+  const getContracts = () => {
+    return http({
+      method: "GET",
+      url: `https://engineapi.moonstream.to/metatx/contracts`,
+    }).then((res) => res.data);
+  };
+
+  const contractsQuery = useQuery(["metatxContracts"], getContracts, {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
 
   const queryClient = useQueryClient();
 
@@ -149,15 +167,18 @@ const DropperV2View = () => {
               isContractRegistered={isContractRegistered}
               setIsContractRegistered={setIsContractRegistered}
             />
-            <Flex gap="40px">
+            <Flex gap="40px" position="relative">
               {contractState.data && (
-                <DropperV2DropsListView
-                  contractAddress={contractAddress}
-                  contractState={contractState}
-                  onChange={handleClick}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
+                <>
+                  <DropperV2DropsListView
+                    contractAddress={contractAddress}
+                    contractState={contractState}
+                    onChange={handleClick}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                  <Flex minW="400px" />
+                </>
               )}
               {contractState.data && (
                 <DropperV2DropView
@@ -171,7 +192,7 @@ const DropperV2View = () => {
           </>
         )}
         {!contractAddress && recentAddresses && (
-          <Flex direction="column" gap="20px" bg="#2d2d2d" borderRadius="10px" p="20px">
+          <Flex direction="column" gap="20px" borderRadius="10px" p="20px">
             <Text>Recent</Text>
             {recentAddresses.map(({ address, chainId, name, image }) => (
               <ContractRow
@@ -181,6 +202,20 @@ const DropperV2View = () => {
                 name={name}
                 image={image}
                 type="dropperV2"
+              />
+            ))}
+          </Flex>
+        )}
+        {contractsQuery.data && !contractAddress && <Text variant="title2">My contracts</Text>}
+        {contractsQuery.data && !contractAddress && (
+          <Flex gap="35px">
+            {contractsQuery.data.map((c) => (
+              <DropperV2ContractCard
+                key={c.id}
+                title={c.title}
+                address={c.address}
+                uri={c.image_uri}
+                id={c.id}
               />
             ))}
           </Flex>
