@@ -135,9 +135,7 @@ const ABIViwLeftPanel = ({
             _active={{ bg: "transparent" }}
             _focus={{ bg: "transparent" }}
           >
-            {/* <Button variant="transparent" _hover={{ bg: "transparent" }}> */}
             <RxDotsHorizontal />
-            {/* </Button> */}
           </MenuButton>
           <MenuList zIndex="7">
             <MenuGroup title="Recent" color="#CCCCCC">
@@ -173,7 +171,7 @@ const ABIViwLeftPanel = ({
       >
         {getABIQuery.isError && (
           <Text pl="20px" color="error.500">
-            {getABIQuery.error?.message}
+            {(getABIQuery.error as any).message}
           </Text>
         )}
         {/* {abiFromTransactionsQuery.isLoading && (
@@ -188,7 +186,7 @@ const ABIViwLeftPanel = ({
         )} */}
 
         <Spacer />
-        {/* <Icon as={AiOutlineSave} mr="33px" /> */}
+        {/* <Icon as={AiOutlineSave} mr="33px" /> //TODO */}
       </Flex>
       <Flex width="100%" h="3px" bg="transparent" />
 

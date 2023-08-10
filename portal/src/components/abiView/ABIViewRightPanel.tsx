@@ -4,16 +4,16 @@ import { AiOutlineClose } from "react-icons/ai";
 import Web3 from "web3";
 import CallABIFunction from "./CallABIFunction";
 
-const colorScheme = {
-  name: "#a188cc",
-  param: "#fab56b",
-  type: "#97e1f1",
+export const colorScheme = {
+  name: "#7587a6",
+  param: "#cf6a4c",
+  type: "#7e895d",
 };
 
 const web3 = new Web3();
 
-const getType = (token: any) => {
-  if (token.type != "tuple") return <span style={{ color: "#97e1f1" }}>{token.type}</span>;
+export const getType = (token: any) => {
+  if (token.type != "tuple") return <span style={{ color: colorScheme.type }}>{token.type}</span>;
 
   return (
     <>
@@ -24,7 +24,7 @@ const getType = (token: any) => {
   );
 };
 
-const Inputs = ({ inputs }: { inputs: { name: string; type: string }[] }) => {
+export const Inputs = ({ inputs }: { inputs: { name: string; type: string }[] }) => {
   return (
     <>
       {inputs.map((input, idx) => (
@@ -40,7 +40,7 @@ const Inputs = ({ inputs }: { inputs: { name: string; type: string }[] }) => {
   );
 };
 
-const Outputs = ({ outputs }: { outputs: { name: string; type: string }[] }) => {
+export const Outputs = ({ outputs }: { outputs: { name: string; type: string }[] }) => {
   if (outputs.length === 0) {
     return <span style={{ color: colorScheme.type }}>void</span>;
   }
@@ -123,11 +123,17 @@ const ABIViewRightPanel = ({
   const [fnToCall, setFnToCall] = useState<{
     name: string;
     inputs: any[];
+    outputs: any[];
     stateMutability: string;
   } | null>(null);
 
-  const handleItemClick = async (name: string, inputs: any[], stateMutability: string) => {
-    setFnToCall({ name, inputs, stateMutability });
+  const handleItemClick = async (
+    name: string,
+    inputs: any[],
+    outputs: any[],
+    stateMutability: string,
+  ) => {
+    setFnToCall({ name, inputs, outputs, stateMutability });
     onOpen();
   };
 
@@ -137,7 +143,8 @@ const ABIViewRightPanel = ({
         isOpen={isOpen}
         onClose={onClose}
         name={fnToCall?.name}
-        inputs={fnToCall?.inputs}
+        inputs={fnToCall?.inputs ?? []}
+        outputs={fnToCall?.outputs}
         abi={abiObject}
         contractAddress={web3.utils.isAddress(src) ? src : ""}
         stateMutability={fnToCall?.stateMutability ?? ""}
@@ -237,8 +244,8 @@ const ABIViewRightPanel = ({
         boxShadow="0px 2px 2px black"
       >
         <Input
-          placeholder="paste url or contract address"
-          defaultValue={src}
+          placeholder="paste url of JSON file or address of verified contract"
+          value={src}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           border="none"
@@ -278,7 +285,9 @@ const ABIViewRightPanel = ({
                 textIndent="-20px"
                 ml="20px"
                 pr="20px"
-                onClick={() => handleItemClick(item.name, item.inputs, item.stateMutability)}
+                onClick={() =>
+                  handleItemClick(item.name, item.inputs, item.outputs, item.stateMutability)
+                }
                 w="fit-content"
                 cursor={item.type === "function" ? "pointer" : "default"}
               >

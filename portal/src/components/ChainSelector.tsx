@@ -17,7 +17,7 @@ const assets = {
   wyrm: `${AWS_ASSETS_PATH}/great-wyrm-network-logo.png`,
 };
 
-const ChainSelector = () => {
+const ChainSelector = ({color='white'}: {color?: string}) => {
   const web3Provider = useContext(Web3Context);
   return (
     <Menu>
@@ -25,6 +25,7 @@ const ChainSelector = () => {
         h="36px"
         borderRadius="10px"
         as={Button}
+        borderColor={color}
         textDecoration="none"
         _active={{ textDecoration: "none", backgroundColor: "black.300" }}
         _focus={{ textDecoration: "none", backgroundColor: "black.300" }}
@@ -45,7 +46,7 @@ const ChainSelector = () => {
             undefined
           )
         }
-        color="white"
+        color={color}
         variant="outline"
         fontSize="16px"
       >
@@ -53,7 +54,7 @@ const ChainSelector = () => {
       </MenuButton>
       <MenuList
         bg='#1A1D22'
-        color="white"
+        color={color}
         borderRadius="30px"
         border="1px solid white"
         pl='15px'
