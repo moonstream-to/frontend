@@ -84,31 +84,6 @@ const DropperV2View = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, web3ctx.account]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("APP_ACCESS_TOKEN") ?? "";
-    const stringToken = Buffer.from(token, "base64").toString("ascii");
-    const account = web3ctx.account;
-    const objectToken: TokenInterface =
-      stringToken !== ""
-        ? JSON.parse(`${stringToken}`)
-        : { address: null, deadline: null, signed_message: null };
-    const isOutdated = (deadline: number | string) => {
-      if (!deadline) return true;
-      if (Number(deadline) <= Math.floor(new Date().getTime() / 1000)) return true;
-      return false;
-    };
-
-    if (web3?.utils.isAddress(account)) {
-      if (
-        objectToken?.address !== account ||
-        isOutdated(objectToken?.deadline) ||
-        !objectToken.signed_message
-      ) {
-        signAccessToken(account);
-      }
-    }
-  }, [web3ctx.account]);
-
   const handleSubmit = () => {
     if (web3.utils.isAddress(nextValue)) {
       setClaimMetadata({});
@@ -209,7 +184,7 @@ const DropperV2View = () => {
         {contractsQuery.data && !contractAddress && <Text variant="title2">My contracts</Text>}
         {contractsQuery.data && !contractAddress && (
           <Flex gap="35px">
-            {contractsQuery.data.map((c) => (
+            {contractsQuery.data.map((c: any) => (
               <DropperV2ContractCard
                 key={c.id}
                 title={c.title}
