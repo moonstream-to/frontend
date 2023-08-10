@@ -133,7 +133,7 @@ const DropperV2DropsList = ({
             );
           return parsedResults
             .map((drop: any, idx: number) => {
-              console.log({ ...drop, admin: Number(balances[idx]) > 0 });
+              // console.log({ ...drop, admin: Number(balances[idx]) > 0 });
               return { ...drop, admin: balances[idx] > 0 };
             })
             .reverse();
@@ -156,6 +156,10 @@ const DropperV2DropsList = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dropsList.data, selected]);
+
+  useEffect(() => {
+    dropsList.refetch();
+  }, [web3ctx.account]);
 
   return (
     <>
