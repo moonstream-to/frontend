@@ -128,9 +128,10 @@ const DropperV2ContractView = ({
       url: "https://engineapi.moonstream.to/metatx/contracts",
       data: {
         blockchain: "mumbai",
-        address: "0x6FF32C81600Ec625c68b0D687ba3C2681eD43870",
+        address,
         contract_type: "dropper-v0.2.0",
-        title: "Test",
+        title: "CG",
+        image_uri: "https://badges.moonstream.to/crypto-guilds/TreasureChest.png",
       },
     });
   };
