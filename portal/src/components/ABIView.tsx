@@ -12,11 +12,7 @@ const ABIView = () => {
   // const [recentTransactionsChain, setRecentTransactionsChain] = useState("");
   // const [loadedFromTx, setLoadedFromTx] = useState("");
 
-  const [src, setSrc] = useState(
-    "",
-    // "0x8d528e98A69FE27b11bb02Ac264516c4818C3942",
-    //  "https://raw.githubusercontent.com/moonstream-to/web3/main/abi/Dropper/v0.2.0/DropperFacet.json",
-  );
+  const [src, setSrc] = useState("");
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -26,23 +22,25 @@ const ABIView = () => {
 
   useEffect(() => {
     try {
-      if (abi) {
-        const newAbiObject = JSON.parse(abi).map((item: { type: string }) =>
-          item.type === "constructor" ? { ...item, name: "constructor" } : { ...item },
-        );
-        setAbiObject(newAbiObject.filter((item: { name: string; type: string }) => item.name));
-      }
+      const newAbiObject = JSON.parse(abi).map((item: { type: string }) =>
+        item.type === "constructor" ? { ...item, name: "constructor" } : { ...item },
+      );
+      setAbiObject(newAbiObject.filter((item: { name: string; type: string }) => item.name));
     } catch {
       setAbiObject([]);
     }
   }, [abi]);
 
-  interface RequestParameters {
-    url?: string;
-    headers?: any;
-    method?: string;
-    mode?: string;
-  }
+  useEffect(() => {
+    setAbi("");
+  }, [src]);
+
+  // interface RequestParameters {
+  //   url?: string;
+  //   headers?: any;
+  //   method?: string;
+  //   mode?: string;
+  // }
 
   // const getFromPresignedURL = async (url: string, requestTimestamp: string) => {
   //   let triesLeft = 5;
@@ -148,17 +146,6 @@ const ABIView = () => {
   //     // enabled: false,
   //   },
   // );
-  // const getType = (token: any) => {
-  //   if (token.type != "tuple") return <span style={{ color: "#97e1f1" }}>{token.type}</span>;
-
-  //   return (
-  //     <>
-  //       {"{"}
-  //       <Inputs inputs={token.components} />
-  //       {"}"}
-  //     </>
-  //   );
-  // };
 
   return (
     <Flex
