@@ -2,7 +2,7 @@ import { Flex, Input, InputGroup, InputRightElement, Text, useDisclosure } from 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Web3 from "web3";
-import CallABIFunction from "./CallABIFunction";
+import CallABIFunction from "./ABIFunctionModal";
 
 export const colorScheme = {
   name: "#7587a6",
@@ -251,7 +251,7 @@ const ABIViewRightPanel = ({
         boxShadow="0px 2px 2px black"
       >
         <Input
-          placeholder="paste url of JSON file or address of verified contract"
+          placeholder="paste url of JSON file OR address of verified contract (for this option login is needed)"
           value={src}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}

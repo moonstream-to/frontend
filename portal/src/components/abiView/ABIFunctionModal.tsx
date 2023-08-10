@@ -20,7 +20,7 @@ import { colorScheme, getType, Outputs } from "./ABIViewRightPanel";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
-const CallABIFunction = ({
+const ABIFunctionModal = ({
   isOpen,
   onClose,
   name,
@@ -41,8 +41,7 @@ const CallABIFunction = ({
 }) => {
   const web3ctx = useContext(Web3Context);
   const [values, setValues] = useState<string[]>([]);
-  const [callOnAddress, setCallOnAddress] = useState("0x2360aBCf3b533f9ac059dA8db87f2C9e4Ba49041");
-  // 0x6FF32C81600Ec625c68b0D687ba3C2681eD43867
+  const [callOnAddress, setCallOnAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const [result, setResult] = useState<any>(undefined);
@@ -235,4 +234,4 @@ const CallABIFunction = ({
   );
 };
 
-export default CallABIFunction;
+export default ABIFunctionModal;
