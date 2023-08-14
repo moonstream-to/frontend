@@ -1,8 +1,6 @@
 import { Button, Flex, Image, Text } from "@chakra-ui/react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
-import useLink from "../../hooks/useLink";
 import http from "../../utils/httpMoonstream";
 
 const DropperV2ContractCard = ({
@@ -16,8 +14,6 @@ const DropperV2ContractCard = ({
   address: string;
   id: string;
 }) => {
-  // const metadata = useLink({ link: uri });
-
   const deleteContract = useMutation(async () => {
     const res = await http({
       method: "DELETE",

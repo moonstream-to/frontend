@@ -1,18 +1,14 @@
 /* eslint-disable react/no-children-prop */
-import { useContext, useState } from "react";
+import { useState } from "react";
 
-import { useQueryClient } from "react-query";
 import { Flex } from "@chakra-ui/react";
 
-import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 import JSONUpload from "./JSONUpload";
 import http from "../../utils/httpMoonstream";
 
 const DropperV2ClaimantsUpload = ({ contractAddress }: { contractAddress: string }) => {
   const toast = useMoonToast();
-
-  // const web3ctx = useContext(Web3Context);
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -41,7 +37,6 @@ const DropperV2ClaimantsUpload = ({ contractAddress }: { contractAddress: string
         if (readerEvent?.target?.result) {
           try {
             const content = JSON.parse(readerEvent?.target?.result);
-            console.log(content);
             const specifications = content.map((item: any) => {
               const { dropId, requestID, caller, blockDeadline, amount, signature, signer } = item;
               return {
@@ -55,17 +50,16 @@ const DropperV2ClaimantsUpload = ({ contractAddress }: { contractAddress: string
             if (response.status === 200) {
               toast(`Successfully added ${response.data} requests`, "success");
             }
-          } catch (e) {
+          } catch (e: any) {
             toast(`Upload failed - ${e.message ?? "Error creating request"}`, "error");
           }
-          // console.log(response);
           setIsUploading(false);
         }
       };
     } catch (e) {
       console.log(e);
-      setIsUploading(false);
     }
+    setIsUploading(false);
   };
 
   return (

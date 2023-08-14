@@ -1,51 +1,25 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { CloseIcon } from "@chakra-ui/icons";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Button,
-  Collapse,
-  Flex,
-  IconButton,
-  Image,
-  Input,
-  Radio,
-  RadioGroup,
-  Select,
-  Spinner,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Button, Flex, IconButton, Input, Spinner, Text, Textarea } from "@chakra-ui/react";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
-import PoolDetailsRow from "../PoolDetailsRow";
-import useLink from "../../hooks/useLink";
 import http from "../../utils/httpMoonstream";
-
-const dropperAbi = require("../../web3/abi/DropperV2.json");
 
 const DropperV2RegisterContract = ({
   address,
   onClose,
-  refetch,
 }: {
   address: string;
   onClose: () => void;
   refetch: any;
 }) => {
-  const { account, onConnectWalletClick, web3, targetChain } = useContext(Web3Context);
+  const { targetChain } = useContext(Web3Context);
 
   const [showInvalid, setShowInvalid] = useState(false);
 
-  const web3ctx = useContext(Web3Context);
-
-  const [tokenType, setTokenType] = useState(1);
   const [imageURI, setImageURI] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -64,7 +38,6 @@ const DropperV2RegisterContract = ({
       image_uri: imageURI,
       desription: description,
     };
-    // console.log(data);
     return http({
       method: "POST",
       url: "https://engineapi.moonstream.to/metatx/contracts",
@@ -80,13 +53,6 @@ const DropperV2RegisterContract = ({
       setErrorMessage(error.response?.data?.detail ?? error.message ?? "Error registring contract");
     },
   });
-
-  const toast = useMoonToast();
-
-  const isInputsValid = () => {
-    setShowInvalid(true);
-    return !!title;
-  };
 
   useEffect(() => {
     setShowInvalid(false);
@@ -126,21 +92,17 @@ const DropperV2RegisterContract = ({
             borderRadius="10px"
             value={imageURI}
             onChange={(e) => setImageURI(e.target.value)}
-            // borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
             placeholder="https://"
           />
         </Flex>
         <Flex direction="column" gap="10px">
           <Text variant="label">Description</Text>
           <Textarea
-            // variant="address"
             fontSize="18px"
             bg="transparent"
-            // w="45ch"
             borderRadius="10px"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            // borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
           />
         </Flex>
 

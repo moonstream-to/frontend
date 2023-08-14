@@ -25,7 +25,6 @@ const ActivateDropButton: React.FC<ActivateDropButtonProps> = ({
   const [buttonLabel, setButtonLabel] = useState("");
   const queryClient = useQueryClient();
   const API = process.env.NEXT_PUBLIC_ENGINE_API_URL || process.env.NEXT_PUBLIC_PLAY_API_URL;
-  const ADMIN_API = `${API}/admin`;
 
   const toast = useMoonToast();
   const commonMutationOptions = {

@@ -1,7 +1,6 @@
-import { Flex, Link, Spacer, Text, Icon } from "@chakra-ui/react";
+import { Flex, Link, Text, Icon } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
-import { DropDataProps } from "../../types";
 import { useEffect } from "react";
 import { RxCrossCircled } from "react-icons/rx";
 import { CheckCircleIcon } from "@chakra-ui/icons";
@@ -24,15 +23,11 @@ type DropV2DataProps = {
 };
 
 const DropV2Data: React.FC<DropV2DataProps> = ({
-  // dropState,
   dropState,
   metadata,
   excludeFields,
   PORTAL_PATH,
 }) => {
-  useEffect(() => {
-    console.log(dropState);
-  }, []);
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
     ["721", "ERC721"],
@@ -98,9 +93,6 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
             />
           </Flex>
 
-          {/* <PoolDetailsRow type="Drop type" value={dropState.data.dropType} /> */}
-
-          {/* <PoolDetailsRow type="Signer" value={dropState.data.signer} /> */}
           <PoolDetailsRow
             type="Metadata uri"
             href={dropState.data.uri}

@@ -10,17 +10,13 @@ import {
   AccordionItem,
   AccordionPanel,
   Button,
-  Collapse,
   Flex,
   IconButton,
   Image,
   Input,
-  Radio,
-  RadioGroup,
   Select,
   Spinner,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
@@ -30,7 +26,7 @@ import useLink from "../../hooks/useLink";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
 const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () => void }) => {
-  const { account, onConnectWalletClick, web3 } = useContext(Web3Context);
+  const { web3 } = useContext(Web3Context);
 
   const [showInvalid, setShowInvalid] = useState(false);
 
@@ -131,7 +127,6 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
       });
     }
   };
-  const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
   useEffect(() => {
     setShowInvalid(false);

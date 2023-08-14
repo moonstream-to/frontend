@@ -11,14 +11,11 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
-// import http from "../../utils/http";
 import http from "../../utils/httpMoonstream";
 import DropperV2ClaimantsUpload from "./DropperV2ClaimantsUpload";
-
-const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
 
 const DropperV2ClaimsView = ({
   address,
@@ -29,12 +26,6 @@ const DropperV2ClaimsView = ({
 }) => {
   const [searchAddress, setSearchAddress] = useState("");
   const [requestsFound, setRequestsFound] = useState([]);
-
-  const {
-    onToggle: onToggleUpload,
-    isOpen: isOpenUpload,
-    onClose: onCloseUpload,
-  } = useDisclosure();
 
   const [searchResult, setSearchResult] = useState<{
     result?: string | undefined;
@@ -57,7 +48,6 @@ const DropperV2ClaimsView = ({
       params: { contract_address: address, caller: searchAddress },
     })
       .then((res: any) => {
-        console.log("qq", res.data);
         if (!res.data?.length) {
           throw new Error("Not found");
         }
@@ -97,29 +87,10 @@ const DropperV2ClaimsView = ({
   const handleSearchClick = () => {
     if (web3ctx.web3.utils.isAddress(searchAddress)) {
       searchForAddress(searchAddress);
-      // onOpen();
     } else {
       toast("invalid address", "error");
     }
   };
-
-  const createRequests = ({ specifications }: { specifications: any[] }) => {
-    return http({
-      method: "POST",
-      url: "https://engineapi.moonstream.to/metatx/requests",
-      data: {
-        contract_address: address,
-        ttl_days: 1,
-        specifications,
-      },
-    });
-  };
-
-  const addClaimants = useMutation(createRequests, {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
 
   if (!isContractRegistered) {
     return <></>;

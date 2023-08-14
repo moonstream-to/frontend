@@ -1,9 +1,7 @@
 import useMoonToast from "../../hooks/useMoonToast";
 import { Flex } from "@chakra-ui/react";
-import { EditDropProps } from "../../types";
 import DropperV2ChainDataEdit from "./DropperV2ChainDataEdit";
 import { useEffect } from "react";
-import ActivateDropButton from "./ActivateDropButton";
 
 const DropperV2EditDrop = ({
   dropState,
@@ -22,10 +20,6 @@ const DropperV2EditDrop = ({
       toast("An error occurred", "error");
     }
   };
-
-  useEffect(() => {
-    console.log(dropState);
-  }, []);
 
   return (
     <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">

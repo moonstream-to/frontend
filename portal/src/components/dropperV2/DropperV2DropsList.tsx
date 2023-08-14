@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Flex, Select, Skeleton, SkeletonCircle, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Select, Skeleton, SkeletonCircle, Text } from "@chakra-ui/react";
 
 import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
@@ -9,10 +9,6 @@ const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
-
-// import { Dropper } from "../web3/contracts/types/Dropper";
-import DropperClaimsListItem from "../DropperClaimsListItem";
-import useDrops from "../../hooks/useDrops";
 import DropperV2ClaimsListItem from "./DropperV2ClaimsListItem";
 
 const DropperV2DropsList = ({
@@ -35,8 +31,6 @@ const DropperV2DropsList = ({
   const { chainId, web3 } = useContext(Web3Context);
   const web3ctx = useContext(Web3Context);
   const [statusFilter, setStatusFilter] = useState("All");
-
-  // const { adminClaims } = useDrops({ ctx: web3ctx, dropperAddress: contractAddress });
 
   const dropsList = useQuery(
     ["dropsList", contractAddress, chainId, queryDropId],
@@ -87,7 +81,6 @@ const DropperV2DropsList = ({
         .tryAggregate(false, uriQueries.concat(dropAuthQueries).concat(dropStatusQueries))
         .call()
         .then((results: string[]) => {
-          // return results.map((result, idx) => {
           const parsedResults = [];
           let parsedUri;
           for (let i = 0; i < Number(totalDrops); i += 1) {
@@ -133,7 +126,6 @@ const DropperV2DropsList = ({
             );
           return parsedResults
             .map((drop: any, idx: number) => {
-              // console.log({ ...drop, admin: Number(balances[idx]) > 0 });
               return { ...drop, admin: balances[idx] > 0 };
             })
             .reverse();
@@ -165,8 +157,6 @@ const DropperV2DropsList = ({
     <>
       {dropsList.data && (
         <Flex direction="column" gap="15px" h="100%" overflowY="auto">
-          {/* {adminClaims.isLoading && <Spinner />} */}
-          {/* {dropsList.data?.length > 0 && ( */}
           <Flex alignItems="center" fontSize="18px">
             <Text>Drop state:</Text>
             <Select
@@ -186,7 +176,6 @@ const DropperV2DropsList = ({
               <option value="inactive">Inactive</option>
             </Select>
           </Flex>
-          {/* )} */}
           {dropsList.isLoading &&
             Array.from(Array(5)).map((_, idx) => (
               <Flex key={idx} gap="15px">

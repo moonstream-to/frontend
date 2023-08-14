@@ -37,10 +37,6 @@ const DropperV2ClaimsListItem = ({
     }
   }, [selected, metadata.data, claimId, onChange]);
 
-  // useEffect(() => {
-  //   console.log(dropState);
-  // });
-
   const [statusShow, setStatusShow] = useState(true);
   useEffect(() => {
     if (!dropState) {
@@ -151,12 +147,7 @@ const DropperV2ClaimsListItem = ({
           )}
           <Spacer /> {/*TODO  Layout without spacer and name-textAlign-justify  */}
           {dropState && (
-            <Text
-              fontSize="16px"
-              // flex="1"
-              fontWeight="700"
-              color={dropState.active ? "#46C370" : "#EE8686"}
-            >
+            <Text fontSize="16px" fontWeight="700" color={dropState.active ? "#46C370" : "#EE8686"}>
               {dropState.active ? "Active" : "Inactive"}
             </Text>
           )}

@@ -9,7 +9,7 @@ import Web3Context from "../../contexts/Web3Context/context";
 
 import { supportedChains } from "../../types";
 import { chains } from "../../contexts/Web3Context";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import http from "../../utils/httpMoonstream";
 import {
   Button,
@@ -121,9 +121,7 @@ const DropperV2ContractView = ({
 
   const contractsQuery = useQuery(["metatxContracts"], getContracts, {
     onSuccess: (data) => {
-      setIsContractRegistered(data !== "404");
-      console.log(data);
-      console.log(data.contractData?.image_uri);
+      setIsContractRegistered(data.contractData?.address);
     },
     onError: (e) => {
       console.log(e);
@@ -204,7 +202,6 @@ const DropperV2ContractView = ({
             )}
           </Flex>
 
-          {/* <Flex gap="30px"> */}
           {contractState.data?.numClaims && (
             <Flex
               flex="1 1 0px"

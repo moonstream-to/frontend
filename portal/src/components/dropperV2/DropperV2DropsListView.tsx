@@ -2,7 +2,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -40,7 +39,6 @@ const DropperV2DropsListView = ({
   const [filter, setFilter] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [adminOnly, setAdminOnly] = useState(false);
-  const web3ctx = useContext(Web3Context);
 
   useEffect(() => {
     setQueryDropId(
@@ -56,7 +54,6 @@ const DropperV2DropsListView = ({
       gap="30px"
       p="30px"
       w="400px"
-      // maxH="700px"
       minH="700px"
       color="white"
       position="absolute"

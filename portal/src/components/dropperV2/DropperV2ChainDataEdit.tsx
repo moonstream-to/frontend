@@ -71,16 +71,6 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
     commonMutationOptions,
   );
 
-  // const setClaimSigner = useMutation(
-  //   ({ signer }: { signer: string }) =>
-  //     dropperContract.methods.setSignerForClaim(dropId, signer).send({ from: account }),
-  //   commonMutationOptions,
-  // );
-
-  useEffect(() => {
-    console.log(chainData);
-  });
-
   const isMutationLoading = setDropURI.isLoading || setDropAuthorization.isLoading;
 
   const handleChangeChainData = <T extends keyof DropChainData>(
@@ -88,7 +78,6 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
     value: DropChainData[T],
   ) => {
     validateChainData(key, value);
-    console.log(chainData);
     const updatedChainData = { ...newChainData, [key]: value };
     setNewChainData(updatedChainData);
     setIsChainDataChanged(chainKeys.some((k) => chainData[k] !== updatedChainData[k]));
@@ -101,7 +90,6 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
   };
 
   const handleSendClick = async () => {
-    console.log(isValid(chainKeys), validationErrors);
     if (!isValid(chainKeys)) return;
 
     try {
@@ -117,10 +105,6 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
           poolId: Number(newChainData.poolId),
         });
       }
-
-      // if (newChainData.signer !== chainData.signer) {
-      //   await setClaimSigner.mutateAsync({ signer: newChainData.signer });
-      // }
 
       setIsChainDataChanged(false);
     } catch (error) {
