@@ -122,7 +122,8 @@ const DropperV2DropView = ({
       // const signer = await dropperContract.methods.getSignerForClaim(claimId).call(); //TODO MULTICALL?
       // const dropType = dropTypes.get(claim[3]) ?? "undefined";
       let isMintAuthorized = false;
-      if (drop.tokenId && drop.tokenAddress) {
+      // const drop = { ...drop1, tokenType: "721" };
+      if (drop.tokenId && drop.tokenAddress && drop.tokenType === "1") {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
         terminusContract.options.address = drop.tokenAddress;
         try {
