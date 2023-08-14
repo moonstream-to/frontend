@@ -109,16 +109,21 @@ const DropperV2ContractView = ({
     return http({
       method: "GET",
       url: `https://engineapi.moonstream.to/metatx/contracts`,
-    }).then(
-      (res) =>
-        res.data.find((contract: { address: string }) => contract.address === address) ?? "404",
-    );
+    }).then((res) => {
+      return {
+        ...res.data,
+        contractData: res.data.find(
+          (contract: { address: string }) => contract.address === address,
+        ),
+      };
+    });
   };
 
   const contractsQuery = useQuery(["metatxContracts"], getContracts, {
     onSuccess: (data) => {
       setIsContractRegistered(data !== "404");
       console.log(data);
+      console.log(data.contractData?.image_uri);
     },
     onError: (e) => {
       console.log(e);
@@ -149,25 +154,29 @@ const DropperV2ContractView = ({
   return (
     <>
       <Flex bg="#2d2d2d" w="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
-        {contractsQuery.data && contractsQuery.data !== "404" && (
-          <Text variant="title2">{contractsQuery.data.title}</Text>
+        {contractsQuery.data?.contractData && (
+          <Text variant="title2">{contractsQuery.data.contractData.title}</Text>
         )}
         <Flex gap="10px">
           <Flex direction="column" gap="20px">
-            {contractsQuery.data && contractsQuery.data !== "404" && (
-              <Flex gap="20px" flex="1">
+            <Flex gap="20px" flex="1">
+              {contractsQuery.data?.contractData?.image_uri && (
                 <Image
                   w="140px"
                   h="140px"
-                  src={contractsQuery.data.image_uri}
-                  alt=""
+                  src={contractsQuery.data.contractData.image_uri}
+                  alt="qq"
                   // fallbackSrc="https://via.placeholder.com/140"
                 />
-                <Text>{contractsQuery.data.description ?? "no description provided"}</Text>
-              </Flex>
-            )}
+              )}
+              {contractsQuery.data?.contractData && (
+                <Text color={contractsQuery.data.contractData.description ? "white" : "#BBBBBB"}>
+                  {contractsQuery.data.contractData.description ?? "no description provided"}
+                </Text>
+              )}
+            </Flex>
 
-            {contractsQuery.data && contractsQuery.data === "404" && (
+            {contractsQuery.data && !contractsQuery.data.contractData && contractState.data && (
               <Flex gap="20px" position="relative" my="auto">
                 <Modal isOpen={isOpen} onClose={onClose}>
                   <ModalOverlay />

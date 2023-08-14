@@ -65,7 +65,7 @@ const DropperV2DropsListView = ({
       zIndex="2"
     >
       <Text fontWeight="700" fontSize="24px">
-        drops
+        Drops
       </Text>
       <Input
         value={filter}

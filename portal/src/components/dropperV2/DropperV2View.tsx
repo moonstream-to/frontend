@@ -62,7 +62,7 @@ const DropperV2View = () => {
     }).then((res) => res.data);
   };
 
-  const contractsQuery = useQuery(["metatxContracts"], getContracts, {
+  const contractsQuery = useQuery(["metatxContracts1"], getContracts, {
     onSuccess: (data) => {
       console.log(data);
     },
