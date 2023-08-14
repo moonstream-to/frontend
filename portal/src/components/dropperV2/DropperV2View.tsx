@@ -7,7 +7,6 @@ import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/rea
 
 import Web3Context from "../../../src/contexts/Web3Context/context";
 import useDropperContract from "../../../src/hooks/useDropper.sol";
-import { TokenInterface } from "../../../src/types/Moonstream";
 import useRecentAddresses from "../../../src/hooks/useRecentAddresses";
 import ContractRow from "../../../src/components/ContractRow";
 import DropperV2ContractView from "./DropperV2ContractView";
@@ -53,7 +52,7 @@ const DropperV2View = () => {
     setClaimMetadata({});
   }, [contractAddress]);
 
-  const { chainId, web3, signAccessToken } = useContext(Web3Context);
+  const { chainId, web3 } = useContext(Web3Context);
 
   const getContracts = () => {
     return http({
@@ -63,9 +62,6 @@ const DropperV2View = () => {
   };
 
   const contractsQuery = useQuery(["metatxContracts1"], getContracts, {
-    onSuccess: (data) => {
-      console.log(data);
-    },
     onError: (e) => {
       console.log(e);
     },
