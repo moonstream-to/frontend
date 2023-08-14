@@ -25,7 +25,7 @@ const dropperAbi = require("../../web3/abi/DropperV2.json");
 const CONNECTION_ERRORS: WalletStatesInterface = {
   ONBOARD: "Cannot retrieve any data. MetaMask isn't installed",
   CONNECT:
-    "Cannot retrieve any data. MetaMask is installed, but something is wrong. It could be due to the wrong chain or address.",
+    "Cannot retrieve any data. MetaMask is installed, but not connected. It could be due to the wrong chain or address.",
   CONNECTED:
     "Cannot retrieve any data. MetaMask is installed and connected, but something is wrong. It could be due to the wrong chain or address.",
   UNKNOWN_CHAIN: "Cannot retrieve any data. Unsupported chain",
@@ -193,13 +193,14 @@ const DropperV2ContractView = ({
               <PoolDetailsRow
                 type={"Admin terminus address"}
                 value={contractState.data.admin.terminusAddress}
+                href={`/portal/terminus/?contractAddress=${contractState.data.admin.terminusAddress}`}
                 canBeCopied
                 displayFull
               />
-              {/*TODO add links to terminus */}
               <PoolDetailsRow
                 type={"Admin terminus pool"}
                 value={contractState.data.admin.poolId}
+                href={`/portal/terminus/?contractAddress=${contractState.data.admin.terminusAddress}&poolId=${contractState.data.admin.poolId}`}
               />
             </Flex>
           )}
@@ -214,7 +215,7 @@ const DropperV2ContractView = ({
             )}
           {contractState.isLoading && <Spinner />}
         </Flex>
-        {isContractRegistered ? (
+        {contractState.data && !isContractRegistered && (
           <Flex gap="20px" placeSelf="end" position="relative">
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
@@ -243,7 +244,8 @@ const DropperV2ContractView = ({
               <Spinner position="absolute" left="50%" top="10px" zIndex="2" h="20px" w="20px" />
             )}
           </Flex>
-        ) : (
+        )}
+        {contractState.data && !isContractRegistered && (
           <Flex direction="column" px={5} alignItems="end">
             <Text>Contract is registered</Text>
           </Flex>

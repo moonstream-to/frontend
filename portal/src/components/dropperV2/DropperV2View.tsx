@@ -123,6 +123,7 @@ const DropperV2View = () => {
             type="text"
             value={nextValue}
             onChange={(e) => setNextValue(e.target.value)}
+            spellCheck="false"
           />
           <Button
             bg="gray.0"
