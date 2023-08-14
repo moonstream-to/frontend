@@ -14,6 +14,8 @@ import useDrops from "../../hooks/useDrops";
 import queryCacheProps from "../../hooks/hookCommon";
 import { PORTAL_PATH } from "../../constants";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+
 import { Dropper } from "../../web3/contracts/types/Dropper";
 import DropData from "../dropper/DropData";
 import DropHeader from "../dropper/DropHeader";
@@ -119,8 +121,21 @@ const DropperV2DropView = ({
       const active = await dropperContract.methods.dropStatus(claimId).call();
       // const signer = await dropperContract.methods.getSignerForClaim(claimId).call(); //TODO MULTICALL?
       // const dropType = dropTypes.get(claim[3]) ?? "undefined";
-      console.log({ drop, uri, dropAuthorization, active });
-      return { drop, uri, dropAuthorization, active };
+      let isMintAuthorized = false;
+      if (drop.tokenId && drop.tokenAddress) {
+        const terminusContract = new web3.eth.Contract(terminusAbi) as any;
+        terminusContract.options.address = drop.tokenAddress;
+        try {
+          const isApproved = await terminusContract.methods
+            .isApprovedForPool(drop.tokenId, address)
+            .call();
+          isMintAuthorized = !!isApproved;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      return { drop, uri, dropAuthorization, active, isMintAuthorized };
     },
     {
       ...queryCacheProps,

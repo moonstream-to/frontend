@@ -1,8 +1,10 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Link, Spacer, Text, Icon } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
 import { DropDataProps } from "../../types";
 import { useEffect } from "react";
+import { RxCrossCircled } from "react-icons/rx";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 
 type DropStateType = {
   data: {
@@ -10,6 +12,7 @@ type DropStateType = {
     dropAuthorization: any;
     uri: string;
     active: boolean;
+    isMintAuthorized: boolean;
   };
 };
 
@@ -57,7 +60,23 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
             />
             <PoolDetailsRow type="Id" value={dropState.data.drop.tokenId} />
             <PoolDetailsRow type="Amount" value={dropState.data.drop.amount} />
+            <Flex fontSize="18px" justifyContent="space-between" alignItems="center">
+              <Text>Does dropper have minting authority?</Text>
+              {!dropState.data.isMintAuthorized ? (
+                <Flex alignItems="center">
+                  <Text pr="5px">No</Text>
+                  <Icon as={RxCrossCircled} w="15px" mr="20px" />
+                  <Link color="#f56646">How&nbsp;to&nbsp;fix?</Link>
+                </Flex>
+              ) : (
+                <Flex alignItems="center">
+                  <Text pr="5px">Yes</Text>
+                  <Icon as={CheckCircleIcon} w="15px" />
+                </Flex>
+              )}
+            </Flex>
           </Flex>
+
           <Text fontSize="18px" fontWeight="700" mt="10px">
             Authorization
           </Text>
