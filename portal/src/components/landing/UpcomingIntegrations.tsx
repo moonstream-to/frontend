@@ -2,10 +2,10 @@ import { Button, Flex, Image, Link, Text } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 
 const assets = {
-  forte: `${AWS_STATIC_ASSETS_PATH}/forte_logo.png`,
-  optimism: `${AWS_STATIC_ASSETS_PATH}/optimism_logo.png`,
-  evmos: `${AWS_STATIC_ASSETS_PATH}/evmos_logo.png`,
-  arbitrum: `${AWS_STATIC_ASSETS_PATH}/arbitrum_logo.png`,
+  forte: `${AWS_STATIC_ASSETS_PATH}/logos/forte-logo.png`,
+  optimism: `${AWS_STATIC_ASSETS_PATH}/logos/optimis-logo.png`,
+  evmos: `${AWS_STATIC_ASSETS_PATH}/logos/evmos-logo.png`,
+  arbitrum: `${AWS_STATIC_ASSETS_PATH}/logos/arbitrum-logo.png`,
 };
 
 const chains = [
@@ -60,7 +60,6 @@ const UpcomingIntegrations = ({ ...props }) => {
             <Image
               src={assets[chain.name as keyof typeof assets]}
               alt={chain.name}
-              filter="invert(100%)"
               h={{ base: `${chain.h}px`, sm: `${chain.h * 1.45}px` }}
             />
           </Link>

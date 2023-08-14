@@ -1,8 +1,9 @@
 import { Flex, Input, InputGroup, InputRightElement, Text, useDisclosure } from "@chakra-ui/react";
-import React, { useMemo, useRef, useState } from "react";
+
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Web3 from "web3";
-import CallABIFunction from "./CallABIFunction";
+import CallABIFunction from "./ABIFunctionModal";
 
 export const colorScheme = {
   name: "#7587a6",
@@ -133,9 +134,16 @@ const ABIViewRightPanel = ({
     outputs: any[],
     stateMutability: string,
   ) => {
+    if (!stateMutability) {
+      return;
+    }
     setFnToCall({ name, inputs, outputs, stateMutability });
     onOpen();
   };
+
+  useEffect(() => {
+    if (types[0]) setFilter(types[0]);
+  }, [abiObject]);
 
   return (
     <Flex bg="#282a36" w="100%" minH="100%" direction="column" overflowY="auto" flex="2">
@@ -244,7 +252,7 @@ const ABIViewRightPanel = ({
         boxShadow="0px 2px 2px black"
       >
         <Input
-          placeholder="paste url of JSON file or address of verified contract"
+          placeholder="paste url of JSON file OR address of verified contract (for this option login is needed)"
           value={src}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}

@@ -17,6 +17,7 @@ import useLogin from "../hooks/useLogin";
 import { CloseIcon } from "@chakra-ui/icons";
 
 import { AWS_ASSETS_PATH } from "../constants";
+import { useRouter } from "next/router";
 
 const icons = {
   logo: `${AWS_ASSETS_PATH}/icons/moon-logo.png`,
@@ -33,6 +34,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, data } = useLogin();
+  const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,6 +44,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
   useEffect(() => {
     if (data) {
       onClose();
+      router.push("/portal");
     }
   }, [data]);
 
@@ -73,10 +76,10 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                 Welcome back!
               </Text>
               <FormControl>
-                <FormLabel fontSize="16px">Username or email</FormLabel>
+                <FormLabel fontSize="16px">Username</FormLabel>
                 <Input
                   type="text"
-                  placeholder="Enter your username or email"
+                  placeholder="username"
                   name="username"
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
@@ -107,7 +110,7 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
 
                 <Input
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="password"
                   value={password}
                   name="password"
                   onChange={(event) => setPassword(event.target.value)}

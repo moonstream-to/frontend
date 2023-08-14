@@ -9,7 +9,7 @@ const MoonstreamMetrics = ({ ...props }) => {
     },
     {
       n: ">$10m",
-      d1: "transaction volume throughour",
+      d1: "transaction volume through our",
       d2: "smart contracts",
     },
     {
@@ -29,7 +29,7 @@ const MoonstreamMetrics = ({ ...props }) => {
         <Text fontSize={{ base: "24px", sm: "40px" }} fontWeight="500">
           {number}
         </Text>
-        <Text fontSize={{ base: "14px", sm: "18px" }}>
+        <Text fontSize={{ base: "14px", sm: "18px" }} textAlign={{ base: "center", md: "left" }}>
           {line1}
           <br />
           {line2}

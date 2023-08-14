@@ -12,7 +12,6 @@ const ChainTag = ({ name }: { name: string }) => {
       bg="#94C2FA"
       borderRadius="30px"
       border="0.5px solid #E6E6E6"
-      textTransform="capitalize"
     >
       {name}
     </Box>

@@ -66,7 +66,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
           url: `${API}/subscriptions/supported_interfaces`,
           params: {
             address: address.address,
-            blockchain: chainName === "gnosis" ? "xdai" : chainName,
+            blockchain: chainName,
           },
         }).then((res) => res.data.interfaces);
         const selectors: string[] = ["any"];
@@ -158,7 +158,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
         {address.type === "smartcontract" && (
           <AnalyticsAddressTags
             tags={address.tags}
-            chainName={chainName}
+            chainName={address.displayName}
             // onAdd={handleAddTag}
             onDelete={(t: string) => handleDeleteTag(t)}
           />
@@ -199,7 +199,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
             onChange={setSelectedIdx}
           />
         )}
-        {supportedQueries.data && selectedIdx > -1 && (
+        {supportedQueries.data && selectedIdx > -1 && supportedQueries.data[selectedIdx] && (
           <AnalyticsQueryView
             query={supportedQueries.data[selectedIdx]}
             address={address.address}

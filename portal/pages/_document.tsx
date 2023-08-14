@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 export default function Document() {
   return (
@@ -13,6 +14,14 @@ export default function Document() {
         <link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet" />
       </Head>
       <body>
+        {/*  <!-- Google Tag Manager (noscript) --> */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TG5Z6CG"
+                    height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+          }}
+        ></noscript>
+        {/*<!-- End Google Tag Manager (noscript) -->*/}
         <Main />
         <NextScript />
       </body>

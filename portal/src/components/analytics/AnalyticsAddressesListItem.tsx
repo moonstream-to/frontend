@@ -76,7 +76,7 @@ const AnalyticsAddressesListItem = ({
           <Flex gap="10px" alignItems="center">
             {address.type === "smartcontract" ? (
               <>
-                {chainName ? (
+                {getChainImage(chainName) ? (
                   <Image
                     h="20px"
                     w="20px"
@@ -98,7 +98,7 @@ const AnalyticsAddressesListItem = ({
           </Flex>
 
           <Flex gap="5px" wrap="wrap">
-            {address.type === "smartcontract" && <ChainTag name={chainName} />}
+            {address.type === "smartcontract" && <ChainTag name={address.displayName} />}
             {address.tags &&
               address.tags.map((a: string, idx: number) => <Tag key={idx} name={a} />)}
           </Flex>

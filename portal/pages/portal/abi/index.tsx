@@ -9,7 +9,7 @@ const Query = () => {
   }, []);
 
   return (
-    <Layout home={false}>
+    <Layout home={false} needAuthorization={false}>
       <ABIView />
     </Layout>
   );

@@ -111,13 +111,14 @@ export type ChainName = "ethereum" | "localhost" | "mumbai" | "polygon" | "wyrm"
 export type ChainId = 1 | 1337 | 80001 | 137 | 322 | 100;
 
 // map chain names to image paths
-const chainNameToImagePath: Record<ChainName, string> = {
+const chainNameToImagePath: Record<string, string> = {
   ethereum: `${AWS_ASSETS_PATH_CF}/icons/eth-outline.png`,
   localhost: `${AWS_ASSETS_PATH_CF}/icons/localhost-outline.png`,
   mumbai: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
   polygon: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
   wyrm: `${AWS_ASSETS_PATH_CF}/icons/wyrm-small-fill.png`,
   gnosis: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
+  xdai: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
 };
 
 // map chain IDs to image paths
@@ -130,10 +131,14 @@ const chainIdToImagePath: Record<ChainId, string> = {
   100: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
 };
 
-export const getChainImage = (identifier: ChainName | ChainId): string | undefined => {
+export const getChainImage = (identifier: string | number): string | undefined => {
   if (identifier in chainNameToImagePath) {
     return chainNameToImagePath[identifier as ChainName];
   } else if (identifier in chainIdToImagePath) {
     return chainIdToImagePath[identifier as ChainId];
   }
 };
+
+export const SHADOWCORN_CONTRACT_ADDRESS = "0xa7D50EE3D7485288107664cf758E877a0D351725";
+
+export const GOFP_CONTRACT_ADDRESS = "0xDD8bf70a1f3A5557CCaB839E46cAB5533955Da65";
