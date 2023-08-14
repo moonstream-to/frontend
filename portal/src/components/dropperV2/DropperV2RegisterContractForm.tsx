@@ -49,9 +49,13 @@ const DropperV2RegisterContract = ({
   const [imageURI, setImageURI] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const registerContract = () => {
-    if (!targetChain) return;
+    if (!targetChain)
+      return new Promise((_, rej) => {
+        rej(new Error("Target chain is not selected"));
+      });
     const data = {
       blockchain: targetChain.name,
       address,
@@ -60,17 +64,20 @@ const DropperV2RegisterContract = ({
       image_uri: imageURI,
       desription: description,
     };
-    console.log(data);
-    // return http({
-    //   method: "POST",
-    //   url: "https://engineapi.moonstream.to/metatx/contracts",
-    //   data,
-    // });
+    // console.log(data);
+    return http({
+      method: "POST",
+      url: "https://engineapi.moonstream.to/metatx/contracts",
+      data,
+    });
   };
 
   const addContract = useMutation(registerContract, {
     onSuccess: () => {
       onClose();
+    },
+    onError: (error: any) => {
+      setErrorMessage(error.response?.data?.detail ?? error.message ?? "Error registring contract");
     },
   });
 
@@ -145,6 +152,11 @@ const DropperV2RegisterContract = ({
             {!addContract.isLoading ? <Text>Register</Text> : <Spinner />}
           </Button>
         </Flex>
+        {addContract.isError && (
+          <Text textAlign="center" color="error.500">
+            {errorMessage}
+          </Text>
+        )}
       </Flex>
     </Flex>
   );

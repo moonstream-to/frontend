@@ -13,6 +13,7 @@ import { useMutation, useQuery } from "react-query";
 import http from "../../utils/httpMoonstream";
 import {
   Button,
+  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -53,7 +54,6 @@ const DropperV2ContractView = ({
 }) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const web3ctx = useContext(Web3Context);
-  // const { contractState } = useDropperContract({ ctx: web3ctx, dropperAddress: address });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getState = (address: any, ctx: any) => async () => {
@@ -61,8 +61,6 @@ const DropperV2ContractView = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const dropper = new web3.eth.Contract(dropperAbi) as any;
     dropper.options.address = address;
-    // console.log("11,", dropper.methods);
-
     //eslint-disable-next-line
     const ERC20_TYPE = undefined; //await dropper.methods.erc20_type().call();
     //eslint-disable-next-line
@@ -70,13 +68,8 @@ const DropperV2ContractView = ({
     //eslint-disable-next-line
     const ERC1155_TYPE = undefined; //await dropper.methods.erc1155_type().call();
     const numClaims = await dropper.methods.numDrops().call();
-    // const owner = await dropper.methods.owner().call();
-    // const paused = await dropper.methods.dropStatus().call();
-    // console.log(numClaims);
     const dropperVersion = await dropper.methods.dropperVersion().call();
     const admin = await dropper.methods.adminTerminusInfo().call();
-    console.log(admin);
-
     return { ERC20_TYPE, ERC721_TYPE, ERC1155_TYPE, numClaims, dropperVersion, admin };
   };
 
@@ -116,38 +109,19 @@ const DropperV2ContractView = ({
     return http({
       method: "GET",
       url: `https://engineapi.moonstream.to/metatx/contracts`,
-    }).then((res) => res.data);
+    }).then(
+      (res) =>
+        res.data.find((contract: { address: string }) => contract.address === address) ?? "404",
+    );
   };
 
   const contractsQuery = useQuery(["metatxContracts"], getContracts, {
     onSuccess: (data) => {
-      setIsContractRegistered(
-        data.some((contract: { address: string }) => contract.address === address),
-      );
+      setIsContractRegistered(data !== "404");
       console.log(data);
     },
     onError: (e) => {
       console.log(e);
-    },
-  });
-
-  const registerContract = () => {
-    return http({
-      method: "POST",
-      url: "https://engineapi.moonstream.to/metatx/contracts",
-      data: {
-        blockchain: "mumbai",
-        address,
-        contract_type: "dropper-v0.2.0",
-        title: "CG",
-        image_uri: "https://badges.moonstream.to/crypto-guilds/TreasureChest.png",
-      },
-    });
-  };
-
-  const addContract = useMutation(registerContract, {
-    onSuccess: () => {
-      contractsQuery.refetch();
     },
   });
 
@@ -175,7 +149,53 @@ const DropperV2ContractView = ({
   return (
     <>
       <Flex bg="#2d2d2d" w="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
-        <Flex gap="30px">
+        {contractsQuery.data && contractsQuery.data !== "404" && (
+          <Text variant="title2">{contractsQuery.data.title}</Text>
+        )}
+        <Flex gap="10px">
+          <Flex direction="column" gap="20px">
+            {contractsQuery.data && contractsQuery.data !== "404" && (
+              <Flex gap="20px" flex="1">
+                <Image
+                  w="140px"
+                  h="140px"
+                  src={contractsQuery.data.image_uri}
+                  alt=""
+                  // fallbackSrc="https://via.placeholder.com/140"
+                />
+                <Text>{contractsQuery.data.description ?? "no description provided"}</Text>
+              </Flex>
+            )}
+
+            {contractsQuery.data && contractsQuery.data === "404" && (
+              <Flex gap="20px" position="relative" my="auto">
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalBody w="fit-content">
+                      <DropperV2RegisterContract
+                        onClose={onClose}
+                        address={address}
+                        refetch={contractsQuery.refetch}
+                      />
+                    </ModalBody>
+                  </ModalContent>
+                </Modal>
+                <Button
+                  variant="transparent"
+                  fontWeight="400"
+                  fontSize="18px"
+                  border="1px solid white"
+                  onClick={onOpen}
+                  mr="20px"
+                >
+                  Register contract
+                </Button>
+              </Flex>
+            )}
+          </Flex>
+
+          {/* <Flex gap="30px"> */}
           {contractState.data?.numClaims && (
             <Flex
               flex="1 1 0px"
@@ -196,6 +216,7 @@ const DropperV2ContractView = ({
                 href={`/portal/terminus/?contractAddress=${contractState.data.admin.terminusAddress}`}
                 canBeCopied
                 displayFull
+                whiteSpace="nowrap"
               />
               <PoolDetailsRow
                 type={"Admin terminus pool"}
@@ -215,41 +236,6 @@ const DropperV2ContractView = ({
             )}
           {contractState.isLoading && <Spinner />}
         </Flex>
-        {contractState.data && !isContractRegistered && (
-          <Flex gap="20px" placeSelf="end" position="relative">
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalBody w="fit-content">
-                  <DropperV2RegisterContract
-                    onClose={onClose}
-                    address={address}
-                    refetch={contractsQuery.refetch}
-                  />
-                </ModalBody>
-              </ModalContent>
-            </Modal>
-            <Button
-              variant="transparent"
-              fontWeight="400"
-              fontSize="18px"
-              border="1px solid white"
-              // onClick={() => addContract.mutate()}
-              onClick={onOpen}
-              color={addContract.isLoading ? "#2d2d2d" : "white"}
-            >
-              Register contract
-            </Button>
-            {addContract.isLoading && (
-              <Spinner position="absolute" left="50%" top="10px" zIndex="2" h="20px" w="20px" />
-            )}
-          </Flex>
-        )}
-        {contractState.data && !isContractRegistered && (
-          <Flex direction="column" px={5} alignItems="end">
-            <Text>Contract is registered</Text>
-          </Flex>
-        )}
       </Flex>
     </>
   );
