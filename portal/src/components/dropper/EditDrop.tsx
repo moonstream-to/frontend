@@ -8,6 +8,8 @@ import ActivateClaimButton from "./ActivateClaimButton";
 
 const EditDrop: React.FC<EditDropProps> = ({ active, dbData, chainData, address, claimId }) => {
   const toast = useMoonToast();
+
+  if (!dbData) return <></>;
   const handleError = (e: unknown) => {
     if (e instanceof Error) {
       toast(e.message, "error");

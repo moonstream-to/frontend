@@ -8,8 +8,8 @@ type DropHeaderProps = {
   PORTAL_PATH: string;
   toggleEdit: () => void;
   isEdit: boolean;
-  title: string | undefined;
-  status: boolean | undefined;
+  title?: string;
+  status?: boolean;
 };
 
 const DropHeader: React.FC<DropHeaderProps> = ({

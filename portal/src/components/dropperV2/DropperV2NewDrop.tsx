@@ -150,7 +150,11 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
         <Flex gap="20px">
           <Flex direction="column" gap="10px">
             <Text variant="label">type</Text>
-            <Select w="20ch" value={tokenType} onChange={(e) => setTokenType(e.target.value)}>
+            <Select
+              w="20ch"
+              value={tokenType}
+              onChange={(e) => setTokenType(Number(e.target.value))}
+            >
               {Object.keys(dropTypes).map((type) => (
                 <option key={type} value={dropTypes[type as keyof typeof dropTypes]}>
                   {type}
