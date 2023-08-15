@@ -7,7 +7,7 @@ import QueryAPIView from "../../../src/components/queryAPI/QueryAPIView";
 
 const Query = () => {
   useEffect(() => {
-    document.title = "Moonstrem portal - Query API";
+    document.title = "Moonstream portal - Query API";
   }, []);
 
   return (

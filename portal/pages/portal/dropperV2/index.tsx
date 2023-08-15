@@ -5,7 +5,7 @@ import Layout from "../../../src/components/layout";
 
 const DropperV2 = () => {
   useEffect(() => {
-    document.title = "Moonstrem portal - Dropper V2";
+    document.title = "Moonstream portal - Dropper V2";
   }, []);
 
   return (

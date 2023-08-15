@@ -5,7 +5,7 @@ import Layout from "../../../src/components/layout";
 
 const Query = () => {
   useEffect(() => {
-    document.title = "Moonstrem portal - ABI view";
+    document.title = "Moonstream portal - ABI view";
   }, []);
 
   return (
