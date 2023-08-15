@@ -62,7 +62,6 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
                   <Flex alignItems="center">
                     <Text pr="5px">No</Text>
                     <Icon as={RxCrossCircled} w="15px" mr="20px" />
-                    <Link color="#f56646">How&nbsp;to&nbsp;fix?</Link>
                   </Flex>
                 ) : (
                   <Flex alignItems="center">
