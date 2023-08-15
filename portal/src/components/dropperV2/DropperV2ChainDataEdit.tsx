@@ -42,7 +42,7 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
   const { web3, account } = useContext(Web3Context);
   const [newChainData, setNewChainData] = useState<DropV2ChainData>({ ...chainData });
   const [isChainDataChanged, setIsChainDataChanged] = useState(false);
-  const { errors: validationErrors, validateChainData, isValid } = useValidation();
+  const { errors: validationErrors, validateChainDataV2, isValid } = useValidation();
   const dropperContract = new web3.eth.Contract(dropperAbi) as any;
   dropperContract.options.address = address ?? "";
 
@@ -76,7 +76,7 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
     key: T,
     value: DropV2ChainData[T],
   ) => {
-    validateChainData(key, value);
+    validateChainDataV2(key, value);
     const updatedChainData = { ...newChainData, [key]: value };
     setNewChainData(updatedChainData);
     setIsChainDataChanged(chainKeys.some((k) => chainData[k] !== updatedChainData[k]));
@@ -85,7 +85,7 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
   const revertChainDataChanges = () => {
     setNewChainData(chainData);
     setIsChainDataChanged(false);
-    chainKeys.forEach((k) => validateChainData(k, chainData[k]));
+    chainKeys.forEach((k) => validateChainDataV2(k, chainData[k]));
   };
 
   const handleSendClick = async () => {
