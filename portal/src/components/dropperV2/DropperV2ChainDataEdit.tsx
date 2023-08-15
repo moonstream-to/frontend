@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Button, IconButton } from "@chakra-ui/button";
 import { Flex } from "@chakra-ui/layout";
@@ -10,7 +10,6 @@ import { AiOutlineUndo } from "react-icons/ai";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 import { DropChainData } from "../../types";
-// import { Dropper } from "../../web3/contracts/types/Dropper";
 import useValidation from "../dropper/useValidation";
 import EditRow from "../dropper/EditRow";
 import ActivateDropButton from "./ActivateDropButton";
@@ -26,7 +25,7 @@ interface ChainDataEditSectionProps {
   dropId: string;
 }
 
-type DropV2ChainData = {
+export type DropV2ChainData = {
   uri: string;
   terminusAddress: string;
   poolId: string;
@@ -73,9 +72,9 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
 
   const isMutationLoading = setDropURI.isLoading || setDropAuthorization.isLoading;
 
-  const handleChangeChainData = <T extends keyof DropChainData>(
+  const handleChangeChainData = <T extends keyof DropV2ChainData>(
     key: T,
-    value: DropChainData[T],
+    value: DropV2ChainData[T],
   ) => {
     validateChainData(key, value);
     const updatedChainData = { ...newChainData, [key]: value };

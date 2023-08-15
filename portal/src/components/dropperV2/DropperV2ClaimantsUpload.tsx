@@ -36,7 +36,7 @@ const DropperV2ClaimantsUpload = ({ contractAddress }: { contractAddress: string
       fileReader.onloadend = async (readerEvent: ProgressEvent<FileReader>) => {
         if (readerEvent?.target?.result) {
           try {
-            const content = JSON.parse(readerEvent?.target?.result);
+            const content = JSON.parse(String(readerEvent?.target?.result));
             const specifications = content.map((item: any) => {
               const { dropId, requestID, caller, blockDeadline, amount, signature, signer } = item;
               return {

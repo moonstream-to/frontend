@@ -2,7 +2,8 @@
 import { useState } from "react";
 import Web3 from "web3";
 import useMoonToast from "../../hooks/useMoonToast";
-import { DropDBData, DropChainData } from "../../types";
+import { DropDBData } from "../../types";
+import { DropV2ChainData } from "../dropperV2/DropperV2ChainDataEdit";
 
 const useValidation = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -41,7 +42,10 @@ const useValidation = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [key]: errorMessage }));
   };
 
-  const validateChainData = <T extends keyof DropChainData>(key: T, value: DropChainData[T]) => {
+  const validateChainData = <T extends keyof DropV2ChainData>(
+    key: T,
+    value: DropV2ChainData[T],
+  ) => {
     const valueString = value as unknown as string;
     let errorMessage: string;
     switch (key) {

@@ -184,7 +184,7 @@ const DropperV2DropsList = ({
             ))}
           {dropsList.data
             .filter((drop: { admin: boolean }) => !adminOnly || drop.admin)
-            .map((drop: { uri: string; id: number }) => (
+            .map((drop: { uri: string; id: number; active: boolean }) => (
               <DropperV2ClaimsListItem
                 key={drop.id}
                 address={contractAddress}
