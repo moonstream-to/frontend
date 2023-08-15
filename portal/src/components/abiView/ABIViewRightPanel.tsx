@@ -3,7 +3,7 @@ import { Flex, Input, InputGroup, InputRightElement, Text, useDisclosure } from 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Web3 from "web3";
-import CallABIFunction from "./ABIFunctionModal";
+import ABIFunctionModal from "./ABIFunctionModal";
 
 export const colorScheme = {
   name: "#7587a6",
@@ -147,7 +147,7 @@ const ABIViewRightPanel = ({
 
   return (
     <Flex bg="#282a36" w="100%" minH="100%" direction="column" overflowY="auto" flex="2">
-      <CallABIFunction
+      <ABIFunctionModal
         isOpen={isOpen}
         onClose={onClose}
         name={fnToCall?.name}
