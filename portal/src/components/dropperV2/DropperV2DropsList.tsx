@@ -138,7 +138,6 @@ const DropperV2DropsList = ({
         !!MULTICALL2_CONTRACT_ADDRESSES[
           String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
         ],
-      // onSuccess: () => {}, //TODO
     },
   );
 

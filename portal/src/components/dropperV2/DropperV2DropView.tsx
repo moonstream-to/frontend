@@ -90,7 +90,6 @@ const DropperV2DropView = ({
       ...queryCacheProps,
       retry: false,
       enabled: Number(claimId) > 0 && !!address,
-      // onSuccess: () => {}, //TODO
     },
   );
 
