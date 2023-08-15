@@ -7,7 +7,7 @@ import { AnalyticsProvider } from "../../../src/contexts/AnalyticsContext";
 
 const Query = () => {
   useEffect(() => {
-    document.title = "Moonstrem portal - Analytics";
+    document.title = "Moonstream portal - Analytics";
   }, []);
 
   return (

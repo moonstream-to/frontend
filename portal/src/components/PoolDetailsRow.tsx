@@ -46,6 +46,7 @@ const PoolDetailsRow = ({
             fontFamily="Jet Brains Mono, monospace"
             fontWeight="400"
             fontSize="18px"
+            whiteSpace="nowrap"
           >
             {valueString}
           </Text>
