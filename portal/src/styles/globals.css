@@ -147,3 +147,8 @@ blockquote {
 blockquote p {
   display: inline;
 }
+
+option {
+  color: white;
+  background-color: #2D2d2d;
+}
