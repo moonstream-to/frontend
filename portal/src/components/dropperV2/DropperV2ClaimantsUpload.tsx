@@ -38,10 +38,19 @@ const DropperV2ClaimantsUpload = ({ contractAddress }: { contractAddress: string
           try {
             const content = JSON.parse(String(readerEvent?.target?.result));
             const specifications = content.map((item: any) => {
-              const { dropId, requestID, caller, blockDeadline, amount, signature, signer } = item;
+              const {
+                dropId,
+                requestID,
+                caller,
+                claimant,
+                blockDeadline,
+                amount,
+                signature,
+                signer,
+              } = item;
               return {
                 method: "claim",
-                caller,
+                caller: claimant ?? caller,
                 request_id: requestID,
                 parameters: { dropId, blockDeadline, amount, signature, signer },
               };
