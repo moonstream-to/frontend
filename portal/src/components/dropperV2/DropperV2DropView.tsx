@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useQuery } from "react-query";
-import { Button, Spinner } from "@chakra-ui/react";
+import { Box, Button, Spinner } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
@@ -52,13 +52,6 @@ const DropperV2DropView = ({
       addRecentAddress(address, { image: metadata.image });
     }
   }, [metadata?.image]);
-
-  const dropTypes = new Map<string, string>([
-    ["20", "ERC20"],
-    ["721", "ERC721"],
-    ["1155", "ERC1155"],
-    ["1", "Mint Terminus"],
-  ]);
 
   const dropState = useQuery(
     ["dropState", address, claimId, chainId],
@@ -141,9 +134,11 @@ const DropperV2DropView = ({
                 />
               )}
               {metadata?.description && (
-                <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
-                  {metadata.description}
-                </ReactMarkdown>
+                <Box maxW={"580px"}>
+                  <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                    {metadata.description}
+                  </ReactMarkdown>
+                </Box>
               )}
             </Flex>
             {dropState && isEdit && (

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Button, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 
@@ -12,6 +12,9 @@ import queryCacheProps from "../../hooks/hookCommon";
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import { LinkIcon } from "@chakra-ui/icons";
 import useTermiminus from "../../contexts/TerminusContext";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
 const multicallABI = require("../../web3/abi/Multicall2.json");
 
@@ -207,7 +210,7 @@ const TerminusPoolView = () => {
             }
             return parsed;
           });
-          const data = {
+          return {
             controller: parsedResults[0],
             isBurnable: parsedResults[1],
             isTransferable: parsedResults[2],
@@ -215,7 +218,6 @@ const TerminusPoolView = () => {
             supply: parsedResults[4],
             uri: parsedResults[5],
           };
-          return data;
         })
         .catch((e: any) => {
           console.log(e);
@@ -296,7 +298,7 @@ const TerminusPoolView = () => {
               {poolMetadata.name}
             </Text>
           )}
-          <Flex direction="column" gap="20px" overflowY="auto">
+          <Flex direction="column" gap="20px" overflowY="auto" maxW={"800px"}>
             <Flex gap="20px">
               {poolMetadata?.image && (
                 <Image
@@ -308,9 +310,11 @@ const TerminusPoolView = () => {
                 />
               )}
               {poolMetadata?.description && (
-                <Text fontWeight="400" fontSize="18px" mb="20px">
-                  {poolMetadata.description}
-                </Text>
+                <Box maxW={"580px"}>
+                  <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                    {poolMetadata.description}
+                  </ReactMarkdown>
+                </Box>
               )}
             </Flex>
             {poolState.data.controller && (
