@@ -34,6 +34,8 @@ import { MAX_INT } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
 import useLink from "../../hooks/useLink";
 import PoolDetailsRow from "../PoolDetailsRow";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
 
 const TerminusPoolsListView = () => {
   const toast = useToast();
@@ -275,9 +277,9 @@ const TerminusPoolsListView = () => {
                         />
                       )}
                       {newMetadata.data?.description && (
-                        <Text fontWeight="400" fontSize="18px" mb="20px">
+                        <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
                           {newMetadata.data.description}
-                        </Text>
+                        </ReactMarkdown>
                       )}
                       <Text fontWeight="700" mt="20px">
                         Metadata:

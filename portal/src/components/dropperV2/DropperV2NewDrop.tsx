@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { CloseIcon } from "@chakra-ui/icons";
 import {
   Accordion,
@@ -9,6 +9,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Box,
   Button,
   Flex,
   IconButton,
@@ -22,6 +23,8 @@ import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 import PoolDetailsRow from "../PoolDetailsRow";
 import useLink from "../../hooks/useLink";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
@@ -261,20 +264,24 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
                       {newMetadata.data.name}
                     </Text>
                   )}
-                  {newMetadata.data?.image && (
-                    <Image
-                      w="140px"
-                      h="140px"
-                      borderRadius="20px"
-                      src={newMetadata.data.image}
-                      alt="image"
-                    />
-                  )}
-                  {newMetadata.data?.description && (
-                    <Text fontWeight="400" fontSize="18px" mb="20px">
-                      {newMetadata.data.description}
-                    </Text>
-                  )}
+                  <Flex gap={"20px"}>
+                    {newMetadata.data?.image && (
+                      <Image
+                        w="140px"
+                        h="140px"
+                        borderRadius="20px"
+                        src={newMetadata.data.image}
+                        alt="image"
+                      />
+                    )}
+                    {newMetadata.data?.description && (
+                      <Box maxW={"580px"}>
+                        <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                          {newMetadata.data.description}
+                        </ReactMarkdown>
+                      </Box>
+                    )}
+                  </Flex>
                   <Text fontWeight="700" mt="20px">
                     Metadata:
                   </Text>
