@@ -32,12 +32,17 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [showErrors, setShowErrors] = useState(false);
 
   const { signUp, isLoading, isSuccess } = useSignUp();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    signUp({ username, email, password });
+    if (username && password && email) {
+      signUp({ username, email, password });
+    } else {
+      setShowErrors(true);
+    }
   };
 
   useEffect(() => {
@@ -45,6 +50,10 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       onClose();
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    setShowErrors(false);
+  }, [username, email, password]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -80,6 +89,7 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   placeholder="Enter your username"
                   name="username"
                   value={username}
+                  borderColor={!username && showErrors ? "error.500" : "white"}
                   onChange={(event) => setUsername(event.target.value)}
                 />
               </FormControl>
@@ -90,6 +100,7 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   placeholder="Enter your email"
                   name="email"
                   value={email}
+                  borderColor={!email && showErrors ? "error.500" : "white"}
                   onChange={(event) => setEmail(event.target.value)}
                 />
               </FormControl>
@@ -101,6 +112,7 @@ const SignUp: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   placeholder="Enter your password"
                   value={password}
                   name="password"
+                  borderColor={!password && showErrors ? "error.500" : "white"}
                   onChange={(event) => setPassword(event.target.value)}
                 />
               </FormControl>
