@@ -208,6 +208,7 @@ sketch
 
 # Custom
 .vscode/
+.idea/
 
 .secrets/
 dev.env

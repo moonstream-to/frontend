@@ -24,12 +24,13 @@ const DropperV2View = () => {
 
   const { contractState } = useDropperContract({ dropperAddress: contractAddress, ctx: web3ctx });
   const [selected, setSelected] = useState(-1);
+  const [totalDrops, setTotalDrops] = useState(0);
   const [claimMetadata, setClaimMetadata] = useState<unknown>({});
 
   const [isContractRegistered, setIsContractRegistered] = useState(false);
 
-  const handleClick = (claimId: string, metadata: unknown) => {
-    setSelected(Number(claimId));
+  const handleClick = (dropId: string, metadata: unknown) => {
+    setSelected(Number(dropId));
     setClaimMetadata(metadata);
   };
   const [nextValue, setNextValue] = useState(contractAddress);
@@ -38,18 +39,19 @@ const DropperV2View = () => {
   const { recentAddresses, addRecentAddress } = useRecentAddresses("dropper");
 
   useEffect(() => {
-    if (!router.query.claimId) {
-      setSelected(-1);
-    } else {
-      setSelected(Number(router.query.claimId));
+    if (router.query.dropId) {
+      setSelected(Number(router.query.dropId));
     }
-  }, [router.query.claimId]);
+  }, [router.query.dropId]);
 
   useEffect(() => {
     if (contractAddress) {
       setNextValue(contractAddress);
     }
     setClaimMetadata({});
+    if (!router.query.dropId) {
+      setSelected(-1);
+    }
   }, [contractAddress]);
 
   const { chainId, web3 } = useContext(Web3Context);
@@ -87,7 +89,7 @@ const DropperV2View = () => {
         pathname: "/portal/dropperV2",
         query: {
           contractAddress: nextValue,
-          claimId: router.query.claimId,
+          dropId: router.query.dropId,
         },
       });
     } else {
@@ -148,6 +150,7 @@ const DropperV2View = () => {
                     onChange={handleClick}
                     selected={selected}
                     setSelected={setSelected}
+                    setTotalDrops={setTotalDrops}
                   />
                   <Flex minW="400px" />
                 </>
@@ -155,9 +158,10 @@ const DropperV2View = () => {
               {contractState.data && (
                 <DropperV2DropView
                   address={contractAddress}
-                  claimId={String(selected)}
+                  dropId={selected}
                   metadata={claimMetadata}
                   isContractRegistered={isContractRegistered}
+                  totalDrops={totalDrops}
                 />
               )}
             </Flex>

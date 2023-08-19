@@ -21,15 +21,17 @@ import DropperV2ClaimsView from "./DropperV2ClaimsView";
 
 const DropperV2DropView = ({
   address,
-  claimId,
+  dropId,
   metadata,
   isContractRegistered,
+  totalDrops,
 }: {
   address: string;
-  claimId: string;
+  dropId: number;
   isContractRegistered: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: any;
+  totalDrops: number;
 }) => {
   const { chainId, web3 } = useContext(Web3Context);
 
@@ -45,7 +47,7 @@ const DropperV2DropView = ({
 
   useEffect(() => {
     setIsEdit(false);
-  }, [claimId]);
+  }, [dropId]);
 
   useEffect(() => {
     if (metadata?.image) {
@@ -54,15 +56,15 @@ const DropperV2DropView = ({
   }, [metadata?.image]);
 
   const dropState = useQuery(
-    ["dropState", address, claimId, chainId],
+    ["dropState", address, dropId, chainId],
     async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const dropperContract = new web3.eth.Contract(dropperAbi) as any;
       dropperContract.options.address = address ?? "";
-      const drop = await dropperContract.methods.getDrop(claimId).call();
-      const uri = await dropperContract.methods.dropUri(claimId).call(); //TODO take from ClaimsList
-      const dropAuthorization = await dropperContract.methods.getDropAuthorization(claimId).call();
-      const active = await dropperContract.methods.dropStatus(claimId).call();
+      const drop = await dropperContract.methods.getDrop(dropId).call();
+      const uri = await dropperContract.methods.dropUri(dropId).call(); //TODO take from ClaimsList
+      const dropAuthorization = await dropperContract.methods.getDropAuthorization(dropId).call();
+      const active = await dropperContract.methods.dropStatus(dropId).call();
       let isMintAuthorized = false;
       if (drop.tokenId && drop.tokenAddress && drop.tokenType === "1") {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
@@ -82,13 +84,9 @@ const DropperV2DropView = ({
     {
       ...queryCacheProps,
       retry: false,
-      enabled: Number(claimId) > 0 && !!address,
+      enabled: Number(dropId) > 0 && !!address,
     },
   );
-
-  if (Number(claimId) < 1) {
-    return <></>;
-  }
 
   return (
     <Flex
@@ -103,69 +101,77 @@ const DropperV2DropView = ({
       position="relative"
       minH="700px"
     >
-      <DropHeader
-        address={address}
-        claimId={claimId}
-        PORTAL_PATH={PORTAL_PATH}
-        isEdit={isEdit}
-        toggleEdit={() => setIsEdit(!isEdit)}
-        title={metadata?.name}
-        status={
-          dropState.data?.active === true
-            ? true
-            : dropState.data?.active === false
-            ? false
-            : undefined
-        }
-      />
-
-      {!!dropState.data && (
+      {dropId > 0 && dropId <= totalDrops && (
         <>
-          <Flex direction="column" gap="20px" id="claim-content">
-            <Flex gap="20px">
-              {metadata?.image && (
-                <Image
-                  w="140px"
-                  h="140px"
-                  borderRadius="20px"
-                  border="1px solid #4d4d4d"
-                  src={metadata.image}
-                  alt="image"
-                />
-              )}
-              {metadata?.description && (
-                <Box maxW={"580px"}>
-                  <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
-                    {metadata.description}
-                  </ReactMarkdown>
-                </Box>
-              )}
-            </Flex>
-            {dropState && isEdit && (
-              <Flex direction="column" gap="20px" mb="20px">
-                <DropperV2EditDrop address={address} dropId={claimId} dropState={dropState.data} />
-                <Button alignSelf="end" variant="cancelButton" onClick={() => setIsEdit(false)}>
-                  Cancel
-                </Button>
-              </Flex>
-            )}
-            {dropState.data?.drop && !isEdit && (
-              <DropV2Data
-                metadata={metadata}
-                dropState={dropState}
-                excludeFields={headerMeta}
-                PORTAL_PATH={PORTAL_PATH}
-              />
-            )}
-          </Flex>
-        </>
-      )}
-      <DropperV2ClaimsView address={address} isContractRegistered={isContractRegistered} />
+          <DropHeader
+            address={address}
+            dropId={String(dropId)}
+            PORTAL_PATH={PORTAL_PATH}
+            isEdit={isEdit}
+            toggleEdit={() => setIsEdit(!isEdit)}
+            title={metadata?.name}
+            status={
+              dropState.data?.active === true
+                ? true
+                : dropState.data?.active === false
+                ? false
+                : undefined
+            }
+          />
 
-      {dropState.isLoading && (
-        <Flex alignItems="center" justifyContent="center" h="100%">
-          <Spinner h="50px" w="50px" />
-        </Flex>
+          {!!dropState.data && (
+            <>
+              <Flex direction="column" gap="20px" id="claim-content">
+                <Flex gap="20px">
+                  {metadata?.image && (
+                    <Image
+                      w="140px"
+                      h="140px"
+                      borderRadius="20px"
+                      border="1px solid #4d4d4d"
+                      src={metadata.image}
+                      alt="image"
+                    />
+                  )}
+                  {metadata?.description && (
+                    <Box maxW={"580px"}>
+                      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                        {metadata.description}
+                      </ReactMarkdown>
+                    </Box>
+                  )}
+                </Flex>
+                {dropState && isEdit && (
+                  <Flex direction="column" gap="20px" mb="20px">
+                    <DropperV2EditDrop
+                      address={address}
+                      dropId={String(dropId)}
+                      dropState={dropState.data}
+                    />
+                    <Button alignSelf="end" variant="cancelButton" onClick={() => setIsEdit(false)}>
+                      Cancel
+                    </Button>
+                  </Flex>
+                )}
+                {dropState.data?.drop && !isEdit && (
+                  <DropV2Data
+                    metadata={metadata}
+                    dropState={dropState}
+                    excludeFields={headerMeta}
+                    PORTAL_PATH={PORTAL_PATH}
+                  />
+                )}
+              </Flex>
+            </>
+          )}
+          <DropperV2ClaimsView address={address} isContractRegistered={isContractRegistered} />
+
+          {dropState.isLoading && (
+            <Flex alignItems="center" justifyContent="center" h="100%">
+              <Spinner h="50px" w="50px" />
+            </Flex>
+          )}
+        </>
       )}
     </Flex>
   );
