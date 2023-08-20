@@ -49,42 +49,29 @@ const TerminusPoolView = () => {
   }, [selectedPool]);
 
   const mintTokens = useMutation(
-    ({ to, poolID, amount }: { to: string; poolID: number; amount: number }) => {
-      // const privateKey = "d9f8a87618c08e63f77b96eeafe91598ee6cd9f7ce85bebe0d1f250b4995c2e9"; //process.env.PRIVATE_KEY;
-      // console.log("private key", privateKey);
-      // console.log("private key", process.env);
-      // const accountObj = web3.eth.accounts.privateKeyToAccount(privateKey);
-      return terminusFacet.methods.mint(to, poolID, amount, "0x0").send({ from: account });
-      // console.log(data);
-      // const tx = {
-      //   data: data,
-      //   gas: await terminusFacet.methods
-      //     .mint(to, poolID, amount, "0x0")
-      //     .estimateGas({ from: accountObj.address }),
-      // };
-      // const signedTx = await accountObj.signTransaction(tx);
-      // const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-      // return receipt;
+    ({ to, poolID, amount }: { to: string; poolID: number; amount: number }) =>
+      terminusFacet.methods
+        .mint(to, poolID, amount, "0x0")
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
+    {
+      ...commonProps,
+      onSuccess: () => {
+        toast({
+          title: `Successfully minted`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
     },
   );
-
-  // This mints 10 tokens from authorization pool 1 to 0xRECIPIENT_ADDRESS.
-  // 0x605825459E3e98565827Af31DF4cA854A7cCED28
-  // 0x2c7d7a7a5Fa6f16Fd904Abb839a292b0a4C2a2a8
-
-  // const mint = () =>
-  //   mintTokens("0x605825459E3e98565827Af31DF4cA854A7cCED28", selectedPool, 1)
-  //     .then((receipt) => {
-  //       console.log("Tokens minted:", receipt);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error:", err);
-  //     });
 
   const queryClient = useQueryClient();
   const setPoolURI = useMutation(
     ({ uri, selectedPool: poolId }: { uri: string; selectedPool: number }) =>
-      terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
+      terminusFacet.methods
+        .setURI(poolId, uri)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
     {
       ...commonProps,
       onSuccess: () => {
@@ -104,7 +91,9 @@ const TerminusPoolView = () => {
 
   const setPoolController = useMutation(
     ({ controller, poolId }: { controller: string; poolId: number }) =>
-      terminusFacet.methods.setPoolController(poolId, controller).send({ from: account }),
+      terminusFacet.methods
+        .setPoolController(poolId, controller)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
     {
       ...commonProps,
       onSuccess: () => {
@@ -124,14 +113,12 @@ const TerminusPoolView = () => {
 
   const approveForPool = useMutation(
     ({ operator, poolId }: { operator: string; poolId: number }) =>
-      terminusFacet.methods.approveForPool(poolId, operator).send({ from: account }),
+      terminusFacet.methods
+        .approveForPool(poolId, operator)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
     {
       ...commonProps,
       onSuccess: () => {
-        // setTimeout(() => {
-        //   // queryClient.invalidateQueries("poolsList");
-        //   // queryClient.invalidateQueries("poolState");
-        // }, 1000);
         toast({
           title: "Successfully updated contract",
           status: "success",
@@ -289,7 +276,6 @@ const TerminusPoolView = () => {
           icon={<LinkIcon />}
           aria-label="copy link"
         />
-        {/* <Button onClick={mint}>Mint</Button> */}
       </Flex>
       {!!poolState.data && (
         <>
@@ -415,7 +401,6 @@ const TerminusPoolView = () => {
                 placeholder="amount"
                 value={mintingAmount}
                 onChange={(e) => setMintingAmount(e.target.value)}
-                // type="url"
                 isDisabled={mintTokens.isLoading}
                 flex="0"
                 minW="15ch"

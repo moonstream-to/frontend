@@ -41,7 +41,7 @@ const ActivateDropButton: React.FC<ActivateDropButtonProps> = ({
     ({ status }: { status: boolean }) =>
       dropperContract.methods
         .setDropStatus(dropState.dropId, status)
-        .send({ from: account })
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null })
         .then(() => setButtonLabel(status ? "Activated" : "Deactivated")),
     commonMutationOptions,
   );

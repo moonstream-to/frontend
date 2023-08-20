@@ -75,7 +75,7 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
         authorizationPoolId,
         uri,
       )
-      .send({ from: web3ctx.account });
+      .send({ from: web3ctx.account, maxPriorityFeePerGas: null, maxFeePerGas: null });
   };
 
   const createDropMutation = useMutation(createDrop, {

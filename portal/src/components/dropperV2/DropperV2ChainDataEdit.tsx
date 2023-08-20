@@ -58,7 +58,9 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
 
   const setDropURI = useMutation(
     ({ uri }: { uri: string }) =>
-      dropperContract.methods.setDropUri(dropId, uri).send({ from: account }),
+      dropperContract.methods
+        .setDropUri(dropId, uri)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
     commonMutationOptions,
   );
 
@@ -66,7 +68,7 @@ const DropperV2ChainDataEdit: React.FC<ChainDataEditSectionProps> = ({
     ({ terminusAddress, poolId }: { terminusAddress: string; poolId: number }) =>
       dropperContract.methods
         .setDropAuthorization(dropId, terminusAddress, poolId)
-        .send({ from: account }),
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
     commonMutationOptions,
   );
 
