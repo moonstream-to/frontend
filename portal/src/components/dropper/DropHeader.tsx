@@ -4,7 +4,7 @@ import { AiFillEdit, AiOutlineEdit } from "react-icons/ai";
 
 type DropHeaderProps = {
   address: string;
-  claimId: string;
+  dropId: string;
   PORTAL_PATH: string;
   toggleEdit: () => void;
   isEdit: boolean;
@@ -14,7 +14,7 @@ type DropHeaderProps = {
 
 const DropHeader: React.FC<DropHeaderProps> = ({
   address,
-  claimId,
+  dropId,
   PORTAL_PATH,
   toggleEdit,
   isEdit,
@@ -22,7 +22,7 @@ const DropHeader: React.FC<DropHeaderProps> = ({
   status,
 }) => {
   const { onCopy, hasCopied } = useClipboard(
-    `${PORTAL_PATH}/dropperV2/?contractAddress=${address}&claimId=${claimId}`,
+    `${PORTAL_PATH}/dropperV2/?contractAddress=${address}&dropId=${dropId}`,
   );
 
   return (
@@ -36,7 +36,7 @@ const DropHeader: React.FC<DropHeaderProps> = ({
         {hasCopied && <Text variant="tooltip">copied</Text>}
         <Flex gap="10px" alignItems="center">
           <Text textAlign="start" color="#c2c2c2" w="fit-content" py={1} pr={0} fontSize="20px">
-            {`drop ${claimId}`}
+            {`drop ${dropId}`}
           </Text>
           <IconButton
             bg="transparent"

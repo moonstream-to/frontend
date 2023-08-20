@@ -3,8 +3,6 @@ import { Box, Spinner, chakra, Container, Text, Flex, Icon, Image } from "@chakr
 import { useDropzone } from "react-dropzone";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 
-import { AWS_ASSETS_PATH } from "../../constants";
-
 const baseStyle = {
   flex: 1,
   display: "flex",
@@ -73,10 +71,11 @@ function JSONUpload({ isUploading, onDrop, ...props }) {
               <Icon as={AiOutlineCloudUpload} w="30px" h="30px" />
               <Flex direction="column">
                 <Text>Upload a JSON file</Text>
-                <Text>{"[ {dropId, requestID, blockDeadline, amount, signer, signature} ]"}</Text>
+                <Text>
+                  {"[ { dropId, caller, requestID, blockDeadline, amount, signer, signature } ]"}
+                </Text>
               </Flex>
             </Flex>
-            {/* <Image src={`${AWS_ASSETS_PATH}/csv-dropper-example.png`} alt="" w="153px" h="70px" /> */}
           </Flex>
         )}
       </Box>

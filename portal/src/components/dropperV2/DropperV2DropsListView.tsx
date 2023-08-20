@@ -15,7 +15,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import Web3Context from "../../contexts/Web3Context/context";
 import { useRouter } from "next/router";
 import DropperV2DropsList from "./DropperV2DropsList";
 import DropperV2NewDrop from "./DropperV2NewDrop";
@@ -24,12 +23,14 @@ const DropperV2DropsListView = ({
   contractAddress,
   selected,
   setSelected,
+  setTotalDrops,
   onChange,
   contractState,
 }: {
   contractAddress: string;
   selected: number;
   setSelected: (arg0: number) => void;
+  setTotalDrops: (arg0: number) => void;
   onChange: (id: string, metadata: unknown) => void;
   contractState: any;
 }) => {
@@ -87,6 +88,7 @@ const DropperV2DropsListView = ({
         contractAddress={contractAddress}
         onChange={onChange}
         setSelected={setSelected}
+        setTotalDrops={setTotalDrops}
         selected={selected}
         filter={filter}
         queryDropId={queryDropId ?? undefined}

@@ -15,6 +15,7 @@ const DropperV2DropsList = ({
   contractAddress,
   selected,
   setSelected,
+  setTotalDrops,
   onChange,
   filter,
   queryDropId,
@@ -23,6 +24,7 @@ const DropperV2DropsList = ({
   contractAddress: string;
   selected: number;
   setSelected: (arg0: number) => void;
+  setTotalDrops: (arg0: number) => void;
   onChange: (id: string, metadata: unknown) => void;
   filter: string;
   queryDropId: number | undefined;
@@ -53,6 +55,7 @@ const DropperV2DropsList = ({
       let totalDrops: string | number;
       try {
         totalDrops = await dropperContract.methods.numDrops().call();
+        setTotalDrops(Number(totalDrops));
       } catch (e) {
         console.log(e);
         totalDrops = 0;
@@ -142,7 +145,7 @@ const DropperV2DropsList = ({
   );
 
   useEffect(() => {
-    if (selected < 1 && dropsList.data) {
+    if (selected < 1 && dropsList.data && !queryDropId) {
       setSelected(dropsList.data.length);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,7 +191,7 @@ const DropperV2DropsList = ({
               <DropperV2ClaimsListItem
                 key={drop.id}
                 address={contractAddress}
-                claimId={String(drop.id)}
+                dropId={String(drop.id)}
                 selected={drop.id === selected}
                 inQuery={drop.id === queryDropId}
                 uri={drop.uri}

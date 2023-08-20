@@ -6,7 +6,7 @@ import useLink from "../../hooks/useLink";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 
 const DropperV2ClaimsListItem = ({
-  claimId,
+  dropId,
   selected,
   onChange,
   uri,
@@ -15,7 +15,7 @@ const DropperV2ClaimsListItem = ({
   inQuery,
   dropState,
 }: {
-  claimId: string;
+  dropId: string;
   address: string;
   selected: boolean;
   onChange: (id: string, metadata: unknown) => void;
@@ -28,14 +28,14 @@ const DropperV2ClaimsListItem = ({
   const metadata = useLink({ link: uri });
 
   const handleClick = () => {
-    onChange(claimId, metadata.data);
+    onChange(dropId, metadata.data);
   };
 
   useEffect(() => {
     if (selected) {
-      onChange(claimId, metadata.data);
+      onChange(dropId, metadata.data);
     }
-  }, [selected, metadata.data, claimId, onChange]);
+  }, [selected, metadata.data, dropId, onChange]);
 
   const [statusShow, setStatusShow] = useState(true);
   useEffect(() => {
@@ -52,12 +52,12 @@ const DropperV2ClaimsListItem = ({
 
   useEffect(() => {
     if (inQuery) {
-      const element = document.getElementById(`claim-${claimId}`);
+      const element = document.getElementById(`drop-${dropId}`);
       element?.scrollIntoView({ block: "center" });
       const claimView = document.getElementById("claimView");
       claimView?.scrollIntoView();
     }
-  }, [inQuery, claimId]);
+  }, [inQuery, dropId]);
 
   const [show, setShow] = useState(true);
   useEffect(() => {
@@ -74,7 +74,7 @@ const DropperV2ClaimsListItem = ({
       setShow(true);
       return;
     }
-    if (claimId.toString().startsWith(lowCaseFilter)) {
+    if (dropId.toString().startsWith(lowCaseFilter)) {
       setShow(true);
       return;
     }
@@ -87,7 +87,7 @@ const DropperV2ClaimsListItem = ({
       return;
     }
     setShow(false);
-  }, [filter, metadata.data, claimId, dropState]);
+  }, [filter, metadata.data, dropId, dropState]);
 
   return (
     <>
@@ -101,7 +101,7 @@ const DropperV2ClaimsListItem = ({
           onClick={handleClick}
           cursor="pointer"
           p="10px"
-          id={`claim-${String(claimId)}`}
+          id={`drop-${String(dropId)}`}
         >
           {!metadata.data?.image && (
             <>
