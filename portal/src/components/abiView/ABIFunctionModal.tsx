@@ -51,7 +51,8 @@ const ABIFunctionModal = ({
   const callFunction = async (address: string, abi: any, name: string, values: any) => {
     if (name && address && web3ctx.web3.utils.isAddress(address)) {
       setIsLoading(true);
-      setResult(undefined);
+      setResult("undefined");
+      setError("undefined");
       try {
         const contract = new web3ctx.web3.eth.Contract(abi, address);
         const fn = contract.methods[name];
@@ -64,7 +65,11 @@ const ABIFunctionModal = ({
         const res =
           stateMutability === "view"
             ? await fn(...values).call()
-            : await fn(...valuesToSend).send({ from: web3ctx.account });
+            : await fn(...valuesToSend).send({
+                from: web3ctx.account,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+              });
 
         setResult(res);
         setError(undefined);

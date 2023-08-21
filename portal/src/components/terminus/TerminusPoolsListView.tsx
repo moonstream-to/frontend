@@ -109,11 +109,11 @@ const TerminusPoolsListView = () => {
       if (poolURI) {
         return terminusFacet.methods
           .createPoolV2(capacity, isTransferable, isBurnable, poolURI)
-          .send({ from: web3ctx.account });
+          .send({ from: web3ctx.account, maxPriorityFeePerGas: null, maxFeePerGas: null });
       }
       return terminusFacet.methods
         .createPoolV1(capacity, isTransferable, isBurnable)
-        .send({ from: web3ctx.account });
+        .send({ from: web3ctx.account, maxPriorityFeePerGas: null, maxFeePerGas: null });
     },
     {
       ...commonProps,
