@@ -143,9 +143,12 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
       if (web3.utils.isAddress(tokenAddress) && tokenId) {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
         terminusContract.options.address = tokenAddress;
-        terminusContract.methods.uri(tokenId).call().then((terminusPoolURI: string) => {
-          setUri(terminusPoolURI);
-        });
+        terminusContract.methods
+          .uri(tokenId)
+          .call()
+          .then((terminusPoolURI: string) => {
+            setUri(terminusPoolURI);
+          });
       }
     }
   }, [tokenType, tokenAddress, tokenId]);
