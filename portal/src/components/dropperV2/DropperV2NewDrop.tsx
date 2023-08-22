@@ -27,6 +27,7 @@ import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
 
 const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () => void }) => {
   const { web3 } = useContext(Web3Context);
@@ -63,6 +64,7 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
     uri: string;
   }) => {
     const dropperContract = new web3.eth.Contract(dropperAbi) as any;
+
     dropperContract.options.address = address ?? "";
 
     return dropperContract.methods
@@ -134,6 +136,19 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
   useEffect(() => {
     setShowInvalid(false);
   }, [tokenType, tokenAddress, tokenId, amount, authorizationTokenAddress, authorizationPoolId]);
+
+  // If drop type is "Mint Terminus" (type 1), then we populate the Terminus pool URI into the URI field as a default.
+  useEffect(() => {
+    if (tokenType === 1) {
+      if (web3.utils.isAddress(tokenAddress) && tokenId) {
+        const terminusContract = new web3.eth.Contract(terminusAbi) as any;
+        terminusContract.options.address = tokenAddress;
+        terminusContract.methods.uri(tokenId).call().then((terminusPoolURI: string) => {
+          setUri(terminusPoolURI);
+        });
+      }
+    }
+  }, [tokenType, tokenAddress, tokenId]);
 
   return (
     <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" direction="column" overflowY="auto">
