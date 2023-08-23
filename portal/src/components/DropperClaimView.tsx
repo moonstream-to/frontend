@@ -141,7 +141,7 @@ const DropperClaimView = ({
     >
       <DropHeader
         address={address}
-        claimId={claimId}
+        dropId={claimId}
         PORTAL_PATH={PORTAL_PATH}
         isEdit={isEdit}
         toggleEdit={() => setIsEdit(!isEdit)}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Web3 from "web3";
 import useMoonToast from "../../hooks/useMoonToast";
 import { DropDBData, DropChainData } from "../../types";
+import { DropV2ChainData } from "../dropperV2/DropperV2ChainDataEdit";
 
 const useValidation = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -41,6 +42,27 @@ const useValidation = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [key]: errorMessage }));
   };
 
+  const validateChainDataV2 = <T extends keyof DropV2ChainData>(
+    key: T,
+    value: DropV2ChainData[T],
+  ) => {
+    const valueString = value as unknown as string;
+    let errorMessage: string;
+    switch (key) {
+      case "signer":
+        errorMessage = web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
+        break;
+      case "uri":
+        errorMessage = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm.test(valueString)
+          ? ""
+          : "Invalid URL";
+        break;
+      default:
+        break;
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [key]: errorMessage }));
+  };
+
   const validateChainData = <T extends keyof DropChainData>(key: T, value: DropChainData[T]) => {
     const valueString = value as unknown as string;
     let errorMessage: string;
@@ -61,7 +83,7 @@ const useValidation = () => {
 
   const resetErrors = () => setErrors({});
 
-  return { errors, isValid, resetErrors, validateChainData, validateDBData };
+  return { errors, isValid, resetErrors, validateChainData, validateDBData, validateChainDataV2 };
 };
 
 export default useValidation;

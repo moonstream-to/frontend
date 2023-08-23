@@ -9,10 +9,12 @@ const MyJsonComponent = ({
   json,
   onChange,
   readOnly = false,
+  ...props
 }: {
   json: string;
   onChange?: (arg0: any) => void;
   readOnly?: boolean;
+  [x: string]: any;
 }) => {
   const handleJsonChange = (newValue: string) => {
     if (onChange) {
@@ -44,6 +46,7 @@ const MyJsonComponent = ({
       width="100%"
       setOptions={{ useWorker: false }}
       placeholder="Paste your ABI here"
+      {...props}
     />
   );
 };

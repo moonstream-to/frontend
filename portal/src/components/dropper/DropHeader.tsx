@@ -4,47 +4,56 @@ import { AiFillEdit, AiOutlineEdit } from "react-icons/ai";
 
 type DropHeaderProps = {
   address: string;
-  claimId: string;
+  dropId: string;
   PORTAL_PATH: string;
   toggleEdit: () => void;
   isEdit: boolean;
+  title?: string;
+  status?: boolean;
 };
 
 const DropHeader: React.FC<DropHeaderProps> = ({
   address,
-  claimId,
+  dropId,
   PORTAL_PATH,
   toggleEdit,
   isEdit,
+  title,
+  status,
 }) => {
   const { onCopy, hasCopied } = useClipboard(
-    `${PORTAL_PATH}/dropper/?contractAddress=${address}&claimId=${claimId}`,
+    `${PORTAL_PATH}/dropperV2/?contractAddress=${address}&dropId=${dropId}`,
   );
 
   return (
-    <Flex w="100%" justifyContent="space-between">
-      <Flex gap={2} position="relative" w="fit-content">
+    <Flex w="100%" justifyContent="space-between" mb="20px">
+      <Flex gap="30px" position="relative" w="fit-content" alignItems="center">
+        {title && (
+          <Text fontWeight="700" fontSize="24px">
+            {title}
+          </Text>
+        )}
         {hasCopied && <Text variant="tooltip">copied</Text>}
-        <Text
-          textAlign="start"
-          color="#c2c2c2"
-          w="fit-content"
-          py={1}
-          pr={0}
-          borderBottom="1px solid #c2c2c2"
-          fontSize="20px"
-          mb="20px"
-        >
-          {`drop ${claimId}`}
-        </Text>
-        <IconButton
-          bg="transparent"
-          onClick={onCopy}
-          color="#c2c2c2"
-          _hover={{ bg: "transparent", color: "white" }}
-          icon={<LinkIcon />}
-          aria-label="copy link"
-        />
+        <Flex gap="10px" alignItems="center">
+          <Text textAlign="start" color="#c2c2c2" w="fit-content" py={1} pr={0} fontSize="20px">
+            {`drop ${dropId}`}
+          </Text>
+          <IconButton
+            bg="transparent"
+            paddingInline="0"
+            onClick={onCopy}
+            color="#c2c2c2"
+            _hover={{ bg: "transparent", color: "white" }}
+            icon={<LinkIcon />}
+            aria-label="copy link"
+            minWidth="0"
+          />
+        </Flex>
+        {status !== undefined && (
+          <Text fontWeight="700" fontSize="16px" color={status ? "#46C370" : "#EE8686"}>
+            {status ? "Active" : "Inactive"}
+          </Text>
+        )}
       </Flex>
       <IconButton
         aria-label={isEdit ? "Disable Edit" : "Enable Edit"}

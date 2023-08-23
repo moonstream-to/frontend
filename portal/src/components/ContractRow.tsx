@@ -20,7 +20,7 @@ const ContractRow = ({
   const router = useRouter();
   const handleClick = () => {
     router.push({
-      pathname: `/${type}`,
+      pathname: `/portal/${type}`,
       query: {
         contractAddress: address,
       },

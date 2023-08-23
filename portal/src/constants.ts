@@ -103,7 +103,7 @@ export const AWS_ASSETS_PATH_CF = "https://static.simiotics.com/moonstream/asset
 
 export const AWS_STATIC_ASSETS_PATH = "https://static.simiotics.com/moonstream/assets";
 
-export const PORTAL_PATH = "https://portal.moonstream.to";
+export const PORTAL_PATH = "https://moonstream.to/portal";
 
 export const DISCORD_LINK = "https://discord.gg/K56VNUQGvA";
 
@@ -138,3 +138,7 @@ export const getChainImage = (identifier: string | number): string | undefined =
     return chainIdToImagePath[identifier as ChainId];
   }
 };
+
+export const SHADOWCORN_CONTRACT_ADDRESS = "0xa7D50EE3D7485288107664cf758E877a0D351725";
+
+export const GOFP_CONTRACT_ADDRESS = "0xDD8bf70a1f3A5557CCaB839E46cAB5533955Da65";

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Button, IconButton, Input, useToast, Spinner } from "@chakra-ui/react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Button, IconButton, Input, Spinner, useToast } from "@chakra-ui/react";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 
@@ -12,6 +12,9 @@ import queryCacheProps from "../../hooks/hookCommon";
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import { LinkIcon } from "@chakra-ui/icons";
 import useTermiminus from "../../contexts/TerminusContext";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
 const multicallABI = require("../../web3/abi/Multicall2.json");
 
@@ -21,6 +24,11 @@ const TerminusPoolView = () => {
   const { contractAddress, selectedPool, poolMetadata } = useTermiminus();
   const headerMeta = ["name", "description", "image", "attributes"];
   const [newUri, setNewUri] = useState("");
+  const [newPoolController, setNewPoolController] = useState("");
+  const [mintTo, setMintTo] = useState("");
+  const [mintingAmount, setMintingAmount] = useState("");
+  const [operator, setOperator] = useState("");
+
   const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
   terminusFacet.options.address = contractAddress;
   const toast = useToast();
@@ -40,10 +48,30 @@ const TerminusPoolView = () => {
     poolState.refetch();
   }, [selectedPool]);
 
+  const mintTokens = useMutation(
+    ({ to, poolID, amount }: { to: string; poolID: number; amount: number }) =>
+      terminusFacet.methods
+        .mint(to, poolID, amount, "0x0")
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
+    {
+      ...commonProps,
+      onSuccess: () => {
+        toast({
+          title: `Successfully minted`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    },
+  );
+
   const queryClient = useQueryClient();
   const setPoolURI = useMutation(
     ({ uri, selectedPool: poolId }: { uri: string; selectedPool: number }) =>
-      terminusFacet.methods.setURI(poolId, uri).send({ from: account }),
+      terminusFacet.methods
+        .setURI(poolId, uri)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
     {
       ...commonProps,
       onSuccess: () => {
@@ -51,6 +79,46 @@ const TerminusPoolView = () => {
           queryClient.invalidateQueries("poolsList");
           queryClient.invalidateQueries("poolState");
         }, 1000);
+        toast({
+          title: "Successfully updated contract",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    },
+  );
+
+  const setPoolController = useMutation(
+    ({ controller, poolId }: { controller: string; poolId: number }) =>
+      terminusFacet.methods
+        .setPoolController(poolId, controller)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
+    {
+      ...commonProps,
+      onSuccess: () => {
+        setTimeout(() => {
+          queryClient.invalidateQueries("poolsList");
+          queryClient.invalidateQueries("poolState");
+        }, 1000);
+        toast({
+          title: "Successfully updated contract",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    },
+  );
+
+  const approveForPool = useMutation(
+    ({ operator, poolId }: { operator: string; poolId: number }) =>
+      terminusFacet.methods
+        .approveForPool(poolId, operator)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
+    {
+      ...commonProps,
+      onSuccess: () => {
         toast({
           title: "Successfully updated contract",
           status: "success",
@@ -129,7 +197,7 @@ const TerminusPoolView = () => {
             }
             return parsed;
           });
-          const data = {
+          return {
             controller: parsedResults[0],
             isBurnable: parsedResults[1],
             isTransferable: parsedResults[2],
@@ -137,7 +205,6 @@ const TerminusPoolView = () => {
             supply: parsedResults[4],
             uri: parsedResults[5],
           };
-          return data;
         })
         .catch((e: any) => {
           console.log(e);
@@ -217,7 +284,7 @@ const TerminusPoolView = () => {
               {poolMetadata.name}
             </Text>
           )}
-          <Flex direction="column" gap="20px" overflowY="auto">
+          <Flex direction="column" gap="20px" overflowY="auto" maxW={"800px"}>
             <Flex gap="20px">
               {poolMetadata?.image && (
                 <Image
@@ -229,9 +296,11 @@ const TerminusPoolView = () => {
                 />
               )}
               {poolMetadata?.description && (
-                <Text fontWeight="400" fontSize="18px" mb="20px">
-                  {poolMetadata.description}
-                </Text>
+                <Box maxW={"580px"}>
+                  <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                    {poolMetadata.description}
+                  </ReactMarkdown>
+                </Box>
               )}
             </Flex>
             {poolState.data.controller && (
@@ -300,6 +369,87 @@ const TerminusPoolView = () => {
                 isDisabled={setPoolURI.isLoading}
               >
                 {setPoolURI.isLoading ? <Spinner /> : "Save"}
+              </Button>
+            </Flex>
+          )}
+          {poolState.data && poolState.data.controller === account && (
+            <Flex gap="15px" mt="20px">
+              <Input
+                placeholder="new pool controller"
+                value={newPoolController}
+                onChange={(e) => setNewPoolController(e.target.value)}
+                type="url"
+                isDisabled={setPoolController.isLoading}
+              />
+              <Button
+                bg="gray.0"
+                fontWeight="400"
+                fontSize="18px"
+                color="#2d2d2d"
+                onClick={() =>
+                  setPoolController.mutate({ controller: newPoolController, poolId: selectedPool })
+                }
+                isDisabled={setPoolController.isLoading}
+              >
+                {setPoolController.isLoading ? <Spinner /> : "Save"}
+              </Button>
+            </Flex>
+          )}
+          {poolState.data && poolState.data.controller === account && (
+            <Flex gap="15px" mt="20px">
+              <Input
+                placeholder="amount"
+                value={mintingAmount}
+                onChange={(e) => setMintingAmount(e.target.value)}
+                isDisabled={mintTokens.isLoading}
+                flex="0"
+                minW="15ch"
+              />
+              <Input
+                placeholder="mint to"
+                value={mintTo}
+                onChange={(e) => setMintTo(e.target.value)}
+                type="url"
+                isDisabled={mintTokens.isLoading}
+                minW="45ch"
+              />
+              <Button
+                bg="gray.0"
+                fontWeight="400"
+                fontSize="18px"
+                color="#2d2d2d"
+                onClick={() =>
+                  mintTokens.mutate({
+                    to: mintTo,
+                    poolID: selectedPool,
+                    amount: Number(mintingAmount),
+                  })
+                }
+                isDisabled={mintTokens.isLoading}
+              >
+                {mintTokens.isLoading ? <Spinner /> : "Mint"}
+              </Button>
+            </Flex>
+          )}
+          {poolState.data && poolState.data.controller === account && (
+            <Flex gap="15px" mt="20px">
+              <Input
+                placeholder="operator"
+                value={operator}
+                onChange={(e) => setOperator(e.target.value)}
+                type="url"
+                isDisabled={approveForPool.isLoading}
+              />
+              <Button
+                bg="gray.0"
+                fontWeight="400"
+                fontSize="18px"
+                color="#2d2d2d"
+                onClick={() => approveForPool.mutate({ operator, poolId: selectedPool })}
+                isDisabled={approveForPool.isLoading}
+                minW="fit-content"
+              >
+                {approveForPool.isLoading ? <Spinner /> : "Approve this pool"}
               </Button>
             </Flex>
           )}

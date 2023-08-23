@@ -1,5 +1,4 @@
 import { useMutation } from "react-query";
-import { useToast } from ".";
 import useUser from "../contexts/UserContext";
 import { AuthService } from "../services";
 import useMoonToast from "./useMoonToast";
@@ -20,8 +19,10 @@ const useLogin = () => {
       localStorage.setItem("MOONSTREAM_ACCESS_TOKEN", data.data.id);
       getUser();
     },
-    onError: (error: Error) => {
-      toast(error.message, "error");
+    onError: (error: any) => {
+      console.log(error);
+      const message = error.response.data?.detail ?? error.message;
+      toast(message, "error");
     },
   });
 

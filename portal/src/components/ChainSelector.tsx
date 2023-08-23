@@ -1,7 +1,17 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext } from "react";
 
-import { Menu, MenuItem, MenuList, Image, MenuButton, Button, Icon, Flex, Text } from "@chakra-ui/react";
+import {
+  Menu,
+  MenuItem,
+  MenuList,
+  Image,
+  MenuButton,
+  Button,
+  Icon,
+  Flex,
+  Text,
+} from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { MdOutlineLaptopMac } from "react-icons/md";
 
@@ -17,7 +27,7 @@ const assets = {
   wyrm: `${AWS_ASSETS_PATH}/great-wyrm-network-logo.png`,
 };
 
-const ChainSelector = () => {
+const ChainSelector = ({ color = "white" }: { color?: string }) => {
   const web3Provider = useContext(Web3Context);
   return (
     <Menu>
@@ -25,6 +35,7 @@ const ChainSelector = () => {
         h="36px"
         borderRadius="10px"
         as={Button}
+        borderColor={color}
         textDecoration="none"
         _active={{ textDecoration: "none", backgroundColor: "black.300" }}
         _focus={{ textDecoration: "none", backgroundColor: "black.300" }}
@@ -39,32 +50,24 @@ const ChainSelector = () => {
               alt="chain"
               h="24px"
               mr={4}
-              src={assets[web3Provider.targetChain?.name as keyof typeof assets] ?? ''}
+              src={assets[web3Provider.targetChain?.name as keyof typeof assets] ?? ""}
             ></Image>
-          ) : (
-            undefined
-          )
+          ) : undefined
         }
-        color="white"
+        color={color}
         variant="outline"
         fontSize="16px"
       >
         {web3Provider.targetChain?.name ?? "Chain selector"}
       </MenuButton>
-      <MenuList
-        bg='#1A1D22'
-        color="white"
-        borderRadius="30px"
-        border="1px solid white"
-        pl='15px'
-      >
+      <MenuList bg="#1A1D22" color={color} borderRadius="30px" border="1px solid white" pl="15px">
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "ethereum"}
           onClick={() => {
             web3Provider.changeChain("ethereum");
           }}
         >
-          <ChainSelectorItem name='Ethereum' img={assets.ethereum} />
+          <ChainSelectorItem name="Ethereum" img={assets.ethereum} />
         </MenuItem>
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "polygon"}
@@ -72,7 +75,7 @@ const ChainSelector = () => {
             web3Provider.changeChain("polygon");
           }}
         >
-          <ChainSelectorItem name='Polygon' img={assets.polygon} />
+          <ChainSelectorItem name="Polygon" img={assets.polygon} />
         </MenuItem>
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "mumbai"}
@@ -80,7 +83,7 @@ const ChainSelector = () => {
             web3Provider.changeChain("mumbai");
           }}
         >
-          <ChainSelectorItem name='Mumbai' img={assets.mumbai} />
+          <ChainSelectorItem name="Mumbai" img={assets.mumbai} />
         </MenuItem>
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "wyrm"}
@@ -88,7 +91,7 @@ const ChainSelector = () => {
             web3Provider.changeChain("wyrm");
           }}
         >
-          <ChainSelectorItem name='Wyrm' img={assets.wyrm} />
+          <ChainSelectorItem name="Wyrm" img={assets.wyrm} />
         </MenuItem>
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "localhost"}
@@ -98,7 +101,7 @@ const ChainSelector = () => {
         >
           <Flex justifyContent="center" w="24px">
             <Icon h="24px" as={MdOutlineLaptopMac} />
-          </Flex>  
+          </Flex>
           <Text ml="15px">Localhost</Text>
         </MenuItem>
       </MenuList>

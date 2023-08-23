@@ -81,7 +81,7 @@ type DropChainData = {
 
 type EditDropProps = {
   active: boolean;
-  dbData: DropDBData;
+  dbData?: DropDBData;
   chainData: DropChainData;
   address: string;
   claimId: string;

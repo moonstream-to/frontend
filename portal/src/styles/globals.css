@@ -104,7 +104,7 @@ a {
   color: #f56646;
 }
 .markdown * a:hover {
-  color: #F56646;
+  color: #f56646;
   font-weight: 600;
 }
 
@@ -133,7 +133,7 @@ a {
 }
 
 blockquote {
-  border: 2px solid #FCE5DD;
+  border: 2px solid #fce5dd;
   border-radius: 10px;
   margin-top: 10px !important;
   margin-bottom: 10px !important;
@@ -146,4 +146,9 @@ blockquote {
 }
 blockquote p {
   display: inline;
+}
+
+option {
+  color: white;
+  background-color: #2d2d2d;
 }

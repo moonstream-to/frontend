@@ -17,11 +17,11 @@ const useSignUp = () => {
     onSuccess: (response) => {
       localStorage.setItem("MOONSTREAM_ACCESS_TOKEN", response.data.id);
       getUser();
-      // router.push("/welcome", undefined, { shallow: false });
     },
     onError: (error: any) => {
+      console.log(error);
       let message = error.response.data?.detail ?? error.message;
-      if (error.response?.data?.detail?.slice(0, 3) === "409") {
+      if (error.response?.status === 409) {
         message = "username or email already exists";
       }
       toast(message, "error", 5000);
