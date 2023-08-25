@@ -7,6 +7,7 @@ import LeaderboardRank from "./LeaderboardRank";
 import LeaderboardScoreItem from "./LeaderboardScoreItem";
 import LeaderboardAddressItem from "./LeaderboardAddressItem";
 import UserWeb3AddressInput from "../UserWeb3AddressInput";
+import { isValidBase64 } from "../../utils/base64";
 
 import {
   Box,
@@ -141,6 +142,7 @@ const LeaderboardView = () => {
     ["fetch_leaderboard_info", leaderboardId, currentAccount],
     () => {
       return fetchLeaderboardInfo(leaderboardId).then((res) => {
+        const description = res.data;
         return res.data;
       });
     },
@@ -180,9 +182,17 @@ const LeaderboardView = () => {
         </Flex>
         <Box my={["10px", "20px", "30px"]} fontSize={["14px", "14px", "18px"]}>
           {leaderboardInfo.data && (
-            <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
-              {atob(leaderboardInfo.data.description)}
-            </ReactMarkdown>
+            <>
+              {isValidBase64(leaderboardInfo.data.description) ? (
+                <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                  {atob(leaderboardInfo.data.description)}
+                </ReactMarkdown>
+              ) : (
+                <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
+                  {leaderboardInfo.data.description}
+                </ReactMarkdown>
+              )}
+            </>
           )}
         </Box>
         <Box
