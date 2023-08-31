@@ -39,18 +39,24 @@ import Web3Context from "../../contexts/Web3Context/context";
 import LeaderboardMetadata from "./LeaderboardMetadata";
 import NewLeaderboard from "./NewLeaderboard";
 import EditLeaderboard from "./EditLeaderboard";
+import LeaderboardAPI from "./LeaderboardAPI";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import useMoonToast from "../../hooks/useMoonToast";
+import LeaderboardUpload from "./LeaderboardUpload";
+import { Score } from "./types";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const LeaderboardAdminView = () => {
   const router = useRouter();
+  const toast = useMoonToast();
   const [currentAccount, setCurrentAccount] = React.useState(ZERO_ADDRESS);
   const web3ctx = useContext(Web3Context);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [status, setStatus] = React.useState("normal");
+  const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,6 +71,9 @@ const LeaderboardAdminView = () => {
       method: "GET",
       url: "https://engineapi.moonstream.to/leaderboard/leaderboards",
     }).then((res: any) => {
+      res.data.sort((a: any, b: any) => {
+        return b.created_at > a.created_at;
+      });
       return res.data;
     });
   };
@@ -77,6 +86,15 @@ const LeaderboardAdminView = () => {
       console.log(e);
     },
   });
+
+  const getLeaderboardInfo = (id: string) => {
+    return http({
+      method: "GET",
+      url: `https://engineapi.moonstream.to/leaderboard/info?leaderboard_id=${id}`,
+    }).then((res: any) => {
+      return res.data;
+    });
+  };
 
   const selectedLeaderboard = useQuery(
     ["selectedLeaderboard", leaderboardsQuery, selectedIndex],
@@ -92,6 +110,22 @@ const LeaderboardAdminView = () => {
     },
   );
 
+  const lastUpdate = useQuery(["lastUpdate", leaderboardsQuery, selectedIndex], async () => {
+    if (!leaderboardsQuery.data) {
+      return;
+    } else {
+      const leaderboard = leaderboardsQuery.data[selectedIndex];
+      const info = await getLeaderboardInfo(leaderboard.id);
+      console.log(info);
+      return info.last_updated_at;
+    }
+  });
+
+  const refetchLeaderboardData = async () => {
+    await leaderboardsQuery.refetch();
+    await lastUpdate.refetch();
+  };
+
   const createLeaderboard = async (title: string, description: string) => {
     return await http({
       method: "POST",
@@ -100,8 +134,8 @@ const LeaderboardAdminView = () => {
         title: title,
         description: description,
       },
-    }).then((res: any) => {
-      leaderboardsQuery.refetch();
+    }).then(async (res: any) => {
+      await refetchLeaderboardData();
     });
   };
 
@@ -113,8 +147,20 @@ const LeaderboardAdminView = () => {
         title: title,
         description: description,
       },
-    }).then((res: any) => {
-      leaderboardsQuery.refetch();
+    }).then(async (res: any) => {
+      await refetchLeaderboardData();
+      return res;
+    });
+  };
+
+  const pushLeaderboardScores = async (id: string, content: Score[]) => {
+    return await http({
+      method: "PUT",
+      url: `https://engineapi.moonstream.to/leaderboard/${id}/scores?normalize_addresses=false&overwrite=true`,
+      data: content,
+    }).then(async (res: any) => {
+      await refetchLeaderboardData();
+      return res;
     });
   };
 
@@ -138,8 +184,8 @@ const LeaderboardAdminView = () => {
       <Flex>
         <Flex
           w="400px"
-          minH="600px"
-          bgColor="#2D2D2D"
+          minH="720px"
+          bgColor={panelBackground}
           m="20px"
           p="20px"
           rounded="lg"
@@ -185,8 +231,8 @@ const LeaderboardAdminView = () => {
         </Flex>
         <Flex
           w="800px"
-          minH="600px"
-          bgColor="#2D2D2D"
+          minH="720px"
+          bgColor={panelBackground}
           m="20px"
           p="20px"
           rounded="lg"
@@ -195,12 +241,47 @@ const LeaderboardAdminView = () => {
           {selectedLeaderboard.data && (
             <>
               {status == "normal" && (
-                <LeaderboardMetadata
-                  leaderboard={selectedLeaderboard.data}
-                  handleEdit={() => {
-                    setStatus("edit");
-                  }}
-                />
+                <>
+                  <LeaderboardMetadata
+                    leaderboard={selectedLeaderboard.data}
+                    lastUpdate={lastUpdate}
+                    handleEdit={() => {
+                      setStatus("edit");
+                    }}
+                  />
+                  <LeaderboardUpload
+                    handleScores={async (scores: Score[]) => {
+                      return await pushLeaderboardScores(selectedLeaderboard.data.id, scores);
+                    }}
+                  />
+                  <Button
+                    my="20px"
+                    bgColor="#FFFFFF"
+                    color="#232323"
+                    alignSelf="center"
+                    onClick={onOpen}
+                  >
+                    Show leaderboard API
+                  </Button>
+                  <Modal isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent
+                      bg="#2D2D2D"
+                      border="1px solid white"
+                      borderRadius="20px"
+                      textColor="white"
+                      mx="15px"
+                      maxW="500px"
+                    >
+                      <ModalHeader fontSize="18px" fontWeight="900">
+                        Leaderboard API
+                      </ModalHeader>
+                      <ModalBody>
+                        <LeaderboardAPI id={selectedLeaderboard.data.id} />
+                      </ModalBody>
+                    </ModalContent>
+                  </Modal>
+                </>
               )}
               {status == "create" && (
                 <NewLeaderboard

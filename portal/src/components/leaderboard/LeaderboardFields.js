@@ -1,4 +1,4 @@
-import { Flex, Box, Heading, Text, Spacer, Button, Input } from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Textarea, Spacer, Button, Input } from "@chakra-ui/react";
 import { FiEdit2 } from "react-icons/fi";
 
 const LeaderboardFields = ({ title, setTitle, description, setDescription }) => {
@@ -20,10 +20,11 @@ const LeaderboardFields = ({ title, setTitle, description, setDescription }) => 
         <Text fontSize="sm" mb="6px">
           Description
         </Text>
-        <Input
+        <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          // placeholder="search"
+          placeholder="Enter leaderboard description."
+          size="md"
           borderRadius="10px"
           p="8px 15px"
         />

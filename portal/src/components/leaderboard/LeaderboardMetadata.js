@@ -1,7 +1,15 @@
 import { Flex, Box, Heading, Text, Spacer, Button } from "@chakra-ui/react";
 import { FiEdit2 } from "react-icons/fi";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 
-const LeaderboardMetadata = ({ leaderboard, handleEdit }) => {
+const printDate = (dateString) => {
+  const date = new Date(dateString);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+};
+
+const LeaderboardMetadata = ({ leaderboard, lastUpdate, handleEdit }) => {
   return (
     <Box>
       <Flex>
@@ -23,7 +31,9 @@ const LeaderboardMetadata = ({ leaderboard, handleEdit }) => {
           </Button>
         </Box>
       </Flex>
-      <Text my="10px">{leaderboard.description}</Text>
+      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm, remarkBreaks]}>
+        {leaderboard.description}
+      </ReactMarkdown>
       <Box bgColor="#232323" rounded="lg" p="10px" my="20px">
         <Flex>
           <Text>leaderboard id</Text>
@@ -33,7 +43,12 @@ const LeaderboardMetadata = ({ leaderboard, handleEdit }) => {
         <Flex>
           <Text>Created date</Text>
           <Spacer />
-          <Text>{new Date(leaderboard.created_at).toDateString()}</Text>
+          <Text>{printDate(leaderboard.created_at)}</Text>
+        </Flex>
+        <Flex>
+          <Text>Last Score Update</Text>
+          <Spacer />
+          <Text>{lastUpdate.data && printDate(lastUpdate.data)}</Text>
         </Flex>
       </Box>
     </Box>
