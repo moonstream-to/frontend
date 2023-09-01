@@ -12,6 +12,7 @@ import LayoutLanding from "../../src/components/layoutLanding";
 const assets = {
   airdrop: `${AWS_ASSETS_PATH_CF}/open-lootbox.png`,
   dropper: `${AWS_ASSETS_PATH_CF}/airdrop.png`,
+  leaderboard: `${AWS_ASSETS_PATH_CF}/minigame.png`,
   terminus: `${AWS_ASSETS_PATH_CF}/Terminus.png`,
   games: `${AWS_ASSETS_PATH_CF}/gofp-card.png`,
   analytics: `${AWS_ASSETS_PATH}/analytics-card.png`,
@@ -29,6 +30,12 @@ const features = [
     description: "Manage loyalty programs and distribute player rewards",
     image: assets.dropper,
     href: "portal/dropper",
+  },
+  {
+    name: "Leaderboards",
+    description: "Automatically create and maintain leaderboards for on-chain activities",
+    image: assets.leaderboard,
+    href: "portal/leaderboard",
   },
 ];
 

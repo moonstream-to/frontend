@@ -1,4 +1,6 @@
-import { Flex, Box, Heading, Text, Spacer, Button } from "@chakra-ui/react";
+import RouterLink from "next/link";
+
+import { chakra, Flex, Box, Heading, Text, Spacer, Button, Link } from "@chakra-ui/react";
 import { FiEdit2 } from "react-icons/fi";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
@@ -22,9 +24,21 @@ const LeaderboardMetadata = ({
   return (
     <Box>
       <Flex>
-        <Heading fontSize={["lg", "2xl"]} mb="20px">
-          {leaderboard.title}
-        </Heading>
+        <Heading fontSize={["lg", "2xl"]}>{leaderboard.title}</Heading>
+        <Spacer />
+        <Link
+          as={RouterLink}
+          href={`/leaderboards/?leaderboard_id=${leaderboard.id}`}
+          target="_blank"
+          pt="5px"
+        >
+          <chakra.span
+            style={{ textDecoration: "underline" }}
+            _hover={{ color: "accent.500", textDecoration: "underline" }}
+          >
+            link to public leaderboard
+          </chakra.span>
+        </Link>
         <Spacer />
         <Box>
           <Button
@@ -32,8 +46,8 @@ const LeaderboardMetadata = ({
             fontWeight="700"
             bgColor="transparent"
             color="inherit"
-            my="20px"
             rightIcon={<FiEdit2 />}
+            _hover={{ bg: "accent.500" }}
             onClick={handleEdit}
           >
             Edit
