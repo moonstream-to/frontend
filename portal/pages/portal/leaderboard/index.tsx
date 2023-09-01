@@ -1,8 +1,8 @@
 import { Center } from "@chakra-ui/react";
 import { useEffect } from "react";
-import Layout from "../../src/components/layout";
+import Layout from "../../../src/components/layout";
 
-import LeaderboardAdminView from "../../src/components/leaderboard/LeaderboardAdminView";
+import LeaderboardAdminView from "../../../src/components/leaderboard/LeaderboardAdminView";
 
 const LeaderboardAdmin = () => {
   useEffect(() => {
