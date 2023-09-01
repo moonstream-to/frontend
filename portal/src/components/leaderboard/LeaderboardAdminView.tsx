@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { useRouter } from "next/router";
-
-import React, { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import React from "react";
+import { useQuery, useMutation } from "react-query";
 
 import {
   Box,
@@ -10,63 +7,34 @@ import {
   Flex,
   Text,
   Button,
-  Input,
-  Spinner,
-  HStack,
-  GridItem,
-  UnorderedList,
-  ListItem,
-  useMediaQuery,
   Spacer,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
   ModalBody,
-  ModalFooter,
   useDisclosure,
 } from "@chakra-ui/react";
 
 import { AddIcon } from "@chakra-ui/icons";
-import { FiEdit2 } from "react-icons/fi";
-
-import Web3 from "web3";
 
 import http from "../../utils/httpMoonstream";
-import queryCacheProps from "../../hooks/hookCommon";
-import Web3Context from "../../contexts/Web3Context/context";
 import LeaderboardMetadata from "./LeaderboardMetadata";
 import NewLeaderboard from "./NewLeaderboard";
 import EditLeaderboard from "./EditLeaderboard";
 import LeaderboardAPI from "./LeaderboardAPI";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import useMoonToast from "../../hooks/useMoonToast";
 import LeaderboardUpload from "./LeaderboardUpload";
 import { Score } from "./types";
-
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+import { useToast } from "../../hooks";
 
 const LeaderboardAdminView = () => {
-  const router = useRouter();
-  const toast = useMoonToast();
-  const [currentAccount, setCurrentAccount] = React.useState(ZERO_ADDRESS);
-  const web3ctx = useContext(Web3Context);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [status, setStatus] = React.useState("normal");
-  const [isUploading, setIsUploading] = useState(false);
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
-  const [isVerySmallScreen, isSmallScreen] = useMediaQuery([
-    "(max-width: 440px)",
-    "(max-width: 810px)",
-  ]);
-
-  const getLeadeerboards = () => {
+  const getLeaderboards = () => {
     return http({
       method: "GET",
       url: "https://engineapi.moonstream.to/leaderboard/leaderboards",
@@ -78,10 +46,7 @@ const LeaderboardAdminView = () => {
     });
   };
 
-  const leaderboardsQuery = useQuery(["leaderboards"], getLeadeerboards, {
-    onSuccess: (data) => {
-      console.log(data);
-    },
+  const leaderboardsQuery = useQuery(["leaderboards"], getLeaderboards, {
     onError: (e) => {
       console.log(e);
     },
@@ -97,36 +62,34 @@ const LeaderboardAdminView = () => {
   };
 
   const selectedLeaderboard = useQuery(
-    ["selectedLeaderboard", leaderboardsQuery, selectedIndex],
+    ["selectedLeaderboard", leaderboardsQuery.data, selectedIndex],
     () => {
-      if (!leaderboardsQuery.data) {
-        return;
-      } else {
-        const leaderboard = leaderboardsQuery.data[selectedIndex];
-        setTitle(leaderboard.title);
-        setDescription(leaderboard.description);
-        return leaderboard;
-      }
+      const leaderboard = leaderboardsQuery.data[selectedIndex];
+      return leaderboard;
+    },
+    {
+      enabled: !!leaderboardsQuery.data,
     },
   );
 
-  const lastUpdate = useQuery(["lastUpdate", leaderboardsQuery, selectedIndex], async () => {
-    if (!leaderboardsQuery.data) {
-      return;
-    } else {
+  const lastUpdate = useQuery(
+    ["lastUpdate", leaderboardsQuery.data, selectedIndex],
+    async () => {
       const leaderboard = leaderboardsQuery.data[selectedIndex];
       const info = await getLeaderboardInfo(leaderboard.id);
-      console.log(info);
       return info.last_updated_at;
-    }
-  });
+    },
+    {
+      enabled: !!leaderboardsQuery.data,
+    },
+  );
 
   const refetchLeaderboardData = async () => {
     await leaderboardsQuery.refetch();
     await lastUpdate.refetch();
   };
 
-  const createLeaderboard = async (title: string, description: string) => {
+  const create = async (title: string, description: string) => {
     return await http({
       method: "POST",
       url: `https://engineapi.moonstream.to/leaderboard`,
@@ -139,7 +102,16 @@ const LeaderboardAdminView = () => {
     });
   };
 
-  const updateLeaderboard = async (id: string, title: string, description: string) => {
+  const createLeaderboard = useMutation(
+    ({ title, description }: { title: string; description: string }) => create(title, description),
+    {
+      onSuccess: () => {
+        setStatus("normal");
+      },
+    },
+  );
+
+  const update = async (id: string, title: string, description: string) => {
     return await http({
       method: "PUT",
       url: `https://engineapi.moonstream.to/leaderboard/${id}`,
@@ -153,22 +125,30 @@ const LeaderboardAdminView = () => {
     });
   };
 
-  const pushLeaderboardScores = async (id: string, content: Score[]) => {
+  const updateLeaderboard = useMutation(
+    ({ id, title, description }: { id: string; title: string; description: string }) =>
+      update(id, title, description),
+    {
+      onSuccess: () => {
+        setStatus("normal");
+      },
+    },
+  );
+
+  const pushScores = async (id: string, scores: Score[]) => {
     return await http({
       method: "PUT",
       url: `https://engineapi.moonstream.to/leaderboard/${id}/scores?normalize_addresses=false&overwrite=true`,
-      data: content,
+      data: scores,
     }).then(async (res: any) => {
       await refetchLeaderboardData();
       return res;
     });
   };
 
-  useEffect(() => {
-    if (Web3.utils.isAddress(web3ctx.account)) {
-      setCurrentAccount(web3ctx.account);
-    }
-  }, [web3ctx.account]);
+  const pushLeaderboardScores = useMutation(({ id, scores }: { id: string; scores: Score[] }) =>
+    pushScores(id, scores),
+  );
 
   const panelBackground = "#2D2D2D";
 
@@ -250,9 +230,8 @@ const LeaderboardAdminView = () => {
                     }}
                   />
                   <LeaderboardUpload
-                    handleScores={async (scores: Score[]) => {
-                      return await pushLeaderboardScores(selectedLeaderboard.data.id, scores);
-                    }}
+                    id={selectedLeaderboard.data.id}
+                    pushLeaderboardScores={pushLeaderboardScores}
                   />
                   <Button
                     my="20px"
@@ -283,28 +262,24 @@ const LeaderboardAdminView = () => {
                   </Modal>
                 </>
               )}
-              {status == "create" && (
-                <NewLeaderboard
-                  handleCreate={async (title: string, description: string) => {
-                    await createLeaderboard(title, description);
-                  }}
-                  onClose={() => {
-                    setStatus("normal");
-                  }}
-                />
-              )}
               {status == "edit" && (
                 <EditLeaderboard
                   leaderboard={selectedLeaderboard.data}
-                  handleEdit={async (id: string, title: string, description: string) => {
-                    await updateLeaderboard(id, title, description);
-                  }}
+                  updateLeaderboard={updateLeaderboard}
                   onClose={() => {
                     setStatus("normal");
                   }}
                 />
               )}
             </>
+          )}
+          {status == "create" && (
+            <NewLeaderboard
+              createLeaderboard={createLeaderboard}
+              onClose={() => {
+                setStatus("normal");
+              }}
+            />
           )}
         </Flex>
       </Flex>

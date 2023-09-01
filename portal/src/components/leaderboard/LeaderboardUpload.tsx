@@ -1,9 +1,6 @@
-/* eslint-disable react/no-children-prop */
-import { useContext, useState } from "react";
+import { useState } from "react";
 
-import { useQueryClient } from "react-query";
 import Papa from "papaparse";
-import { SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Flex,
   Box,
@@ -14,21 +11,27 @@ import {
   AccordionIcon,
 } from "@chakra-ui/react";
 
-import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 import FileUpload from "./FileUpload";
-import useDrop from "../../hooks/useDrop";
 import { Score } from "./types";
+import { UseMutationResult } from "react-query";
 
 const LeaderboardUpload = ({
-  handleScores,
+  id,
+  pushLeaderboardScores,
 }: {
-  handleScores: (scores: Score[]) => Promise<any>;
+  id: string,
+  pushLeaderboardScores: UseMutationResult<
+    any,
+    unknown,
+    {
+      id: string;
+      scores: Score[];
+    },
+    unknown
+  >;
 }) => {
   const toast = useMoonToast();
-
-  const queryClient = useQueryClient();
-  const web3ctx = useContext(Web3Context);
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -64,7 +67,6 @@ const LeaderboardUpload = ({
   };
 
   const parseCSV = (file: any) => {
-    console.log("Parsing CSV file.");
     parserLineNumber = 0;
     setIsUploading(true);
     Papa.parse(file, {
@@ -83,10 +85,18 @@ const LeaderboardUpload = ({
           };
         });
         try {
-          const response = await handleScores(scores);
-          if (response.status === 200) {
-            toast(`Successfully updated scores.`, "success");
-          }
+          pushLeaderboardScores.mutate(
+            { id: id, scores: scores },
+            {
+              onSuccess: () => {
+                toast("Successfully updated scores.", "success");
+              },
+              onError: (error) => {
+                console.log(error);
+                toast("Error uploading leaderboard scores.", "error");
+              },
+            },
+          );
         } catch (e: any) {
           toast(`Upload failed - ${e.message ?? "Error uploading leaderboard scores."}`, "error");
         }
@@ -97,7 +107,6 @@ const LeaderboardUpload = ({
   };
 
   const parseJSON = (file: any) => {
-    console.log("Parsing JSON file.");
     const fileReader = new FileReader();
     setIsUploading(true);
     try {
@@ -106,10 +115,18 @@ const LeaderboardUpload = ({
         if (readerEvent?.target?.result) {
           try {
             const scores = JSON.parse(String(readerEvent?.target?.result));
-            const response = await handleScores(scores);
-            if (response.status === 200) {
-              toast(`Successfully updated scores.`, "success");
-            }
+            pushLeaderboardScores.mutate(
+              { id: id, scores: scores },
+              {
+                onSuccess: () => {
+                  toast("Successfully updated scores.", "success");
+                },
+                onError: (error) => {
+                  console.log(error);
+                  toast("Error uploading leaderboard scores.", "error");
+                },
+              },
+            );
           } catch (e: any) {
             toast(`Upload failed - ${e.message ?? "Error uploading leaderboard scores."}`, "error");
           }
@@ -127,7 +144,6 @@ const LeaderboardUpload = ({
       return;
     }
     const file = uploads[0];
-    console.log(file);
     if (file.type == "application/json") {
       parseJSON(file);
     } else if (file.type == "text/csv") {

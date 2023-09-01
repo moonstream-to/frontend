@@ -1,5 +1,4 @@
-import { Flex, Box, Heading, Text, UnorderedList, ListItem } from "@chakra-ui/react";
-import { FiEdit2 } from "react-icons/fi";
+import { Box } from "@chakra-ui/react";
 import APIMethod from "./APIMethod";
 
 const LeaderboardAPI = ({ id }: { id: string }) => {

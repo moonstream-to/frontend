@@ -1,7 +1,16 @@
-import { Flex, Box, Heading, Text, Textarea, Spacer, Button, Input } from "@chakra-ui/react";
-import { FiEdit2 } from "react-icons/fi";
+import { Flex, Box, Text, Textarea, Input } from "@chakra-ui/react";
 
-const LeaderboardFields = ({ title, setTitle, description, setDescription }) => {
+const LeaderboardFields = ({
+  title,
+  setTitle,
+  description,
+  setDescription,
+}: {
+  title: string;
+  setTitle: any;
+  description: string;
+  setDescription: any;
+}) => {
   return (
     <Flex flexDir="column" my="20px" gap="20px">
       <Box>
@@ -11,7 +20,6 @@ const LeaderboardFields = ({ title, setTitle, description, setDescription }) => 
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          // placeholder="search"
           borderRadius="10px"
           p="8px 15px"
         />

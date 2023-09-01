@@ -3,13 +3,22 @@ import { FiEdit2 } from "react-icons/fi";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
+import { UseQueryResult } from "react-query";
 
-const printDate = (dateString) => {
+const printDate = (dateString: string) => {
   const date = new Date(dateString);
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 };
 
-const LeaderboardMetadata = ({ leaderboard, lastUpdate, handleEdit }) => {
+const LeaderboardMetadata = ({
+  leaderboard,
+  lastUpdate,
+  handleEdit,
+}: {
+  leaderboard: any;
+  lastUpdate: UseQueryResult<any, unknown>;
+  handleEdit: () => void;
+}) => {
   return (
     <Box>
       <Flex>
