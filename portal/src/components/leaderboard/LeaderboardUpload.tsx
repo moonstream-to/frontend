@@ -20,7 +20,7 @@ const LeaderboardUpload = ({
   id,
   pushLeaderboardScores,
 }: {
-  id: string,
+  id: string;
   pushLeaderboardScores: UseMutationResult<
     any,
     unknown,
