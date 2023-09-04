@@ -1,20 +1,7 @@
 import React from "react";
 import { useQuery, useMutation } from "react-query";
 
-import {
-  Box,
-  Heading,
-  Flex,
-  Text,
-  Button,
-  Spacer,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Heading, Flex, Text, Button, Spacer } from "@chakra-ui/react";
 
 import { AddIcon } from "@chakra-ui/icons";
 
@@ -26,23 +13,19 @@ import LeaderboardAPI from "./LeaderboardAPI";
 
 import LeaderboardUpload from "./LeaderboardUpload";
 import { Score } from "./types";
-import { useToast } from "../../hooks";
 
 const LeaderboardAdminView = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [status, setStatus] = React.useState("normal");
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
 
   const getLeaderboards = () => {
     return http({
       method: "GET",
       url: "https://engineapi.moonstream.to/leaderboard/leaderboards",
     }).then((res: any) => {
-      res.data.sort((a: any, b: any) => {
+      return res.data.sort((a: any, b: any) => {
         return b.created_at > a.created_at;
       });
-      return res.data;
     });
   };
 
@@ -151,6 +134,7 @@ const LeaderboardAdminView = () => {
   );
 
   const panelBackground = "#2D2D2D";
+  const minHeight = "550px";
 
   return (
     <Box
@@ -164,7 +148,7 @@ const LeaderboardAdminView = () => {
       <Flex>
         <Flex
           w="400px"
-          minH="720px"
+          minH={minHeight}
           bgColor={panelBackground}
           m="20px"
           p="20px"
@@ -174,7 +158,7 @@ const LeaderboardAdminView = () => {
           <Box>
             <Box>
               <Heading fontSize={["lg", "2xl"]}>Leaderboards</Heading>
-              <Box m="10px">
+              <Box m="10px" h="500px" overflow="scroll">
                 {leaderboardsQuery.data?.map((leaderboard: any, index: number) => {
                   return (
                     <Flex
@@ -211,12 +195,13 @@ const LeaderboardAdminView = () => {
         </Flex>
         <Flex
           w="800px"
-          minH="720px"
+          minH={minHeight}
           bgColor={panelBackground}
           m="20px"
           p="20px"
           rounded="lg"
           flexDir="column"
+          gap="20px"
         >
           {selectedLeaderboard.data && (
             <>
@@ -233,33 +218,7 @@ const LeaderboardAdminView = () => {
                     id={selectedLeaderboard.data.id}
                     pushLeaderboardScores={pushLeaderboardScores}
                   />
-                  <Button
-                    my="20px"
-                    bgColor="#FFFFFF"
-                    color="#232323"
-                    alignSelf="center"
-                    onClick={onOpen}
-                  >
-                    Show leaderboard API
-                  </Button>
-                  <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent
-                      bg="#2D2D2D"
-                      border="1px solid white"
-                      borderRadius="20px"
-                      textColor="white"
-                      mx="15px"
-                      maxW="500px"
-                    >
-                      <ModalHeader fontSize="18px" fontWeight="900">
-                        Leaderboard API
-                      </ModalHeader>
-                      <ModalBody>
-                        <LeaderboardAPI id={selectedLeaderboard.data.id} />
-                      </ModalBody>
-                    </ModalContent>
-                  </Modal>
+                  <LeaderboardAPI id={selectedLeaderboard.data.id} />
                 </>
               )}
               {status == "edit" && (
