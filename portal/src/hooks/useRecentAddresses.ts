@@ -16,6 +16,7 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
 
   useEffect(() => {
     const updateAddresses = () => {
+      console.log("qq");
       const storedAddresses = localStorage.getItem(`${type}-recentAddresses`);
       try {
         setRecentAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);
@@ -41,26 +42,31 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
   };
 
   const addRecentAddress = (address: string, fields: Record<string, string>) => {
-    const existingAddressIndex = recentAddresses.findIndex((a) => a.address === address);
-    if (existingAddressIndex >= 0) {
-      // Address already exists, merge existing fields with new fields
-      const existingAddress = recentAddresses[existingAddressIndex];
-      const updatedAddress = { ...existingAddress, ...fields };
-      const otherAddresses = recentAddresses.filter((a) => a.address !== address);
-      const updatedAddresses = [updatedAddress, ...otherAddresses];
-      setRecentAddresses(updatedAddresses);
-      localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
-      dispatchUpdatedEvent();
-    } else {
-      // Address is new, add as a new item to the beginning of the list
-      const newAddress = { address, ...fields };
-      const updatedAddresses = [
-        newAddress,
-        ...recentAddresses.filter((a) => a.address !== address),
-      ];
-      setRecentAddresses(updatedAddresses);
-      localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
-    }
+    setRecentAddresses((prevRecentAddresses) => {
+      const existingAddressIndex = prevRecentAddresses.findIndex((a) => a.address === address);
+
+      if (existingAddressIndex >= 0) {
+        // Address already exists, merge existing fields with new fields
+        const existingAddress = prevRecentAddresses[existingAddressIndex];
+        const updatedAddress = { ...existingAddress, ...fields };
+        const otherAddresses = prevRecentAddresses.filter((a) => a.address !== address);
+        const updatedAddresses = [updatedAddress, ...otherAddresses];
+
+        localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
+        dispatchUpdatedEvent();
+
+        return updatedAddresses;
+      } else {
+        // Address is new, add it to the list
+        const newAddress = { address, ...fields };
+        const updatedAddresses = [newAddress, ...prevRecentAddresses];
+
+        localStorage.setItem(`${type}-recentAddresses`, JSON.stringify(updatedAddresses));
+        dispatchUpdatedEvent();
+
+        return updatedAddresses;
+      }
+    });
   };
 
   const deleteRecentAddress = (address: string) => {

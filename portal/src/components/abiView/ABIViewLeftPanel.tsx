@@ -115,7 +115,16 @@ const ABIViwLeftPanel = ({
   }, [src, getABIQuery.refetch]);
 
   return (
-    <Flex bg="#262626" w="100%" minH="100%" direction="column" overflowY="auto" p="0px" flex="1">
+    <Flex
+      bg="#262626"
+      w="100%"
+      minH="100%"
+      direction="column"
+      overflowY="auto"
+      p="0px"
+      flex="1"
+      id={"leftPanel"}
+    >
       <Flex
         width="100%"
         h="40px"

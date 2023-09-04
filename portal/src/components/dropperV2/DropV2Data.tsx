@@ -1,4 +1,4 @@
-import { Flex, Link, Text, Icon } from "@chakra-ui/react";
+import { Flex, Link, Text, Icon, Button, Spinner } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
 import { useEffect } from "react";
@@ -20,6 +20,7 @@ type DropV2DataProps = {
   metadata: Record<string, any>;
   excludeFields: string[];
   PORTAL_PATH: string;
+  mintTokens: any;
 };
 
 const DropV2Data: React.FC<DropV2DataProps> = ({
@@ -27,6 +28,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
   metadata,
   excludeFields,
   PORTAL_PATH,
+  mintTokens,
 }) => {
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
@@ -55,6 +57,18 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
             />
             <PoolDetailsRow type="Id" value={dropState.data.drop.tokenId} />
             <PoolDetailsRow type="Amount" value={dropState.data.drop.amount} />
+            {dropState.data.drop.tokenType === "721" && (
+              <Button
+                placeSelf={"end"}
+                variant="whiteOutline"
+                fontSize="14px"
+                p="4px 16px"
+                borderRadius={"7px"}
+                onClick={() => mintTokens.mutate()}
+              >
+                {mintTokens.isLoading ? <Spinner /> : "Mint"}
+              </Button>
+            )}
             {dropState.data.drop.tokenType === "1" && (
               <Flex fontSize="18px" justifyContent="space-between" alignItems="center">
                 <Text>Does dropper have minting authority?</Text>

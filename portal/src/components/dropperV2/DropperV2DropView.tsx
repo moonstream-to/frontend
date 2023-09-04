@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Box, Button, Spinner } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
@@ -13,11 +13,16 @@ import queryCacheProps from "../../hooks/hookCommon";
 import { PORTAL_PATH } from "../../constants";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
+const ERC721Abi = require("../../web3/abi/MockERC721.json");
+
+const multicallABI = require("../../web3/abi/Multicall2.json");
+import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import DropHeader from "../dropper/DropHeader";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
 import DropperV2EditDrop from "./DropperV2EditDrop";
 import DropperV2ClaimsView from "./DropperV2ClaimsView";
+import useMoonToast from "../../hooks/useMoonToast";
 
 const DropperV2DropView = ({
   address,
@@ -54,6 +59,42 @@ const DropperV2DropView = ({
       addRecentAddress(address, { image: metadata.image });
     }
   }, [metadata?.image]);
+
+  const toast = useMoonToast();
+
+  const mintTokens = useMutation(
+    () => {
+      const ERC721contract = new web3.eth.Contract(ERC721Abi) as any;
+      ERC721contract.options.address = dropState.data?.drop.tokenAddress;
+      const mints = [];
+      const amount = Number(prompt("Amount"));
+      const startingFrom = Number(prompt("First tokenID"));
+      if (!amount || !startingFrom) {
+        return new Promise((_, rej) => {
+          rej(new Error("Interrupted by user"));
+        });
+      }
+      for (let i = startingFrom; i < startingFrom + amount; i += 1) {
+        mints.push({
+          target: dropState.data?.drop.tokenAddress,
+          callData: ERC721contract.methods
+            .mint("0x26abECbD9Ee178328b175ce94e8abbacfC95343A", i)
+            .encodeABI(),
+        });
+      }
+      const multicallContract = new web3.eth.Contract(multicallABI) as any;
+      multicallContract.options.address = MULTICALL2_CONTRACT_ADDRESSES["80001"];
+      return multicallContract.methods.tryAggregate(false, mints).send({ from: web3ctx.account });
+    },
+    {
+      onSuccess: () => {
+        toast("Minted", "success");
+      },
+      onError: (e: any) => {
+        toast(e.message, "error");
+      },
+    },
+  );
 
   const dropState = useQuery(
     ["dropState", address, dropId, chainId],
@@ -159,6 +200,7 @@ const DropperV2DropView = ({
                     dropState={dropState}
                     excludeFields={headerMeta}
                     PORTAL_PATH={PORTAL_PATH}
+                    mintTokens={mintTokens}
                   />
                 )}
               </Flex>
