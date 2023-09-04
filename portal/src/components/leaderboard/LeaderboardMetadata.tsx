@@ -1,6 +1,8 @@
 import RouterLink from "next/link";
 
-import { chakra, Flex, Box, Heading, Text, Spacer, Button, Link } from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Spacer, Button, Link } from "@chakra-ui/react";
+import { LinkIcon } from "@chakra-ui/icons";
+
 import { FiEdit2 } from "react-icons/fi";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
@@ -23,26 +25,28 @@ const LeaderboardMetadata = ({
 }) => {
   return (
     <Box>
-      <Flex>
+      <Flex mb="20px">
         <Heading fontSize={["lg", "2xl"]}>{leaderboard.title}</Heading>
         <Spacer />
-        <Link
-          as={RouterLink}
-          href={`/leaderboards/?leaderboard_id=${leaderboard.id}`}
-          target="_blank"
-          pt="5px"
-        >
-          <chakra.span
-            style={{ textDecoration: "underline" }}
-            _hover={{ color: "accent.500", textDecoration: "underline" }}
-          >
-            link to public leaderboard
-          </chakra.span>
-        </Link>
         <Spacer />
-        <Box>
+        <Flex gap="10px">
           <Button
-            width="100%"
+            variant="solidWhite"
+            fontSize="md"
+            color="#F56646"
+            h="30px"
+            rightIcon={<LinkIcon />}
+          >
+            <Link
+              as={RouterLink}
+              href={`/leaderboards/?leaderboard_id=${leaderboard.id}`}
+              target="_blank"
+            >
+              Public Leaderboard
+            </Link>
+          </Button>
+          <Button
+            h="30px"
             fontWeight="700"
             bgColor="transparent"
             color="inherit"
@@ -52,7 +56,7 @@ const LeaderboardMetadata = ({
           >
             Edit
           </Button>
-        </Box>
+        </Flex>
       </Flex>
       <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm, remarkBreaks]}>
         {leaderboard.description}
