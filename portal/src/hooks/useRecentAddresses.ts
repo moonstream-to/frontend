@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type Address = {
+export type Address = {
   address: string;
   [key: string]: string; // arbitrary set of fields
 };

@@ -1,5 +1,6 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { Address } from "../../hooks/useRecentAddresses";
 
 const ABIRecentAddresses = ({
   setStoredAddress,
@@ -7,8 +8,8 @@ const ABIRecentAddresses = ({
   addRecentAddress,
 }: {
   setStoredAddress: (arg0: { address: string }) => void;
-  recentAddresses: any;
-  addRecentAddress: any;
+  recentAddresses: Address[];
+  addRecentAddress: (address: string, fields: Record<string, string>) => void;
 }) => {
   const [editingItemId, setEditingItemId] = useState(-1);
   const [newTitle, setNewTitle] = useState("");
@@ -38,7 +39,7 @@ const ABIRecentAddresses = ({
         Addresses
       </Text>
       <Flex direction={"column"} gap={"10px"} color={"#AAA"}>
-        {recentAddresses.map((address: any, idx: number) => (
+        {recentAddresses.map((address: Address, idx: number) => (
           <Flex direction={"column"} key={address.address} borderBottom={"1px solid #666"}>
             <Text
               fontFamily={"Roboto Mono, monospace"}

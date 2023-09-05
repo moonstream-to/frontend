@@ -109,7 +109,6 @@ const ABIFunction = ({
   }, [contractAddress, isOpen]);
 
   useEffect(() => {
-    console.log(storedAddress, activeInputIdx);
     if (storedAddress && activeInputIdx !== undefined) {
       if (activeInputIdx === -1) {
         setCallOnAddress(storedAddress.address);
