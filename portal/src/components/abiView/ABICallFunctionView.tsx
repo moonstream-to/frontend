@@ -25,7 +25,7 @@ const ABICallFunctionView = ({
   contractAddress?: string;
   src: string;
 }) => {
-  const [storedAddress, setStoredAddress] = useState("");
+  const [storedAddress, setStoredAddress] = useState({ address: "" });
   const { recentAddresses, addRecentAddress } = useRecentAddresses("ABIExplorer-addresses");
   return (
     <Flex
@@ -37,9 +37,6 @@ const ABICallFunctionView = ({
       minW="100vw"
       position="relative"
       alignSelf="stretch"
-      bg={"purple"}
-
-      // ref={scrollRef}
     >
       <ABIRecentAddresses
         setStoredAddress={setStoredAddress}

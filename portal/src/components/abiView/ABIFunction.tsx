@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Web3Context from "../../contexts/Web3Context/context";
 import ChainSelector from "../ChainSelector";
 import { colorScheme, getType, Outputs } from "./ABIViewRightPanel";
-import useRecentAddresses from "../../hooks/useRecentAddresses";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
@@ -31,7 +30,7 @@ const ABIFunction = ({
   stateMutability: string;
   contractAddress?: string;
   src: string;
-  storedAddress: string;
+  storedAddress: { address: string };
   addRecentAddress: any;
 }) => {
   const web3ctx = useContext(Web3Context);
@@ -42,7 +41,6 @@ const ABIFunction = ({
   const [result, setResult] = useState<any>(undefined);
   const [error, setError] = useState<any | undefined>(undefined);
   const [highlightRequired, setHighlightRequired] = useState(false);
-  // const { addRecentAddress } = useRecentAddresses("ABIExplorer-addresses");
   const [activeInputIdx, setActiveInputIdx] = useState<number | undefined>(undefined);
 
   const callFunction = async (address: string, abi: any, name: string, values: any) => {
@@ -56,7 +54,6 @@ const ABIFunction = ({
         const contract = new web3ctx.web3.eth.Contract(abi, address);
         const fn = contract.methods[name];
         const valuesToSend = values.map((value: string, idx: number) => {
-          console.log(value, inputs[idx].type, web3ctx.web3.utils.isAddress(value));
           if (inputs[idx].type === "address" && web3ctx.web3.utils.isAddress(value)) {
             addRecentAddress(value, { src, field: inputs[idx].name });
           }
@@ -65,15 +62,12 @@ const ABIFunction = ({
           }
           try {
             const obj = JSON.parse(value);
-            console.log(obj, typeof obj);
             return obj;
           } catch (e) {
             console.log(e);
-            // return value
           }
           return value;
         });
-        console.log(valuesToSend);
         const res =
           stateMutability === "view"
             ? await fn(...values).call()
@@ -118,11 +112,10 @@ const ABIFunction = ({
     console.log(storedAddress, activeInputIdx);
     if (storedAddress && activeInputIdx !== undefined) {
       if (activeInputIdx === -1) {
-        setCallOnAddress(storedAddress);
+        setCallOnAddress(storedAddress.address);
       } else if (inputs[activeInputIdx] && inputs[activeInputIdx].type === "address") {
-        inputs[activeInputIdx].type === "address";
         const newValues = [...values];
-        newValues[activeInputIdx] = storedAddress;
+        newValues[activeInputIdx] = storedAddress.address;
         setValues(newValues);
       }
     }
@@ -132,12 +125,10 @@ const ABIFunction = ({
     <Flex
       direction="column"
       gap="10px"
-      // w="100%"
       bg="#202329"
       alignItems="center"
       p={"20px"}
       color={"#CCCCCC"}
-      // minH={"100%"}
       overflowY={"auto"}
       flex={"2"}
     >
@@ -220,7 +211,6 @@ const ABIFunction = ({
                   color="#CCCCCC"
                   spellCheck="false"
                   onFocus={() => setActiveInputIdx(idx)}
-                  // onBlur={() => setActiveInputIdx(undefined)}
                 />
               </Flex>
             ))}

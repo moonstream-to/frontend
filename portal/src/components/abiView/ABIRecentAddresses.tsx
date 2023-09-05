@@ -1,5 +1,4 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
-import useRecentAddresses from "../../hooks/useRecentAddresses";
 import React, { useState } from "react";
 
 const ABIRecentAddresses = ({
@@ -7,11 +6,10 @@ const ABIRecentAddresses = ({
   recentAddresses,
   addRecentAddress,
 }: {
-  setStoredAddress: (address: string) => void;
+  setStoredAddress: (arg0: { address: string }) => void;
   recentAddresses: any;
   addRecentAddress: any;
 }) => {
-  // const { recentAddresses, addRecentAddress } = useRecentAddresses("ABIExplorer-addresses");
   const [editingItemId, setEditingItemId] = useState(-1);
   const [newTitle, setNewTitle] = useState("");
   const shortSrc = (src: string) => {
@@ -19,6 +17,10 @@ const ABIRecentAddresses = ({
       return src.split("/").slice(-1);
     }
     return `${src.slice(0, 6)}...${src.slice(-4)}`;
+  };
+
+  const handleClick = (address: string) => {
+    setStoredAddress({ address });
   };
 
   return (
@@ -42,7 +44,7 @@ const ABIRecentAddresses = ({
               fontFamily={"Roboto Mono, monospace"}
               fontSize={"16px"}
               color={"#DDD"}
-              onClick={() => setStoredAddress(address.address)}
+              onClick={() => handleClick(address.address)}
               cursor={"pointer"}
             >
               {address.address}
