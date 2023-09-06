@@ -142,6 +142,15 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
     setShowInvalid(false);
   }, [state]);
 
+  useEffect(() => {
+    if (state.tokenType === dropTypes.ERC721) {
+      setState((prevState) => ({ ...prevState, amount: "1" }));
+    }
+    if (state.tokenType === dropTypes.ERC721 || state.tokenType === dropTypes.ERC20) {
+      setState((prevState) => ({ ...prevState, tokenId: "0" }));
+    }
+  });
+
   // If drop type is "Mint Terminus" (type 1), then we populate the Terminus pool URI into the URI field as a default.
   useEffect(() => {
     if (state.tokenType === 1) {
@@ -214,6 +223,9 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
               fontSize="18px"
               w="8ch"
               borderRadius="10px"
+              isDisabled={
+                state.tokenType === dropTypes.ERC721 || state.tokenType === dropTypes.ERC20
+              }
               value={state.tokenId}
               onChange={(e) => setState((prevState) => ({ ...prevState, tokenId: e.target.value }))}
               borderColor={!showInvalid || isTokenIdValid ? "white" : "error.500"}
@@ -268,6 +280,7 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
             w="45ch"
             borderRadius="10px"
             value={state.amount}
+            isDisabled={state.tokenType === dropTypes.ERC721}
             onChange={(e) => setState((prevState) => ({ ...prevState, amount: e.target.value }))}
             borderColor={!showInvalid || isAmountValid ? "white" : "error.500"}
             placeholder="amount"
