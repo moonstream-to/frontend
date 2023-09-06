@@ -65,10 +65,12 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
                     <Text pr="5px">No</Text>
                     <Icon as={RxCrossCircled} w="15px" mr="20px" />
                     <Button
-                      bg="gray.0"
                       fontWeight="400"
                       fontSize="18px"
                       color="#2d2d2d"
+                      variant={"saveButton"}
+                      px={"40px"}
+                      minW={"152px"}
                       onClick={() =>
                         approveForPool.mutate({
                           operator: dropState.data.address,
@@ -76,7 +78,6 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
                         })
                       }
                       isDisabled={approveForPool.isLoading}
-                      minW="fit-content"
                     >
                       {approveForPool.isLoading ? <Spinner /> : "Approve"}
                     </Button>
