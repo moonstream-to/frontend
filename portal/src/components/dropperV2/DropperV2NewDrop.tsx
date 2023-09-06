@@ -25,11 +25,24 @@ import PoolDetailsRow from "../PoolDetailsRow";
 import useLink from "../../hooks/useLink";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
+import { DropperState, SetDropperState } from "./DropperV2DropsListView";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
 
-const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () => void }) => {
+interface DropperV2NewDropProps {
+  address: string;
+  state: DropperState;
+  setState: SetDropperState;
+  onClose: () => void;
+}
+
+const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
+  address,
+  state,
+  setState,
+  onClose,
+}) => {
   const { web3 } = useContext(Web3Context);
 
   const [showInvalid, setShowInvalid] = useState(false);
@@ -37,13 +50,6 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
   const queryClient = useQueryClient();
   const web3ctx = useContext(Web3Context);
 
-  const [tokenType, setTokenType] = useState(1);
-  const [tokenAddress, setTokenAddress] = useState("");
-  const [tokenId, setTokenId] = useState("");
-  const [amount, setAmount] = useState("");
-  const [authorizationTokenAddress, setAuthorizationTokenAddress] = useState("");
-  const [authorizationPoolId, setAuthorizationPoolId] = useState("");
-  const [uri, setUri] = useState("");
   const headerMeta = ["name", "description", "image", "attributes"];
 
   const createDrop = ({
@@ -66,7 +72,6 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
     const dropperContract = new web3.eth.Contract(dropperAbi) as any;
 
     dropperContract.options.address = address ?? "";
-
     return dropperContract.methods
       .createDrop(
         tokenType,
@@ -111,47 +116,49 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
 
   const dropTypesIds = [20, 721, 1155, 1];
 
-  const isTokenTypeValid = dropTypesIds.includes(tokenType);
-  const isAmountValid = !isNaN(Number(tokenId));
-  const isAuthorizationTokenAddressValid = web3.utils.isAddress(authorizationTokenAddress);
-  const isTokenIdValid = !isNaN(Number(tokenId));
-  const isAuthorizationPoolIdValid = !isNaN(Number(tokenId)); //TODO Check with contract ?
-  const isTokenAddressValid = web3.utils.isAddress(tokenAddress);
-  const newMetadata = useLink({ link: uri });
+  const isTokenTypeValid = dropTypesIds.includes(state.tokenType);
+  const isAmountValid = !isNaN(Number(state.tokenId));
+  const isAuthorizationTokenAddressValid = web3.utils.isAddress(state.authorizationTokenAddress);
+  const isTokenIdValid = !isNaN(Number(state.tokenId));
+  const isAuthorizationPoolIdValid = !isNaN(Number(state.tokenId)); //TODO Check with contract ?
+  const isTokenAddressValid = web3.utils.isAddress(state.tokenAddress);
+  const newMetadata = useLink({ link: state.uri });
 
   const handleSave = () => {
     if (isInputsValid()) {
       createDropMutation.mutate({
-        tokenType: Number(tokenType),
-        tokenAddress,
-        tokenId: Number(tokenId),
-        amount: Number(amount),
-        authorizationTokenAddress,
-        authorizationPoolId: Number(authorizationPoolId),
-        uri,
+        tokenType: Number(state.tokenType),
+        tokenAddress: state.tokenAddress,
+        tokenId: Number(state.tokenId),
+        amount: Number(state.amount),
+        authorizationTokenAddress: state.authorizationTokenAddress,
+        authorizationPoolId: Number(state.authorizationPoolId),
+        uri: state.uri,
       });
     }
   };
 
   useEffect(() => {
     setShowInvalid(false);
-  }, [tokenType, tokenAddress, tokenId, amount, authorizationTokenAddress, authorizationPoolId]);
+  }, [state]);
 
   // If drop type is "Mint Terminus" (type 1), then we populate the Terminus pool URI into the URI field as a default.
   useEffect(() => {
-    if (tokenType === 1) {
-      if (web3.utils.isAddress(tokenAddress) && tokenId) {
+    if (state.tokenType === 1) {
+      if (web3.utils.isAddress(state.tokenAddress) && state.tokenId) {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
-        terminusContract.options.address = tokenAddress;
+        terminusContract.options.address = state.tokenAddress;
         terminusContract.methods
-          .uri(tokenId)
+          .uri(state.tokenId)
           .call()
           .then((terminusPoolURI: string) => {
-            setUri(terminusPoolURI);
+            if (terminusPoolURI) {
+              setState((prevState) => ({ ...prevState, uri: terminusPoolURI }));
+            }
           });
       }
     }
-  }, [tokenType, tokenAddress, tokenId]);
+  }, [state.tokenType, state.tokenAddress, state.tokenId]);
 
   return (
     <Flex borderRadius="20px" bg="#2d2d2d" w="100%" minH="100%" direction="column" overflowY="auto">
@@ -173,8 +180,10 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             <Text variant="label">type</Text>
             <Select
               w="20ch"
-              value={tokenType}
-              onChange={(e) => setTokenType(Number(e.target.value))}
+              value={state.tokenType}
+              onChange={(e) =>
+                setState((prevState) => ({ ...prevState, tokenType: Number(e.target.value) }))
+              }
             >
               {Object.keys(dropTypes).map((type) => (
                 <option key={type} value={dropTypes[type as keyof typeof dropTypes]}>
@@ -190,8 +199,10 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
               fontSize="18px"
               w="45ch"
               borderRadius="10px"
-              value={tokenAddress}
-              onChange={(e) => setTokenAddress(e.target.value)}
+              value={state.tokenAddress}
+              onChange={(e) =>
+                setState((prevState) => ({ ...prevState, tokenAddress: e.target.value }))
+              }
               borderColor={!showInvalid || isTokenAddressValid ? "white" : "error.500"}
               placeholder="token address"
             />
@@ -203,8 +214,8 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
               fontSize="18px"
               w="8ch"
               borderRadius="10px"
-              value={tokenId}
-              onChange={(e) => setTokenId(e.target.value)}
+              value={state.tokenId}
+              onChange={(e) => setState((prevState) => ({ ...prevState, tokenId: e.target.value }))}
               borderColor={!showInvalid || isTokenIdValid ? "white" : "error.500"}
               placeholder="token ID"
             />
@@ -222,8 +233,13 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
               fontSize="18px"
               w="45ch"
               borderRadius="10px"
-              value={authorizationTokenAddress}
-              onChange={(e) => setAuthorizationTokenAddress(e.target.value)}
+              value={state.authorizationTokenAddress}
+              onChange={(e) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  authorizationTokenAddress: e.target.value,
+                }))
+              }
               borderColor={!showInvalid || isAuthorizationTokenAddressValid ? "white" : "error.500"}
               placeholder="authorization token address"
             />
@@ -235,8 +251,10 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
               fontSize="18px"
               w="8ch"
               borderRadius="10px"
-              value={authorizationPoolId}
-              onChange={(e) => setAuthorizationPoolId(e.target.value)}
+              value={state.authorizationPoolId}
+              onChange={(e) =>
+                setState((prevState) => ({ ...prevState, authorizationPoolId: e.target.value }))
+              }
               borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
               placeholder="pool Id"
             />
@@ -249,8 +267,8 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             fontSize="18px"
             w="45ch"
             borderRadius="10px"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={state.amount}
+            onChange={(e) => setState((prevState) => ({ ...prevState, amount: e.target.value }))}
             borderColor={!showInvalid || isAmountValid ? "white" : "error.500"}
             placeholder="amount"
           />
@@ -262,8 +280,8 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             fontSize="18px"
             w="45ch"
             borderRadius="10px"
-            value={uri}
-            onChange={(e) => setUri(e.target.value)}
+            value={state.uri}
+            onChange={(e) => setState((prevState) => ({ ...prevState, uri: e.target.value }))}
             // borderColor={!showInvalid || isAuthorizationPoolIdValid ? "white" : "error.500"}
             placeholder="https://"
           />
@@ -338,7 +356,7 @@ const DropperV2NewDrop = ({ address, onClose }: { address: string; onClose: () =
             </AccordionItem>
           </Accordion>
         )}
-        {!newMetadata.data && uri && (
+        {!newMetadata.data && state.uri && (
           <Text color="error.500" mb={4}>
             Can&apos;t fetch metadata
           </Text>
