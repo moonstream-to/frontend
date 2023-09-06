@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Box, Button, Spinner } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
@@ -18,6 +18,8 @@ import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
 import DropperV2EditDrop from "./DropperV2EditDrop";
 import DropperV2ClaimsView from "./DropperV2ClaimsView";
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
+import useMoonToast from "../../hooks/useMoonToast";
 
 const DropperV2DropView = ({
   address,
@@ -65,6 +67,7 @@ const DropperV2DropView = ({
       const uri = await dropperContract.methods.dropUri(dropId).call(); //TODO take from ClaimsList
       const dropAuthorization = await dropperContract.methods.getDropAuthorization(dropId).call();
       const active = await dropperContract.methods.dropStatus(dropId).call();
+
       let isMintAuthorized = false;
       if (drop.tokenId && drop.tokenAddress && drop.tokenType === "1") {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
@@ -79,12 +82,31 @@ const DropperV2DropView = ({
         }
       }
 
-      return { drop, uri, dropAuthorization, active, isMintAuthorized };
+      return { drop, uri, dropAuthorization, active, isMintAuthorized, address };
     },
     {
       ...queryCacheProps,
       retry: false,
       enabled: Number(dropId) > 0 && !!address,
+    },
+  );
+  const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
+  terminusFacet.options.address = dropState.data?.drop.tokenAddress;
+  const toast = useMoonToast();
+  const approveForPool = useMutation(
+    ({ operator, poolId }: { operator: string; poolId: number }) => {
+      return terminusFacet.methods
+        .approveForPool(poolId, operator)
+        .send({ from: web3ctx.account, maxPriorityFeePerGas: null, maxFeePerGas: null });
+    },
+    {
+      onSuccess: () => {
+        dropState.refetch();
+        toast("Successfully approved contract", "success");
+      },
+      onError: (e) => {
+        console.log(e);
+      },
     },
   );
 
@@ -159,6 +181,7 @@ const DropperV2DropView = ({
                     dropState={dropState}
                     excludeFields={headerMeta}
                     PORTAL_PATH={PORTAL_PATH}
+                    approveForPool={approveForPool}
                   />
                 )}
               </Flex>
