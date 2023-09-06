@@ -1,7 +1,6 @@
-import { Flex, Link, Text, Icon } from "@chakra-ui/react";
+import { Flex, Link, Text, Icon, Button, Spinner } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
-import { useEffect } from "react";
 import { RxCrossCircled } from "react-icons/rx";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 
@@ -12,6 +11,7 @@ type DropStateType = {
     uri: string;
     active: boolean;
     isMintAuthorized: boolean;
+    address: string;
   };
 };
 
@@ -20,6 +20,7 @@ type DropV2DataProps = {
   metadata: Record<string, any>;
   excludeFields: string[];
   PORTAL_PATH: string;
+  approveForPool: any;
 };
 
 const DropV2Data: React.FC<DropV2DataProps> = ({
@@ -27,6 +28,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
   metadata,
   excludeFields,
   PORTAL_PATH,
+  approveForPool,
 }) => {
   const dropTypes = new Map<string, string>([
     ["20", "ERC20"],
@@ -62,6 +64,22 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
                   <Flex alignItems="center">
                     <Text pr="5px">No</Text>
                     <Icon as={RxCrossCircled} w="15px" mr="20px" />
+                    <Button
+                      bg="gray.0"
+                      fontWeight="400"
+                      fontSize="18px"
+                      color="#2d2d2d"
+                      onClick={() =>
+                        approveForPool.mutate({
+                          operator: dropState.data.address,
+                          poolId: dropState.data.drop.tokenId,
+                        })
+                      }
+                      isDisabled={approveForPool.isLoading}
+                      minW="fit-content"
+                    >
+                      {approveForPool.isLoading ? <Spinner /> : "Approve"}
+                    </Button>
                   </Flex>
                 ) : (
                   <Flex alignItems="center">
