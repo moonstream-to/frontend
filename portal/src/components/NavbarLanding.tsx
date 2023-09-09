@@ -14,6 +14,7 @@ import {
   MenuList,
   MenuItem,
   useMediaQuery,
+  Divider,
 } from "@chakra-ui/react";
 
 import { AWS_STATIC_ASSETS_PATH, PAGETYPE, SITEMAP } from "../constants";
@@ -99,7 +100,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
 
   const router = useRouter();
   const [isSmallView, isVerySmallView] = useMediaQuery([
-    "(max-width: 1000px)",
+    "(max-width: 1024px)",
     "(max-width: 400px)",
   ]);
 
@@ -134,26 +135,35 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
         {!isSmallView && <NavbarMenu />}
         <Flex justifyContent="end" w="160px" gap={{ base: "5px", sm: "15px" }} alignItems="center">
           {!router.asPath.includes("portal") && (
-            <RouterLink href="/portal">
-              <Button
-                variant="whiteOutline"
-                mb={isVerySmallView ? "3px" : "0"}
-                fontWeight="700"
-                p={isVerySmallView ? "2px 5px" : "5px 10px"}
-                h="100%"
-                borderRadius="10px"
-                borderWidth="1px"
-                fontSize={isVerySmallView ? "12px" : "16px"}
-                _hover={{
-                  backgroundColor: "transparent",
-                }}
-                borderStyle={isVerySmallView ? "none" : "none"}
-              >
-                Portal
-              </Button>
-            </RouterLink>
+            <>
+              <RouterLink href="/portal">
+                <Button
+                  variant="whiteOutline"
+                  mb={isVerySmallView ? "2px" : "0"}
+                  fontWeight="700"
+                  p={isVerySmallView ? "2px 5px" : "5px 10px"}
+                  h="100%"
+                  borderRadius="30px"
+                  borderWidth="1px"
+                  fontSize={isVerySmallView ? "12px" : "16px"}
+                  _hover={{
+                    backgroundColor: "transparent",
+                  }}
+                  borderStyle={isVerySmallView ? "none" : "solid"}
+                >
+                  Portal
+                </Button>
+              </RouterLink>
+              {!isVerySmallView && (
+                <Divider backgroundColor={"#8F8F8F"} orientation={"vertical"} h={"3px"} w={"3px"} />
+              )}
+            </>
           )}
-          <Account fontSize={isVerySmallView ? "12px" : "16px"} />
+          <Account
+            fontSize={isVerySmallView ? "12px" : "16px"}
+            background={isVerySmallView ? "transparent" : "#353535"}
+            mr={isVerySmallView ? "-15px" : "0"}
+          />
         </Flex>
       </Flex>
       {isSmallView && <NavbarMenu />}
