@@ -6,14 +6,7 @@ import ABIViewRightPanel from "./abiView/ABIViewRightPanel";
 const ABIView = () => {
   const [abi, setAbi] = useState("");
   const [abiObject, setAbiObject] = useState([]);
-
   const [src, setSrc] = useState("");
-
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    scrollRef?.current?.scrollIntoView();
-  }, []);
 
   useEffect(() => {
     try {
@@ -35,12 +28,11 @@ const ABIView = () => {
       gap="0px"
       mt="30px"
       px="0"
-      minH="calc(100vh - 20px)"
-      maxH="calc(100vh - 20px)"
+      minH="calc(100vh - 120px)"
+      maxH="calc(100vh - 120px)"
       minW="100vw"
       position="relative"
       alignSelf="stretch"
-      ref={scrollRef}
     >
       <ABIViwLeftPanel abi={abi} setAbi={setAbi} src={src} setSrc={setSrc} />
       <ABIViewRightPanel src={src} setSrc={setSrc} abiObject={abiObject} />
