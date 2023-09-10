@@ -89,7 +89,6 @@ const ABIViwLeftPanel = ({
   };
 
   const getABI = () => {
-    // setLoadedFromTx("");
     if (web3.utils.isAddress(src)) {
       return getFromAddress(src);
     } else {
@@ -159,13 +158,6 @@ const ABIViwLeftPanel = ({
                 </MenuItem>
               ))}
             </MenuGroup>
-            {/* <MenuGroup color="#CCCCCC" title={`Recent txs on ${recentTransactionsChain}`}>
-              {recentTransactions.map((tx, idx) => (
-                <MenuItem color="#AAAAAA" key={idx} title={tx} onClick={() => setSrc(tx)}>
-                  <Text>{tx.slice(0, 6) + "..." + tx.slice(-4)}</Text>
-                </MenuItem>
-              ))}
-            </MenuGroup> */}
           </MenuList>
         </Menu>
       </Flex>
@@ -183,17 +175,6 @@ const ABIViwLeftPanel = ({
             {(getABIQuery.error as any).message}
           </Text>
         )}
-        {/* {abiFromTransactionsQuery.isLoading && (
-          <Text ml="40px" placeSelf="center" color="#BBBBBB">
-            searching...
-          </Text>
-        )}
-        {loadedFromTx && (
-          <Text ml="40px" placeSelf="center" color="#BBBBBB">
-            {loadedFromTx}
-          </Text>
-        )} */}
-
         <Spacer />
         {/* <Icon as={AiOutlineSave} mr="33px" /> //TODO */}
       </Flex>
