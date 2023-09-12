@@ -1,14 +1,10 @@
 import Head from "next/head";
 
-import { Flex, Spacer } from "@chakra-ui/react";
+import { Flex, Spacer, useMediaQuery } from "@chakra-ui/react";
 
-import BreadcrumbView from "./BreadcrumbView";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
 import { AWS_STATIC_ASSETS_PATH } from "../constants";
 import NavbarLanding from "./NavbarLanding";
-
-// const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
 
 export const siteTitle = "Moonstream apps portal";
 
@@ -21,6 +17,7 @@ export default function LayoutLanding({
   home?: boolean;
   title?: string;
 }) {
+  const [isSmallPadding] = useMediaQuery(["(min-width: 1024px) and (max-width: 1100px)"]);
   return (
     <div>
       <Head>
@@ -39,8 +36,7 @@ export default function LayoutLanding({
       </Head>
       <Flex minH="100vh" flexDirection="column" justifyContent="start">
         <Flex direction="column">
-          <NavbarLanding home={home} px="7%" />
-          {/* <BreadcrumbView /> */}
+          <NavbarLanding home={home} px={isSmallPadding ? "4%" : "7%"} />
         </Flex>
         {children}
         <Spacer />
