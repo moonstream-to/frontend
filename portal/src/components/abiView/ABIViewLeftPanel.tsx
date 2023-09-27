@@ -115,7 +115,7 @@ const ABIViwLeftPanel = ({
 
   return (
     <Flex
-      bg="#262626"
+      bg="#1b1d22"
       w="100%"
       minH="100%"
       direction="column"
@@ -128,14 +128,15 @@ const ABIViwLeftPanel = ({
         width="100%"
         h="40px"
         minH="40px"
-        bg="#262626"
+        bg="#1b1d22"
         alignItems="center"
         justifyContent="space-between"
         px="20px"
       >
-        <Text fontWeight="400" fontSize="16px" color="#BBBBBB">
-          ABI Explorer
-        </Text>
+        {/*<Text fontWeight="400" fontSize="16px" color="#BBBBBB">*/}
+        {/*  ABI Explorer*/}
+        {/*</Text>*/}
+        <Spacer />
         {getABIQuery.isFetching && <Spinner h="15px" w="15px" />}
         <Menu>
           <MenuButton
@@ -162,22 +163,22 @@ const ABIViwLeftPanel = ({
         </Menu>
       </Flex>
 
-      <Flex
-        w="100"
-        minH="40px"
-        bg="#282a36"
-        boxShadow="0px 2px 2px black"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        {getABIQuery.isError && (
-          <Text pl="20px" color="error.500">
-            {(getABIQuery.error as any).message}
-          </Text>
-        )}
-        <Spacer />
-        {/* <Icon as={AiOutlineSave} mr="33px" /> //TODO */}
-      </Flex>
+      {/*<Flex*/}
+      {/*  w="100"*/}
+      {/*  minH="40px"*/}
+      {/*  bg="#262626"*/}
+      {/*  // boxShadow="0px 2px 2px black"*/}
+      {/*  alignItems="center"*/}
+      {/*  justifyContent="space-between"*/}
+      {/*>*/}
+      {/*  {getABIQuery.isError && (*/}
+      {/*    <Text pl="20px" color="error.500">*/}
+      {/*      {(getABIQuery.error as any).message}*/}
+      {/*    </Text>*/}
+      {/*  )}*/}
+      {/*  <Spacer />*/}
+      {/*  /!* <Icon as={AiOutlineSave} mr="33px" /> //TODO *!/*/}
+      {/*</Flex>*/}
       <Flex width="100%" h="3px" bg="transparent" />
 
       <JSONEdit
@@ -186,8 +187,9 @@ const ABIViwLeftPanel = ({
           setAbi(value);
         }}
         style={{
-          backgroundColor: "#262626",
+          backgroundColor: "#1b1d22",
           fontSize: "14px",
+          borderRight: "1px solid #777",
         }}
         height="100%"
       />

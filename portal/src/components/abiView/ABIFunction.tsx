@@ -124,7 +124,7 @@ const ABIFunction = ({
     <Flex
       direction="column"
       gap="10px"
-      bg="#202329"
+      bg="#1b1d22"
       alignItems="center"
       p={"20px"}
       color={"#CCCCCC"}

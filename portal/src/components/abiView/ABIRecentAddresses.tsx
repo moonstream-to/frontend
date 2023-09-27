@@ -26,7 +26,7 @@ const ABIRecentAddresses = ({
 
   return (
     <Flex
-      bg="#262626"
+      bg="#1b1d22"
       w="100%"
       minH="100%"
       direction="column"
@@ -34,6 +34,7 @@ const ABIRecentAddresses = ({
       flex="1"
       p={"20px"}
       color={"#CCC"}
+      borderRight={"1px solid #777"}
     >
       <Text fontSize={"20px"} mb={"20px"}>
         Addresses

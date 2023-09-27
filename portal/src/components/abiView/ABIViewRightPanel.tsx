@@ -10,6 +10,7 @@ export const colorScheme = {
   name: "#7587a6",
   param: "#cf6a4c",
   type: "#7e895d",
+  selected: "#cf6a4c",
 };
 
 const web3 = new Web3();
@@ -161,12 +162,12 @@ const ABIViewRightPanel = ({
           src={src}
         />
       ) : (
-        <Flex bg="#282a36" w="100%" minH="100%" direction="column" overflowY="auto" flex="2">
+        <Flex bg="#1b1d22" w="100%" minH="100%" direction="column" overflowY="auto" flex="2">
           <Flex
             gap="0px"
             alignItems="center"
             h="40px"
-            bg="#191a21"
+            bg="#1b1d22"
             boxShadow="0px 2px 2px black"
             fontWeight="700"
             userSelect="none"
@@ -183,12 +184,14 @@ const ABIViewRightPanel = ({
                   }
                 }}
                 color={filter === type && !search ? "#CCCCCC" : "#7b7f8b"}
-                bg={filter === type && !search ? "#282a36" : "#262626"}
+                bg={filter === type && !search ? "#1b1d22" : "#1b1d22"}
                 h="100%"
                 alignItems="center"
                 cursor="pointer"
                 borderRight="1px solid black"
-                borderTop={filter === type && !search ? "1px solid #ff54a2" : "none"}
+                borderTop={
+                  filter === type && !search ? `1px solid ${colorScheme.selected}` : "none"
+                }
               >
                 {type}
               </Flex>
@@ -197,14 +200,14 @@ const ABIViewRightPanel = ({
               <Flex
                 alignItems={"center"}
                 h="100%"
-                bg={search ? "#282a36" : "#262626"}
+                bg={search ? "#1b1d22" : "#1b1d22"}
                 cursor="default"
                 borderBottom={"1px solid #777777"}
               >
                 <Text
                   pl="60px"
                   pr="10px"
-                  bg={search ? "#282a36" : "#262626"}
+                  bg={search ? "#1b1d22" : "#1b1d22"}
                   color={search ? "#CCCCCC" : "#7b7f8b"}
                   onClick={() => {
                     setSearch(savedSearch);
@@ -253,7 +256,7 @@ const ABIViewRightPanel = ({
             h="40px"
             minH="40px"
             alignItems="center"
-            bg="#282a36"
+            bg="#1b1d22"
             boxShadow="0px 2px 2px black"
           >
             <Input
@@ -275,6 +278,7 @@ const ABIViewRightPanel = ({
           {abiObject && (
             <Flex
               direction="column"
+              bg={"#1b1d22"}
               pl="40px"
               py="10px"
               overflowY="auto"
