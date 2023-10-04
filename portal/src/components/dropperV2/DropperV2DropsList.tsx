@@ -40,7 +40,6 @@ const DropperV2DropsList = ({
   const LIMIT = 60;
 
   const multicall = async function (queries: any[]): Promise<string[]> {
-    console.log("Multicall with ", queries.length, " views.");
     const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
 
     let results: any[] = [];
@@ -50,7 +49,6 @@ const DropperV2DropsList = ({
       const chunkResults = await multicallContract.methods.tryAggregate(false, chunk).call();
       results = results.concat(chunkResults);
     }
-    console.log("result length", results.length);
     return results;
   };
 
@@ -65,7 +63,6 @@ const DropperV2DropsList = ({
       const dropAuthQueries = [];
       const dropStatusQueries = [];
 
-      const LIMIT = 50;
       let totalDrops: string | number;
 
       try {
@@ -98,7 +95,6 @@ const DropperV2DropsList = ({
 
       return multicall(uriQueries.concat(dropAuthQueries).concat(dropStatusQueries))
         .then((results: string[]) => {
-          console.log("Got ", results.length, " results.");
           const parsedResults = [];
           let parsedUri;
           for (let i = 0; i < Number(totalDrops); i += 1) {
@@ -137,7 +133,6 @@ const DropperV2DropsList = ({
             };
           });
           const balances = await multicall(balanceQueries).then((results: string[]) => {
-            console.log("balance results: ", results);
             return results.map((result) => {
               try {
                 return web3.eth.abi.decodeParameter("uint256", result[1]);
