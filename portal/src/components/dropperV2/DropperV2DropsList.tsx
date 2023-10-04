@@ -34,25 +34,40 @@ const DropperV2DropsList = ({
   const web3ctx = useContext(Web3Context);
   const [statusFilter, setStatusFilter] = useState("All");
 
+  const MULTICALL2_CONTRACT_ADDRESS =
+    MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
+
+  const LIMIT = 60;
+
+  const multicall = async function (queries: any[]): Promise<string[]> {
+    console.log("Multicall with ", queries.length, " views.");
+    const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
+
+    let results: any[] = [];
+    for (let i = 0; i < queries.length; i += LIMIT) {
+      const chunk = queries.slice(i, i + LIMIT);
+      console.log("Chunk size: ", chunk.length);
+      const chunkResults = await multicallContract.methods.tryAggregate(false, chunk).call();
+      results = results.concat(chunkResults);
+    }
+    console.log("result length", results.length);
+    return results;
+  };
+
   const dropsList = useQuery(
     ["dropsList", contractAddress, chainId, queryDropId],
     async () => {
-      const MULTICALL2_CONTRACT_ADDRESS =
-        MULTICALL2_CONTRACT_ADDRESSES[
-          String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES
-        ];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const dropperContract = new web3.eth.Contract(dropperAbi) as any;
       dropperContract.options.address = contractAddress ?? "";
-
-      const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
 
       const uriQueries = [];
       const dropAuthQueries = [];
       const dropStatusQueries = [];
 
-      const LIMIT = Number(MAX_INT);
+      const LIMIT = 50;
       let totalDrops: string | number;
+
       try {
         totalDrops = await dropperContract.methods.numDrops().call();
         setTotalDrops(Number(totalDrops));
@@ -60,30 +75,30 @@ const DropperV2DropsList = ({
         console.log(e);
         totalDrops = 0;
       }
-      for (let i = 1; i <= Math.min(LIMIT, Number(totalDrops)); i += 1) {
+
+      for (let i = 1; i <= Number(totalDrops); i += 1) {
         uriQueries.push({
           target: contractAddress,
           callData: dropperContract.methods.dropUri(i).encodeABI(),
         });
       }
 
-      for (let i = 1; i <= Math.min(LIMIT, Number(totalDrops)); i += 1) {
+      for (let i = 1; i <= Number(totalDrops); i += 1) {
         dropAuthQueries.push({
           target: contractAddress,
           callData: dropperContract.methods.getDropAuthorization(i).encodeABI(),
         });
       }
-      for (let i = 1; i <= Math.min(LIMIT, Number(totalDrops)); i += 1) {
+      for (let i = 1; i <= Number(totalDrops); i += 1) {
         dropStatusQueries.push({
           target: contractAddress,
           callData: dropperContract.methods.dropStatus(i).encodeABI(),
         });
       }
 
-      return multicallContract.methods
-        .tryAggregate(false, uriQueries.concat(dropAuthQueries).concat(dropStatusQueries))
-        .call()
+      return multicall(uriQueries.concat(dropAuthQueries).concat(dropStatusQueries))
         .then((results: string[]) => {
+          console.log("Got ", results.length, " results.");
           const parsedResults = [];
           let parsedUri;
           for (let i = 0; i < Number(totalDrops); i += 1) {
@@ -121,15 +136,19 @@ const DropperV2DropsList = ({
                 .encodeABI(),
             };
           });
-          const balances = await multicallContract.methods
-            .tryAggregate(false, balanceQueries)
-            .call()
-            .then((results: any[]) =>
-              results.map((result: any) => web3.eth.abi.decodeParameter("uint256", result[1])),
-            );
+          const balances = await multicall(balanceQueries).then((results: string[]) => {
+            console.log("balance results: ", results);
+            return results.map((result) => {
+              try {
+                return web3.eth.abi.decodeParameter("uint256", result[1]);
+              } catch (e) {
+                return 0;
+              }
+            });
+          });
           return parsedResults
             .map((drop: any, idx: number) => {
-              return { ...drop, admin: balances[idx] > 0 };
+              return { ...drop, admin: Number(balances[idx]) > 0 };
             })
             .reverse();
         });
