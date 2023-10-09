@@ -375,7 +375,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="new pool controller"
                 value={newPoolController}
-                onChange={(e) => setNewPoolController(e.target.value)}
+                onChange={(e) => setNewPoolController(e.target.value.trim())}
                 type="url"
                 isDisabled={setPoolController.isLoading}
               />
@@ -385,7 +385,10 @@ const TerminusPoolView = () => {
                 fontSize="18px"
                 color="#2d2d2d"
                 onClick={() =>
-                  setPoolController.mutate({ controller: newPoolController, poolId: selectedPool })
+                  setPoolController.mutate({
+                    controller: newPoolController.trim(),
+                    poolId: selectedPool,
+                  })
                 }
                 isDisabled={setPoolController.isLoading}
               >
@@ -398,7 +401,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="amount"
                 value={mintingAmount}
-                onChange={(e) => setMintingAmount(e.target.value)}
+                onChange={(e) => setMintingAmount(e.target.value.trim())}
                 isDisabled={mintTokens.isLoading}
                 flex="0"
                 minW="15ch"
@@ -406,7 +409,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="mint to"
                 value={mintTo}
-                onChange={(e) => setMintTo(e.target.value)}
+                onChange={(e) => setMintTo(e.target.value.trim())}
                 type="url"
                 isDisabled={mintTokens.isLoading}
                 minW="45ch"
@@ -434,7 +437,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="operator"
                 value={operator}
-                onChange={(e) => setOperator(e.target.value)}
+                onChange={(e) => setOperator(e.target.value.trim())}
                 type="url"
                 isDisabled={approveForPool.isLoading}
               />
