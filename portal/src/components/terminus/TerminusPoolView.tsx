@@ -218,9 +218,7 @@ const TerminusPoolView = () => {
 
   const copyPoolAddress = () => {
     navigator.clipboard
-      .writeText(
-        `https://portal.moonstream.to/terminus/?contractAddress=${contractAddress}&poolId=${selectedPool}`,
-      )
+      .writeText(`${window.location.href}&poolId=${selectedPool}`)
       .then(() => {
         toast({
           duration: 3000,
