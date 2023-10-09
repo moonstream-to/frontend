@@ -250,7 +250,7 @@ const TerminusPoolView = () => {
       p="30px"
       color="white"
       direction="column"
-      maxW="800px"
+      w={"100%"}
     >
       <Flex gap={2}>
         {poolState.isFetching && <Spinner />}
@@ -282,7 +282,7 @@ const TerminusPoolView = () => {
               {poolMetadata.name}
             </Text>
           )}
-          <Flex direction="column" gap="20px" overflowY="auto" maxW={"800px"}>
+          <Flex direction="column" gap="20px" overflowY="auto">
             <Flex gap="20px">
               {poolMetadata?.image && (
                 <Image
