@@ -386,7 +386,7 @@ const TerminusPoolView = () => {
                 color="#2d2d2d"
                 onClick={() =>
                   setPoolController.mutate({
-                    controller: newPoolController.trim(),
+                    controller: newPoolController,
                     poolId: selectedPool,
                   })
                 }
