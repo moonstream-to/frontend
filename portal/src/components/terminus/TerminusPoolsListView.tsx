@@ -163,7 +163,6 @@ const TerminusPoolsListView = () => {
       borderRadius="20px"
       gap="30px"
       p="30px"
-      w="400px"
       maxH="700px"
       color="white"
     >

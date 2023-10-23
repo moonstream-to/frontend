@@ -154,7 +154,7 @@ const TerminusContractView = ({
   return (
     <>
       {contractState.data && (
-        <Flex bg="#2d2d2d" maxW="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
+        <Flex bg="#2d2d2d" borderRadius="20px" p="30px" direction="column" gap="20px">
           {metadata.data && (
             <Text fontWeight="700" fontSize="24px">
               {metadata.data.name}
@@ -177,7 +177,7 @@ const TerminusContractView = ({
                 p={5}
                 borderRadius="10px"
                 bg="#232323"
-                maxW="595px"
+                maxW="700px"
               >
                 <PoolDetailsRow type={"URI"} value={contractState.data.contractURI} />
                 <PoolDetailsRow type={"Number of pools"} value={contractState.data.totalPools} />

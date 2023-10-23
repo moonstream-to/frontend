@@ -218,9 +218,7 @@ const TerminusPoolView = () => {
 
   const copyPoolAddress = () => {
     navigator.clipboard
-      .writeText(
-        `https://portal.moonstream.to/terminus/?contractAddress=${contractAddress}&poolId=${selectedPool}`,
-      )
+      .writeText(`${window.location.href}&poolId=${selectedPool}`)
       .then(() => {
         toast({
           duration: 3000,
@@ -252,7 +250,7 @@ const TerminusPoolView = () => {
       p="30px"
       color="white"
       direction="column"
-      maxW="800px"
+      w={"100%"}
     >
       <Flex gap={2}>
         {poolState.isFetching && <Spinner />}
@@ -284,7 +282,7 @@ const TerminusPoolView = () => {
               {poolMetadata.name}
             </Text>
           )}
-          <Flex direction="column" gap="20px" overflowY="auto" maxW={"800px"}>
+          <Flex direction="column" gap="20px" overflowY="auto">
             <Flex gap="20px">
               {poolMetadata?.image && (
                 <Image
@@ -377,7 +375,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="new pool controller"
                 value={newPoolController}
-                onChange={(e) => setNewPoolController(e.target.value)}
+                onChange={(e) => setNewPoolController(e.target.value.trim())}
                 type="url"
                 isDisabled={setPoolController.isLoading}
               />
@@ -387,7 +385,10 @@ const TerminusPoolView = () => {
                 fontSize="18px"
                 color="#2d2d2d"
                 onClick={() =>
-                  setPoolController.mutate({ controller: newPoolController, poolId: selectedPool })
+                  setPoolController.mutate({
+                    controller: newPoolController,
+                    poolId: selectedPool,
+                  })
                 }
                 isDisabled={setPoolController.isLoading}
               >
@@ -400,7 +401,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="amount"
                 value={mintingAmount}
-                onChange={(e) => setMintingAmount(e.target.value)}
+                onChange={(e) => setMintingAmount(e.target.value.trim())}
                 isDisabled={mintTokens.isLoading}
                 flex="0"
                 minW="15ch"
@@ -408,7 +409,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="mint to"
                 value={mintTo}
-                onChange={(e) => setMintTo(e.target.value)}
+                onChange={(e) => setMintTo(e.target.value.trim())}
                 type="url"
                 isDisabled={mintTokens.isLoading}
                 minW="45ch"
@@ -436,7 +437,7 @@ const TerminusPoolView = () => {
               <Input
                 placeholder="operator"
                 value={operator}
-                onChange={(e) => setOperator(e.target.value)}
+                onChange={(e) => setOperator(e.target.value.trim())}
                 type="url"
                 isDisabled={approveForPool.isLoading}
               />

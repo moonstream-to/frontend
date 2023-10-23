@@ -85,7 +85,7 @@ const TerminusView = () => {
             placeholder="terminus contract address"
             type="text"
             value={addressInputValue}
-            onChange={(e) => setAddressInputValue(e.target.value)}
+            onChange={(e) => setAddressInputValue(e.target.value.trim())}
           />
           <Button
             bg="gray.0"
