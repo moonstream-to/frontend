@@ -23,6 +23,10 @@ const terminusAbi = require("../../web3/abi/MockTerminus.json");
 const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
+import { useAddEntity, useJournal } from "../../hooks/useJournal";
+import { AiOutlineSave } from "react-icons/ai";
+import AddEntityButton from "../entity/AddEntityButton";
+import { chainByChainId } from "../../contexts/Web3Context";
 
 const TerminusContractView = ({
   addRecentAddress,
@@ -42,6 +46,9 @@ const TerminusContractView = ({
   const headerMeta = ["name", "description", "image"];
   const [uri, setURI] = useState<string | undefined>(undefined);
   const { web3, chainId } = useContext(Web3Context);
+  const terminusContracts = useJournal({ name: "terminusContractsTest1" });
+  const addAddress = useAddEntity();
+  const accounts = useJournal({ name: "accounts" });
 
   const contractState = useQuery(
     ["contractState", contractAddress, chainId],
@@ -187,10 +194,29 @@ const TerminusContractView = ({
                   type={"Pool base price"}
                   value={Number(contractState.data.poolBasePrice).toLocaleString("en-US")}
                 />
-                <PoolDetailsRow
-                  type={"Contract controller"}
-                  value={contractState.data.controller}
-                />
+                <Flex justifyContent={"space-between"} gap={"5px"} alignItems={"center"}>
+                  <PoolDetailsRow
+                    flex={"2"}
+                    type={"Contract controller"}
+                    value={
+                      accounts.data?.entities.find(
+                        (e) => e.address === contractState.data.controller,
+                      )?.title ?? contractState.data.controller
+                    }
+                  />
+                  {!accounts.data?.entities.some(
+                    (e) => e.address === contractState.data.controller,
+                  ) && (
+                    <AddEntityButton
+                      address={contractState.data.controller}
+                      journalName={"accounts"}
+                      secondaryFields={null}
+                      blockchain={chainByChainId(chainId) ?? ""}
+                    >
+                      <AiOutlineSave />
+                    </AddEntityButton>
+                  )}
+                </Flex>
                 {metadata.data && (
                   <Accordion allowMultiple>
                     <AccordionItem border="none">
