@@ -109,3 +109,40 @@ type DropDataProps = {
   excludeFields: string[];
   PORTAL_PATH: string;
 };
+
+type Journal = {
+  id: string;
+  bugout_user_id: string;
+  holder_ids: string[];
+  name: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type Journals = ReadonlyArray<Journal>;
+
+type Entity = {
+  id: string;
+  blockchain: string;
+  address: string;
+  title: string;
+  journal_id: string;
+  required_fields?: Array<{ [key: string]: string }>;
+  secondary_fields: any;
+  entity_url: string;
+}; //TODO - entity from CRUD not the same as from search. Two types?
+
+type Entities = ReadonlyArray<Entity>;
+
+type JournalQueryData = {
+  entities: Entity[];
+  journalId: string;
+};
+
+interface JournalsResponseData {
+  journals: Journals;
+}
+
+type JournalInput = { id?: string; name?: string; tags: string[]; offset?: number; limit?: number };
+
+//todo move to types file
