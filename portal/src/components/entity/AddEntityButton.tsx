@@ -1,44 +1,62 @@
-import { Flex, Spinner } from "@chakra-ui/react";
-import { useAddEntity } from "../../hooks/useJournal";
 import { ReactNode } from "react";
+import { Flex, Spinner } from "@chakra-ui/react";
+import { getEntityByAddress, useCreateEntity, useUpdateEntity } from "../../hooks/useJournal";
+import Web3 from "web3";
+import useMoonToast from "../../hooks/useMoonToast";
 
 const AddEntityButton = ({
   address,
   secondaryFields,
-  journalName,
+  tags,
   blockchain,
+  isDisabled,
   children,
   ...props
 }: {
   address: string;
-  journalName: string;
-  secondaryFields: any;
+  tags: string[];
+  secondaryFields?: Record<string, unknown>;
   blockchain: string;
+  isDisabled?: boolean;
   children: ReactNode;
   [x: string]: any;
 }) => {
-  const addEntity = useAddEntity();
+  const addEntity = useCreateEntity();
+  const updateEntity = useUpdateEntity();
+  const web3 = new Web3();
+  const toast = useMoonToast();
   const handleSaveAddressClick = async () => {
-    const title = prompt("Title: ");
-    if (title) {
-      addEntity.mutate({
-        address,
-        title,
-        blockchain,
-        journalName,
-        secondaryFields,
-      });
+    if (!web3.utils.isAddress(address)) {
+      toast("Not a web3 address", "error");
+    } else {
+      const title = prompt("Title: ");
+      if (title) {
+        const entity = await getEntityByAddress(address);
+        const input = {
+          address,
+          title,
+          blockchain,
+          tags,
+          secondaryFields,
+        };
+        if (entity) {
+          updateEntity.mutate({ ...input, entity });
+        } else {
+          addEntity.mutate(input);
+        }
+      }
     }
   };
   return (
     <Flex
       onClick={handleSaveAddressClick}
-      cursor={"pointer"}
+      cursor={isDisabled ? "not-allowed" : "pointer"}
       {...props}
       alignItems={"center"}
       justifyContent={"center"}
+      opacity={isDisabled ? "0.6" : "1"}
     >
-      {addEntity.isLoading ? <Spinner /> : children}
+      {addEntity.isLoading || updateEntity.isLoading ? <Spinner /> : children}
     </Flex>
   );
 };
