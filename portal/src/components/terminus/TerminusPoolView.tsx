@@ -19,14 +19,15 @@ import { chainByChainId } from "../../contexts/Web3Context";
 import { AiOutlineSave } from "react-icons/ai";
 import { useJournal } from "../../hooks/useJournal";
 import EntitySelect from "../entity/EntitySelect";
+import Web3Address from "../entity/Web3Address";
 
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
 const multicallABI = require("../../web3/abi/Multicall2.json");
 
 const TerminusPoolView = () => {
   const { chainId, web3, account } = useContext(Web3Context);
-  const accounts = useJournal({ name: "accounts" });
-  const dropperContracts = useJournal({ name: "dropperContracts" });
+  const accounts = useJournal({ tags: ["accounts"] });
+  const dropperContracts = useJournal({ tags: ["dropperContracts"] });
 
   const { contractAddress, selectedPool, poolMetadata } = useTermiminus();
   const headerMeta = ["name", "description", "image", "attributes"];
@@ -312,29 +313,15 @@ const TerminusPoolView = () => {
             </Flex>
             {poolState.data.controller && (
               <Flex direction="column" gap="10px" p={5} borderRadius="10px" bg="#232323">
-                {/*<PoolDetailsRow type="controller" value={poolState.data.controller} />*/}
-                <Flex justifyContent={"space-between"} gap={"5px"} alignItems={"center"}>
-                  <PoolDetailsRow
-                    flex={"2"}
-                    type={"Contract controller"}
-                    value={
-                      accounts.data?.entities.find((e) => e.address === poolState.data.controller)
-                        ?.title ?? poolState.data.controller
-                    }
-                  />
-                  {!accounts.data?.entities.some(
-                    (e) => e.address === poolState.data.controller,
-                  ) && (
-                    <AddEntityButton
-                      address={poolState.data.controller}
-                      journalName={"accounts"}
-                      secondaryFields={null}
-                      blockchain={chainByChainId(chainId) ?? ""}
-                    >
-                      <AiOutlineSave />
-                    </AddEntityButton>
-                  )}
-                </Flex>
+                <Web3Address
+                  address={poolState.data.controller}
+                  label={"controller"}
+                  entityTag={"accounts"}
+                  blockchain={chainByChainId(chainId) ?? ""}
+                  isTruncated
+                  fontSize={"18px"}
+                  canDelete
+                />
                 <PoolDetailsRow type="capacity" value={poolState.data.capacity} />
                 <PoolDetailsRow type="supply" value={poolState.data.supply} />
                 <PoolDetailsRow
@@ -414,8 +401,7 @@ const TerminusPoolView = () => {
                 web3.utils.isAddress(newPoolController) && (
                   <AddEntityButton
                     address={newPoolController}
-                    journalName={"accounts"}
-                    secondaryFields={null}
+                    tags={["accounts"]}
                     blockchain={chainByChainId(chainId) ?? ""}
                     w={"40px"}
                     h={"40px"}
@@ -423,7 +409,7 @@ const TerminusPoolView = () => {
                     <AiOutlineSave />
                   </AddEntityButton>
                 )}
-              <EntitySelect journalName={"accounts"} onChange={setNewPoolController}>
+              <EntitySelect tags={["accounts"]} onChange={setNewPoolController}>
                 ...
               </EntitySelect>
               <Button
@@ -462,8 +448,7 @@ const TerminusPoolView = () => {
                 web3.utils.isAddress(mintTo) && (
                   <AddEntityButton
                     address={mintTo}
-                    journalName={"accounts"}
-                    secondaryFields={null}
+                    tags={["accounts"]}
                     blockchain={chainByChainId(chainId) ?? ""}
                     w={"40px"}
                     h={"40px"}
@@ -471,7 +456,7 @@ const TerminusPoolView = () => {
                     <AiOutlineSave />
                   </AddEntityButton>
                 )}
-              <EntitySelect journalName={"accounts"} onChange={setMintTo}>
+              <EntitySelect tags={["accounts"]} onChange={setMintTo}>
                 ...
               </EntitySelect>
               <Button
@@ -498,15 +483,13 @@ const TerminusPoolView = () => {
                 placeholder="operator"
                 value={operator}
                 onChange={(e) => setOperator(e.target.value)}
-                type="url"
                 isDisabled={approveForPool.isLoading}
               />
               {!dropperContracts.data?.entities.some((e) => e.address === operator) &&
                 web3.utils.isAddress(operator) && (
                   <AddEntityButton
                     address={operator}
-                    journalName={"dropperContracts"}
-                    secondaryFields={null}
+                    tags={["dropperContracts"]}
                     blockchain={chainByChainId(chainId) ?? ""}
                     w={"40px"}
                     h={"40px"}
@@ -514,7 +497,7 @@ const TerminusPoolView = () => {
                     <AiOutlineSave />
                   </AddEntityButton>
                 )}
-              <EntitySelect journalName={"dropperContracts"} onChange={setOperator}>
+              <EntitySelect tags={["droperContracts"]} onChange={setOperator}>
                 ...
               </EntitySelect>
               <Button
