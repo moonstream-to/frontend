@@ -6,17 +6,19 @@ import useMoonToast from "../../hooks/useMoonToast";
 
 const AddEntityButton = ({
   address,
-  secondaryFields,
-  tags,
+  title,
   blockchain,
+  tags,
+  secondaryFields,
   isDisabled,
   children,
   ...props
 }: {
   address: string;
+  title?: string;
+  blockchain: string;
   tags: string[];
   secondaryFields?: Record<string, string>;
-  blockchain: string;
   isDisabled?: boolean;
   children: ReactNode;
   [x: string]: any;
@@ -29,11 +31,11 @@ const AddEntityButton = ({
     if (!web3.utils.isAddress(address)) {
       toast("Not a web3 address", "error");
     } else {
-      const title = prompt("Title: ");
-      if (title) {
+      const newTitle = title ?? prompt("Title: ");
+      if (newTitle) {
         addEntity.mutate({
           address,
-          title,
+          title: newTitle,
           blockchain,
           tags,
           secondaryFields,
