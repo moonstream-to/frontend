@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Flex, Image, Input, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Icon, Input, Text, useToast } from "@chakra-ui/react";
 
 import TerminusPoolsListView from "./TerminusPoolsListView";
 import TerminusPoolView from "./TerminusPoolView";
@@ -11,18 +11,13 @@ import Web3Context from "../../contexts/Web3Context/context";
 import ContractRow from "../ContractRow";
 import useTerminus from "../../contexts/TerminusContext";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
-import {
-  Entity,
-  useAddEntity,
-  useDeleteEntity,
-  useJournal,
-  useJournals,
-} from "../../hooks/useJournal";
+import { useJournal } from "../../hooks/useJournal";
 import { AiOutlineSave } from "react-icons/ai";
-import { queryPublic } from "../../utils/http";
 import { chainByChainId } from "../../contexts/Web3Context";
 import { supportedChains } from "../../types/Moonstream";
-import { add } from "unload";
+import { Entity } from "../../types";
+import AddEntityButton from "../entity/AddEntityButton";
+import useLink from "../../hooks/useLink";
 
 const TerminusView = () => {
   const {
@@ -36,9 +31,8 @@ const TerminusView = () => {
 
   const [addressInputValue, setAddressInputValue] = useState(contractAddress);
 
-  const { recentAddresses, addRecentAddress } = useRecentAddresses("terminus");
-  const journals = useJournals();
-  const terminusContracts = useJournal({ name: "terminusContracts" });
+  const { addRecentAddress } = useRecentAddresses("terminus");
+  const terminusContracts = useJournal({ tags: ["terminusContracts"] });
 
   const toast = useToast();
 
@@ -48,6 +42,7 @@ const TerminusView = () => {
     } else {
       selectPool(Number(router.query.poolId));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.contractAddress, router.query.poolId]);
 
   const { chainId, web3, changeChain } = useContext(Web3Context);
@@ -57,6 +52,7 @@ const TerminusView = () => {
       typeof router.query.contractAddress === "string" ? router.query.contractAddress : "",
     );
     setSelectedPoolMetadata({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.contractAddress, chainId]);
 
   useEffect(() => {
@@ -64,6 +60,7 @@ const TerminusView = () => {
       setAddressInputValue(contractAddress);
     }
     setSelectedPoolMetadata({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractAddress]);
 
   const handleSubmit = () => {
@@ -94,25 +91,7 @@ const TerminusView = () => {
     }
   };
 
-  const addEntity = useAddEntity();
-  const handleSaveAddressClick = async () => {
-    // console.log(contractState);
-    let metadata = undefined;
-    try {
-      metadata = await queryPublic(contractState.contractURI).then((res: any) => res.data);
-    } catch (e) {
-      console.log(e);
-    }
-    addEntity.mutate({
-      address: contractAddress,
-      title: metadata?.name ?? "Terminus Contract",
-      blockchain: chainByChainId(chainId) ?? "",
-      journalName: "terminusContracts",
-      secondaryFields: metadata,
-    });
-  };
-
-  const deleteEntity = useDeleteEntity();
+  const metadata = useLink({ link: contractState?.contractURI });
 
   return (
     <Center>
@@ -126,11 +105,6 @@ const TerminusView = () => {
             value={addressInputValue}
             onChange={(e) => setAddressInputValue(e.target.value)}
           />
-          {addEntity.isLoading ? (
-            <Spinner />
-          ) : (
-            <AiOutlineSave cursor={"pointer"} onClick={handleSaveAddressClick} />
-          )}
           <Button
             bg="gray.0"
             fontWeight="400"
@@ -140,6 +114,15 @@ const TerminusView = () => {
           >
             Show
           </Button>
+          <AddEntityButton
+            title={metadata.data?.name ?? "Terminus Contract"}
+            address={contractAddress}
+            tags={["terminusContracts"]}
+            blockchain={chainByChainId(chainId) ?? ""}
+            secondaryFields={metadata.data}
+          >
+            <Icon as={AiOutlineSave} h={5} w={5} />
+          </AddEntityButton>
         </Flex>
         {contractAddress && (
           <>
@@ -150,7 +133,7 @@ const TerminusView = () => {
             </Flex>
           </>
         )}
-        {!contractAddress && terminusContracts.data && (
+        {!contractAddress && terminusContracts.data?.entities && (
           <Flex direction="column" gap="20px" bg="#2d2d2d" borderRadius="10px" p="20px">
             <Text>Terminus Contracts</Text>
             {terminusContracts.data.entities.map((e: Entity, idx) => (
@@ -160,7 +143,7 @@ const TerminusView = () => {
                 address={e.address}
                 chain={e.blockchain}
                 name={e.secondary_fields?.title ?? e.title}
-                image={e.secondary_fields.image}
+                image={e.secondary_fields?.image ?? ""}
                 onClick={() => {
                   if (e.blockchain !== chainByChainId(chainId)) {
                     changeChain(e.blockchain as supportedChains);
@@ -171,17 +154,9 @@ const TerminusView = () => {
                       contractAddress: e.address,
                     },
                   });
-                  // setContractAddress(e.address);
                 }}
               />
             ))}
-            {/*<Button*/}
-            {/*  onClick={() =>*/}
-            {/*    deleteEntity.mutate({ journalName: "terminusContractsTest1", entityId: e.id })*/}
-            {/*  }*/}
-            {/*>*/}
-            {/*  Delete*/}
-            {/*</Button>*/}
           </Flex>
         )}
       </Flex>
