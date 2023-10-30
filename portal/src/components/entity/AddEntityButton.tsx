@@ -56,7 +56,7 @@ const AddEntityButton = ({
       justifyContent={"center"}
       opacity={isDisabled ? "0.6" : "1"}
     >
-      {addEntity.isLoading || updateEntity.isLoading ? <Spinner /> : children}
+      {addEntity.isLoading || updateEntity.isLoading ? <Spinner h={"15px"} w={"15px"} /> : children}
     </Flex>
   );
 };
