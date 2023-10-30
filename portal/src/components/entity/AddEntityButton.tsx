@@ -24,7 +24,6 @@ const AddEntityButton = ({
   [x: string]: any;
 }) => {
   const addEntity = useCreateEntity();
-  const updateEntity = useUpdateEntity();
   const web3 = new Web3();
   const toast = useMoonToast();
   const handleSaveAddressClick = async () => {
@@ -52,7 +51,7 @@ const AddEntityButton = ({
       justifyContent={"center"}
       opacity={isDisabled ? "0.6" : "1"}
     >
-      {addEntity.isLoading || updateEntity.isLoading ? <Spinner h={"15px"} w={"15px"} /> : children}
+      {addEntity.isLoading ? <Spinner h={"15px"} w={"15px"} /> : children}
     </Flex>
   );
 };

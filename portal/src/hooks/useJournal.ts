@@ -127,6 +127,7 @@ export const useJournal = ({
   });
 };
 
+//directly updates queries data after successful mutations
 const updateQueriesData = (
   newEntity: Entity,
   variables: EntityCreationInput | EntityUpdateInput,
@@ -150,20 +151,10 @@ const updateQueriesData = (
     if (!oldData) {
       return { entities: [entityToInsert], totalLength: 1 };
     }
-    console.log(oldData);
-    const newEntities = [
-      ...oldData.entities,
-      {
-        address,
-        blockchain,
-        id,
-        journal_id,
-        title,
-        required_fields: variables.tags?.map((key) => ({ [key]: "" })),
-        secondary_fields: variables.secondaryFields,
-      },
-    ];
-    return { entities: newEntities, totalLength: oldData.totalLength + 1 };
+    return {
+      entities: [...oldData.entities, entityToInsert],
+      totalLength: oldData.totalLength + 1,
+    };
   };
 
   queryClient.setQueriesData(
@@ -259,10 +250,13 @@ export const useDeleteEntity = () => {
             queryKey: ["journalByName", DEFAULT_JOURNAL_NAME, tags],
             exact: false,
           },
-          (oldData: any) => {
+          (oldData: JournalQueryData | undefined) => {
+            const newEntities = oldData
+              ? oldData.entities.filter((e: Entity) => e.id !== variables.entity.id)
+              : [];
             return {
-              entities: oldData.entities.filter((e: Entity) => e.id !== variables.entity.id),
-              totalLength: 0,
+              entities: newEntities,
+              totalLength: newEntities.length,
             };
           },
         );

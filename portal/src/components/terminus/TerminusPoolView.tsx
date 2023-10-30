@@ -11,7 +11,7 @@ import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import queryCacheProps from "../../hooks/hookCommon";
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import { LinkIcon } from "@chakra-ui/icons";
-import useTermiminus from "../../contexts/TerminusContext";
+import useTerminus from "../../contexts/TerminusContext";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import AddEntityButton from "../entity/AddEntityButton";
@@ -29,7 +29,7 @@ const TerminusPoolView = () => {
   const accounts = useJournal({ tags: ["accounts"] });
   const dropperContracts = useJournal({ tags: ["dropperContracts"] });
 
-  const { contractAddress, selectedPool, poolMetadata } = useTermiminus();
+  const { contractAddress, selectedPool, poolMetadata } = useTerminus();
   const headerMeta = ["name", "description", "image", "attributes"];
   const [newUri, setNewUri] = useState("");
   const [newPoolController, setNewPoolController] = useState("");
@@ -220,7 +220,6 @@ const TerminusPoolView = () => {
     },
     {
       ...queryCacheProps,
-      // onSuccess: () => {}, //TODO
     },
   );
 
@@ -318,7 +317,6 @@ const TerminusPoolView = () => {
                   blockchain={chainByChainId(chainId) ?? ""}
                   isTruncated
                   fontSize={"18px"}
-                  canDelete
                 />
                 <PoolDetailsRow type="capacity" value={poolState.data.capacity} />
                 <PoolDetailsRow type="supply" value={poolState.data.supply} />
