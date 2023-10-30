@@ -110,7 +110,11 @@ const EntitySelect = ({
                           })
                         }
                       >
-                        {deleteAddress.isLoading ? <Spinner /> : <DeleteIcon />}
+                        {deleteAddress.isLoading && deleteAddress.variables?.entity === e ? (
+                          <Spinner />
+                        ) : (
+                          <DeleteIcon />
+                        )}
                       </Button>
                       {/*</Flex>*/}
                     </Flex>
