@@ -9,6 +9,7 @@ import {
   Spinner,
   Spacer,
   Input,
+  Icon,
 } from "@chakra-ui/react";
 import { ReactNode, useContext, useState } from "react";
 import { useDeleteEntity, useJournal } from "../../hooks/useJournal";
@@ -65,6 +66,8 @@ const EntitySelect = ({
                 border={"1px solid white"}
                 justifyContent={"space-between"}
               >
+                <Text>{tags.join(", ")}</Text>
+
                 <Flex direction={"column"}>
                   <Flex gap="15px" mt="20px">
                     <Input
@@ -81,7 +84,7 @@ const EntitySelect = ({
                       isDisabled={!web3.utils.isAddress(newAddress)}
                       mb={"20px"}
                     >
-                      <AiOutlineSave />
+                      <Icon as={AiOutlineSave} h={5} w={5} />
                     </AddEntityButton>
                   </Flex>
                   {journal.data.entities.map((e) => (
@@ -94,7 +97,6 @@ const EntitySelect = ({
                     >
                       <Text onClick={() => handleClick(e.address)}>{e.title}</Text>
                       <Spacer />
-                      {/*<Flex gap={"10px"} alignItems={"center"}>*/}
                       <Text
                         fontFamily="JetBrains Mono, monospace"
                         onClick={() => handleClick(e.address)}
@@ -116,7 +118,6 @@ const EntitySelect = ({
                           <DeleteIcon />
                         )}
                       </Button>
-                      {/*</Flex>*/}
                     </Flex>
                   ))}
                 </Flex>

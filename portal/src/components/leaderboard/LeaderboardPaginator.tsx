@@ -103,7 +103,7 @@ const LeaderboardPaginator: React.FC<props> = ({
             );
           })}
         </Select>
-        <Text>per page</Text>
+        <Text ml={"5px"}>per page</Text>
       </Flex>
       {isFetching ? <Spinner h="20px" w="20px" color="#999999" /> : <Box h="20px" w="20px" />}
     </Flex>

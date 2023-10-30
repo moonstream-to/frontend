@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Flex, Spinner } from "@chakra-ui/react";
-import { getEntityByAddress, useCreateEntity, useUpdateEntity } from "../../hooks/useJournal";
+import { useCreateEntity, useUpdateEntity } from "../../hooks/useJournal";
 import Web3 from "web3";
 import useMoonToast from "../../hooks/useMoonToast";
 

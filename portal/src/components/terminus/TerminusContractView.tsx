@@ -19,16 +19,14 @@ import queryCacheProps from "../../hooks/hookCommon";
 import Web3Context from "../../contexts/Web3Context/context";
 import { queryPublic } from "../../utils/http";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
-const terminusAbi = require("../../web3/abi/MockTerminus.json");
-const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
-import { useCreateEntity, useJournal } from "../../hooks/useJournal";
-import { AiOutlineSave } from "react-icons/ai";
-import AddEntityButton from "../entity/AddEntityButton";
+import { useJournal } from "../../hooks/useJournal";
 import { chainByChainId } from "../../contexts/Web3Context";
-import { controls } from "@motionone/dom/types/animate/utils/controls";
 import Web3Address from "../entity/Web3Address";
+
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+const multicallABI = require("../../web3/abi/Multicall2.json");
 
 const TerminusContractView = ({
   addRecentAddress,
@@ -48,8 +46,6 @@ const TerminusContractView = ({
   const headerMeta = ["name", "description", "image"];
   const [uri, setURI] = useState<string | undefined>(undefined);
   const { web3, chainId } = useContext(Web3Context);
-  const [web3Addresses, setWeb3Addresses] = useState<string[]>([]);
-  const accounts = useJournal({ tags: ["accounts"] });
 
   const contractState = useQuery(
     ["contractState", contractAddress, chainId],
@@ -130,10 +126,6 @@ const TerminusContractView = ({
     },
   );
 
-  // const controllerEntity = useJournal({
-  //   tags: contractState.data?.controller ? [contractState.data?.controller] : [],
-  // });
-
   useEffect(() => {
     setContractState(contractState.data);
   }, [contractState.data]);
@@ -166,7 +158,14 @@ const TerminusContractView = ({
   return (
     <>
       {contractState.data && (
-        <Flex bg="#2d2d2d" borderRadius="20px" p="30px" direction="column" gap="20px">
+        <Flex
+          bg="#2d2d2d"
+          borderRadius="20px"
+          p="30px"
+          direction="column"
+          gap="20px"
+          maxW={"1600px"}
+        >
           {metadata.data && (
             <Text fontWeight="700" fontSize="24px">
               {metadata.data.name}
