@@ -25,7 +25,7 @@ const PoolDetailsRow = ({
   ...props
 }: DetailsProps) => {
   const [valueString, setValueString] = useState("");
-
+  const isBytes = String(value).slice(0, 2) === "0x";
   const valueComponent = () => {
     if (!value) {
       return <Text fontStyle="italic">{String(value)}</Text>;
@@ -127,7 +127,7 @@ const PoolDetailsRow = ({
         ) : (
           valueComponent()
         )}
-        {canBeCopied && <CopyIcon onClick={onCopy} cursor="pointer" />}
+        {(canBeCopied || isBytes) && <CopyIcon onClick={onCopy} cursor="pointer" />}
         {hasCopied && (
           <Text
             fontWeight="700"
