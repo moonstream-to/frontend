@@ -26,19 +26,6 @@ const Web3Address = ({
 
   const entity = useJournal({ tags: [`address:${address}`] });
   const deleteAddress = useDeleteEntity();
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    if (deleteAddress.isSuccess) {
-      console.log("setting query data");
-      queryClient.setQueryData(
-        ["journalByName", "Web3Addresses", [`address:${address}`]],
-        (oldData) => {
-          console.log(oldData);
-          return [];
-        },
-      );
-    }
-  }, [deleteAddress.isSuccess]);
 
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} {...props}>
