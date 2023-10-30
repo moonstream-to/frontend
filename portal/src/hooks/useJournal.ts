@@ -5,6 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
+
 import http from "../utils/httpMoonstream";
 import { MOONSTREAM_API_URL } from "../constants";
 import useUser from "../contexts/UserContext";
@@ -69,14 +70,13 @@ export const getEntityByAddress = async (address: string) => {
   }).then((res) => res.data.results[0]);
 };
 
-//TODO comment
 const fetchJournal = async (
   context: QueryFunctionContext<
     ["journalById" | "journalByName", string, string[], number, number, string]
   >,
 ): Promise<{ entities: Entities; totalLength: number }> => {
   const [type, value, tags, limit, offset] = context.queryKey;
-  console.log("fetching journal");
+  console.log("fetching journal", tags);
   let journalId: string | undefined = undefined;
   if (type === "journalById") {
     journalId = value;
@@ -121,7 +121,6 @@ export const useJournal = ({
     number,
     string,
   ];
-  // console.log(queryKey);
   return useQuery(queryKey, fetchJournal, {
     enabled: !!user && tags.length > 0,
     staleTime: 120000,
@@ -219,7 +218,6 @@ export const useCreateEntity = () => {
         url: `https://api.moonstream.to/journals/${targetJournal.id}/entities`,
         data: { address, title, blockchain, ...secondaryFields },
       });
-      console.log(response);
       await http({
         method: "POST",
         url: `https://api.moonstream.to/journals/${targetJournal.id}/entries/${response.data.id}/tags`,
@@ -245,8 +243,21 @@ export const useDeleteEntity = () => {
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries("journalByName");
-      console.log(variables);
+      if (variables.entity.required_fields) {
+        const tags = variables.entity.required_fields.map((item) => Object.keys(item)).flat();
+        queryClient.setQueriesData(
+          {
+            queryKey: ["journalByName", DEFAULT_JOURNAL_NAME, tags],
+            exact: false,
+          },
+          (oldData: any) => {
+            return {
+              entities: oldData.entities.filter((e: Entity) => e.id !== variables.entity.id),
+              totalLength: 0,
+            };
+          },
+        );
+      }
       queryClient.setQueriesData(
         {
           queryKey: [
@@ -256,18 +267,10 @@ export const useDeleteEntity = () => {
           ],
           exact: false,
         },
-        (oldData) => {
-          console.log(oldData);
+        () => {
           return { entities: [], totalLength: 0 };
         },
       );
-      // queryClient.setQueryData(
-      //   ["journalByName", DEFAULT_JOURNAL_NAME, [`address:${variables.entity.address}`]],
-      //   (oldData) => {
-      //     console.log(oldData);
-      //     return [];
-      //   },
-      // );
     },
   });
 };
