@@ -8,7 +8,7 @@ import {
 import http from "../utils/httpMoonstream";
 import { MOONSTREAM_API_URL } from "../constants";
 import useUser from "../contexts/UserContext";
-import { Entities, Entity, Journal, JournalInput, Journals } from "../types";
+import { Entities, Entity, Journal, JournalInput, JournalQueryData, Journals } from "../types";
 
 const DEFAULT_JOURNAL_NAME = "Web3Addresses";
 
@@ -17,7 +17,7 @@ interface EntityCreationInput {
   title: string;
   blockchain: string;
   tags: string[];
-  secondaryFields?: Record<string, unknown>;
+  secondaryFields?: Record<string, string>;
   journalName?: string;
 }
 
@@ -76,7 +76,7 @@ const fetchJournal = async (
   >,
 ): Promise<{ entities: Entities; totalLength: number }> => {
   const [type, value, tags, limit, offset] = context.queryKey;
-
+  console.log("fetching journal");
   let journalId: string | undefined = undefined;
   if (type === "journalById") {
     journalId = value;
@@ -91,13 +91,11 @@ const fetchJournal = async (
 
   const tagsQuery = tags.map((tag) => `tag:${tag}`).join("&");
 
-  console.log(tagsQuery);
   const res = (await http({
     method: "GET",
     url: `${MOONSTREAM_API_URL}/journals/${journalId}/search/?representation=entity`,
     params: { limit, offset, q: tagsQuery },
   })) as { data: { results: Entity[]; total_results: number } };
-  console.log(res);
   return {
     entities: res.data.results.map((e: Entity) => {
       return { ...e, id: getEntityId(e) };
@@ -115,7 +113,7 @@ export const useJournal = ({
 }: JournalInput) => {
   const { user } = useUser();
   const type = id ? "journalById" : "journalByName";
-  const queryKey = [type, id ?? name, tags, limit, offset, user.name] as [
+  const queryKey = [type, id ?? name, tags, limit, offset, user.username] as [
     "journalById" | "journalByName",
     string,
     string[],
@@ -123,6 +121,7 @@ export const useJournal = ({
     number,
     string,
   ];
+  // console.log(queryKey);
   return useQuery(queryKey, fetchJournal, {
     enabled: !!user && tags.length > 0,
     staleTime: 120000,
@@ -136,6 +135,42 @@ const handleOnSuccess = (
   queryClient: QueryClient,
 ) => {
   queryClient.invalidateQueries("journalByName");
+  queryClient.setQueriesData(
+    {
+      queryKey: ["journalByName", DEFAULT_JOURNAL_NAME, variables.tags],
+      exact: false,
+    },
+    (oldData: JournalQueryData | undefined) => {
+      console.log(oldData, newEntity, variables);
+      const { address, blockchain, id, journal_id, title } = newEntity;
+      const required_fields = variables.tags?.map((key) => ({ [key]: "" }));
+      const entityToInsert: Entity = {
+        address,
+        blockchain,
+        id,
+        journal_id,
+        title,
+        required_fields,
+        secondary_fields: variables.secondaryFields,
+      };
+      if (!oldData) {
+        return { entities: [entityToInsert], totalLength: 1 };
+      }
+      const newEntities = [
+        ...oldData.entities,
+        {
+          address,
+          blockchain,
+          id,
+          journal_id,
+          title,
+          required_fields,
+          secondary_fields: variables.secondaryFields,
+        },
+      ];
+      return { entities: newEntities, totalLength: oldData.totalLength + 1 };
+    },
+  );
 };
 
 export const useUpdateEntity = () => {
@@ -209,8 +244,30 @@ export const useDeleteEntity = () => {
       });
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries("journalByName");
+      console.log(variables);
+      queryClient.setQueriesData(
+        {
+          queryKey: [
+            "journalByName",
+            DEFAULT_JOURNAL_NAME,
+            [`address:${variables.entity.address}`],
+          ],
+          exact: false,
+        },
+        (oldData) => {
+          console.log(oldData);
+          return { entities: [], totalLength: 0 };
+        },
+      );
+      // queryClient.setQueryData(
+      //   ["journalByName", DEFAULT_JOURNAL_NAME, [`address:${variables.entity.address}`]],
+      //   (oldData) => {
+      //     console.log(oldData);
+      //     return [];
+      //   },
+      // );
     },
   });
 };

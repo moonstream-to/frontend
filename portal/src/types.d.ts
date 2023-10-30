@@ -129,7 +129,7 @@ type Entity = {
   id?: string; //id is not present in the response from search
   entity_url?: string; //present in the response from search only
   required_fields?: Array<{ [key: string]: string }>;
-  secondary_fields?: Record<string, unknown>;
+  secondary_fields?: Record<string, string>;
 }; //TODO - entity from CRUD not the same as from search. Two types?
 
 type Entities = ReadonlyArray<Entity>;
