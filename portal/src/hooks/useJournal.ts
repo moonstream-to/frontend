@@ -76,7 +76,6 @@ const fetchJournal = async (
   >,
 ): Promise<{ entities: Entities; totalLength: number }> => {
   const [type, value, tags, limit, offset] = context.queryKey;
-  console.log("fetching journal", tags);
   let journalId: string | undefined = undefined;
   if (type === "journalById") {
     journalId = value;
@@ -128,47 +127,59 @@ export const useJournal = ({
   });
 };
 
-const handleOnSuccess = (
+const updateQueriesData = (
   newEntity: Entity,
   variables: EntityCreationInput | EntityUpdateInput,
   queryClient: QueryClient,
 ) => {
-  queryClient.invalidateQueries("journalByName");
-  queryClient.setQueriesData(
-    {
-      queryKey: ["journalByName", DEFAULT_JOURNAL_NAME, variables.tags],
-      exact: false,
-    },
-    (oldData: JournalQueryData | undefined) => {
-      console.log(oldData, newEntity, variables);
-      const { address, blockchain, id, journal_id, title } = newEntity;
-      const required_fields = variables.tags?.map((key) => ({ [key]: "" }));
-      const entityToInsert: Entity = {
+  const updateJournalData = (
+    oldData: JournalQueryData | undefined,
+    newEntity: Entity,
+    variables: EntityCreationInput | EntityUpdateInput,
+  ) => {
+    const { address, blockchain, id, journal_id, title } = newEntity;
+    const entityToInsert: Entity = {
+      address,
+      blockchain,
+      id,
+      journal_id,
+      title,
+      required_fields: variables.tags?.map((key) => ({ [key]: "" })),
+      secondary_fields: variables.secondaryFields,
+    };
+    if (!oldData) {
+      return { entities: [entityToInsert], totalLength: 1 };
+    }
+    console.log(oldData);
+    const newEntities = [
+      ...oldData.entities,
+      {
         address,
         blockchain,
         id,
         journal_id,
         title,
-        required_fields,
+        required_fields: variables.tags?.map((key) => ({ [key]: "" })),
         secondary_fields: variables.secondaryFields,
-      };
-      if (!oldData) {
-        return { entities: [entityToInsert], totalLength: 1 };
-      }
-      const newEntities = [
-        ...oldData.entities,
-        {
-          address,
-          blockchain,
-          id,
-          journal_id,
-          title,
-          required_fields,
-          secondary_fields: variables.secondaryFields,
-        },
-      ];
-      return { entities: newEntities, totalLength: oldData.totalLength + 1 };
+      },
+    ];
+    return { entities: newEntities, totalLength: oldData.totalLength + 1 };
+  };
+
+  queryClient.setQueriesData(
+    {
+      queryKey: ["journalByName", DEFAULT_JOURNAL_NAME, variables.tags],
+      exact: false,
     },
+    (oldData: JournalQueryData | undefined) => updateJournalData(oldData, newEntity, variables),
+  );
+
+  queryClient.setQueriesData(
+    {
+      queryKey: ["journalByName", DEFAULT_JOURNAL_NAME, [`address:${newEntity.address}`]],
+      exact: false,
+    },
+    (oldData: JournalQueryData | undefined) => updateJournalData(oldData, newEntity, variables),
   );
 };
 
@@ -178,13 +189,11 @@ export const useUpdateEntity = () => {
     mutationFn: async (input: EntityUpdateInput) => {
       const { address, title, blockchain, secondaryFields, entity, tags } = input;
       const entityId = getEntityId(entity);
-      console.log({ address, title, blockchain, ...secondaryFields, entityId });
       const response = await http({
         method: "PUT",
         url: `https://api.moonstream.to/journals/${entity.journal_id}/entities/${entityId}`,
         data: { address, title, blockchain, ...secondaryFields },
       });
-      console.log(response);
       await http({
         method: "PUT",
         url: `https://api.moonstream.to/journals/${entity.journal_id}/entries/${entityId}/tags`,
@@ -192,7 +201,7 @@ export const useUpdateEntity = () => {
       });
       return response.data;
     },
-    onSuccess: (newEntity, variables) => handleOnSuccess(newEntity, variables, queryClient),
+    onSuccess: (newEntity, variables) => updateQueriesData(newEntity, variables, queryClient),
   });
 };
 
@@ -225,7 +234,7 @@ export const useCreateEntity = () => {
       });
       return response.data;
     },
-    onSuccess: (newEntity, variables) => handleOnSuccess(newEntity, variables, queryClient),
+    onSuccess: (newEntity, variables) => updateQueriesData(newEntity, variables, queryClient),
   });
 };
 
