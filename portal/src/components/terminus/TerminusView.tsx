@@ -116,10 +116,14 @@ const TerminusView = () => {
           </Button>
           <AddEntityButton
             title={metadata.data?.name ?? "Terminus Contract"}
-            address={contractAddress}
+            address={addressInputValue}
             tags={["terminusContracts"]}
             blockchain={chainByChainId(chainId) ?? ""}
             secondaryFields={metadata.data}
+            isDisabled={
+              !web3.utils.isAddress(addressInputValue) ||
+              terminusContracts.data?.entities.some((e) => e.address === addressInputValue)
+            }
           >
             <Icon as={AiOutlineSave} h={5} w={5} />
           </AddEntityButton>
