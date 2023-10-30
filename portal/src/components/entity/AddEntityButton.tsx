@@ -15,7 +15,7 @@ const AddEntityButton = ({
 }: {
   address: string;
   tags: string[];
-  secondaryFields?: Record<string, unknown>;
+  secondaryFields?: Record<string, string>;
   blockchain: string;
   isDisabled?: boolean;
   children: ReactNode;
@@ -31,19 +31,13 @@ const AddEntityButton = ({
     } else {
       const title = prompt("Title: ");
       if (title) {
-        const entity = await getEntityByAddress(address);
-        const input = {
+        addEntity.mutate({
           address,
           title,
           blockchain,
           tags,
           secondaryFields,
-        };
-        if (entity) {
-          updateEntity.mutate({ ...input, entity });
-        } else {
-          addEntity.mutate(input);
-        }
+        });
       }
     }
   };
