@@ -3,19 +3,13 @@ import { getLayout } from "moonstream-components/src/layoutsForPlay/EngineLayout
 import {
   Flex,
   Center,
-  Badge,
   Spacer,
   Image,
-  Spinner,
   Box,
   Text,
-  Stack,
   Input,
   InputGroup,
   InputRightElement,
-  FormLabel,
-  FormControl,
-  FormErrorMessage,
   Button,
   HStack,
 } from "@chakra-ui/react";
@@ -30,13 +24,10 @@ import { MockERC721 } from "../../../../../types/contracts/MockERC721";
 
 import Web3Context from "moonstream-components/src/core/providers/Web3Provider/context";
 import { supportedChains } from "../../../../../types/Moonstream";
-import { useERC20, useToast } from "moonstream-components/src/core/hooks";
-import { useMutation, useQuery } from "react-query";
+import { useERC20 } from "moonstream-components/src/core/hooks";
+import { useQuery } from "react-query";
 import { DEFAULT_METATAGS } from "../../../src/constants";
-import {
-  MAX_INT,
-  chainByChainId,
-} from "moonstream-components/src/core/providers/Web3Provider";
+import { chainByChainId } from "moonstream-components/src/core/providers/Web3Provider";
 import LootboxCard from "../../../../../packages/moonstream-components/src/components/CryptoUnicorns/LootboxCardPlay";
 import { MockTerminus as TerminusFacet } from "../../../../../types/contracts/MockTerminus";
 import { hookCommon } from "moonstream-components/src/core/hooks";
@@ -593,12 +584,6 @@ const CryptoUnicorns = () => {
   const [currentAccount, setCurrentAccount] = React.useState(
     "0x0000000000000000000000000000000000000000"
   );
-  const [notEnoughRBW, setNotEnoughRBW] = React.useState(false);
-  const [notEnoughUNIM, setNotEnoughUNIM] = React.useState(false);
-  const [needAllowanceRBW, setNeedAllowanceRBW] = React.useState(false);
-  const [needAllowanceUNIM, setNeedAllowanceUNIM] = React.useState(false);
-  const [rbwToStash, setRBWToStash] = React.useState("");
-  const [unimToStash, setUNIMToStash] = React.useState("");
   const [terminusAddress, setTerminusAddress] = React.useState("");
   const [UNIMAddress, setUNIMAddress] = React.useState("");
   const [RBWAddress, setRBWAddress] = React.useState("");
@@ -1010,115 +995,6 @@ const CryptoUnicorns = () => {
     rbwLogo: `${playAssetPath}/cu/rbw-logo.png`,
   };
 
-  const toast = useToast();
-  const stashUnim = useMutation(
-    (amount: string) =>
-      contract.methods.stashUNIM(web3ctx.web3.utils.toWei(amount)).send({
-        from: web3ctx.account,
-        gasPrice:
-          process.env.NODE_ENV !== "production" ? "100000000000" : undefined,
-      }),
-    {
-      onSuccess: () => {
-        toast("Transaction went to the moon!", "success");
-      },
-      onError: () => {
-        toast("Transaction failed >.<", "error");
-      },
-    }
-  );
-
-  const stashRBW = useMutation(
-    (amount: string) =>
-      contract.methods.stashRBW(web3ctx.web3.utils.toWei(amount)).send({
-        from: web3ctx.account,
-        gasPrice:
-          process.env.NODE_ENV !== "production" ? "100000000000" : undefined,
-      }),
-    {
-      onSuccess: () => {
-        toast("Transaction went to the moon!", "success");
-      },
-      onError: () => {
-        toast("Transaction failed >.<", "error");
-      },
-    }
-  );
-
-  React.useLayoutEffect(() => {
-    if (unim.spenderState.data?.allowance && unimToStash.length !== 0) {
-      if (
-        web3ctx.web3.utils
-          .toBN(unim.spenderState.data.allowance)
-          .cmp(
-            web3ctx.web3.utils.toBN(
-              web3ctx.web3.utils.toWei(unimToStash, "ether")
-            )
-          ) == -1
-      ) {
-        setNeedAllowanceUNIM(true);
-      } else {
-        setNeedAllowanceUNIM(false);
-      }
-    } else {
-      setNeedAllowanceUNIM(false);
-    }
-    if (unim.spenderState.data?.balance && unimToStash.length !== 0) {
-      if (
-        web3ctx.web3.utils
-          .toBN(unim.spenderState.data.balance)
-          .cmp(
-            web3ctx.web3.utils.toBN(
-              web3ctx.web3.utils.toWei(unimToStash, "ether")
-            )
-          ) == -1
-      ) {
-        setNotEnoughUNIM(true);
-      } else {
-        setNotEnoughUNIM(false);
-      }
-    } else {
-      setNotEnoughUNIM(false);
-    }
-  }, [unimToStash, unim.spenderState.data, web3ctx.web3.utils, currentAccount]);
-
-  React.useLayoutEffect(() => {
-    if (rbw.spenderState.data?.allowance && rbwToStash.length !== 0) {
-      if (
-        web3ctx.web3.utils
-          .toBN(rbw.spenderState.data.allowance)
-          .cmp(
-            web3ctx.web3.utils.toBN(
-              web3ctx.web3.utils.toWei(rbwToStash, "ether")
-            )
-          ) == -1
-      ) {
-        setNeedAllowanceRBW(true);
-      } else {
-        setNeedAllowanceRBW(false);
-      }
-    } else {
-      setNeedAllowanceRBW(false);
-    }
-    if (rbw.spenderState.data?.balance && rbwToStash.length !== 0) {
-      if (
-        web3ctx.web3.utils
-          .toBN(rbw.spenderState.data.balance)
-          .cmp(
-            web3ctx.web3.utils.toBN(
-              web3ctx.web3.utils.toWei(rbwToStash, "ether")
-            )
-          ) == -1
-      ) {
-        setNotEnoughRBW(true);
-      } else {
-        setNotEnoughRBW(false);
-      }
-    } else {
-      setNotEnoughRBW(false);
-    }
-  }, [rbwToStash, rbw.spenderState.data, web3ctx.web3.utils, currentAccount]);
-
   const lootboxes = [
     {
       imageUrl:
@@ -1371,15 +1247,6 @@ const CryptoUnicorns = () => {
     },
   ];
 
-  const handleSubmit = () => {};
-
-  const handleKeypress = (e: any) => {
-    //it triggers by pressing the enter key
-    if (e.charCode === 13) {
-      handleSubmit();
-    }
-  };
-
   const displayCardList = (
     list: any,
     displayId: number,
@@ -1517,269 +1384,6 @@ const CryptoUnicorns = () => {
         px={[0, 0, "7%"]}
         my={["20px", "40px", "60px"]}
       >
-        <Box display={spyMode ? "none" : ""}>
-          <Flex
-            w="100%"
-            direction={"row"}
-            flexWrap="wrap"
-            mb={[3, 6, 12]}
-            bgColor="pink.500"
-            borderRadius={"xl"}
-            boxShadow="xl"
-            placeItems={"center"}
-          >
-            <Flex direction={"column"}>
-              <Badge
-                colorScheme={"pink"}
-                variant={"solid"}
-                borderRadius={"md"}
-                mr={2}
-                p={1}
-              >
-                <HStack>
-                  <Image
-                    ml={2}
-                    alt={"bottle"}
-                    h="48px"
-                    src={assets["unimLogo"]}
-                  />
-                  <Flex direction={"column"} wrap="nowrap" w="100%">
-                    <code>
-                      <Flex mx={2} display={"inline-block"} fontSize="xl">
-                        {unim.spenderState.isLoading ? (
-                          <Spinner m={0} size={"lg"} />
-                        ) : (
-                          <Flex fontSize={["sm", "md", "lg"]}>
-                            {`balance: `} <Spacer />
-                            {getUnimBalance()}
-                          </Flex>
-                        )}
-                      </Flex>
-                    </code>
-                  </Flex>
-                </HStack>
-              </Badge>
-            </Flex>
-            <Spacer />
-            <Flex direction={"column"}>
-              <Badge
-                colorScheme={"pink"}
-                variant={"solid"}
-                fontSize={"md"}
-                borderRadius={"md"}
-                mr={2}
-                p={1}
-              >
-                <HStack>
-                  <Image ml={2} alt={"rbw"} h="48px" src={assets["rbwLogo"]} />
-                  <Flex direction={"column"} wrap="nowrap" w="100%">
-                    <code>
-                      <Flex mx={2} display={"inline-block"} fontSize="xl">
-                        {rbw.spenderState.isLoading ? (
-                          <Spinner m={0} size={"lg"} />
-                        ) : (
-                          <Flex fontSize={["sm", "md", "lg"]}>
-                            {`balance: `} <Spacer />
-                            {getRBWBalance()}
-                          </Flex>
-                        )}
-                      </Flex>
-                    </code>
-                  </Flex>
-                </HStack>
-              </Badge>
-            </Flex>
-          </Flex>
-          <Text
-            fontSize={["sm", "md", "lg"]}
-            textColor={"gray.600"}
-            maxW="1337px"
-          >
-            Use this form to stash any amount of UNIM and RBW into Crypto
-            Unicorns.
-          </Text>
-          <Text mb={4} fontSize={["sm", "md", "lg"]}>
-            WARNING: Only use an account with which you have already logged into
-            the game. Otherwise, the game server will not respect your stash
-            operation.
-          </Text>
-          <Center>
-            <code>
-              <Stack bgColor={"#1A1D22"} spacing={2} mx="10px">
-                <Box w="100%">
-                  <FormLabel
-                    fontSize={["sm", "md", "lg"]}
-                    mb={["2px", "4px", "8px"]}
-                    wordBreak={"break-all"}
-                    w="fit-content"
-                  >
-                    {"UNIM to stash"}
-                  </FormLabel>
-
-                  <InputGroup
-                    textColor={"blue.900"}
-                    size={"lg"}
-                    fontSize={"sm"}
-                    w="100%"
-                    variant={"outline"}
-                  >
-                    <Flex
-                      direction={"row"}
-                      w="100%"
-                      minW={["100%", "480px", "580px"]}
-                    >
-                      <FormControl isInvalid={notEnoughUNIM}>
-                        <Input
-                          w={["100%", "200px", "300px"]}
-                          mt="4px"
-                          variant={"outline"}
-                          type="search"
-                          value={unimToStash}
-                          isDisabled={
-                            unim.setSpenderAllowance.isLoading ||
-                            stashUnim.isLoading
-                          }
-                          onKeyPress={handleKeypress}
-                          onChange={(event) => {
-                            if (
-                              event.target.value.match(/^[0-9]+$/) != null ||
-                              event.target.value.length == 0
-                            ) {
-                              setUNIMToStash(event.target.value);
-                            }
-                          }}
-                        />
-                        <FormErrorMessage color="red.400" pl="1">
-                          Not enough UNIM
-                        </FormErrorMessage>
-                      </FormControl>
-                      <Spacer />
-                      <Button
-                        isDisabled={
-                          (!needAllowanceUNIM || unimToStash === "") &&
-                          (notEnoughUNIM || unimToStash == "")
-                        }
-                        size="md"
-                        variant="cuButton"
-                        textColor="#D43F8C"
-                        borderColor="#FFFFFF"
-                        bgColor="white"
-                        fontSize={["sm", "md", "lg"]}
-                        isLoading={
-                          unim.setSpenderAllowance.isLoading ||
-                          stashUnim.isLoading
-                        }
-                        onClick={() => {
-                          if (needAllowanceUNIM) {
-                            unim.setSpenderAllowance.mutate(MAX_INT, {
-                              onSettled: () => {
-                                unim.spenderState.refetch();
-                              },
-                            });
-                          } else {
-                            stashUnim.mutate(unimToStash, {
-                              onSettled: () => {
-                                unim.spenderState.refetch();
-                                setUNIMToStash("");
-                              },
-                            });
-                          }
-                        }}
-                      >
-                        {needAllowanceUNIM ? "Set allowance" : "Stash!"}
-                      </Button>
-                    </Flex>
-                  </InputGroup>
-                </Box>
-                <Box w="100%">
-                  <FormLabel
-                    mb={["2px", "4px", "8px"]}
-                    fontSize={["sm", "md", "lg"]}
-                    wordBreak={"break-all"}
-                    w="fit-content"
-                  >
-                    {"RBW to stash"}
-                  </FormLabel>
-
-                  <InputGroup
-                    textColor={"blue.900"}
-                    size={"lg"}
-                    fontSize={"sm"}
-                    w="100%"
-                    variant={"outline"}
-                  >
-                    <Flex
-                      direction={"row"}
-                      w="100%"
-                      minW={["95%", "480px", "580px"]}
-                    >
-                      <FormControl isInvalid={notEnoughRBW}>
-                        <Input
-                          w={["100%", "200px", "300px"]}
-                          mt="4px"
-                          variant={"outline"}
-                          isDisabled={
-                            rbw.setSpenderAllowance.isLoading ||
-                            stashRBW.isLoading
-                          }
-                          type="search"
-                          value={rbwToStash}
-                          onKeyPress={handleKeypress}
-                          onChange={(event) => {
-                            if (
-                              event.target.value.match(/^[0-9]+$/) != null ||
-                              event.target.value.length == 0
-                            ) {
-                              setRBWToStash(event.target.value);
-                            }
-                          }}
-                        />
-                        <FormErrorMessage color="red.400" pl="1">
-                          Not enough RBW
-                        </FormErrorMessage>
-                      </FormControl>
-                      <Spacer />
-                      <Button
-                        variant="cuButton"
-                        textColor="#D43F8C"
-                        borderColor="#FFFFFF"
-                        bgColor="white"
-                        fontSize={["sm", "md", "lg"]}
-                        isDisabled={
-                          (!needAllowanceRBW || rbwToStash === "") &&
-                          (notEnoughRBW || rbwToStash == "")
-                        }
-                        size="md"
-                        isLoading={
-                          rbw.setSpenderAllowance.isLoading ||
-                          stashRBW.isLoading
-                        }
-                        onClick={() => {
-                          if (needAllowanceRBW) {
-                            rbw.setSpenderAllowance.mutate(MAX_INT, {
-                              onSettled: () => {
-                                rbw.spenderState.refetch();
-                              },
-                            });
-                          } else {
-                            stashRBW.mutate(rbwToStash, {
-                              onSettled: () => {
-                                rbw.spenderState.refetch();
-                                setRBWToStash("");
-                              },
-                            });
-                          }
-                        }}
-                      >
-                        {needAllowanceRBW ? "Set allowance" : "Stash!"}
-                      </Button>
-                    </Flex>
-                  </InputGroup>
-                </Box>
-              </Stack>
-            </code>
-          </Center>
-        </Box>
         <Flex
           w="100%"
           direction={"row"}

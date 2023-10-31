@@ -23,7 +23,8 @@ const Account = ({ ...props }: { [x: string]: any }) => {
   const { user } = useUser();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isSmallView] = useMediaQuery(["(max-width: 500px)"]);
+  const [isSmallView] = useMediaQuery(["(max-width: 1100px)"]);
+  const [isSignUpVisible] = useMediaQuery(["(min-width: 550px)"]);
 
   return (
     <>
@@ -32,6 +33,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
           <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
           <LoginButton>
             <Button
+              color={"white"}
               bg="#353535"
               borderRadius="20px"
               maxH="36px"
@@ -49,7 +51,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
               Log in
             </Button>
           </LoginButton>
-          {!isSmallView && (
+          {(!isSmallView || isSignUpVisible) && (
             <Button
               fontSize="16px"
               fontWeight="400"
@@ -57,6 +59,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
               maxH="36px"
               variant="plainOrange"
               onClick={() => setIsSignUpOpen(true)}
+              backgroundColor={"#F56646"}
               {...props}
             >
               Sign up

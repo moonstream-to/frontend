@@ -8,7 +8,7 @@ import PoolDetailsRow from "../PoolDetailsRow";
 import Web3Context from "../../contexts/Web3Context/context";
 
 import { supportedChains } from "../../types";
-import { chains } from "../../contexts/Web3Context";
+import { chainByChainId, chains } from "../../contexts/Web3Context";
 import { useQuery } from "react-query";
 import http from "../../utils/httpMoonstream";
 import {
@@ -21,6 +21,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import DropperV2RegisterContract from "./DropperV2RegisterContractForm";
+import Web3Address from "../entity/Web3Address";
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
 const CONNECTION_ERRORS: WalletStatesInterface = {
@@ -216,13 +217,13 @@ const DropperV2ContractView = ({
                 value={`${contractState.data.dropperVersion["0"]} v${contractState.data.dropperVersion["1"]}`}
               />
               <PoolDetailsRow type={"Number of drops"} value={contractState.data.numClaims} />
-              <PoolDetailsRow
-                type={"Admin terminus address"}
-                value={contractState.data.admin.terminusAddress}
-                href={`/portal/terminus/?contractAddress=${contractState.data.admin.terminusAddress}`}
-                canBeCopied
-                displayFull
-                whiteSpace="nowrap"
+              <Web3Address
+                address={contractState.data.admin.terminusAddress}
+                label={"Admin terminus address"}
+                entityTag={"terminusContracts"}
+                blockchain={chainByChainId(web3ctx.chainId) ?? ""}
+                isTruncated
+                fontSize={"18px"}
               />
               <PoolDetailsRow
                 type={"Admin terminus pool"}

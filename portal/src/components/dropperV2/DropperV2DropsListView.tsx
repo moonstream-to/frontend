@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Flex,
@@ -18,6 +18,18 @@ import {
 import { useRouter } from "next/router";
 import DropperV2DropsList from "./DropperV2DropsList";
 import DropperV2NewDrop from "./DropperV2NewDrop";
+
+export interface DropperState {
+  tokenType: number;
+  tokenAddress: string;
+  tokenId: string;
+  amount: string;
+  authorizationTokenAddress: string;
+  authorizationPoolId: string;
+  uri: string;
+}
+
+export type SetDropperState = React.Dispatch<React.SetStateAction<DropperState>>;
 
 const DropperV2DropsListView = ({
   contractAddress,
@@ -39,6 +51,15 @@ const DropperV2DropsListView = ({
   const [queryDropId, setQueryDropId] = useState<number | undefined>(undefined);
   const [filter, setFilter] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [dropperState, setDropperState] = useState<DropperState>({
+    tokenType: 1,
+    tokenAddress: "",
+    tokenId: "",
+    amount: "",
+    authorizationTokenAddress: "",
+    authorizationPoolId: "",
+    uri: "",
+  });
   const [adminOnly, setAdminOnly] = useState(false);
 
   useEffect(() => {
@@ -74,7 +95,7 @@ const DropperV2DropsListView = ({
       />
       <FormControl display="flex" alignItems="center">
         <FormLabel htmlFor="email-alerts" mb="0">
-          managable only
+          manageable only
         </FormLabel>
         <Switch
           sx={{ "span.chakra-switch__track:not([data-checked])": { backgroundColor: "#666666" } }}
@@ -111,7 +132,12 @@ const DropperV2DropsListView = ({
             <ModalOverlay />
             <ModalContent>
               <ModalBody w="fit-content">
-                <DropperV2NewDrop address={contractAddress} onClose={onClose} />
+                <DropperV2NewDrop
+                  address={contractAddress}
+                  onClose={onClose}
+                  state={dropperState}
+                  setState={setDropperState}
+                />
               </ModalBody>
             </ModalContent>
           </Modal>
