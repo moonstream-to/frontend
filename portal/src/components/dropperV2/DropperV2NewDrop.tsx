@@ -26,6 +26,11 @@ import useLink from "../../hooks/useLink";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { DropperState, SetDropperState } from "./DropperV2DropsListView";
+import AddEntityButton from "../entity/AddEntityButton";
+import { chainByChainId } from "../../contexts/Web3Context";
+import { AiOutlineSave } from "react-icons/ai";
+import EntitySelect from "../entity/EntitySelect";
+import { useJournal } from "../../hooks/useJournal";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
@@ -49,6 +54,8 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
 
   const queryClient = useQueryClient();
   const web3ctx = useContext(Web3Context);
+  const tokens = useJournal({ tags: ["tokens"] });
+  const terminusContracts = useJournal({ tags: ["terminusContracts"] });
 
   const headerMeta = ["name", "description", "image", "attributes"];
 
@@ -203,19 +210,42 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
           </Flex>
           <Flex direction="column" gap="10px">
             <Text variant="label">address</Text>
-            <Input
-              variant="address"
-              fontSize="18px"
-              w="45ch"
-              borderRadius="10px"
-              value={state.tokenAddress}
-              onChange={(e) =>
-                setState((prevState) => ({ ...prevState, tokenAddress: e.target.value }))
-              }
-              borderColor={!showInvalid || isTokenAddressValid ? "white" : "error.500"}
-              placeholder="token address"
-            />
+            <Flex gap={"10px"}>
+              <Input
+                variant="address"
+                fontSize="18px"
+                w="45ch"
+                borderRadius="10px"
+                value={state.tokenAddress}
+                onChange={(e) =>
+                  setState((prevState) => ({ ...prevState, tokenAddress: e.target.value }))
+                }
+                borderColor={!showInvalid || isTokenAddressValid ? "white" : "error.500"}
+                placeholder="token address"
+              />
+              {!tokens.data?.entities.some((e) => e.address === state.tokenAddress) &&
+                web3.utils.isAddress(state.tokenAddress) && (
+                  <AddEntityButton
+                    address={state.tokenAddress}
+                    tags={["tokens"]}
+                    blockchain={chainByChainId(web3ctx.chainId) ?? ""}
+                    w={"40px"}
+                    h={"40px"}
+                  >
+                    <AiOutlineSave />
+                  </AddEntityButton>
+                )}
+              <EntitySelect
+                tags={["tokens"]}
+                onChange={(address) =>
+                  setState((prevState) => ({ ...prevState, tokenAddress: address }))
+                }
+              >
+                ...
+              </EntitySelect>
+            </Flex>
           </Flex>
+
           <Flex direction="column" gap="10px">
             <Text variant="label">Id</Text>
             <Input
@@ -240,21 +270,47 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
         <Flex gap="20px">
           <Flex direction="column" gap="10px">
             <Text variant="label">address</Text>
-            <Input
-              variant="address"
-              fontSize="18px"
-              w="45ch"
-              borderRadius="10px"
-              value={state.authorizationTokenAddress}
-              onChange={(e) =>
-                setState((prevState) => ({
-                  ...prevState,
-                  authorizationTokenAddress: e.target.value,
-                }))
-              }
-              borderColor={!showInvalid || isAuthorizationTokenAddressValid ? "white" : "error.500"}
-              placeholder="authorization token address"
-            />
+            <Flex gap={"10px"}>
+              <Input
+                variant="address"
+                fontSize="18px"
+                w="45ch"
+                borderRadius="10px"
+                value={state.authorizationTokenAddress}
+                onChange={(e) =>
+                  setState((prevState) => ({
+                    ...prevState,
+                    authorizationTokenAddress: e.target.value,
+                  }))
+                }
+                borderColor={
+                  !showInvalid || isAuthorizationTokenAddressValid ? "white" : "error.500"
+                }
+                placeholder="authorization token address"
+              />
+              {!terminusContracts.data?.entities.some(
+                (e) => e.address === state.authorizationTokenAddress,
+              ) &&
+                web3.utils.isAddress(state.authorizationTokenAddress) && (
+                  <AddEntityButton
+                    address={state.authorizationTokenAddress}
+                    tags={["tokens"]}
+                    blockchain={chainByChainId(web3ctx.chainId) ?? ""}
+                    w={"40px"}
+                    h={"40px"}
+                  >
+                    <AiOutlineSave />
+                  </AddEntityButton>
+                )}
+              <EntitySelect
+                tags={["terminusContracts"]}
+                onChange={(address) =>
+                  setState((prevState) => ({ ...prevState, authorizationTokenAddress: address }))
+                }
+              >
+                ...
+              </EntitySelect>
+            </Flex>
           </Flex>
           <Flex direction="column" gap="10px">
             <Text variant="label">pool Id</Text>

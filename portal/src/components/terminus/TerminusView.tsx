@@ -122,7 +122,7 @@ const TerminusView = () => {
             secondaryFields={metadata.data}
             isDisabled={
               !web3.utils.isAddress(addressInputValue) ||
-              terminusContracts.data?.entities.some((e) => e.address === addressInputValue)
+              terminusContracts.data?.entities.some((e: Entity) => e.address === addressInputValue)
             }
           >
             <Icon as={AiOutlineSave} h={5} w={5} />
@@ -140,7 +140,7 @@ const TerminusView = () => {
         {!contractAddress && terminusContracts.data?.entities && (
           <Flex direction="column" gap="20px" bg="#2d2d2d" borderRadius="10px" p="20px">
             <Text>Terminus Contracts</Text>
-            {terminusContracts.data.entities.map((e: Entity, idx) => (
+            {terminusContracts.data.entities.map((e: Entity, idx: number) => (
               <ContractRow
                 type="terminus"
                 key={idx}

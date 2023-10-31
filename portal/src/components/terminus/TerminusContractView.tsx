@@ -194,6 +194,8 @@ const TerminusContractView = ({
                 <PoolDetailsRow type={"Number of pools"} value={contractState.data.totalPools} />
                 <Web3Address
                   address={contractState.data.paymentToken}
+                  blockchain={chainByChainId(chainId) ?? ""}
+                  entityTag={"tokens"}
                   label={"Payment token"}
                   isTruncated
                   fontSize={"18px"}
