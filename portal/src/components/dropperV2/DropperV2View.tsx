@@ -140,7 +140,6 @@ const DropperV2View = () => {
             Show
           </Button>
           <AddEntityButton
-            title={"Dropper Contract"}
             address={nextValue}
             tags={["dropperContracts"]}
             blockchain={chainByChainId(chainId) ?? ""}
