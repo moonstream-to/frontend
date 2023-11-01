@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  Button,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalBody,
-  FormControl,
-  FormLabel,
-  Input,
   Flex,
-  Image,
   Text,
   Spinner,
 } from "@chakra-ui/react";
-import useLogin from "../hooks/useLogin";
-import { CloseIcon } from "@chakra-ui/icons";
 
-import { AWS_ASSETS_PATH } from "../constants";
 import { useQuery } from "react-query";
 import axios from "axios";
 import PoolDetailsRow from "./PoolDetailsRow";
-
-const icons = {
-  logo: `${AWS_ASSETS_PATH}/icons/moon-logo.png`,
-};
 
 interface NodeBalancerInfoProps {
   isOpen: boolean;
@@ -73,9 +61,6 @@ function timestampToHumanDate(timestamp: number) {
   return date.toLocaleString();
 }
 
-// console.log(formatDuration(3662)); // Output: "1 hour, 1 minute, 2 seconds"
-// console.log(formatDuration(86400)); // Output: "1 day"
-
 const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) => {
   const nodeBalancerAccess = useQuery(
     ["nodeBalancerAccess"],
@@ -91,9 +76,6 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
           },
         })
         .then((res: any) => {
-          console.log(res.data.resources[0].resource_data);
-          //TODO find type: "nodebalancer-access"
-          const period = res.data.resources[0].resource_data.period_duration;
           return res.data.resources[0].resource_data;
         });
     },
@@ -101,20 +83,6 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
       enabled: isOpen,
     },
   );
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
-  // const { login, isLoading, data } = useLogin();
-
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   login({ username, password });
-  // };
-
-  // useEffect(() => {
-  //   if (data) {
-  //     onClose();
-  //   }
-  // }, [data]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -129,7 +97,7 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
             p="30px"
             alignItems="start"
             border="1px solid white"
-            w="600px"
+            w="800px"
           >
             {nodeBalancerAccess.isLoading && <Spinner />}
             {nodeBalancerAccess.data && (
@@ -138,6 +106,13 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
                   Nodebalancer access info
                 </Text>
                 <Text fontSize="18px">{nodeBalancerAccess.data.description}</Text>
+                <PoolDetailsRow
+                  type="Access id"
+                  value={nodeBalancerAccess.data.access_id}
+                  w="100%"
+                  range={{ atStart: 4, atEnd: 4 }}
+                  canBeCopied
+                />
                 <PoolDetailsRow
                   type="Active"
                   value={nodeBalancerAccess.data.blockchain_access ? "Yes" : "No"}
@@ -149,6 +124,7 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
                     nodeBalancerAccess.data.period_duration,
                   )}`}
                   w="100%"
+                  whiteSpace={"nowrap"}
                 />
                 <PoolDetailsRow
                   type="New period starts at:"
@@ -157,6 +133,7 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
                       nodeBalancerAccess.data.period_start_ts,
                   )}
                   w="100%"
+                  whiteSpace={"nowrap"}
                 />
                 <PoolDetailsRow
                   type="Calls made"

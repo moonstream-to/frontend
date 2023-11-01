@@ -13,14 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-import { AiOutlineAccountBook, AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useMutation, useQueryClient } from "react-query";
 import useUser from "../../contexts/UserContext";
 import useMoonToast from "../../hooks/useMoonToast";
 import { AuthService } from "../../services";
 
 import TokensList from "./TokensList";
-import NodeBalancerInfo from "../NodeBalancerInfo";
 
 const TokensView = () => {
   const [newAPIKeyLabel, setNewAPIKeyLabel] = useState("");
@@ -31,12 +30,6 @@ const TokensView = () => {
     isOpen: isNewTokenOpen,
     onClose: onNewTokenClose,
     onOpen: onNewTokenOpen,
-  } = useDisclosure();
-
-  const {
-    isOpen: isNodeAccessOpen,
-    onClose: onNodeAccessClose,
-    onOpen: onNodeAccessOpen,
   } = useDisclosure();
 
   const toast = useMoonToast();
@@ -137,16 +130,8 @@ const TokensView = () => {
             onClick={onNewTokenOpen}
             title="Add token"
           />
-          <AiOutlineAccountBook
-            cursor="pointer"
-            size="24"
-            onClick={onNodeAccessOpen}
-            title="Node Access"
-          />
         </Flex>
-
         <TokensList />
-        <NodeBalancerInfo isOpen={isNodeAccessOpen} onClose={onNodeAccessClose} />
       </Flex>
     </Flex>
   );
