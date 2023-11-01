@@ -76,7 +76,10 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
           },
         })
         .then((res: any) => {
-          return res.data.resources[0].resource_data;
+          const nodeBalancerResources = res.data.resources.filter(
+            (r: any) => r.resource_data?.type === "nodebalancer-access",
+          );
+          return nodeBalancerResources.map((r: any) => r.resource_data);
         });
     },
     {
@@ -99,58 +102,60 @@ const NodeBalancerInfo: React.FC<NodeBalancerInfoProps> = ({ isOpen, onClose }) 
             border="1px solid white"
             w="800px"
           >
+            <Text placeSelf="center" fontSize="22px" fontWeight="700" mb="20px">
+              Nodebalancer access info
+            </Text>
             {nodeBalancerAccess.isLoading && <Spinner />}
             {nodeBalancerAccess.data && (
-              <>
-                <Text placeSelf="center" fontSize="22px" fontWeight="700" mb="20px">
-                  Nodebalancer access info
-                </Text>
-                <Text fontSize="18px">{nodeBalancerAccess.data.description}</Text>
-                <PoolDetailsRow
-                  type="Access id"
-                  value={nodeBalancerAccess.data.access_id}
-                  w="100%"
-                  range={{ atStart: 4, atEnd: 4 }}
-                  canBeCopied
-                />
-                <PoolDetailsRow
-                  type="Active"
-                  value={nodeBalancerAccess.data.blockchain_access ? "Yes" : "No"}
-                  w="100%"
-                />
-                <PoolDetailsRow
-                  type="Limit"
-                  value={`${nodeBalancerAccess.data.max_calls_per_period}/${formatDuration(
-                    nodeBalancerAccess.data.period_duration,
-                  )}`}
-                  w="100%"
-                  whiteSpace={"nowrap"}
-                />
-                <PoolDetailsRow
-                  type="New period starts at:"
-                  value={timestampToHumanDate(
-                    nodeBalancerAccess.data.period_duration +
-                      nodeBalancerAccess.data.period_start_ts,
-                  )}
-                  w="100%"
-                  whiteSpace={"nowrap"}
-                />
-                <PoolDetailsRow
-                  type="Calls made"
-                  displayFull={true}
-                  value={String(nodeBalancerAccess.data.calls_per_period)}
-                  w="100%"
-                />
-                <PoolDetailsRow
-                  type="Calls left"
-                  displayFull={true}
-                  value={String(
-                    nodeBalancerAccess.data.max_calls_per_period -
-                      nodeBalancerAccess.data.calls_per_period,
-                  )}
-                  w="100%"
-                />
-              </>
+              <Flex direction={"column"} gap={"20px"} w={"100%"}>
+                {nodeBalancerAccess.data.map((item: any) => (
+                  <Flex
+                    direction="column"
+                    gap="10px"
+                    alignItems="start"
+                    key={item.access_id}
+                    w={"100%"}
+                  >
+                    <Text fontSize="18px">{item.description}</Text>
+                    <PoolDetailsRow
+                      type="Access id"
+                      value={item.access_id}
+                      w="100%"
+                      range={{ atStart: 4, atEnd: 4 }}
+                      canBeCopied
+                    />
+                    <PoolDetailsRow
+                      type="Active"
+                      value={item.blockchain_access ? "Yes" : "No"}
+                      w="100%"
+                    />
+                    <PoolDetailsRow
+                      type="Limit"
+                      value={`${item.max_calls_per_period}/${formatDuration(item.period_duration)}`}
+                      w="100%"
+                      whiteSpace={"nowrap"}
+                    />
+                    <PoolDetailsRow
+                      type="New period starts at:"
+                      value={timestampToHumanDate(item.period_duration + item.period_start_ts)}
+                      w="100%"
+                      whiteSpace={"nowrap"}
+                    />
+                    <PoolDetailsRow
+                      type="Calls made"
+                      displayFull={true}
+                      value={String(item.calls_per_period)}
+                      w="100%"
+                    />
+                    <PoolDetailsRow
+                      type="Calls left"
+                      displayFull={true}
+                      value={String(item.max_calls_per_period - item.calls_per_period)}
+                      w="100%"
+                    />
+                  </Flex>
+                ))}
+              </Flex>
             )}
           </Flex>
         </ModalBody>
