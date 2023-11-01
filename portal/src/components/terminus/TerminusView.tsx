@@ -115,7 +115,7 @@ const TerminusView = () => {
             Show
           </Button>
           <AddEntityButton
-            title={metadata.data?.name ?? "Terminus Contract"}
+            title={metadata.data?.name}
             address={addressInputValue}
             tags={["terminusContracts"]}
             blockchain={chainByChainId(chainId) ?? ""}

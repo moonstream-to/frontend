@@ -496,7 +496,7 @@ const TerminusPoolView = () => {
                     <AiOutlineSave />
                   </AddEntityButton>
                 )}
-              <EntitySelect tags={["droperContracts"]} onChange={setOperator}>
+              <EntitySelect tags={["dropperContracts"]} onChange={setOperator}>
                 ...
               </EntitySelect>
               <Button
