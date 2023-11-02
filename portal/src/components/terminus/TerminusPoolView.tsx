@@ -15,7 +15,6 @@ import useTerminus from "../../contexts/TerminusContext";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import AddEntityButton from "../entity/AddEntityButton";
-import { chainByChainId } from "../../contexts/Web3Context";
 import { AiOutlineSave } from "react-icons/ai";
 import { useJournal } from "../../hooks/useJournal";
 import EntitySelect from "../entity/EntitySelect";
@@ -314,7 +313,7 @@ const TerminusPoolView = () => {
                   address={poolState.data.controller}
                   label={"controller"}
                   entityTag={"accounts"}
-                  blockchain={chainByChainId(chainId) ?? ""}
+                  blockchain={String(chainId)}
                   isTruncated
                   fontSize={"18px"}
                 />
@@ -398,7 +397,7 @@ const TerminusPoolView = () => {
                   <AddEntityButton
                     address={newPoolController}
                     tags={["accounts"]}
-                    blockchain={chainByChainId(chainId) ?? ""}
+                    blockchain={String(chainId)}
                     w={"40px"}
                     h={"40px"}
                   >
@@ -448,7 +447,7 @@ const TerminusPoolView = () => {
                   <AddEntityButton
                     address={mintTo}
                     tags={["accounts"]}
-                    blockchain={chainByChainId(chainId) ?? ""}
+                    blockchain={String(chainId)}
                     w={"40px"}
                     h={"40px"}
                   >
@@ -489,7 +488,7 @@ const TerminusPoolView = () => {
                   <AddEntityButton
                     address={operator}
                     tags={["dropperContracts"]}
-                    blockchain={chainByChainId(chainId) ?? ""}
+                    blockchain={String(chainId)}
                     w={"40px"}
                     h={"40px"}
                   >

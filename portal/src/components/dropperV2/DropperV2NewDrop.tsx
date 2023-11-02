@@ -27,7 +27,6 @@ import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { DropperState, SetDropperState } from "./DropperV2DropsListView";
 import AddEntityButton from "../entity/AddEntityButton";
-import { chainByChainId } from "../../contexts/Web3Context";
 import { AiOutlineSave } from "react-icons/ai";
 import EntitySelect from "../entity/EntitySelect";
 import { useJournal } from "../../hooks/useJournal";
@@ -228,7 +227,7 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
                   <AddEntityButton
                     address={state.tokenAddress}
                     tags={["tokens"]}
-                    blockchain={chainByChainId(web3ctx.chainId) ?? ""}
+                    blockchain={String(web3ctx.chainId)}
                     w={"40px"}
                     h={"40px"}
                   >
@@ -295,7 +294,7 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
                   <AddEntityButton
                     address={state.authorizationTokenAddress}
                     tags={["tokens"]}
-                    blockchain={chainByChainId(web3ctx.chainId) ?? ""}
+                    blockchain={String(web3ctx.chainId)}
                     w={"40px"}
                     h={"40px"}
                   >

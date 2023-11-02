@@ -1,10 +1,9 @@
-import { Flex, Link, Text, Icon, Button, Spinner } from "@chakra-ui/react";
+import { Flex, Text, Icon, Button, Spinner } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
 import { RxCrossCircled } from "react-icons/rx";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import Web3Address from "../entity/Web3Address";
-import { chainByChainId } from "../../contexts/Web3Context";
 import { useContext } from "react";
 import Web3Context from "../../contexts/Web3Context/context";
 
@@ -58,7 +57,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
               address={dropState.data.drop.tokenAddress}
               label={"Address"}
               entityTag={"tokens"}
-              blockchain={chainByChainId(chainId) ?? ""}
+              blockchain={String(chainId)}
               isTruncated
               fontSize={"18px"}
             />
@@ -107,7 +106,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
               address={String(dropState.data.dropAuthorization.terminusAddress)}
               label={"Terminus address"}
               entityTag={"terminusContracts"}
-              blockchain={chainByChainId(chainId) ?? ""}
+              blockchain={String(chainId)}
               isTruncated
               fontSize={"18px"}
             />

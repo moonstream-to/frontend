@@ -19,7 +19,6 @@ import { chainByChainId } from "../../contexts/Web3Context";
 import { Entity } from "../../types";
 import { AiOutlineSave } from "react-icons/ai";
 import { useJournal } from "../../hooks/useJournal";
-import { supportedChains } from "../../types/Moonstream";
 
 const DropperV2View = () => {
   const router = useRouter();
@@ -142,7 +141,7 @@ const DropperV2View = () => {
           <AddEntityButton
             address={nextValue}
             tags={["dropperContracts"]}
-            blockchain={chainByChainId(chainId) ?? ""}
+            blockchain={String(web3ctx.chainId)}
             isDisabled={
               !web3.utils.isAddress(nextValue) ||
               dropperContracts.data?.entities.some((e: Entity) => e.address === nextValue)
@@ -193,11 +192,14 @@ const DropperV2View = () => {
                 type="dropper"
                 key={idx}
                 address={e.address}
-                chain={e.blockchain}
+                chainId={Number(e.blockchain)}
                 image={e.secondary_fields?.image ?? ""}
                 onClick={() => {
-                  if (e.blockchain !== chainByChainId(chainId)) {
-                    web3ctx.changeChain(e.blockchain as supportedChains);
+                  if (Number(e.blockchain) !== chainId) {
+                    const chainName = chainByChainId(Number(e.blockchain));
+                    if (chainName) {
+                      web3ctx.changeChain(chainName);
+                    }
                   }
                   router.push({
                     pathname: `/portal/dropperV2`,
