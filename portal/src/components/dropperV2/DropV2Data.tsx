@@ -1,8 +1,11 @@
-import { Flex, Link, Text, Icon, Button, Spinner } from "@chakra-ui/react";
+import { Flex, Text, Icon, Button, Spinner } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
 import MetadataPanel from "../MetadataPanel";
 import { RxCrossCircled } from "react-icons/rx";
 import { CheckCircleIcon } from "@chakra-ui/icons";
+import Web3Address from "../entity/Web3Address";
+import { useContext } from "react";
+import Web3Context from "../../contexts/Web3Context/context";
 
 type DropStateType = {
   data: {
@@ -36,6 +39,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
     ["1155", "ERC1155"],
     ["1", "Mint Terminus"],
   ]);
+  const { chainId } = useContext(Web3Context);
   return (
     <>
       {dropState.data?.drop && (
@@ -49,11 +53,13 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
               value={dropTypes.get(dropState.data.drop.tokenType) ?? "unknown"}
             />
 
-            <PoolDetailsRow
-              type="Address"
-              displayFull
-              canBeCopied
-              value={dropState.data.drop.tokenAddress}
+            <Web3Address
+              address={dropState.data.drop.tokenAddress}
+              label={"Address"}
+              entityTag={"tokens"}
+              blockchain={String(chainId)}
+              isTruncated
+              fontSize={"18px"}
             />
             <PoolDetailsRow type="Id" value={dropState.data.drop.tokenId} />
             <PoolDetailsRow type="Amount" value={dropState.data.drop.amount} />
@@ -96,12 +102,13 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
             Authorization
           </Text>
           <Flex direction="column" gap="10px" p="0" pl="15px">
-            <PoolDetailsRow
-              displayFull
-              canBeCopied
-              href={`${PORTAL_PATH}/terminus/?contractAddress=${dropState.data.dropAuthorization.terminusAddress}&poolId=${dropState.data.dropAuthorization.poolId}`}
-              type="Terminus address"
-              value={String(dropState.data.dropAuthorization.terminusAddress)}
+            <Web3Address
+              address={String(dropState.data.dropAuthorization.terminusAddress)}
+              label={"Terminus address"}
+              entityTag={"terminusContracts"}
+              blockchain={String(chainId)}
+              isTruncated
+              fontSize={"18px"}
             />
 
             <PoolDetailsRow

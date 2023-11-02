@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { useContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import { Box, Button, Center, Flex, Input, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Icon, Input, Text, useToast } from "@chakra-ui/react";
 
 import Web3Context from "../../../src/contexts/Web3Context/context";
 import useDropperContract from "../../../src/hooks/useDropper.sol";
@@ -14,6 +14,11 @@ import DropperV2DropView from "./DropperV2DropView";
 import DropperV2DropsListView from "./DropperV2DropsListView";
 import http from "../../utils/httpMoonstream";
 import DropperV2ContractCard from "./DropperV2ContractCard";
+import AddEntityButton from "../entity/AddEntityButton";
+import { chainByChainId } from "../../contexts/Web3Context";
+import { Entity } from "../../types";
+import { AiOutlineSave } from "react-icons/ai";
+import { useJournal } from "../../hooks/useJournal";
 
 const DropperV2View = () => {
   const router = useRouter();
@@ -26,6 +31,7 @@ const DropperV2View = () => {
   const [selected, setSelected] = useState(-1);
   const [totalDrops, setTotalDrops] = useState(0);
   const [claimMetadata, setClaimMetadata] = useState<unknown>({});
+  const dropperContracts = useJournal({ tags: ["dropperContracts"] });
 
   const [isContractRegistered, setIsContractRegistered] = useState(false);
 
@@ -132,6 +138,17 @@ const DropperV2View = () => {
           >
             Show
           </Button>
+          <AddEntityButton
+            address={nextValue}
+            tags={["dropperContracts"]}
+            blockchain={String(web3ctx.chainId)}
+            isDisabled={
+              !web3.utils.isAddress(nextValue) ||
+              dropperContracts.data?.entities.some((e: Entity) => e.address === nextValue)
+            }
+          >
+            <Icon as={AiOutlineSave} h={5} w={5} />
+          </AddEntityButton>
         </Flex>
         {contractAddress && (
           <>
@@ -167,17 +184,30 @@ const DropperV2View = () => {
             </Flex>
           </>
         )}
-        {!contractAddress && recentAddresses && (
-          <Flex direction="column" gap="20px" borderRadius="10px" p="20px">
-            <Text>Recent</Text>
-            {recentAddresses.map(({ address, chainId, name, image }) => (
+        {!contractAddress && dropperContracts.data?.entities && (
+          <Flex direction="column" gap="20px" bg="#2d2d2d" borderRadius="10px" p="20px">
+            <Text>Dropper Contracts</Text>
+            {dropperContracts.data.entities.map((e: Entity, idx: number) => (
               <ContractRow
-                key={address}
-                address={address}
-                chainId={Number(chainId)}
-                name={name}
-                image={image}
-                type="dropperV2"
+                type="dropper"
+                key={idx}
+                address={e.address}
+                chainId={Number(e.blockchain)}
+                image={e.secondary_fields?.image ?? ""}
+                onClick={() => {
+                  if (Number(e.blockchain) !== chainId) {
+                    const chainName = chainByChainId(Number(e.blockchain));
+                    if (chainName) {
+                      web3ctx.changeChain(chainName);
+                    }
+                  }
+                  router.push({
+                    pathname: `/portal/dropperV2`,
+                    query: {
+                      contractAddress: e.address,
+                    },
+                  });
+                }}
               />
             ))}
           </Flex>
