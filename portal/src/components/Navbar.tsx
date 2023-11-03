@@ -14,8 +14,6 @@ import {
   MenuList,
   MenuItem,
   Divider,
-  Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 
 import Web3Context from "../contexts/Web3Context/context";
@@ -25,7 +23,6 @@ import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
 import SignUp from "./SignUp";
 import Account from "./Account";
-import NodeBalancerInfo from "./NodeBalancerInfo";
 
 const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const [isMobileView] = useMediaQuery("(max-width: 767px)");
@@ -35,7 +32,6 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const web3Provider = useContext(Web3Context);
   const { logout, isLoading: isLoggingOut } = useLogout();
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const { onOpen, isOpen, onClose } = useDisclosure();
 
   return (
     <Flex
@@ -119,8 +115,6 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
           {!user && <Account />}
           {user && !isLoggingOut && (
             <Menu>
-              <NodeBalancerInfo onClose={onClose} isOpen={isOpen} />
-
               <MenuButton>
                 <Flex gap="10px" alignItems="center">
                   <BsPerson />
@@ -129,16 +123,10 @@ const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
               </MenuButton>
               <MenuList borderRadius="10px" border="1px solid white" minW="fit-content" p="20px">
                 <MenuItem p="0px" mb="10px">
-                  Settings
-                </MenuItem>
-
-                <MenuItem p="0px" mb="10px">
                   <RouterLink href="/tokens">API tokens</RouterLink>
                 </MenuItem>
                 <MenuItem p="0px" mb="10px">
-                  <Text fontWeight="400" px="0" onClick={() => onOpen()}>
-                    NodeBalancer info
-                  </Text>
+                  <RouterLink href="/nodebalancer">NodeBalancer info</RouterLink>
                 </MenuItem>
                 <Divider mb="10px" />
                 <MenuItem p="0px" onClick={() => logout()}>
