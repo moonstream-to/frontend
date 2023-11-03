@@ -24,7 +24,7 @@ type DropHeaderProps = {
   isEdit: boolean;
   title?: string;
   status?: boolean;
-  dropState: DropState | undefined;
+  dropState?: DropState | undefined;
 };
 
 const getNewDropState = (dropState: DropState | undefined): DropperState => {
