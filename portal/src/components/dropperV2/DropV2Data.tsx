@@ -60,7 +60,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
             {dropState.data.drop.tokenType === "1" && (
               <Flex fontSize="18px" justifyContent="space-between" alignItems="center">
                 <Text>Does dropper have minting authority?</Text>
-                {!dropState.data.isMintAuthorized ? (
+                {!dropState.data.isMintAuthorized ? ( //check if MM account is terminus pool controller
                   <Flex alignItems="center">
                     <Text pr="5px">No</Text>
                     <Icon as={RxCrossCircled} w="15px" mr="20px" />
