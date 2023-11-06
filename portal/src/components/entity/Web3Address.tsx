@@ -2,8 +2,6 @@ import { Button, Flex, Spinner, Text, useClipboard } from "@chakra-ui/react";
 import { useDeleteEntity, useJournal } from "../../hooks/useJournal";
 import AddEntityButton from "./AddEntityButton";
 import { AiOutlineCopy, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
-import { useEffect } from "react";
-import { useQueryClient } from "react-query";
 
 const Web3Address = ({
   label,
@@ -48,11 +46,11 @@ const Web3Address = ({
         <AiOutlineCopy onClick={onCopy} cursor="pointer" title={"Copy address"} />
         {hasCopied && (
           <Text
-            fontWeight="700"
+            fontSize={"16px"}
+            fontWeight="400"
             position="absolute"
-            bottom="-40px"
-            left="-69%"
-            transform="translate(-50%, 0)"
+            top="100%"
+            right="0"
             bg="#2d2d2d"
             borderRadius="8px"
             p="5px 10px"
