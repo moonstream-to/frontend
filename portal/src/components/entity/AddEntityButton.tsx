@@ -11,6 +11,7 @@ const AddEntityButton = ({
   tags,
   secondaryFields,
   isDisabled,
+  hint,
   children,
   ...props
 }: {
@@ -20,6 +21,7 @@ const AddEntityButton = ({
   tags: string[];
   secondaryFields?: Record<string, string>;
   isDisabled?: boolean;
+  hint?: string;
   children: ReactNode;
   [x: string]: any;
 }) => {
@@ -50,6 +52,7 @@ const AddEntityButton = ({
       alignItems={"center"}
       justifyContent={"center"}
       opacity={isDisabled ? "0.6" : "1"}
+      title={hint ?? ""}
     >
       {addEntity.isLoading ? <Spinner h={"15px"} w={"15px"} /> : children}
     </Flex>

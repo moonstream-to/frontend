@@ -93,6 +93,17 @@ const TerminusView = () => {
 
   const metadata = useLink({ link: contractState?.contractURI });
 
+  const isSaveDisabled = () =>
+    !web3.utils.isAddress(addressInputValue) ||
+    terminusContracts.data?.entities.some((e: Entity) => e.address === addressInputValue);
+
+  const hintForSaveButton = () => {
+    const title = terminusContracts.data?.entities.find(
+      (e: Entity) => e.address === addressInputValue,
+    )?.title;
+    return title ? `Already saved as ${title}` : "Save";
+  };
+
   return (
     <Center>
       <Flex gap="30px" direction="column" px="7%" py="30px" color="white">
@@ -116,14 +127,12 @@ const TerminusView = () => {
           </Button>
           <AddEntityButton
             title={metadata.data?.name}
+            hint={hintForSaveButton()}
             address={addressInputValue}
             tags={["terminusContracts"]}
             blockchain={chainByChainId(chainId) ?? ""}
             secondaryFields={metadata.data}
-            isDisabled={
-              !web3.utils.isAddress(addressInputValue) ||
-              terminusContracts.data?.entities.some((e: Entity) => e.address === addressInputValue)
-            }
+            isDisabled={isSaveDisabled()}
           >
             <Icon as={AiOutlineSave} h={5} w={5} />
           </AddEntityButton>
