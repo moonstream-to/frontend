@@ -174,7 +174,7 @@ const updateQueriesData = (
   );
 };
 
-export const useUpdateEntity = () => {
+export const useUpdateEntityTitle = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (input: EntityUpdateInput) => {
@@ -182,17 +182,12 @@ export const useUpdateEntity = () => {
       const entityId = getEntityId(entity);
       const response = await http({
         method: "PUT",
-        url: `https://api.moonstream.to/journals/${entity.journal_id}/entities/${entityId}`,
-        data: { address, title, blockchain, ...secondaryFields },
-      });
-      await http({
-        method: "PUT",
-        url: `https://api.moonstream.to/journals/${entity.journal_id}/entries/${entityId}/tags`,
-        data: { tags },
+        url: `https://api.moonstream.to/journals/${entity.journal_id}/entries/${entityId}`,
+        data: { title, content: "" },
       });
       return response.data;
     },
-    onSuccess: (newEntity, variables) => updateQueriesData(newEntity, variables, queryClient),
+    onSuccess: (newEntity, variables) => queryClient.invalidateQueries("journalByName"), //TODO direct update
   });
 };
 
