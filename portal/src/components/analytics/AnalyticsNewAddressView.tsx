@@ -258,12 +258,7 @@ const AnalyticsNewAddressView = () => {
                       onClick={() => setChainName(chain.name)}
                     >
                       {getChainImage(chain.name) && (
-                        <Image
-                          alt=""
-                          src={getChainImage(chain.name)}
-                          h="20px"
-                          filter="invert(100%)"
-                        />
+                        <Image alt="" src={getChainImage(chain.name)} h="20px" />
                       )}
                       <Text fontSize="14px" lineHeight="18px">
                         {chain.displayName}

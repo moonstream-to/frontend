@@ -116,6 +116,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
   const namesMap = {
     xdai: "Gnosis",
     zksync_era_testnet: "zkSync Era testnet",
+    zksync_era: "zkSync Era",
   };
 
   const getChainName = (backName: string) => {

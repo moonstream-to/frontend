@@ -28,7 +28,7 @@ const AddressesPlaceholder = () => {
         <Flex gap="8px" alignItems="center" wrap="wrap" whiteSpace="nowrap">
           {chainNames.map((n, idx: number) => (
             <Box key={idx} display="inline-flex" alignItems="center" gap="3px">
-              <Image alt="" src={getChainImage(n)} h="20px" />
+              <Image alt="" src={getChainImage(n)} h="20px" filter="invert(100%)" />
               <Text fontSize="9px" lineHeight="11px" textTransform="uppercase">
                 {n}
               </Text>

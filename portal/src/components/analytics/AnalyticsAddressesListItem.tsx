@@ -77,13 +77,7 @@ const AnalyticsAddressesListItem = ({
             {address.type === "smartcontract" ? (
               <>
                 {getChainImage(chainName) ? (
-                  <Image
-                    h="20px"
-                    w="20px"
-                    alt=""
-                    src={getChainImage(chainName)}
-                    filter="invert(100%)"
-                  />
+                  <Image h="20px" w="20px" alt="" src={getChainImage(chainName)} />
                 ) : (
                   <Box w="20px" />
                 )}

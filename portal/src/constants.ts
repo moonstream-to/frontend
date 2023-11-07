@@ -108,31 +108,44 @@ export const PORTAL_PATH = "https://moonstream.to/portal";
 
 export const DISCORD_LINK = "https://discord.gg/K56VNUQGvA";
 
-export type ChainName = "ethereum" | "localhost" | "mumbai" | "polygon" | "wyrm" | "gnosis";
-export type ChainId = 1 | 1337 | 80001 | 137 | 322 | 100;
+export type ChainName =
+  | "ethereum"
+  | "localhost"
+  | "mumbai"
+  | "polygon"
+  | "wyrm"
+  | "gnosis"
+  | "zkSync Era"
+  | "zkSync Era testnet";
+export type ChainId = 1 | 1337 | 80001 | 137 | 322 | 100 | 324 | 280;
 
 // map chain names to image paths
 const chainNameToImagePath: Record<string, string> = {
-  ethereum: `${AWS_ASSETS_PATH_CF}/icons/eth-outline.png`,
+  ethereum: `${AWS_ASSETS_PATH_CF}/icons/eth-white.png`,
   localhost: `${AWS_ASSETS_PATH_CF}/icons/localhost-outline.png`,
-  mumbai: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
-  polygon: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
-  wyrm: `${AWS_ASSETS_PATH_CF}/icons/wyrm-small-fill.png`,
-  gnosis: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
-  xdai: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
+  mumbai: `${AWS_ASSETS_PATH_CF}/icons/polygon-white.png`,
+  polygon: `${AWS_ASSETS_PATH_CF}/icons/polygon-white.png`,
+  wyrm: `${AWS_ASSETS_PATH_CF}/icons/wyrm-white.png`,
+  gnosis: `${AWS_ASSETS_PATH_CF}/icons/gnosis-white.png`,
+  xdai: `${AWS_ASSETS_PATH_CF}/icons/gnosis-white.png`,
+  zksync_era: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
+  zksync_era_testnet: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
 };
 
 // map chain IDs to image paths
 const chainIdToImagePath: Record<ChainId, string> = {
-  1: `${AWS_ASSETS_PATH_CF}/icons/eth-outline.png`,
+  1: `${AWS_ASSETS_PATH_CF}/icons/eth-white.png`,
   1337: `${AWS_ASSETS_PATH_CF}/icons/localhost-outline.png`,
-  80001: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
-  137: `${AWS_ASSETS_PATH_CF}/icons/polygon-outline.png`,
-  322: `${AWS_ASSETS_PATH_CF}/icons/wyrm-small-fill.png`,
-  100: `${AWS_ASSETS_PATH_CF}/icons/gnosis.png`,
+  80001: `${AWS_ASSETS_PATH_CF}/icons/polygon-white.png`,
+  137: `${AWS_ASSETS_PATH_CF}/icons/polygon-white.png`,
+  322: `${AWS_ASSETS_PATH_CF}/icons/wyrm-white.png`,
+  100: `${AWS_ASSETS_PATH_CF}/icons/gnosis-white.png`,
+  324: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
+  280: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
 };
 
 export const getChainImage = (identifier: string | number): string | undefined => {
+  console.log(identifier, chainNameToImagePath[identifier as ChainName]);
   if (identifier in chainNameToImagePath) {
     return chainNameToImagePath[identifier as ChainName];
   } else if (identifier in chainIdToImagePath) {
