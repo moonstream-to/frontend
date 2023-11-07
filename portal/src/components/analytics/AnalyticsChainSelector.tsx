@@ -24,21 +24,29 @@ const AnalyticsChainSelector = ({
   }
 
   return (
-    <Flex wrap="wrap" gap="10px" borderBottom="1px solid #4c4c4c" w="fit-content" p="0">
+    <Flex wrap="wrap" gap="10px" w="fit-content" p="0">
       {blockchains.data.map(
         (chain: { name: string; displayName: string; image: string }, idx: number) => (
           <Flex
             key={idx}
-            borderBottom="1px solid"
-            borderColor={selectedChain === chain.name ? "white" : "transparent"}
             display="inline-flex"
             alignItems="center"
             gap="3px"
             p="8px 15px"
             cursor="pointer"
             onClick={() => setSelectedChain(chain.name)}
+            borderRadius={"30px"}
+            bg={selectedChain === chain.name ? "#FFF" : "#232323"}
+            color={selectedChain === chain.name ? "#1A1D22" : "#FFF"}
           >
-            {getChainImage(chain.name) && <Image alt="" src={getChainImage(chain.name)} h="20px" />}
+            {getChainImage(chain.name) && (
+              <Image
+                alt=""
+                src={getChainImage(chain.name)}
+                h="20px"
+                filter={selectedChain === chain.name ? "invert(100%)" : ""}
+              />
+            )}
             <Text fontSize="14px" lineHeight="18px">
               {chain.displayName}
             </Text>
