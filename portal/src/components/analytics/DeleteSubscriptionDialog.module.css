@@ -1,0 +1,65 @@
+.container {
+    display: flex;
+    width: 500px;
+    padding: 30px;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    border-radius: 20px;
+    border: 1px solid #FFF;
+    background: #1A1D22;
+}
+
+.title {
+    color: #FFF;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%; /* 24px */
+}
+
+.text {
+    color: #FFF;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 22.4px */
+}
+
+.buttons {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    align-self: stretch;
+    color: #FFF;
+    text-align: center;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: normal;
+}
+
+.cancelButton {
+    display: flex;
+    padding: 6px 40px;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 0 0;
+    border-radius: 10px;
+    background: #4D4D4D;
+    font-weight: 700;
+}
+
+.unwatchButton {
+    display: flex;
+    padding: 6px 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex: 1 0 0;
+    border-radius: 10px;
+    background: #E85858;
+    font-weight: 700;
+    min-width: 209px;
+}
+

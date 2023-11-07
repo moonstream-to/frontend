@@ -131,7 +131,6 @@ const TokensView = () => {
             title="Add token"
           />
         </Flex>
-
         <TokensList />
       </Flex>
     </Flex>

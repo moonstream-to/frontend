@@ -155,7 +155,7 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
     if (state.tokenType === dropTypes.ERC721 || state.tokenType === dropTypes.ERC20) {
       setState((prevState) => ({ ...prevState, tokenId: "0" }));
     }
-  });
+  }, [state.tokenType]);
 
   // If drop type is "Mint Terminus" (type 1), then we populate the Terminus pool URI into the URI field as a default.
   useEffect(() => {

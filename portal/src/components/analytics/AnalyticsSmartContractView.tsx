@@ -2,7 +2,16 @@ import { useEffect, useState } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { EditIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, Input, Link, Spacer, Spinner, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  IconButton,
+  Input,
+  Link,
+  Spacer,
+  Spinner,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 import useAnalytics from "../../contexts/AnalyticsContext";
@@ -15,6 +24,7 @@ import AnalyticsEOADetails from "./AnalyticsEOADetails";
 import AnalyticsQueryView from "./AnalyticsQueryView";
 import AnalyticsSmartContractDetails from "./AnalyticsSmartContractDetails";
 import AnalyticsSmartContractQueries, { QueryInterface } from "./AnalyticsSmartContractQueries";
+import DeleteSubscriptionDialog from "./DeleteSubscriptionDialog";
 
 const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const API = process.env.NEXT_PUBLIC_MOONSTREAM_API_URL;
@@ -26,6 +36,7 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
   const [newTitle, setNewTitle] = useState("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [abi, setABI] = useState("");
+  const { onOpen: onOpenDelete, isOpen: isOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
   const { templates } = useAnalytics();
 
@@ -107,42 +118,62 @@ const AnalyticsSmartContractView = ({ address }: { address: any }) => {
     <Flex borderRadius="20px" bg="#2d2d2d" minH="100%" w="100%" direction="column">
       <Flex direction="column" p="30px" gap="30px" w="100%">
         {isEditingTitle ? (
-          <Flex gap="15px" alignItems="center">
-            <Input
-              variant="text"
-              fontSize="18px"
-              borderRadius="10px"
-              _placeholder={{ fontSize: "16px" }}
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="Enter new title"
-              w="100%"
-              autoFocus
-            />
-            {updateSubscription.isLoading ? (
-              <Spinner w="16px" h="16px" />
-            ) : (
+          <>
+            <Flex gap="15px" alignItems="center">
+              <Input
+                variant="text"
+                fontSize="18px"
+                borderRadius="10px"
+                _placeholder={{ fontSize: "16px" }}
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Enter new title"
+                w="100%"
+                autoFocus
+              />
+              {updateSubscription.isLoading ? (
+                <Spinner w="16px" h="16px" />
+              ) : (
+                <IconButton
+                  variant="transparent"
+                  minWidth="0"
+                  aria-label="save"
+                  icon={<AiOutlineCheck />}
+                  isDisabled={newTitle === "" || newTitle === address.label}
+                  onClick={() => handleTitleChange()}
+                />
+              )}
               <IconButton
                 variant="transparent"
+                aria-label="close"
                 minWidth="0"
-                aria-label="save"
-                icon={<AiOutlineCheck />}
-                isDisabled={newTitle === "" || newTitle === address.label}
-                onClick={() => handleTitleChange()}
+                icon={<AiOutlineClose />}
+                isDisabled={updateSubscription.isLoading}
+                onClick={() => {
+                  setNewTitle("");
+                  setIsEditingTitle(false);
+                }}
               />
-            )}
-            <IconButton
-              variant="transparent"
-              aria-label="close"
-              minWidth="0"
-              icon={<AiOutlineClose />}
-              isDisabled={updateSubscription.isLoading}
-              onClick={() => {
-                setNewTitle("");
+            </Flex>
+            <DeleteSubscriptionDialog
+              isOpen={isOpenDelete}
+              onClose={() => {
                 setIsEditingTitle(false);
+                onCloseDelete();
               }}
+              contract={address}
             />
-          </Flex>
+            <Text
+              cursor={"pointer"}
+              onClick={onOpenDelete}
+              color={"#F5B3B3"}
+              mt={"-10px"}
+              w={"fit-content"}
+              fontWeight={"700"}
+            >
+              Unwatch address
+            </Text>
+          </>
         ) : (
           <Flex gap="15px" alignItems="baseline">
             <Text variant="title">{address.label}</Text>
