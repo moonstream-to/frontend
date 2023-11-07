@@ -119,6 +119,8 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     zksync_era: "zkSync Era",
   };
 
+  const chainsOrder = ["ethereum", "polygon", "zksync_era", "xdai", "mumbai", "zksync_era_testnet"];
+
   const getChainName = (backName: string) => {
     if (namesMap[backName as keyof typeof namesMap]) {
       return namesMap[backName as keyof typeof namesMap];
@@ -136,6 +138,13 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
           displayName: getChainName(type.blockchain),
           image: type.icon_url,
         };
+      })
+      .sort((a: any, b: any) => {
+        const orderA =
+          chainsOrder.indexOf(a.name) > -1 ? chainsOrder.indexOf(a.name) : Number.MAX_VALUE;
+        const orderB =
+          chainsOrder.indexOf(b.name) > -1 ? chainsOrder.indexOf(b.name) : Number.MAX_VALUE;
+        return orderA - orderB;
       });
   };
 
