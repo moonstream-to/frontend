@@ -14,7 +14,6 @@ import useRecentAddresses from "../../hooks/useRecentAddresses";
 import { useJournal } from "../../hooks/useJournal";
 import { AiOutlineSave } from "react-icons/ai";
 import { chainByChainId } from "../../contexts/Web3Context";
-import { supportedChains } from "../../types/Moonstream";
 import { Entity } from "../../types";
 import AddEntityButton from "../entity/AddEntityButton";
 import useLink from "../../hooks/useLink";
@@ -118,7 +117,7 @@ const TerminusView = () => {
             title={metadata.data?.name}
             address={addressInputValue}
             tags={["terminusContracts"]}
-            blockchain={chainByChainId(chainId) ?? ""}
+            blockchain={String(chainId)}
             secondaryFields={metadata.data}
             isDisabled={
               !web3.utils.isAddress(addressInputValue) ||
@@ -145,12 +144,15 @@ const TerminusView = () => {
                 type="terminus"
                 key={idx}
                 address={e.address}
-                chain={e.blockchain}
+                chainId={Number(e.blockchain)}
                 name={e.secondary_fields?.title ?? e.title}
                 image={e.secondary_fields?.image ?? ""}
                 onClick={() => {
-                  if (e.blockchain !== chainByChainId(chainId)) {
-                    changeChain(e.blockchain as supportedChains);
+                  if (Number(e.blockchain) !== chainId) {
+                    const chainName = chainByChainId(Number(e.blockchain));
+                    if (chainName) {
+                      changeChain(chainName);
+                    }
                   }
                   router.push({
                     pathname: `/portal/terminus`,

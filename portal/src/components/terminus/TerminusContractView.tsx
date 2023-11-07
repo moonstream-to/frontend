@@ -21,8 +21,6 @@ import { queryPublic } from "../../utils/http";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
-import { useJournal } from "../../hooks/useJournal";
-import { chainByChainId } from "../../contexts/Web3Context";
 import Web3Address from "../entity/Web3Address";
 
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
@@ -194,7 +192,7 @@ const TerminusContractView = ({
                 <PoolDetailsRow type={"Number of pools"} value={contractState.data.totalPools} />
                 <Web3Address
                   address={contractState.data.paymentToken}
-                  blockchain={chainByChainId(chainId) ?? ""}
+                  blockchain={String(chainId)}
                   entityTag={"tokens"}
                   label={"Payment token"}
                   isTruncated
@@ -208,7 +206,7 @@ const TerminusContractView = ({
                   address={contractState.data.controller}
                   label={"Contract controller"}
                   entityTag={"accounts"}
-                  blockchain={chainByChainId(chainId) ?? ""}
+                  blockchain={String(chainId)}
                   isTruncated
                   fontSize={"18px"}
                 />
