@@ -100,7 +100,11 @@ const TerminusView = () => {
     const title = terminusContracts.data?.entities.find(
       (e: Entity) => e.address === addressInputValue,
     )?.title;
-    return title ? `Already saved as ${title}` : "Save";
+    return title
+      ? `Already saved as ${title}`
+      : !web3.utils.isAddress(addressInputValue)
+      ? "not web3 address"
+      : "Save";
   };
 
   return (
