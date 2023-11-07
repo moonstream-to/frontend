@@ -4,69 +4,50 @@ import { Flex, Text, Spinner } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 import axios from "axios";
 import PoolDetailsRow from "../PoolDetailsRow";
+import { formatDuration, timestampToHumanDate } from "../../utils/timeFormat";
 
-function formatDuration(seconds: number) {
-  // Calculate the number of days, hours, minutes, and seconds
-  const days = Math.floor(seconds / (3600 * 24));
-  seconds -= days * 3600 * 24;
-  const hrs = Math.floor(seconds / 3600);
-  seconds -= hrs * 3600;
-  const mins = Math.floor(seconds / 60);
-  seconds -= mins * 60;
-
-  // Create an array to hold the formatted parts
-  const parts = [];
-
-  // Add the parts to the array if they are greater than 0
-  if (days > 0) {
-    parts.push(days + (days > 1 ? " days" : " day"));
-  }
-  if (hrs > 0) {
-    parts.push(hrs + (hrs > 1 ? " hours" : " hour"));
-  }
-  if (mins > 0) {
-    parts.push(mins + (mins > 1 ? " minutes" : " minute"));
-  }
-  if (seconds > 0) {
-    parts.push(seconds + (seconds > 1 ? " seconds" : " second"));
-  }
-
-  // If there's nothing in the parts array, then the duration was 0 seconds
-  if (parts.length === 0) {
-    return "0 seconds";
-  }
-
-  // Join the parts into a string and return it
-  return parts.join(", ");
+interface NodeBalancerResourceData {
+  access_id: string;
+  description: string;
+  blockchain_access: boolean;
+  max_calls_per_period: number;
+  period_duration: number;
+  period_start_ts: number;
+  calls_per_period: number;
+  type: string;
 }
 
-function timestampToHumanDate(timestamp: number) {
-  // Create a new Date object with the Unix timestamp
-  const date = new Date(timestamp * 1000);
-
-  // Format the date into a human friendly string
-  return date.toLocaleString();
+interface NodeBalancerApiResponse {
+  resources: Array<{
+    resource_data: NodeBalancerResourceData;
+  }>;
 }
 
 const NodeBalancerInfo = () => {
-  const nodeBalancerAccess = useQuery(["nodeBalancerAccess"], () => {
-    const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
-    const authorization = token ? { Authorization: `Bearer ${token}` } : {};
+  const nodeBalancerAccess = useQuery<NodeBalancerResourceData[], Error>(
+    ["nodeBalancerAccess"],
+    () => {
+      const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
+      const authorization = token ? { Authorization: `Bearer ${token}` } : {};
 
-    return axios
-      .get("https://auth.bugout.dev/resources?type=nodebalancer-access", {
-        headers: {
-          "Content-Type": "application/json",
-          ...authorization,
-        },
-      })
-      .then((res: any) => {
-        const nodeBalancerResources = res.data.resources.filter(
-          (r: any) => r.resource_data?.type === "nodebalancer-access",
-        );
-        return nodeBalancerResources.map((r: any) => r.resource_data);
-      });
-  });
+      return axios
+        .get<NodeBalancerApiResponse>(
+          "https://auth.bugout.dev/resources?type=nodebalancer-access",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...authorization,
+            },
+          },
+        )
+        .then((res) => {
+          const nodeBalancerResources = res.data.resources.filter(
+            (r) => r.resource_data?.type === "nodebalancer-access",
+          );
+          return nodeBalancerResources.map((r) => r.resource_data);
+        });
+    },
+  );
 
   return (
     <Flex
@@ -87,7 +68,7 @@ const NodeBalancerInfo = () => {
       {nodeBalancerAccess.isLoading && <Spinner />}
       {nodeBalancerAccess.data && (
         <Flex direction={"column"} gap={"20px"} w={"100%"}>
-          {nodeBalancerAccess.data.map((item: any, idx: number) => (
+          {nodeBalancerAccess.data.map((item, idx: number) => (
             <Flex
               direction="column"
               gap="10px"

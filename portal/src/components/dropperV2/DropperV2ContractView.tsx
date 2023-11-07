@@ -8,7 +8,7 @@ import PoolDetailsRow from "../PoolDetailsRow";
 import Web3Context from "../../contexts/Web3Context/context";
 
 import { supportedChains } from "../../types";
-import { chainByChainId, chains } from "../../contexts/Web3Context";
+import { chains } from "../../contexts/Web3Context";
 import { useQuery } from "react-query";
 import http from "../../utils/httpMoonstream";
 import {
@@ -221,7 +221,7 @@ const DropperV2ContractView = ({
                 address={contractState.data.admin.terminusAddress}
                 label={"Admin terminus address"}
                 entityTag={"terminusContracts"}
-                blockchain={chainByChainId(web3ctx.chainId) ?? ""}
+                blockchain={String(web3ctx.chainId)}
                 isTruncated
                 fontSize={"18px"}
               />

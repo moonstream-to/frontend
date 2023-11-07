@@ -18,7 +18,6 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import AddEntityButton from "./AddEntityButton";
 import { AiOutlineSave } from "react-icons/ai";
 import Web3Context from "../../contexts/Web3Context/context";
-import { chainByChainId } from "../../contexts/Web3Context";
 
 const EntitySelect = ({
   tags,
@@ -78,7 +77,7 @@ const EntitySelect = ({
                     <AddEntityButton
                       address={newAddress}
                       tags={tags}
-                      blockchain={chainByChainId(chainId) ?? ""}
+                      blockchain={String(chainId)}
                       w={"40px"}
                       h={"40px"}
                       isDisabled={!web3.utils.isAddress(newAddress)}
