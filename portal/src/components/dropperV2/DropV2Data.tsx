@@ -24,6 +24,7 @@ type DropV2DataProps = {
   excludeFields: string[];
   PORTAL_PATH: string;
   approveForPool: any;
+};
 
 const DropV2Data: React.FC<DropV2DataProps> = ({
   dropState,
@@ -62,18 +63,6 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
             />
             <PoolDetailsRow type="Id" value={dropState.data.drop.tokenId} />
             <PoolDetailsRow type="Amount" value={dropState.data.drop.amount} />
-            {dropState.data.drop.tokenType === "721" && (
-              <Button
-                placeSelf={"end"}
-                variant="whiteOutline"
-                fontSize="14px"
-                p="4px 16px"
-                borderRadius={"7px"}
-                onClick={() => mintTokens.mutate()}
-              >
-                {mintTokens.isLoading ? <Spinner /> : "Mint"}
-              </Button>
-            )}
             {dropState.data.drop.tokenType === "1" && (
               <Flex fontSize="18px" justifyContent="space-between" alignItems="center">
                 <Text>Does dropper have minting authority?</Text>

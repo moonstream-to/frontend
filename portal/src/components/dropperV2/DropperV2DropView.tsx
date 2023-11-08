@@ -11,7 +11,6 @@ import remarkGfm from "remark-gfm";
 import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
 import { PORTAL_PATH } from "../../constants";
-
 import DropHeader from "../dropper/DropHeader";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
