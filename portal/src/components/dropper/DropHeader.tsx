@@ -1,6 +1,20 @@
 import { LinkIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, Text, useClipboard } from "@chakra-ui/react";
+import {
+  Flex,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  Text,
+  useClipboard,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { AiFillEdit, AiOutlineEdit } from "react-icons/ai";
+import DropperV2NewDrop from "../dropperV2/DropperV2NewDrop";
+import React, { useEffect, useState } from "react";
+import { DropperState } from "../dropperV2/DropperV2DropsListView";
+import { DropState } from "../dropperV2/DropperV2DropView";
 
 type DropHeaderProps = {
   address: string;
@@ -10,6 +24,19 @@ type DropHeaderProps = {
   isEdit: boolean;
   title?: string;
   status?: boolean;
+  dropState?: DropState | undefined;
+};
+
+const getNewDropState = (dropState: DropState | undefined): DropperState => {
+  return {
+    tokenType: Number(dropState?.drop.tokenType) ?? 1,
+    tokenAddress: dropState?.drop.tokenAddress ?? "",
+    tokenId: dropState?.drop.tokenId ?? "",
+    amount: dropState?.drop.amount ?? "",
+    authorizationTokenAddress: dropState?.dropAuthorization.terminusAddress ?? "",
+    authorizationPoolId: dropState?.dropAuthorization.poolId ?? "",
+    uri: dropState?.uri ?? "",
+  };
 };
 
 const DropHeader: React.FC<DropHeaderProps> = ({
@@ -20,7 +47,16 @@ const DropHeader: React.FC<DropHeaderProps> = ({
   isEdit,
   title,
   status,
+  dropState,
 }) => {
+  const [newDropState, setNewDropState] = useState<DropperState>(getNewDropState(dropState));
+
+  useEffect(() => {
+    setNewDropState(getNewDropState(dropState));
+  }, [dropState]);
+
+  const { onOpen: onOpenClone, isOpen: isOpenClone, onClose: onCloseClone } = useDisclosure();
+
   const { onCopy, hasCopied } = useClipboard(
     `${PORTAL_PATH}/dropperV2/?contractAddress=${address}&dropId=${dropId}`,
   );
@@ -55,13 +91,31 @@ const DropHeader: React.FC<DropHeaderProps> = ({
           </Text>
         )}
       </Flex>
-      <IconButton
-        aria-label={isEdit ? "Disable Edit" : "Enable Edit"}
-        bg="transparent"
-        _hover={{ bg: "transparent", color: "white" }}
-        icon={isEdit ? <AiFillEdit /> : <AiOutlineEdit />}
-        onClick={toggleEdit}
-      />
+      <Flex gap={"15px"} alignItems={"center"}>
+        <IconButton
+          aria-label={isEdit ? "Disable Edit" : "Enable Edit"}
+          bg="transparent"
+          _hover={{ bg: "transparent", color: "white" }}
+          icon={isEdit ? <AiFillEdit /> : <AiOutlineEdit />}
+          onClick={toggleEdit}
+        />
+        <Text color="#c2c2c2" cursor={"pointer"} onClick={onOpenClone}>
+          Clone
+        </Text>
+        <Modal isOpen={isOpenClone} onClose={onCloseClone}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalBody w="fit-content">
+              <DropperV2NewDrop
+                address={address}
+                onClose={onCloseClone}
+                state={newDropState}
+                setState={setNewDropState}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </Flex>
     </Flex>
   );
 };

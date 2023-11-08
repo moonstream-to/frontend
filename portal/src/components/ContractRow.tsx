@@ -10,21 +10,29 @@ const ContractRow = ({
   image,
   chainId,
   type,
+  chain,
+  onClick,
 }: {
   address?: string;
   name?: string;
   image?: string;
   chainId?: number;
   type: string;
+  chain?: string;
+  onClick?: () => void;
 }) => {
   const router = useRouter();
   const handleClick = () => {
-    router.push({
-      pathname: `/portal/${type}`,
-      query: {
-        contractAddress: address,
-      },
-    });
+    if (!onClick) {
+      router.push({
+        pathname: `/portal/${type}`,
+        query: {
+          contractAddress: address,
+        },
+      });
+    } else {
+      onClick();
+    }
   };
   return (
     <Flex
@@ -37,7 +45,7 @@ const ContractRow = ({
       <Flex direction="column">
         {name && <Text>{name}</Text>}
         <Text fontFamily="mono">{address}</Text>
-        {chainId && <Text>{chainByChainId(chainId) ?? chainId}</Text>}
+        {(chainId || chain) && <Text>{chainId ? chainByChainId(chainId) ?? chainId : chain}</Text>}
       </Flex>
     </Flex>
   );

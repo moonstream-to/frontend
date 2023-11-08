@@ -137,6 +137,11 @@ export function chainByChainId(chainId: number): supportedChains | null {
   return chain ? chain.name : null;
 }
 
+export function chainIdByName(chainName: string): number | null {
+  const chain = Object.values(chains).find((chain) => chain.name === chainName);
+  return chain ? chain.chainId : null;
+}
+
 const isKnownChain = (_chainId: number) => {
   return Object.keys(chains).some((key) => {
     return chains[key as any as supportedChains].chainId == _chainId;

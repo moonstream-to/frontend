@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, UseQueryResult } from "react-query";
 import { Box, Button, Spinner } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
@@ -11,18 +11,26 @@ import remarkGfm from "remark-gfm";
 import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
 import { PORTAL_PATH } from "../../constants";
-const dropperAbi = require("../../web3/abi/DropperV2.json");
-const terminusAbi = require("../../web3/abi/MockTerminus.json");
-const ERC721Abi = require("../../web3/abi/MockERC721.json");
 
-const multicallABI = require("../../web3/abi/Multicall2.json");
-import { MAX_INT, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import DropHeader from "../dropper/DropHeader";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
 import DropperV2EditDrop from "./DropperV2EditDrop";
 import DropperV2ClaimsView from "./DropperV2ClaimsView";
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import useMoonToast from "../../hooks/useMoonToast";
+
+const dropperAbi = require("../../web3/abi/DropperV2.json");
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+
+export interface DropState {
+  drop: { tokenId: string; amount: string; tokenAddress: string; tokenType: string };
+  dropAuthorization: { poolId: string; terminusAddress: string };
+  uri: string;
+  isMintAuthorized: boolean;
+  active: boolean;
+  address: string;
+}
 
 const DropperV2DropView = ({
   address,
@@ -60,43 +68,7 @@ const DropperV2DropView = ({
     }
   }, [metadata?.image]);
 
-  const toast = useMoonToast();
-
-  const mintTokens = useMutation(
-    () => {
-      const ERC721contract = new web3.eth.Contract(ERC721Abi) as any;
-      ERC721contract.options.address = dropState.data?.drop.tokenAddress;
-      const mints = [];
-      const amount = Number(prompt("Amount"));
-      const startingFrom = Number(prompt("First tokenID"));
-      if (!amount || !startingFrom) {
-        return new Promise((_, rej) => {
-          rej(new Error("Interrupted by user"));
-        });
-      }
-      for (let i = startingFrom; i < startingFrom + amount; i += 1) {
-        mints.push({
-          target: dropState.data?.drop.tokenAddress,
-          callData: ERC721contract.methods
-            .mint("0x26abECbD9Ee178328b175ce94e8abbacfC95343A", i)
-            .encodeABI(),
-        });
-      }
-      const multicallContract = new web3.eth.Contract(multicallABI) as any;
-      multicallContract.options.address = MULTICALL2_CONTRACT_ADDRESSES["80001"];
-      return multicallContract.methods.tryAggregate(false, mints).send({ from: web3ctx.account });
-    },
-    {
-      onSuccess: () => {
-        toast("Minted", "success");
-      },
-      onError: (e: any) => {
-        toast(e.message, "error");
-      },
-    },
-  );
-
-  const dropState = useQuery(
+  const dropState: UseQueryResult<DropState> = useQuery(
     ["dropState", address, dropId, chainId],
     async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,26 +78,48 @@ const DropperV2DropView = ({
       const uri = await dropperContract.methods.dropUri(dropId).call(); //TODO take from ClaimsList
       const dropAuthorization = await dropperContract.methods.getDropAuthorization(dropId).call();
       const active = await dropperContract.methods.dropStatus(dropId).call();
+
       let isMintAuthorized = false;
       if (drop.tokenId && drop.tokenAddress && drop.tokenType === "1") {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
         terminusContract.options.address = drop.tokenAddress;
         try {
-          const isApproved = await terminusContract.methods
+          isMintAuthorized = await terminusContract.methods
             .isApprovedForPool(drop.tokenId, address)
             .call();
-          isMintAuthorized = !!isApproved;
         } catch (e) {
           console.log(e);
         }
       }
-
-      return { drop, uri, dropAuthorization, active, isMintAuthorized };
+      return { drop, uri, dropAuthorization, active, isMintAuthorized, address };
     },
     {
       ...queryCacheProps,
       retry: false,
       enabled: Number(dropId) > 0 && !!address,
+    },
+  );
+
+  const toast = useMoonToast();
+  const approveForPool = useMutation(
+    ({ operator, poolId }: { operator: string; poolId: number }) => {
+      const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
+      terminusFacet.options.address = dropState.data?.drop.tokenAddress ?? "";
+      if (!terminusFacet.options.address) {
+        throw new Error("Invalid terminus address");
+      }
+      return terminusFacet.methods
+        .approveForPool(poolId, operator)
+        .send({ from: web3ctx.account, maxPriorityFeePerGas: null, maxFeePerGas: null });
+    },
+    {
+      onSuccess: () => {
+        dropState.refetch();
+        toast("Successfully approved contract", "success");
+      },
+      onError: (e) => {
+        console.log(e);
+      },
     },
   );
 
@@ -151,6 +145,7 @@ const DropperV2DropView = ({
             isEdit={isEdit}
             toggleEdit={() => setIsEdit(!isEdit)}
             title={metadata?.name}
+            dropState={dropState.data}
             status={
               dropState.data?.active === true
                 ? true
@@ -200,7 +195,7 @@ const DropperV2DropView = ({
                     dropState={dropState}
                     excludeFields={headerMeta}
                     PORTAL_PATH={PORTAL_PATH}
-                    mintTokens={mintTokens}
+                    approveForPool={approveForPool}
                   />
                 )}
               </Flex>

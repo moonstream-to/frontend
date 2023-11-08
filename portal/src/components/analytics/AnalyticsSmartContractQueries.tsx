@@ -22,13 +22,13 @@ const AnalyticsSmartContractQueries = ({
         queries.map((q, idx: number) => (
           <Box
             key={idx}
-            bg={idx === selectedIdx ? "white" : "transparent"}
+            bg={idx === selectedIdx ? "#C5DDFC" : "#232323"}
             color={idx === selectedIdx ? "#1A1D22" : "white"}
             onClick={() => onChange(idx)}
             borderRadius="100px"
-            border="1px solid white"
             p="6px 15px"
             cursor={idx === selectedIdx ? "default" : "pointer"}
+            lineHeight={"normal"}
           >
             {q.title}
           </Box>

@@ -19,10 +19,12 @@ import queryCacheProps from "../../hooks/hookCommon";
 import Web3Context from "../../contexts/Web3Context/context";
 import { queryPublic } from "../../utils/http";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
-const terminusAbi = require("../../web3/abi/MockTerminus.json");
-const multicallABI = require("../../web3/abi/Multicall2.json");
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import useTermiminus from "../../contexts/TerminusContext";
+import Web3Address from "../entity/Web3Address";
+
+const terminusAbi = require("../../web3/abi/MockTerminus.json");
+const multicallABI = require("../../web3/abi/Multicall2.json");
 
 const TerminusContractView = ({
   addRecentAddress,
@@ -154,7 +156,14 @@ const TerminusContractView = ({
   return (
     <>
       {contractState.data && (
-        <Flex bg="#2d2d2d" maxW="1240px" borderRadius="20px" p="30px" direction="column" gap="20px">
+        <Flex
+          bg="#2d2d2d"
+          borderRadius="20px"
+          p="30px"
+          direction="column"
+          gap="20px"
+          maxW={"1600px"}
+        >
           {metadata.data && (
             <Text fontWeight="700" fontSize="24px">
               {metadata.data.name}
@@ -177,19 +186,29 @@ const TerminusContractView = ({
                 p={5}
                 borderRadius="10px"
                 bg="#232323"
-                maxW="595px"
+                maxW="700px"
               >
                 <PoolDetailsRow type={"URI"} value={contractState.data.contractURI} />
                 <PoolDetailsRow type={"Number of pools"} value={contractState.data.totalPools} />
-
-                <PoolDetailsRow type={"Payment token"} value={contractState.data.paymentToken} />
+                <Web3Address
+                  address={contractState.data.paymentToken}
+                  blockchain={String(chainId)}
+                  entityTag={"tokens"}
+                  label={"Payment token"}
+                  isTruncated
+                  fontSize={"18px"}
+                />
                 <PoolDetailsRow
                   type={"Pool base price"}
                   value={Number(contractState.data.poolBasePrice).toLocaleString("en-US")}
                 />
-                <PoolDetailsRow
-                  type={"Contract controller"}
-                  value={contractState.data.controller}
+                <Web3Address
+                  address={contractState.data.controller}
+                  label={"Contract controller"}
+                  entityTag={"accounts"}
+                  blockchain={String(chainId)}
+                  isTruncated
+                  fontSize={"18px"}
                 />
                 {metadata.data && (
                   <Accordion allowMultiple>

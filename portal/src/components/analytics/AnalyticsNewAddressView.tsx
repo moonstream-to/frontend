@@ -248,8 +248,8 @@ const AnalyticsNewAddressView = () => {
                     <Flex
                       key={idx}
                       borderRadius="30px"
-                      border="1px solid"
-                      borderColor={chainName === chain.name ? "white" : "#4D4D4D"}
+                      bg={chainName === chain.name ? "#FFF" : "#232323"}
+                      color={chainName === chain.name ? "#1A1D22" : "#FFF"}
                       display="inline-flex"
                       alignItems="center"
                       gap="3px"
@@ -262,7 +262,7 @@ const AnalyticsNewAddressView = () => {
                           alt=""
                           src={getChainImage(chain.name)}
                           h="20px"
-                          filter="invert(100%)"
+                          filter={chainName === chain.name ? "invert(100%)" : ""}
                         />
                       )}
                       <Text fontSize="14px" lineHeight="18px">
