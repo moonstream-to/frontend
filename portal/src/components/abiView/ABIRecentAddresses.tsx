@@ -1,6 +1,7 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Address } from "../../hooks/useRecentAddresses";
+import { AiOutlineEdit } from "react-icons/ai";
 
 const ABIRecentAddresses = ({
   setStoredAddress,
@@ -55,14 +56,23 @@ const ABIRecentAddresses = ({
               <Text>{shortSrc(address.src)}</Text>
 
               {editingItemId !== idx && (
-                <Text
-                  onClick={() => {
-                    setEditingItemId(idx);
-                    setNewTitle("");
-                  }}
-                >
-                  {address.givenTitle ?? address.field}
-                </Text>
+                <Flex gap={"10px"} alignItems={"center"}>
+                  <Text
+                    onClick={() => {
+                      setEditingItemId(idx);
+                      setNewTitle(address.givenTitle ?? address.field);
+                    }}
+                  >
+                    {address.givenTitle ?? address.field}
+                  </Text>
+                  <AiOutlineEdit
+                    cursor="pointer"
+                    onClick={() => {
+                      setEditingItemId(idx);
+                      setNewTitle(address.givenTitle ?? address.field);
+                    }}
+                  />
+                </Flex>
               )}
               {editingItemId === idx && (
                 <Input
