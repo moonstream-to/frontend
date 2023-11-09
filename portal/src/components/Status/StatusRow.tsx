@@ -18,7 +18,7 @@ const StatusRow = ({
   const downStatusText = "Unavailable";
   const healthyStatusColor = "green.1000";
   const downStatusColor = "red.600";
-  const hasDetails = service.details.length > 0;
+  const hasDetails = service.details?.length > 0;
 
   const Status = () => (
     <Flex
