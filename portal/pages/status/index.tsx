@@ -26,10 +26,10 @@ const Status = () => {
       let details;
       if (s.response) {
         details = Object.keys(s.response)
-        .filter((key) => key !== "status")
-        .map((key) => {
-          return { key: key.replace(/_/g, " "), value: s.response[key] };
-        });
+          .filter((key) => key !== "status")
+          .map((key) => {
+            return { key: key.replace(/_/g, " "), value: s.response[key] };
+          });
       }
 
       const isHealthy = s.status === "active";
