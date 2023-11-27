@@ -9,6 +9,7 @@ import LandingOpenSource from "./landing/LandingOpenSource";
 import LandingWorkflow from "./landing/LandingWorkflow";
 import LandingFAQ from "./landing/LandingFAQ";
 import LandingFeaturedBy from "./landing/LandingFeaturedBy";
+import Web3GamesList from "./landing/Web3GamesList";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -42,6 +43,7 @@ const Landing = () => {
             </Flex>
             <LandingFeatures />
             <LandingOpenSource />
+            <Web3GamesList />
             <LandingWorkflow />
             <LandingFAQ />
             <LandingFeaturedBy />
