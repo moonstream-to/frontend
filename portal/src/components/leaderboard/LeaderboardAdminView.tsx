@@ -180,9 +180,10 @@ const LeaderboardAdminView = () => {
                     return (
                       <Flex
                         key={leaderboard.id}
-                        p="10px"
+                        p={index === selectedIndex ? "9px" : "10px"}
+                        border={index === selectedIndex ? "1px solid #FFF" : "none"}
                         rounded="lg"
-                        bgColor={index == selectedIndex ? "#4D4D4D" : "auto"}
+                        bgColor={index == selectedIndex ? "#353535" : "auto"}
                         cursor={"pointer"}
                         onClick={() => {
                           setSelectedIndex(index);
