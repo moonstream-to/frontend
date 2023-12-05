@@ -27,9 +27,9 @@ const LeaderboardAdminView = () => {
       method: "GET",
       url: "https://engineapi.moonstream.to/leaderboard/leaderboards",
     }).then((res: any) => {
-      return res.data.sort((a: any, b: any) => {
-        return b.created_at > a.created_at;
-      });
+      return res.data.sort(
+        (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
     });
   };
 
@@ -75,28 +75,6 @@ const LeaderboardAdminView = () => {
     await leaderboardsQuery.refetch();
     await lastUpdate.refetch();
   };
-
-  const create = async (title: string, description: string) => {
-    return await http({
-      method: "POST",
-      url: `https://engineapi.moonstream.to/leaderboard`,
-      data: {
-        title: title,
-        description: description,
-      },
-    }).then(async (res: any) => {
-      await refetchLeaderboardData();
-    });
-  };
-
-  const createLeaderboard = useMutation(
-    ({ title, description }: { title: string; description: string }) => create(title, description),
-    {
-      onSuccess: () => {
-        setStatus("normal");
-      },
-    },
-  );
 
   const update = async (id: string, title: string, description: string) => {
     return await http({
@@ -204,6 +182,7 @@ const LeaderboardAdminView = () => {
               bgColor="#FFFFFF"
               color="#232323"
               leftIcon={<AddIcon w="8px" h="8px" />}
+              isDisabled={status === "create"}
               onClick={() => {
                 setStatus("create");
               }}
@@ -253,7 +232,10 @@ const LeaderboardAdminView = () => {
           )}
           {status == "create" && (
             <NewLeaderboard
-              createLeaderboard={createLeaderboard}
+              onSuccess={() => {
+                setStatus("normal");
+                setSelectedIndex(0);
+              }}
               onClose={() => {
                 setStatus("normal");
               }}
