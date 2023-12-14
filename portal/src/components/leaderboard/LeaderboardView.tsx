@@ -336,7 +336,7 @@ const LeaderboardView = () => {
             <Spinner alignSelf="center" color="#bfbfbf" />
           )}
         </Box>
-        {leadersLength.data && (
+        {!!leadersLength.data && (
           <LeaderboardPaginator
             onOffsetChange={setOffset}
             onPageSizeChange={setLimit}

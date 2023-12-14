@@ -70,7 +70,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
       {isLoggingOut && <Spinner />}
       {user && !isLoggingOut && (
         <Menu>
-          <MenuButton {...props}>
+          <MenuButton {...props} bg={"transparent"}>
             <Flex gap="5px" alignItems="center">
               <BsPerson />
               {user.username.length > 13 ? user.username.slice(0, 11) + "..." : user.username}
