@@ -44,7 +44,6 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
   useEffect(() => {
     if (data) {
       onClose();
-      router.push("/portal");
     }
   }, [data]);
 

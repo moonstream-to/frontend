@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import { Fade, Flex, Box, Link, Text, Button, Image, Divider, Icon } from "@chakra-ui/react";
+import React, { Suspense, useEffect } from "react";
+import { Fade, Flex, Box, Link, Text, Button } from "@chakra-ui/react";
 
 import TrustedBy from "./landing/TrustedBy";
 import UpcomingIntegrations from "./landing/UpcomingIntegrations";
@@ -10,10 +10,19 @@ import LandingWorkflow from "./landing/LandingWorkflow";
 import LandingFAQ from "./landing/LandingFAQ";
 import LandingFeaturedBy from "./landing/LandingFeaturedBy";
 import Web3GamesList from "./landing/Web3GamesList";
+import useUser from "../contexts/UserContext";
+import router from "next/router";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
+  const { user } = useUser();
 
+  useEffect(() => {
+    if (user) {
+      router.push("/portal");
+    }
+  }, [user]);
+  //TODO add fetching user to Suspense condition
   return (
     <Suspense fallback="">
       <Fade in>
