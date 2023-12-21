@@ -29,7 +29,7 @@ const UseMoonstream = () => {
 
   return (
     <Flex className={styles.container}>
-      <Text className={styles.blockTitle}>Use Moonstream if you are</Text>
+      <Text className={styles.blockTitle}>Use Moonstream if you are a...</Text>
       <Flex className={styles.cards}>
         <Card
           image={images[0]}
@@ -47,9 +47,9 @@ const UseMoonstream = () => {
         />
         <Card
           image={images[1]}
-          title={"Game designer"}
+          title={"Game developer"}
           description={
-            "Direct player engagement and game economy with leaderboards and drops. Test your on-chain game design before and after launch with real-time analytics that support testnets."
+            "Make LiveOps easy with real-time analytics and infrastructure tools. Put the right systems in place to correct hyperinflation and catch exploits. Add automation to your web3 game development."
           }
         />
       </Flex>
