@@ -17,6 +17,37 @@
     align-self: stretch;
     flex-wrap: wrap;
 }
+.title {
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%; /* 30px */
+}
+.testnetFlex {
+    display: flex;
+    padding: 6px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 49px;
+    background: #101114;
+}
+
+.testnet {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+    background: -webkit-linear-gradient(0deg, #358BF5, #DBE5FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 
 @media (min-width: 768px) {
@@ -30,5 +61,15 @@
     }
     .chains {
         gap: 10px 40px;
+    }
+    .title {
+        font-size: 40px;
+    }
+
+    .testnetFlex {
+        padding: 8px 15px;
+    }
+    .testnet {
+        font-size: 24px;
     }
 }

@@ -1,6 +1,7 @@
 import styles from "./SupportedChains.module.css";
-import { Flex, Image } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
+import UpcomingIntegrations from "./UpcomingIntegrations";
 
 const SupportedChains = () => {
   const chains = [
@@ -14,6 +15,17 @@ const SupportedChains = () => {
   ];
   return (
     <Flex className={styles.container}>
+      <Flex
+        direction={{ base: "column", sm: "row" }}
+        gap={{ base: "4px", sm: "15px" }}
+        alignItems={"center"}
+      >
+        <Text className={styles.title}>Supported chains</Text>
+        <Text className={styles.title}>+</Text>
+        <Flex className={styles.testnetFlex} w={"fit-content"}>
+          <Text className={styles.testnet}>testnets</Text>
+        </Flex>
+      </Flex>
       <Flex className={styles.chains}>
         {chains.map((img, idx) => (
           <Image
@@ -24,6 +36,7 @@ const SupportedChains = () => {
           />
         ))}
       </Flex>
+      <UpcomingIntegrations />
     </Flex>
   );
 };
