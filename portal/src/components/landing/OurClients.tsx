@@ -9,6 +9,7 @@ const logos = {
 const OurClients = () => {
   return (
     <Flex className={styles.container}>
+      <Text className={styles.title}>What our clients say</Text>
       <Flex className={styles.cards}>
         <Flex className={styles.card1}>
           <Image

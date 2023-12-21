@@ -88,6 +88,9 @@
         gap: 60px;
         align-self: stretch;
     }
+    .title {
+        font-size: 40px;
+    }
 }
 
 @media (min-width: 1440px) {
