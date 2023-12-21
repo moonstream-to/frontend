@@ -50,12 +50,12 @@ const Landing = () => {
             <Suspense fallback={""}></Suspense>
             <Hero />
             <TrustedBy2 />
+            <LandingFeatures />
             <LandingHeader />
             <Flex py="0" gap="20px" direction="column">
               <TrustedBy />
               <UpcomingIntegrations />
             </Flex>
-            <LandingFeatures />
             <LandingOpenSource />
             <Web3GamesList />
             <LandingWorkflow />
