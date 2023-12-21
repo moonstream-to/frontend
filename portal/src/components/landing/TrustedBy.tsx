@@ -11,7 +11,7 @@ const assets = {
   orangedao: `${AWS_STATIC_ASSETS_PATH}/logos/orange-dao-logo.png`,
   worlds: `${AWS_STATIC_ASSETS_PATH}/logos/worlds-logo.png`,
   caldera: `${AWS_STATIC_ASSETS_PATH}/logos/caldera-logo.png`,
-  etherium: `${AWS_STATIC_ASSETS_PATH}/logos/eth-logo.png`,
+  ethereum: `${AWS_STATIC_ASSETS_PATH}/logos/eth-logo.png`,
   gnosis: `${AWS_STATIC_ASSETS_PATH}/logos/gnosis-logo.png`,
   polygon: `${AWS_STATIC_ASSETS_PATH}/logos/polygon-logo.png`,
   mumbai: `${AWS_STATIC_ASSETS_PATH}/logos/polygon-logo.png`,
@@ -74,7 +74,7 @@ const chains = [
     href: "https://caldera.xyz/",
   },
   {
-    name: "etherium",
+    name: "ethereum",
     href: "https://ethereum.org/",
   },
   {

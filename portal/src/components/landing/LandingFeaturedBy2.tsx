@@ -1,23 +1,6 @@
-import {
-  Fade,
-  Flex,
-  Heading,
-  Box,
-  chakra,
-  Stack,
-  Link,
-  Center,
-  Grid,
-  Text,
-  GridItem,
-  Image as ChakraImage,
-  VStack,
-  Accordion,
-  Icon,
-  Button,
-  useMediaQuery,
-} from "@chakra-ui/react";
+import { Flex, Image, Link } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
+import styles from "./TrustedBy.module.css";
 
 const featuredBy = [
   {
@@ -35,7 +18,13 @@ const featuredBy = [
     href: "https://cointelegraph.com/news/17-of-addresses-snapped-up-80-of-all-ethereum-nfts-since-april",
   },
   // { name: "in", img: `${AWS_STATIC_ASSETS_PATH}/logos/be-in-crypto.png`, w: 18, h: 19 }, //should be 72
-  { name: "gam3r", img: `${AWS_STATIC_ASSETS_PATH}/logos/gam3r-logo.png`, w: 73, h: 19 },
+  {
+    name: "gam3r",
+    img: `${AWS_STATIC_ASSETS_PATH}/logos/gam3r-logo.png`,
+    w: 73,
+    h: 19,
+    href: "https://youtu.be/foVteawyCrU?si=aXVWJVygOGUqooAZ",
+  },
   {
     name: "cryptoslate",
     img: `${AWS_STATIC_ASSETS_PATH}/logos/cryptoslate-logo.png`,
@@ -57,7 +46,6 @@ const featuredBy = [
     h: 18,
     href: "https://youtu.be/Z1ujaZ4qcDQ?si=hpTZMfXGZfpw9CnA",
   },
-  { name: "CGC X", img: `${AWS_STATIC_ASSETS_PATH}/logos/cgc-X-logo.png`, w: 41, h: 25.5 },
   {
     name: "crypto insiders",
     img: `${AWS_STATIC_ASSETS_PATH}/logos/crypto-insiders-logo.png`,
@@ -67,42 +55,30 @@ const featuredBy = [
   },
 ];
 
-const LandingFeaturedBy = () => {
+const LandingFeaturedBy2 = ({ ...props }) => {
   return (
     <Flex
-      py={{ base: "40px", sm: "80px" }}
-      px="0"
-      gap={{ base: "40px", sm: "60px" }}
-      direction="column"
-      alignItems="center"
+      gap={{ base: "20px", sm: "50px" }}
+      overflowX="auto"
+      maxW="100%"
+      position="relative"
+      py={"10px"}
+      className={styles.carousel}
+      bg={"#101114"}
+      alignItems={"center"}
+      px={"150px"}
+      mb={{ base: "40px", sm: "80px" }}
     >
-      <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight="700">
-        Featured by
-      </Text>
-      <Center>
-        <Flex
-          wrap="wrap"
-          direction="row"
-          justifyContent="center"
-          gap="20px"
-          columnGap={{ base: "20px", sm: "50px" }}
-          rowGap={{ base: "20px", sm: "40px" }}
-          px={{ base: "22px", sm: "54px", md: "72px", l: "101px" }}
-        >
-          {featuredBy.map((f) => (
-            <ChakraImage
-              key={f.name}
-              src={f.img}
-              alt={f.name}
-              alignSelf="center"
-              justifySelf="center"
-              w={{ base: f.w, sm: f.w * 1.8, md: f.w * 2 }}
-            />
-          ))}
-        </Flex>
-      </Center>
+      {featuredBy
+        .concat(featuredBy)
+        .concat(featuredBy)
+        .map((f, idx) => (
+          <Link href={f.href} key={idx} target="_blank" flexShrink={0}>
+            <Image src={f.img} alt={f.name} h={`${f.h}px`} w={`${f.w}px`} />
+          </Link>
+        ))}
     </Flex>
   );
 };
 
-export default LandingFeaturedBy;
+export default LandingFeaturedBy2;

@@ -1,25 +1,36 @@
 import React from "react";
 import { Flex, Heading, Spacer, Button, Spinner } from "@chakra-ui/react";
 import LeaderboardFields from "./LeaderboardFields";
-import { UseMutationResult } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import http from "../../utils/httpMoonstream";
 
-const NewLeaderboard = ({
-  createLeaderboard,
-  onClose,
-}: {
-  createLeaderboard: UseMutationResult<
-    void,
-    unknown,
-    {
-      title: string;
-      description: string;
-    },
-    unknown
-  >;
-  onClose: () => void;
-}) => {
+const NewLeaderboard = ({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) => {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
+
+  const create = async (title: string, description: string) => {
+    return http({
+      method: "POST",
+      url: `https://engineapi.moonstream.to/leaderboard`,
+      data: {
+        title: title,
+        description: description,
+      },
+    });
+  };
+
+  const queryClient = useQueryClient();
+  const createLeaderboard = useMutation(
+    ({ title, description }: { title: string; description: string }) => create(title, description),
+    {
+      onSuccess: (res: any) => {
+        queryClient.setQueryData(["leaderboards"], (oldData: any) => {
+          return [{ ...res.data }, ...oldData];
+        });
+        onSuccess();
+      },
+    },
+  );
 
   return (
     <>
@@ -32,7 +43,13 @@ const NewLeaderboard = ({
       />
       <Spacer />
       <Flex alignSelf="flex-end">
-        <Button variant="cancelButton" w="135px" mx="10px" onClick={onClose}>
+        <Button
+          variant="cancelButton"
+          w="135px"
+          mx="10px"
+          onClick={onClose}
+          isDisabled={createLeaderboard.isLoading}
+        >
           Cancel
         </Button>
         <Button

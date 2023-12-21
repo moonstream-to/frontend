@@ -8,10 +8,12 @@ const LandingFAQ = () => {
   return (
     <Flex
       py={{ base: "40px", sm: "80px" }}
-      px="0"
+      px={{ base: "7%", xl: "101px" }}
       gap={{ base: "40px", sm: "60px" }}
       direction="column"
       alignItems="center"
+      w={"100%"}
+      maxW={"1440px"}
     >
       <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight="700">
         FAQ
@@ -21,32 +23,41 @@ const LandingFAQ = () => {
           heading="Can I set it up by myself?"
           panelContent={
             <>
-              Yes and no. We are actively working to make all of our products self-serve in the near
-              future. For now, you&apos;ll need to get in{" "}
+              You can already start using Analytics and Leaderboards after registering an account
+              (see{" "}
+              <Link
+                isExternal
+                href={"https://docs.moonstream.to/engine/analytics/"}
+                textDecoration="underline"
+                _hover={{ color: "accent.500" }}
+              >
+                documentation
+              </Link>
+              ). To use some of the features and to get a quote once you’ve used up free options,
+              you&apos;ll need to get in contact with us on{" "}
               <Link
                 isExternal
                 href={DISCORD_LINK}
                 textDecoration="underline"
                 _hover={{ color: "accent.500" }}
               >
-                contact
-              </Link>{" "}
-              with us to start using Moonstream.
-              <br />
-              <br />
-              However, you can already use our{" "}
-              <RouterLink href="/portal/analytics">
-                <chakra.span
-                  style={{ textDecoration: "underline" }}
-                  _hover={{ color: "accent.500", textDecoration: "underline" }}
-                >
-                  web3 Analytics
-                </chakra.span>
-              </RouterLink>{" "}
-              after registering an account.
+                Discord
+              </Link>
+              {"."}
             </>
           }
         />
+        <FAQCard
+          heading="What is a leaderboard in a web3 game?"
+          panelContent={
+            <>
+              You gather information about players actions in your game and attach scores to them.
+              Moonstream gives you tools to automate that process from the gathering of data to
+              displaying scores to dropping the rewards.
+            </>
+          }
+        />
+
         <FAQCard
           heading="Can I use just one or two of Moonstream’s features?"
           panelContent={<>Yes, you can.</>}

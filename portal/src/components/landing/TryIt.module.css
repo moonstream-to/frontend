@@ -1,0 +1,131 @@
+.container {
+    max-width: 1440px;
+    display: flex;
+    padding: 30px;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    border-radius: 30px;
+    border: 2px solid #FFF;
+    background: #1A1D22;
+    align-self: stretch;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    align-self: stretch;
+    max-width: 626px;
+    align-self: center;
+}
+
+.title {
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%; /* 30px */
+}
+
+.subtitle {
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    align-self: stretch;
+}
+
+.button1 {
+    display: flex;
+    padding: 10px 30px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+    border-radius: 30px;
+    border: 2px solid #FFF;
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
+}
+.button2 {
+    padding: 10px 30px;
+    align-items: center;
+    border-radius: 30px;
+    align-self: stretch;
+    background: linear-gradient(92deg, #F56646 8.41%, #FFF 255.37%);
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
+}
+.footer {
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    max-width: 400px;
+}
+
+.gradientText {
+    background: -webkit-linear-gradient(0deg, #F56646, #FDDFD8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .buttons {
+        flex-direction: row;
+    }
+    .button2 {
+        text-align: center;
+        font-family: Space Grotesk;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 1;
+        align-items: center;
+    }
+    .button1 {
+        color: #FFF;
+        text-align: center;
+        font-family: Space Grotesk;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 1;
+    }
+}
+
+@media (min-width: 1440px) {
+    .container {
+        align-self: center;
+        min-width: 1238px;
+    }
+}

@@ -70,7 +70,7 @@ const Account = ({ ...props }: { [x: string]: any }) => {
       {isLoggingOut && <Spinner />}
       {user && !isLoggingOut && (
         <Menu>
-          <MenuButton {...props}>
+          <MenuButton {...props} bg={"transparent"}>
             <Flex gap="5px" alignItems="center">
               <BsPerson />
               {user.username.length > 13 ? user.username.slice(0, 11) + "..." : user.username}
@@ -78,11 +78,10 @@ const Account = ({ ...props }: { [x: string]: any }) => {
           </MenuButton>
           <MenuList borderRadius="10px" border="1px solid white" minW="fit-content" p="20px">
             <MenuItem p="0px" mb="10px">
-              Settings
-            </MenuItem>
-
-            <MenuItem p="0px" mb="10px">
               <RouterLink href="/tokens">API tokens</RouterLink>
+            </MenuItem>
+            <MenuItem p="0px" mb="10px">
+              <RouterLink href="/nodebalancer">NodeBalancer info</RouterLink>
             </MenuItem>
             <Divider mb="10px" />
             <MenuItem p="0px" onClick={() => logout()}>

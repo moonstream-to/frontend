@@ -1,0 +1,121 @@
+
+
+.container {
+    display: flex;
+    padding: 40px 7%;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 40px;
+    place-self: center;
+    text-align: start;
+}
+
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.image {
+    width: 275px;
+    height: 157px;
+}
+.title {
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%; /* 100% */
+}
+.text {
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.button {
+    display: flex;
+    padding: 10px 30px;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    border-radius: 30px;
+    background: linear-gradient(92deg, #F56646 8.41%, #FFF 255.37%);
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+    .container {
+        display: flex;
+        padding: 80px 7%;
+        justify-content: space-between;
+        align-items: center;
+        align-self: stretch;
+        max-width: 1440px;
+        flex-direction: row;
+        gap: 0;
+    }
+    .content {
+        max-width: 418px;
+        justify-content: space-between;
+        height: 100%;
+        place-self: stretch;
+        gap: 40px;
+    }
+
+    .image {
+        width: 212px;
+        height: 297px;
+    }
+    .title {
+        text-align: start;
+        font-size: 50px;
+    }
+    .text {
+        text-align: start;
+        font-size: 18px;
+    }
+    .button {
+        align-self: start;
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .image {
+        width: 433px;
+        height: 257px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .content {
+        max-width: 1440px;
+    }
+    .image {
+        width: 522px;
+        height: 310px;
+    }
+    .title {
+        font-size: 60px;
+    }
+    .container {
+        padding: 80px 101px;
+    }
+
+}
+

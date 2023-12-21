@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation } from "react-query";
 
-import { Box, Heading, Flex, Text, Button, Spacer } from "@chakra-ui/react";
+import { Box, Heading, Flex, Text, Button, Spacer, Input } from "@chakra-ui/react";
 
 import { AddIcon } from "@chakra-ui/icons";
 
@@ -17,15 +17,19 @@ import { Score } from "./types";
 const LeaderboardAdminView = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [status, setStatus] = React.useState("normal");
+  const [filter, setFilter] = useState("");
+  const filterListFn = (leaderboard: { title: string; description: string }) => {
+    return leaderboard.title.includes(filter) || leaderboard.description.includes(filter);
+  };
 
   const getLeaderboards = () => {
     return http({
       method: "GET",
       url: "https://engineapi.moonstream.to/leaderboard/leaderboards",
     }).then((res: any) => {
-      return res.data.sort((a: any, b: any) => {
-        return b.created_at > a.created_at;
-      });
+      return res.data.sort(
+        (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
     });
   };
 
@@ -71,28 +75,6 @@ const LeaderboardAdminView = () => {
     await leaderboardsQuery.refetch();
     await lastUpdate.refetch();
   };
-
-  const create = async (title: string, description: string) => {
-    return await http({
-      method: "POST",
-      url: `https://engineapi.moonstream.to/leaderboard`,
-      data: {
-        title: title,
-        description: description,
-      },
-    }).then(async (res: any) => {
-      await refetchLeaderboardData();
-    });
-  };
-
-  const createLeaderboard = useMutation(
-    ({ title, description }: { title: string; description: string }) => create(title, description),
-    {
-      onSuccess: () => {
-        setStatus("normal");
-      },
-    },
-  );
 
   const update = async (id: string, title: string, description: string) => {
     return await http({
@@ -158,22 +140,37 @@ const LeaderboardAdminView = () => {
           <Box>
             <Box>
               <Heading fontSize={["lg", "2xl"]}>Leaderboards</Heading>
-              <Box m="10px" h="500px" overflow="scroll">
-                {leaderboardsQuery.data?.map((leaderboard: any, index: number) => {
-                  return (
-                    <Flex
-                      key={leaderboard.id}
-                      p="10px"
-                      rounded="lg"
-                      bgColor={index == selectedIndex ? "#4D4D4D" : "auto"}
-                      onClick={() => {
-                        setSelectedIndex(index);
-                      }}
-                    >
-                      <Text>{leaderboard.title}</Text>
-                    </Flex>
-                  );
-                })}
+
+              <Box m="10px" h="500px" overflow="auto">
+                <Input
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  placeholder="search"
+                  borderRadius="10px"
+                  p="8px 15px"
+                  mt={"20px"}
+                  w={"100%"}
+                  mb={"15px"}
+                />
+                {leaderboardsQuery.data
+                  ?.filter(filterListFn)
+                  .map((leaderboard: any, index: number) => {
+                    return (
+                      <Flex
+                        key={leaderboard.id}
+                        p={index === selectedIndex ? "9px" : "10px"}
+                        border={index === selectedIndex ? "1px solid #FFF" : "none"}
+                        rounded="lg"
+                        bgColor={index == selectedIndex ? "#353535" : "auto"}
+                        cursor={"pointer"}
+                        onClick={() => {
+                          setSelectedIndex(index);
+                        }}
+                      >
+                        <Text>{leaderboard.title}</Text>
+                      </Flex>
+                    );
+                  })}
               </Box>
             </Box>
           </Box>
@@ -185,6 +182,7 @@ const LeaderboardAdminView = () => {
               bgColor="#FFFFFF"
               color="#232323"
               leftIcon={<AddIcon w="8px" h="8px" />}
+              isDisabled={status === "create"}
               onClick={() => {
                 setStatus("create");
               }}
@@ -234,7 +232,10 @@ const LeaderboardAdminView = () => {
           )}
           {status == "create" && (
             <NewLeaderboard
-              createLeaderboard={createLeaderboard}
+              onSuccess={() => {
+                setStatus("normal");
+                setSelectedIndex(0);
+              }}
               onClose={() => {
                 setStatus("normal");
               }}

@@ -1,5 +1,5 @@
 import { Button, Flex, Image, Link, Text } from "@chakra-ui/react";
-import { AWS_STATIC_ASSETS_PATH } from "../../constants";
+import { AWS_STATIC_ASSETS_PATH, DISCORD_LINK } from "../../constants";
 
 const assets = {
   forte: `${AWS_STATIC_ASSETS_PATH}/logos/forte-logo.png`,
@@ -12,7 +12,7 @@ const chains = [
   {
     name: "forte",
     href: "https://www.forte.io/",
-    h: 43,
+    h: 42,
   },
   {
     name: "optimism",
@@ -22,12 +22,12 @@ const chains = [
   {
     name: "evmos",
     href: "https://evmos.org/",
-    h: 23,
+    h: 18,
   },
   {
     name: "arbitrum",
     href: "https://arbitrum.io/",
-    h: 23,
+    h: 22,
   },
 ];
 
@@ -37,21 +37,28 @@ const UpcomingIntegrations = ({ ...props }) => {
       direction="column"
       borderRadius="40px"
       border="1px solid white"
-      p={{ base: "30px 30px", sm: "40px 60px" }}
-      gap={{ base: "30px", sm: "40px" }}
+      p={{ base: "30px 30px", sm: "20px 20px" }}
+      gap={{ base: "30px", sm: "20px" }}
       justifyContent="center"
       textAlign="center"
+      bg={"#232323"}
+      w={"100%"}
+      maxW={"1440px"}
     >
-      <Text fontSize="30px" fontWeight="700">
+      <Text fontSize={{ base: "18px", sm: "24px" }} fontWeight="700">
         Looking for another EVM blockchain integration?
       </Text>
-      <Text fontSize="18px" mt="-10px">
-        Contact us, we can add it in a couple of days.
+      <Text fontSize={{ base: "14px", sm: "16px" }} mt="-10px">
+        <Link isExternal href={DISCORD_LINK} textDecoration="underline">
+          Contact us
+        </Link>
+        , we can add it in a couple of days.
       </Text>
       <Flex
         wrap="wrap"
         justifyContent="center"
         columnGap={{ base: "20px", sm: "40px" }}
+        rowGap={"20px"}
         // h="61px"
         alignItems="center"
       >
@@ -60,7 +67,7 @@ const UpcomingIntegrations = ({ ...props }) => {
             <Image
               src={assets[chain.name as keyof typeof assets]}
               alt={chain.name}
-              h={{ base: `${chain.h}px`, sm: `${chain.h * 1.45}px` }}
+              h={{ base: `${chain.h}px`, sm: `${chain.h * 1.1}px` }}
             />
           </Link>
         ))}

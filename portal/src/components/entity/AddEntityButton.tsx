@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
-import { Flex, Spinner } from "@chakra-ui/react";
-import { useCreateEntity, useUpdateEntity } from "../../hooks/useJournal";
+import { Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { useCreateEntity } from "../../hooks/useJournal";
 import Web3 from "web3";
 import useMoonToast from "../../hooks/useMoonToast";
+import SaveDialog from "../SaveDialog";
 
 const AddEntityButton = ({
   address,
@@ -11,6 +12,7 @@ const AddEntityButton = ({
   tags,
   secondaryFields,
   isDisabled,
+  hint,
   children,
   ...props
 }: {
@@ -20,21 +22,23 @@ const AddEntityButton = ({
   tags: string[];
   secondaryFields?: Record<string, string>;
   isDisabled?: boolean;
+  hint?: string;
   children: ReactNode;
   [x: string]: any;
 }) => {
   const addEntity = useCreateEntity();
   const web3 = new Web3();
   const toast = useMoonToast();
-  const handleSaveAddressClick = async () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleSaveAddressClick = async (title: string) => {
+    onClose();
     if (!web3.utils.isAddress(address)) {
       toast("Not a web3 address", "error");
     } else {
-      const newTitle = title ?? prompt("Title: ");
-      if (newTitle) {
+      if (title) {
         addEntity.mutate({
           address,
-          title: newTitle,
+          title,
           blockchain,
           tags,
           secondaryFields,
@@ -44,13 +48,21 @@ const AddEntityButton = ({
   };
   return (
     <Flex
-      onClick={handleSaveAddressClick}
-      cursor={isDisabled ? "not-allowed" : "pointer"}
+      onClick={onOpen}
+      cursor={isDisabled ? "default" : "pointer"}
       {...props}
       alignItems={"center"}
       justifyContent={"center"}
       opacity={isDisabled ? "0.6" : "1"}
+      title={hint ?? ""}
     >
+      <SaveDialog
+        message={"Give a name to the address"}
+        defaultValue={title ?? ""}
+        isOpen={isOpen}
+        onClose={onClose}
+        onSave={handleSaveAddressClick}
+      />
       {addEntity.isLoading ? <Spinner h={"15px"} w={"15px"} /> : children}
     </Flex>
   );

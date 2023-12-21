@@ -23,12 +23,16 @@ const Status = () => {
       if (!name) {
         name = s.name.replace(/_/g, " ").replace(/api/g, "API");
       }
-      const details = Object.keys(s.response)
-        .filter((key) => key !== "status")
-        .map((key) => {
-          return { key: key.replace(/_/g, " "), value: s.response[key] };
-        });
-      const isHealthy = s.status_code === 200;
+      let details;
+      if (s.response) {
+        details = Object.keys(s.response)
+          .filter((key) => key !== "status")
+          .map((key) => {
+            return { key: key.replace(/_/g, " "), value: s.response[key] };
+          });
+      }
+
+      const isHealthy = s.status === "active";
       return { name, details, isHealthy };
     });
     return list;
