@@ -6,7 +6,7 @@
     flex-direction: column-reverse;
     align-items: center;
     gap: 40px;
-    align-self: stretch;
+    place-self: center;
     text-align: start;
 }
 

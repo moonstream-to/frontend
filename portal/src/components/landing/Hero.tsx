@@ -5,26 +5,28 @@ import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 const Hero = () => {
   const [is768view] = useMediaQuery(["(min-width: 768px) and (max-width: 1023px)"]);
   return (
-    <Flex className={styles.container}>
-      <Flex className={styles.content} w={"100%"}>
-        <Text className={styles.title}>
-          Leaderboards for
-          <br /> your web3 game
-        </Text>
-        <Text className={styles.text}>
-          Automate rewarding players for their on-chain and off-chain activity.
-        </Text>
-        <button className={styles.button}>Request Demo</button>
+    <Flex w={"100%"} justifyContent={"center"}>
+      <Flex className={styles.container} w={"100%"} maxW={"1440px"}>
+        <Flex className={styles.content} w={"100%"}>
+          <Text className={styles.title}>
+            Leaderboards for
+            <br /> your web3 game
+          </Text>
+          <Text className={styles.text}>
+            Automate rewarding players for their on-chain and off-chain activity.
+          </Text>
+          <button className={styles.button}>Request Demo</button>
+        </Flex>
+        <Image
+          alt={""}
+          className={styles.image}
+          src={
+            is768view
+              ? `${AWS_STATIC_ASSETS_PATH}/landing/hero-image-v.png`
+              : `${AWS_STATIC_ASSETS_PATH}/landing/hero-image-h.png`
+          }
+        />
       </Flex>
-      <Image
-        alt={""}
-        className={styles.image}
-        src={
-          is768view
-            ? `${AWS_STATIC_ASSETS_PATH}/landing/hero-image-v.png`
-            : `${AWS_STATIC_ASSETS_PATH}/landing/hero-image-h.png`
-        }
-      />
     </Flex>
   );
 };
