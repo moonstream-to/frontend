@@ -72,9 +72,6 @@ const UpcomingIntegrations = ({ ...props }) => {
           </Link>
         ))}
       </Flex>
-      <Link isExternal href="https://discord.gg/K56VNUQGvA">
-        <Button variant="whiteOutline">Ask on Discord</Button>
-      </Link>
     </Flex>
   );
 };
