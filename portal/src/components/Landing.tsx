@@ -19,6 +19,7 @@ import UseMoonstream from "./landing/UseMoonstream";
 import OurClients from "./landing/OurClients";
 import TryIt from "./landing/TryIt";
 import BlackBlocks from "./landing/BlackBlocks";
+import LandingFeaturedBy2 from "./landing/LandingFeaturedBy2";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -61,16 +62,8 @@ const Landing = () => {
           <OurClients />
           <TryIt />
           <BlackBlocks />
-          <UpcomingIntegrations />
-          <LandingHeader />
-          <Flex py="0" gap="20px" direction="column">
-            <TrustedBy />
-          </Flex>
-          <LandingOpenSource />
-          <Web3GamesList />
-          <LandingWorkflow />
           <LandingFAQ />
-          <LandingFeaturedBy />
+          <LandingFeaturedBy2 />
           <Flex
             py={{ base: "40px", sm: "80px" }}
             px="0"
