@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Fade, Flex, Box, Link, Text, Button } from "@chakra-ui/react";
+import { Fade, Flex, Box, Link, Text, Button, Center } from "@chakra-ui/react";
 
 import TrustedBy from "./landing/TrustedBy";
 import UpcomingIntegrations from "./landing/UpcomingIntegrations";
@@ -12,6 +12,8 @@ import LandingFeaturedBy from "./landing/LandingFeaturedBy";
 import Web3GamesList from "./landing/Web3GamesList";
 import useUser from "../contexts/UserContext";
 import router from "next/router";
+import Hero from "./landing/Hero";
+import TrustedBy2 from "./landing/TrustedByV2";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -33,18 +35,21 @@ const Landing = () => {
           bgSize="cover"
           id="page:landing"
           textColor="white"
-          px="7%"
+          // px="7%"
         >
           <Flex
             direction="column"
             h="auto"
             position="relative"
-            maxW="1238px"
-            overflow="initial"
+            // maxW="1440px"
+            // overflow="initial"
             mx="auto"
             pt={0}
+            alignItems={"center"}
           >
             <Suspense fallback={""}></Suspense>
+            <Hero />
+            <TrustedBy2 />
             <LandingHeader />
             <Flex py="0" gap="20px" direction="column">
               <TrustedBy />
