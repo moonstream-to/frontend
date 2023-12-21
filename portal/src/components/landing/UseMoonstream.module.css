@@ -80,3 +80,10 @@
         min-height: 0px;
     }
 }
+
+@media (min-width: 1440px) {
+    .container {
+        align-self: center;
+        padding: 80px 101px;
+    }
+}

@@ -113,5 +113,9 @@
     .title {
         font-size: 60px;
     }
+    .container {
+        padding: 80px 101px;
+    }
+
 }
 

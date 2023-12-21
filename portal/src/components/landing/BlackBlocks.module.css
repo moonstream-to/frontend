@@ -6,13 +6,16 @@
     gap: 20px;
     max-width: 1440px;
     align-self: stretch;
+    min-width: 100%;
 }
 
 @media (min-width: 1440px) {
     .container {
-
+        max-width: 1440px;
+        min-width: 1440px;
         flex-direction: row;
         place-self: center;
+        padding: 80px 101px;
     }
 }
 

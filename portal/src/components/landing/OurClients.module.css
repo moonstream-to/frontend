@@ -79,4 +79,21 @@
     }
 }
 
+@media (min-width: 768px){
+    .container {
+        display: flex;
+        padding: 80px 7%;
+        flex-direction: column;
+        align-items: center;
+        gap: 60px;
+        align-self: stretch;
+    }
+}
+
+@media (min-width: 1440px) {
+    .container {
+        align-self: center;
+        padding: 80px 101px;
+    }
+}
 
