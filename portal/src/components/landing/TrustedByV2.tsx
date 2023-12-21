@@ -115,8 +115,8 @@ const TrustedBy2 = ({ ...props }) => {
       {trustedBy
         .concat(trustedBy)
         .concat(trustedBy)
-        .map((f) => (
-          <Link href={f.href} key={f.name} target="_blank" flexShrink={0}>
+        .map((f, idx) => (
+          <Link href={f.href} key={idx} target="_blank" flexShrink={0}>
             <Image
               src={f.img}
               alt={f.name}
