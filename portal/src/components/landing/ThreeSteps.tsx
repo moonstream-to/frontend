@@ -50,8 +50,11 @@ const ThreeSteps = () => {
           </Text>
         ) : (
           <Text className={styles.footer}>
-            Have something to discuss before signing up? Join our Discord to get in touch with the
-            team (@zomglings).
+            Have something to discuss before signing up?{" "}
+            <Link isExternal href="https://discord.gg/K56VNUQGvA" textDecoration={"underline"}>
+              Join our Discord
+            </Link>{" "}
+            to get in touch with the team (@zomglings).
           </Text>
         )}
       </Flex>
