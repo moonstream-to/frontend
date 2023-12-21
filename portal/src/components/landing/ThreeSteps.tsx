@@ -8,7 +8,7 @@ const ThreeSteps = () => {
     <Flex className={styles.container}>
       <Text className={styles.title}>Manage your economy in 3 simple steps</Text>
       <Flex className={styles.steps}>
-        <Flex direction={"column"} gap={"0"}>
+        <Flex direction={"column"} gap={"0"} flex={"1"}>
           <Text className={styles.subtitle}>Step 1</Text>
           <Text className={styles.text}>
             Sign up to create a Moonstream account to access the{" "}
@@ -18,14 +18,14 @@ const ThreeSteps = () => {
             . Or request a demo.
           </Text>
         </Flex>
-        <Flex direction={"column"} gap={"0"}>
+        <Flex direction={"column"} gap={"0"} flex={"1"}>
           <Text className={styles.subtitle}>Step 2</Text>
           <Text className={styles.text}>
             Set up analytics to watch your economy, create events with leaderboards as sinks, and
             reward your players with drops.
           </Text>
         </Flex>
-        <Flex direction={"column"} gap={"0"}>
+        <Flex direction={"column"} gap={"0"} flex={"1"}>
           <Text className={styles.subtitle}>Step 3</Text>
           <Text className={styles.text}>
             Have beautiful leaderboards integrated into your game. You can use Moonstream
