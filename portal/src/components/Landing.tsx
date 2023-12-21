@@ -17,6 +17,7 @@ import TrustedBy2 from "./landing/TrustedByV2";
 import ThreeSteps from "./landing/ThreeSteps";
 import UseMoonstream from "./landing/UseMoonstream";
 import OurClients from "./landing/OurClients";
+import TryIt from "./landing/TryIt";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -57,10 +58,11 @@ const Landing = () => {
             <ThreeSteps />
             <UseMoonstream />
             <OurClients />
+            <TryIt />
+            <UpcomingIntegrations />
             <LandingHeader />
             <Flex py="0" gap="20px" direction="column">
               <TrustedBy />
-              <UpcomingIntegrations />
             </Flex>
             <LandingOpenSource />
             <Web3GamesList />
