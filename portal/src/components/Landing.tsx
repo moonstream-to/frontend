@@ -75,37 +75,42 @@ const Landing = () => {
           </Text>
           <LandingFeaturedBy2 />
           <Flex
-            py={{ base: "40px", sm: "80px" }}
-            px="0"
+            py={"20px"}
+            px={{ base: "7%", xl: "101px" }}
             gap={{ base: "40px", sm: "60px" }}
             direction="column"
             alignItems="center"
+            bgColor="#F56646"
+            w={"100%"}
+            borderTop={"2px solid white"}
+            borderBottom={"1px solid white"}
           >
             <Flex
               w="100%"
               alignItems="center"
-              justifyContent="center"
+              justifyContent="space-between"
               direction={["column", "column", "row"]}
               borderWidth="2px"
               borderColor={lightOrangeColor}
-              borderRadius="30px"
-              bgColor="white"
-              textColor="black"
-              p="40px"
+              textColor="white"
+              maxW={"1238px"}
+              // p="40px"
+              gap={"20px"}
             >
               <Text
                 display="block"
-                fontSize={["sm", "sm", "md", "md", null]}
+                fontSize={{ base: "16px", sm: "18px" }}
                 textAlign={["center", "center", "left"]}
-                mr={[0, 0, 14]}
-                pb={[4, 4, 0]}
                 letterSpacing="tight"
+                maxW={"630px"}
+                fontWeight={"500"}
+                fontFamily={"Inter"}
               >
-                {`Learn more about crypto, NFT and DAOs, find links to educational resources, discuss gaming projects, and laugh at memes.`}
+                {`Get technical support, showcase your web3 game, discuss web3 projects and gaming, meme and chat.`}
               </Text>
 
               <Link isExternal href="https://discord.gg/K56VNUQGvA">
-                <Button variant="whiteOutline" color="orange.1000" borderColor="orange.1000">
+                <Button variant="whiteOutline" color="white" borderColor="white">
                   Join our Discord
                 </Button>
               </Link>

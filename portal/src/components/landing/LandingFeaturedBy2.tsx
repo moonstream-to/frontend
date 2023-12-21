@@ -67,6 +67,7 @@ const LandingFeaturedBy2 = ({ ...props }) => {
       bg={"#101114"}
       alignItems={"center"}
       px={"150px"}
+      mb={{ base: "40px", sm: "80px" }}
     >
       {featuredBy
         .concat(featuredBy)
