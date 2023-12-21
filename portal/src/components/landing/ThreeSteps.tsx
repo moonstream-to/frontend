@@ -46,7 +46,7 @@ const ThreeSteps = () => {
             <Link isExternal href="https://discord.gg/K56VNUQGvA" textDecoration={"underline"}>
               Join our Discord
             </Link>{" "}
-            to get in touch with the team (@zomglings).
+            to get in touch with the team.
           </Text>
         ) : (
           <Text className={styles.footer}>

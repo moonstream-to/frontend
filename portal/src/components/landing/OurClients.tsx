@@ -43,9 +43,9 @@ const OurClients = () => {
           />
           <div>
             <Text fontSize={{ base: "18px", sm: "24px" }} fontWeight={"700"}>
-              &quot;“Moonstream has been doing exactly what we needed in a very easy way:
-              upgradeable NFTs with inventory slots for badges, items, etc. Everything we need was
-              already developed by Moonstream and ready to go.”&quot;
+              &quot;Moonstream has been doing exactly what we needed in a very easy way: upgradeable
+              NFTs with inventory slots for badges, items, etc. Everything we need was already
+              developed by Moonstream and ready to go.&quot;
             </Text>
             <Link color={"#F88F78"} fontSize={"16px"}>
               Read more
