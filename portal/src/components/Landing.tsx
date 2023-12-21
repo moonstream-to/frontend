@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Fade, Flex, Box, Link, Text, Button, Center } from "@chakra-ui/react";
+import { Fade, Flex, Box, Link, Button, Center, Text } from "@chakra-ui/react";
 
 import TrustedBy from "./landing/TrustedBy";
 import UpcomingIntegrations from "./landing/UpcomingIntegrations";
@@ -48,14 +48,15 @@ const Landing = () => {
           direction="column"
           h="auto"
           position="relative"
-          // maxW="1440px"
-          // overflow="initial"
           mx="auto"
           pt={0}
           alignItems={"center"}
         >
           <Suspense fallback={""}></Suspense>
           <Hero />
+          <Text fontSize={"14px"} fontFamily={"Inter"} mb={"10px"}>
+            Trusted by
+          </Text>
           <TrustedBy2 />
           <LandingFeatures />
           <ThreeSteps />
@@ -65,6 +66,13 @@ const Landing = () => {
           <SupportedChains />
           <BlackBlocks />
           <LandingFAQ />
+          <Text
+            fontSize={{ base: "30px", sm: "40px" }}
+            fontWeight={"700"}
+            mb={{ base: "40px", sm: "60px" }}
+          >
+            Featured by
+          </Text>
           <LandingFeaturedBy2 />
           <Flex
             py={{ base: "40px", sm: "80px" }}

@@ -97,17 +97,11 @@ const chains = [
 const TrustedBy2 = ({ ...props }) => {
   return (
     <Flex
-      // direction="row"
-      // justifyContent="center"
-      // alignItems="center"
       gap={{ base: "20px", sm: "50px" }}
-      // columnGap={{ base: "20px", sm: "40px" }}
-      // rowGap={{ base: "20px" }}
       overflowX="auto"
       maxW="100%"
       position="relative"
       py={"10px"}
-      // mb={{ base: "10px", sm: "20px" }}
       className={styles.carousel}
       bg={"#101114"}
       alignItems={"center"}
@@ -117,14 +111,7 @@ const TrustedBy2 = ({ ...props }) => {
         .concat(trustedBy)
         .map((f, idx) => (
           <Link href={f.href} key={idx} target="_blank" flexShrink={0}>
-            <Image
-              src={f.img}
-              alt={f.name}
-              h={{ base: f.h.base, sm: f.h.sm }}
-              // w={{ base: f.w?.base ?? "20px", sm: f.w?.sm ?? "50px" }} // Set width to auto
-              // minW={"30px"}
-              // objectFit="contain"
-            />
+            <Image src={f.img} alt={f.name} h={{ base: f.h.base, sm: f.h.sm }} />
           </Link>
         ))}
     </Flex>

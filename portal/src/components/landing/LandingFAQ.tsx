@@ -8,10 +8,12 @@ const LandingFAQ = () => {
   return (
     <Flex
       py={{ base: "40px", sm: "80px" }}
-      px="7%"
+      px={{ base: "7%", xl: "101px" }}
       gap={{ base: "40px", sm: "60px" }}
       direction="column"
       alignItems="center"
+      w={"100%"}
+      maxW={"1440px"}
     >
       <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight="700">
         FAQ
@@ -32,7 +34,7 @@ const LandingFAQ = () => {
                 documentation
               </Link>
               ). To use some of the features and to get a quote once you’ve used up free options,
-              you'll need to get in contact with us on{" "}
+              you&apos;ll need to get in contact with us on{" "}
               <Link
                 isExternal
                 href={DISCORD_LINK}

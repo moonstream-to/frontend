@@ -59,15 +59,27 @@
     align-self: stretch;
     border-radius: 30px;
     border: 2px solid #FFF;
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
 }
 .button2 {
-    display: flex;
     padding: 10px 30px;
-    flex-direction: column;
     align-items: center;
     border-radius: 30px;
     align-self: stretch;
     background: linear-gradient(92deg, #F56646 8.41%, #FFF 255.37%);
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
 }
 .footer {
     color: #FFF;
@@ -90,6 +102,24 @@
 @media (min-width: 768px) {
     .buttons {
         flex-direction: row;
+    }
+    .button2 {
+        text-align: center;
+        font-family: Space Grotesk;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 1;
+        align-items: center;
+    }
+    .button1 {
+        color: #FFF;
+        text-align: center;
+        font-family: Space Grotesk;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 1;
     }
 }
 
