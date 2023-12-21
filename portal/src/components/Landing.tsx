@@ -14,6 +14,7 @@ import useUser from "../contexts/UserContext";
 import router from "next/router";
 import Hero from "./landing/Hero";
 import TrustedBy2 from "./landing/TrustedByV2";
+import ThreeSteps from "./landing/ThreeSteps";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -51,6 +52,7 @@ const Landing = () => {
             <Hero />
             <TrustedBy2 />
             <LandingFeatures />
+            <ThreeSteps />
             <LandingHeader />
             <Flex py="0" gap="20px" direction="column">
               <TrustedBy />
