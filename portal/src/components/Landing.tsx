@@ -20,6 +20,7 @@ import OurClients from "./landing/OurClients";
 import TryIt from "./landing/TryIt";
 import BlackBlocks from "./landing/BlackBlocks";
 import LandingFeaturedBy2 from "./landing/LandingFeaturedBy2";
+import SupportedChains from "./landing/SupportedChains";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -61,6 +62,7 @@ const Landing = () => {
           <UseMoonstream />
           <OurClients />
           <TryIt />
+          <SupportedChains />
           <BlackBlocks />
           <LandingFAQ />
           <LandingFeaturedBy2 />
