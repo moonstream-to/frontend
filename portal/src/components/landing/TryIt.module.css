@@ -8,6 +8,7 @@
     border-radius: 30px;
     border: 2px solid #FFF;
     background: #1A1D22;
+    align-self: stretch;
 }
 
 .header {
@@ -17,6 +18,7 @@
     gap: 20px;
     align-self: stretch;
     max-width: 626px;
+    align-self: center;
 }
 
 .title {
