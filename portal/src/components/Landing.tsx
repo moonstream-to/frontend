@@ -15,6 +15,7 @@ import router from "next/router";
 import Hero from "./landing/Hero";
 import TrustedBy2 from "./landing/TrustedByV2";
 import ThreeSteps from "./landing/ThreeSteps";
+import UseMoonstream from "./landing/UseMoonstream";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -53,6 +54,7 @@ const Landing = () => {
             <TrustedBy2 />
             <LandingFeatures />
             <ThreeSteps />
+            <UseMoonstream />
             <LandingHeader />
             <Flex py="0" gap="20px" direction="column">
               <TrustedBy />
