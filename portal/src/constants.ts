@@ -25,7 +25,7 @@ export const SITEMAP = [
       },
       {
         title: "Case studies",
-        path: "https://docs.google.com/document/d/1mjfF8SgRrAZvtCVVxB2qNSUcbbmrH6dTEYSMfHKdEgc",
+        path: "https://blog.moonstream.to/tag/case-study",
         type: PAGETYPE.EXTERNAL,
       },
       {

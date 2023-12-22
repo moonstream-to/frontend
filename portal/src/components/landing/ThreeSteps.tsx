@@ -15,14 +15,23 @@ const ThreeSteps = () => {
             <Link isExternal href={"/portal"} textDecoration={"underline"}>
               Portal
             </Link>
-            . Or request a demo.
+            . Or{" "}
+            <Link
+              isExternal
+              textDecoration={"underline"}
+              href={"https://calendly.com/d/5dr-xh2-xq6/moonstream-demo "}
+            >
+              request a demo
+            </Link>
+            .
           </Text>
         </Flex>
         <Flex direction={"column"} gap={"0"} flex={"1"}>
           <Text className={styles.subtitle}>Step 2</Text>
           <Text className={styles.text}>
-            Set up analytics to watch your economy, create events with leaderboards as sinks, and
-            reward your players with drops.
+            Set up analytics to watch your economy, create events with{" "}
+            <span style={{ fontWeight: "700" }}>leaderboards</span> as sinks, and reward your
+            players with <span style={{ fontWeight: "700" }}>drops</span>.
           </Text>
         </Flex>
         <Flex direction={"column"} gap={"0"} flex={"1"}>
