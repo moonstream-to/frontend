@@ -4,15 +4,6 @@ import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 import UpcomingIntegrations from "./UpcomingIntegrations";
 
 const SupportedChains = () => {
-  // const chains = [
-  //   "caldera.png",
-  //   "ethereum.png",
-  //   "gnosis-new.png",
-  //   "polygon-new.png",
-  //   "mumbai.png",
-  //   "era.png",
-  //   "era-testnet.png",
-  // ];
   const chains = [
     {
       image: "caldera.png",
@@ -34,14 +25,13 @@ const SupportedChains = () => {
       image: "mumbai.png",
       href: "https://mumbai.polygonscan.com/",
     },
-    // Assuming era and era-testnet have corresponding hrefs
     {
       image: "era.png",
-      href: "https://era.zksync.io/", // Replace with actual href
+      href: "https://era.zksync.io/",
     },
     {
       image: "era-testnet.png",
-      href: "https://era.zksync.io/", // Replace with actual href
+      href: "https://era.zksync.io/",
     },
   ];
   return (
