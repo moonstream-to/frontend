@@ -22,7 +22,7 @@ const BlackBlocks = () => {
         image={`${AWS_STATIC_ASSETS_PATH}/landing/icons/gamepad-mini.svg`}
         description={"Contribute to our awesome list of web3 games or find fun web3 games to play"}
         buttonText={"Learn more"}
-        buttonRef={"https://github.com/moonstream-to"}
+        buttonRef={"https://github.com/moonstream-to/awesome-web3-games"}
       />
     </Flex>
   );

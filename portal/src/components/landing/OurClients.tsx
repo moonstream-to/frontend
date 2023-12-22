@@ -23,7 +23,12 @@ const OurClients = () => {
               &quot;We chose Moonstream for security and trust. Moonstream is a huge part of our
               live ops process and has made it a lot more efficient and easy.&quot;
             </Text>
-            <Link color={"#F88F78"} fontSize={"16px"}>
+            <Link
+              color={"#F88F78"}
+              fontSize={"16px"}
+              isExternal
+              href={"https://blog.moonstream.to/2023/07/20/crypto-unicorns-and-moonstream/"}
+            >
               Read more
             </Link>
           </div>
@@ -47,7 +52,14 @@ const OurClients = () => {
               NFTs with inventory slots for badges, items, etc. Everything we need was already
               developed by Moonstream and ready to go.&quot;
             </Text>
-            <Link color={"#F88F78"} fontSize={"16px"}>
+            <Link
+              color={"#F88F78"}
+              fontSize={"16px"}
+              isExternal
+              href={
+                "https://blog.moonstream.to/2023/07/12/crypto-guilds-and-moonstream-the-potential-of-gamified-gamer-guilds"
+              }
+            >
               Read more
             </Link>
           </div>

@@ -1,5 +1,5 @@
 import styles from "./Hero.module.css";
-import { Flex, Image, Text, useMediaQuery } from "@chakra-ui/react";
+import { Flex, Image, Link, Text, useMediaQuery } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 
 const Hero = () => {
@@ -15,7 +15,13 @@ const Hero = () => {
           <Text className={styles.text}>
             Automate rewarding players for their on-chain and off-chain activity.
           </Text>
-          <button className={styles.button}>Request Demo</button>
+          <Link
+            isExternal
+            href={"https://calendly.com/d/5dr-xh2-xq6/moonstream-demo "}
+            _hover={{ textDecoration: "none" }}
+          >
+            <button className={styles.button}>Request Demo</button>
+          </Link>
         </Flex>
         <Image
           alt={""}
