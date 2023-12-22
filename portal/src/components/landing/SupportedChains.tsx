@@ -49,9 +49,8 @@ const SupportedChains = () => {
       </Flex>
       <Flex className={styles.chains}>
         {chains.map((chain, idx) => (
-          <Link isExternal href={chain.href}>
+          <Link key={idx} isExternal href={chain.href}>
             <Image
-              key={idx}
               alt={""}
               h={{ base: "27px", sm: "40px" }}
               src={`${AWS_STATIC_ASSETS_PATH}/landing/logos/${chain.image}`}
