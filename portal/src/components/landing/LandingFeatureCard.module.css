@@ -52,7 +52,11 @@
     line-height: normal;
 }
 
-
+@media (min-width: 768px) {
+    .content {
+        align-items: start;
+    }
+}
 
 
 @media (min-width: 1024px) {
