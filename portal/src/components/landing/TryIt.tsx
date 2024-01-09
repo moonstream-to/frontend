@@ -17,17 +17,19 @@ const TryIt = () => {
         </div>
       </div>
       <div className={styles.buttons}>
-        <Link
-          isExternal
-          href={"https://calendly.com/d/5dr-xh2-xq6/moonstream-demo "}
-          _hover={{ textDecoration: "none" }}
+        <button
+          className={styles.button1}
+          onClick={() =>
+            window.open("https://calendly.com/d/5dr-xh2-xq6/moonstream-demo ", "_blank")
+          }
         >
-          <button className={styles.button1}>Request a Demo</button>
-        </Link>
+          Request a Demo
+        </button>
+
+        <SignUp isOpen={isOpen} onClose={onClose} />
         <button className={styles.button2} onClick={onOpen}>
           Get Started
         </button>
-        <SignUp isOpen={isOpen} onClose={onClose} />
       </div>
       <div className={styles.footer}>
         Try it out for <span className={styles.gradientText}>FREE</span>. Contact us for pricing
