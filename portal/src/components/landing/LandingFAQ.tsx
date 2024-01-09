@@ -44,6 +44,9 @@ const LandingFAQ = () => {
                 Discord
               </Link>
               {"."}
+              <br />
+              <br />
+              We are actively working to make all of our products self-serve in the near future.
             </>
           }
         />
