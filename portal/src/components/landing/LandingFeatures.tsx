@@ -24,7 +24,7 @@ export const MoonstreamFeatures = [
     name: "Leaderboards",
     description:
       "Rank players by engagement. Create sinks by assigning scores to token specific in-game actions.",
-    image: `${AWS_STATIC_ASSETS_PATH}/Terminus.png`,
+    image: `${AWS_STATIC_ASSETS_PATH}/Leaderboards.png`,
     href: "/features/#leaderboards",
   },
   {
