@@ -49,7 +49,7 @@ const LandingFeatures = () => {
         <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight="700" textAlign="center">
           All you need to reward your players
         </Text>
-        <Text w={["100%", "100%", "70%"]} textAlign="center">
+        <Text w={["100%", "100%", "70%"]} textAlign="center" fontFamily={'"Inter", sans-serif'}>
           Gain control over token inflation and reward your players for improving your game.
         </Text>
       </Flex>
