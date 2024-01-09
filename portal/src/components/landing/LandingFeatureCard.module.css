@@ -19,6 +19,7 @@
 .description {
     font-family: Inter;
     font-size: 16px;
+    text-align: center;
 }
 
 .gradientText {
@@ -55,6 +56,9 @@
 @media (min-width: 768px) {
     .content {
         align-items: start;
+    }
+    .description {
+        text-align: start;
     }
 }
 
