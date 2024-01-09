@@ -10,14 +10,16 @@
     border: 2px solid #FFF;
     white-space: nowrap;
     display: inline-flex;
-    padding: 10px 30px;
+    padding: 8px 28px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 @media (min-width: 768px) {
-    font-size: 20px;
+    .secondaryButton {
+        font-size: 20px;
+    }
 }
 
 .secondaryButton:hover {
