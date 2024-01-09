@@ -60,7 +60,7 @@ const SocialButtons = () => {
       <Text fontWeight="semibold" mb="20px">
         Follow Us
       </Text>
-      <Flex gap="20px" justifyContent="start">
+      <Flex gap="20px" justifyContent="start" alignItems={"center"}>
         <SocialButton label={"Discord"} href={"https://discord.gg/K56VNUQGvA"}>
           <ChakraImage
             maxW="26px"
@@ -69,7 +69,7 @@ const SocialButtons = () => {
           />
         </SocialButton>
         <SocialButton label={"Twitter"} href={"https://twitter.com/moonstreamto"}>
-          <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/icons/twitter-logo.png`} />
+          <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/landing/logos/x-twitter.svg`} />
         </SocialButton>
         <SocialButton label={"Github"} href={"https://github.com/moonstream-to/api"}>
           <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/icons/github-logo.png`} />
