@@ -35,7 +35,7 @@ const UpcomingIntegrations = ({ ...props }) => {
   return (
     <Flex
       direction="column"
-      borderRadius="40px"
+      borderRadius="30px"
       border="1px solid white"
       p={{ base: "30px 30px", sm: "20px 20px" }}
       gap={{ base: "20px", sm: "20px" }}

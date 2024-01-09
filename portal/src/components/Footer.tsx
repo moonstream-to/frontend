@@ -169,7 +169,7 @@ const Footer = ({ home }: { home?: boolean }) => {
           textAlign="center"
           bg="#101114"
           p="10px 15px"
-          borderRadius="10px"
+          borderRadius="15px"
           fontSize={{ base: "16px", sm: "18px" }}
         >
           If you like Moonstream,{" "}
