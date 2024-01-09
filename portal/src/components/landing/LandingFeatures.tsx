@@ -88,11 +88,13 @@ const LandingFeatures = () => {
             </>
           )}
         </Box>
-        {isSmallScreen && <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} />}
+        {isSmallScreen && (
+          <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} transform={"rotate(180deg)"} />
+        )}
         <Flex direction={{ base: "column", sm: "row" }} gap={"10px"} alignItems={"center"}>
           <LandingFeatureCard feature={MoonstreamFeatures[0]} flex={"1"} />
           {isSmallScreen ? (
-            <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} />
+            <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} transform={"rotate(180deg)"} />
           ) : (
             <Image h={"30px"} w={"30px"} alt={"left"} src={arrows.left} />
           )}
