@@ -17,7 +17,7 @@ const UseMoonstream = () => {
     description: string;
   }) => {
     return (
-      <Flex className={styles.card} h={"100%"}>
+      <Flex className={styles.card}>
         <Image src={image} alt={""} w={"100px"} h={"100px"} />
         <Flex direction={"column"} gap={"10px"} flex={"1"}>
           <Text className={styles.title}>{title}</Text>

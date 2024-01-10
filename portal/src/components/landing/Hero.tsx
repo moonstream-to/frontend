@@ -26,11 +26,7 @@ const Hero = () => {
         <Image
           alt={""}
           className={styles.image}
-          src={
-            is768view
-              ? `${AWS_STATIC_ASSETS_PATH}/landing/hero-image-v.png`
-              : `${AWS_STATIC_ASSETS_PATH}/landing/hero-image-h.png`
-          }
+          src={`${AWS_STATIC_ASSETS_PATH}/landing/hero-image-h-v2.png`}
         />
       </Flex>
     </Flex>

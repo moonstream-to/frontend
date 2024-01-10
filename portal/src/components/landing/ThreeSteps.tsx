@@ -29,9 +29,9 @@ const ThreeSteps = () => {
         <Flex direction={"column"} gap={"0"} flex={"1"}>
           <Text className={styles.subtitle}>Step 2</Text>
           <Text className={styles.text}>
-            Set up analytics to watch your economy, create events with{" "}
-            <span style={{ fontWeight: "700" }}>leaderboards</span> as sinks, and reward your
-            players with <span style={{ fontWeight: "700" }}>drops</span>.
+            Set up <span style={{ fontWeight: "700" }}>analytics</span> to watch your economy,
+            create events with <span style={{ fontWeight: "700" }}>leaderboards</span> as sinks, and
+            reward your players with <span style={{ fontWeight: "700" }}>drops</span>.
           </Text>
         </Flex>
         <Flex direction={"column"} gap={"0"} flex={"1"}>

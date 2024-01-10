@@ -29,7 +29,12 @@ const FAQCard = ({
               <AddIcon color={iconColor} fontSize="12px" />
             )}
           </AccordionButton>
-          <AccordionPanel px={0} pb={4} fontSize={["sm", "sm", "md", "md", null]}>
+          <AccordionPanel
+            px={0}
+            pb={4}
+            fontSize={["sm", "sm", "md", "md", null]}
+            fontFamily={'"Inter", sans-serif'}
+          >
             {panelContent}
           </AccordionPanel>
         </>

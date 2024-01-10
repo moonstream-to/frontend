@@ -24,7 +24,7 @@ export const MoonstreamFeatures = [
     name: "Leaderboards",
     description:
       "Rank players by engagement. Create sinks by assigning scores to token specific in-game actions.",
-    image: `${AWS_STATIC_ASSETS_PATH}/Terminus.png`,
+    image: `${AWS_STATIC_ASSETS_PATH}/Leaderboards.png`,
     href: "/features/#leaderboards",
   },
   {
@@ -49,7 +49,7 @@ const LandingFeatures = () => {
         <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight="700" textAlign="center">
           All you need to reward your players
         </Text>
-        <Text w={["100%", "100%", "70%"]} textAlign="center">
+        <Text w={["100%", "100%", "70%"]} textAlign="center" fontFamily={'"Inter", sans-serif'}>
           Gain control over token inflation and reward your players for improving your game.
         </Text>
       </Flex>
@@ -88,11 +88,13 @@ const LandingFeatures = () => {
             </>
           )}
         </Box>
-        {isSmallScreen && <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} />}
+        {isSmallScreen && (
+          <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} transform={"rotate(180deg)"} />
+        )}
         <Flex direction={{ base: "column", sm: "row" }} gap={"10px"} alignItems={"center"}>
           <LandingFeatureCard feature={MoonstreamFeatures[0]} flex={"1"} />
           {isSmallScreen ? (
-            <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} />
+            <Image h={"30px"} w={"30px"} alt={"up"} src={arrows.up} transform={"rotate(180deg)"} />
           ) : (
             <Image h={"30px"} w={"30px"} alt={"left"} src={arrows.left} />
           )}

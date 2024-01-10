@@ -1,15 +1,7 @@
 import React, { Suspense, useEffect } from "react";
 import { Fade, Flex, Box, Link, Button, Center, Text } from "@chakra-ui/react";
-
-import TrustedBy from "./landing/TrustedBy";
-import UpcomingIntegrations from "./landing/UpcomingIntegrations";
-import LandingHeader from "./landing/LandingHeader";
 import LandingFeatures from "./landing/LandingFeatures";
-import LandingOpenSource from "./landing/LandingOpenSource";
-import LandingWorkflow from "./landing/LandingWorkflow";
 import LandingFAQ from "./landing/LandingFAQ";
-import LandingFeaturedBy from "./landing/LandingFeaturedBy";
-import Web3GamesList from "./landing/Web3GamesList";
 import useUser from "../contexts/UserContext";
 import router from "next/router";
 import Hero from "./landing/Hero";
@@ -21,6 +13,7 @@ import TryIt from "./landing/TryIt";
 import BlackBlocks from "./landing/BlackBlocks";
 import LandingFeaturedBy2 from "./landing/LandingFeaturedBy2";
 import SupportedChains from "./landing/SupportedChains";
+import styles from "./common.module.css";
 
 const Landing = () => {
   const lightOrangeColor = "#F56646";
@@ -110,9 +103,7 @@ const Landing = () => {
               </Text>
 
               <Link isExternal href="https://discord.gg/K56VNUQGvA">
-                <Button variant="whiteOutline" color="white" borderColor="white">
-                  Join our Discord
-                </Button>
+                <button className={styles.secondaryButton}>Join our Discord</button>
               </Link>
             </Flex>
           </Flex>

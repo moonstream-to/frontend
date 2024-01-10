@@ -14,11 +14,11 @@ const SupportedChains = () => {
       href: "https://ethereum.org/",
     },
     {
-      image: "gnosis-new.png",
+      image: "gnosis.png",
       href: "https://www.gnosis.io/",
     },
     {
-      image: "polygon-new.png",
+      image: "polygon.png",
       href: "https://polygon.technology/",
     },
     {
@@ -53,7 +53,7 @@ const SupportedChains = () => {
             <Image
               alt={""}
               h={{ base: "27px", sm: "40px" }}
-              src={`${AWS_STATIC_ASSETS_PATH}/landing/logos/${chain.image}`}
+              src={`${AWS_STATIC_ASSETS_PATH}/landing/logos/chains/${chain.image}`}
             />
           </Link>
         ))}
