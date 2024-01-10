@@ -63,7 +63,7 @@ const LandingFeatures = () => {
           <LandingFeatureCard
             feature={MoonstreamFeatures[1]}
             isMainCard
-            maxW={{ base: "275px", sm: "297px", md: "463px" }}
+            // maxW={{ base: "275px", sm: "297px", md: "463px" }}
           />
           {!isSmallScreen && (
             <>
