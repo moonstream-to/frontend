@@ -37,8 +37,8 @@ const ThreeSteps = () => {
         <Flex direction={"column"} gap={"0"} flex={"1"}>
           <Text className={styles.subtitle}>Step 3</Text>
           <Text className={styles.text}>
-            Have beautiful leaderboards integrated into your game. You can use Moonstream
-            leaderboard UI or create your own. Manage your economy.
+            Have beautiful leaderboards integrated in your game or use Moonstream&apos;s leaderboard
+            UI.
           </Text>
         </Flex>
       </Flex>
