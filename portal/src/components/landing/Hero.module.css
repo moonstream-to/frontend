@@ -127,3 +127,7 @@
 
 }
 
+.button:hover {
+        background: linear-gradient(264deg, #F56646 -6.89%, #FFF 335.28%);
+}
+

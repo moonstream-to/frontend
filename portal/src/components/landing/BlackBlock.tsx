@@ -1,5 +1,6 @@
-import { Button, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import styles from "./BlackBlock.module.css";
+import commonStyles from "../common.module.css";
 
 const BlackBlock = ({
   title,
@@ -21,12 +22,12 @@ const BlackBlock = ({
         <Image src={image} alt={""} />
         <Text className={styles.description}>{description}</Text>
       </Flex>
-
-      <Flex direction={{ base: "column", sm: "row" }} gap="20px">
-        <Link href={buttonRef} isExternal>
-          <Button variant="whiteOutline">{buttonText}</Button>
-        </Link>
-      </Flex>
+      <button
+        className={commonStyles.secondaryButton}
+        onClick={() => window.open(buttonRef, "_blank")}
+      >
+        {buttonText}
+      </button>
     </Flex>
   );
 };
