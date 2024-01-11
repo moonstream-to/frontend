@@ -93,10 +93,6 @@
 }
 
 @media (min-width: 1024px) {
-    .image {
-        width: 434px;
-        height: 313px;
-    }
     .container {
         justify-content: space-between;
         flex-direction: row;
