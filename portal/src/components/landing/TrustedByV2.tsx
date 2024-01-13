@@ -1,22 +1,23 @@
 import { Flex, Image, Link } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 import styles from "./TrustedBy.module.css";
+import Marquee from "react-fast-marquee";
 
 const assetsPath = `${AWS_STATIC_ASSETS_PATH}/landing/logos`;
 const assets = {
-  championsAscension: `${AWS_STATIC_ASSETS_PATH}/landing/logos/champions-ascension.png`,
-  cryptoGuilds: `${AWS_STATIC_ASSETS_PATH}/landing/logos/Logo-CG-white.png`,
-  cryptoUnicorns: `${AWS_STATIC_ASSETS_PATH}/landing/logos/crypto-unicorns-logo.png`,
-  metaboy: `${AWS_STATIC_ASSETS_PATH}/landing/logos/Metaboy-logo.png`,
-  game7io: `${AWS_STATIC_ASSETS_PATH}/landing/logos/GAME7-LOGO-white.png`,
-  opGames: `${AWS_STATIC_ASSETS_PATH}/landing/logos/op-games-logo.png`,
-  orangedao: `${AWS_STATIC_ASSETS_PATH}/landing/logos/orange-dao-logo.png`,
-  worlds: `${AWS_STATIC_ASSETS_PATH}/landing/logos/worlds-logo-white.png`,
-  caldera: `${AWS_STATIC_ASSETS_PATH}/landing/logos/caldera-logo.png`,
-  etherium: `${AWS_STATIC_ASSETS_PATH}/landing/logos/eth-logo.png`,
-  gnosis: `${AWS_STATIC_ASSETS_PATH}/landing/logos/gnosis-logo.png`,
-  polygon: `${AWS_STATIC_ASSETS_PATH}/landing/logos/polygon-logo.png`,
-  mumbai: `${AWS_STATIC_ASSETS_PATH}/landing/logos/polygon-logo.png`,
+  championsAscension: `${assetsPath}/champions-ascension.png`,
+  cryptoGuilds: `${assetsPath}/Logo-CG-white.png`,
+  cryptoUnicorns: `${assetsPath}/crypto-unicorns-logo.png`,
+  metaboy: `${assetsPath}/Metaboy-logo.png`,
+  game7io: `${assetsPath}/GAME7-LOGO-white.png`,
+  opGames: `${assetsPath}/op-games-logo.png`,
+  orangedao: `${assetsPath}/orange-dao-logo.png`,
+  worlds: `${assetsPath}/worlds-logo-white.png`,
+  caldera: `${assetsPath}/caldera-logo.png`,
+  etherium: `${assetsPath}/eth-logo.png`,
+  gnosis: `${assetsPath}/gnosis-logo.png`,
+  polygon: `${assetsPath}/polygon-logo.png`,
+  mumbai: `${assetsPath}/polygon-logo.png`,
 };
 
 const trustedBy = [
@@ -71,50 +72,19 @@ const trustedBy = [
   },
 ];
 
-const chains = [
-  {
-    name: "caldera",
-    href: "https://caldera.xyz/",
-  },
-  {
-    name: "etherium",
-    href: "https://ethereum.org/",
-  },
-  {
-    name: "gnosis",
-    href: "https://www.gnosis.io/",
-  },
-  {
-    name: "polygon",
-    href: "https://polygon.technology/",
-  },
-  {
-    name: "mumbai",
-    href: "https://mumbai.polygonscan.com/",
-  },
-];
-
 const TrustedBy2 = ({ ...props }) => {
   return (
-    <Flex
-      gap={{ base: "20px", sm: "50px" }}
-      overflowX="auto"
-      maxW="100%"
-      position="relative"
-      py={"10px"}
-      className={styles.carousel}
-      bg={"#101114"}
-      alignItems={"center"}
-    >
-      {trustedBy
-        .concat(trustedBy)
-        .concat(trustedBy)
-        .map((f, idx) => (
+    <div className={styles.container}>
+      <Marquee pauseOnHover={true} className={styles.carousel} style={{ overflow: "auto" }}>
+        {trustedBy.concat(trustedBy).map((f, idx) => (
           <Link href={f.href} key={idx} target="_blank" flexShrink={0}>
-            <Image src={f.img} alt={f.name} h={{ base: f.h.base, sm: f.h.sm }} />
+            <Flex mx={"20px"}>
+              <Image src={f.img} alt={f.name} h={{ base: f.h.base, sm: f.h.sm }} />
+            </Flex>
           </Link>
         ))}
-    </Flex>
+      </Marquee>
+    </div>
   );
 };
 
