@@ -47,7 +47,7 @@ const Landing = () => {
         >
           <Suspense fallback={""}></Suspense>
           <Hero />
-          <Text fontSize={"14px"} fontFamily={"Inter"} mb={"10px"}>
+          <Text fontSize={{ base: "14px", sm: "16px" }} fontFamily={"Inter"} mb={"10px"}>
             Trusted by
           </Text>
           <TrustedBy2 />
