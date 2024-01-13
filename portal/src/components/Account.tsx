@@ -2,7 +2,6 @@ import RouterLink from "next/link";
 
 import React, { useState } from "react";
 import {
-  Button,
   Flex,
   Menu,
   MenuButton,
@@ -18,55 +17,45 @@ import { BsPerson } from "react-icons/bs";
 import useUser from "../contexts/UserContext";
 import useLogout from "../hooks/useLogout";
 import SignUp from "./SignUp";
+import styles from "./Account.module.css";
+import { useRouter } from "next/router";
 
 const Account = ({ ...props }: { [x: string]: any }) => {
   const { user } = useUser();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isSmallView] = useMediaQuery(["(max-width: 1100px)"]);
+  const [isBaseView] = useMediaQuery(["(max-width: 767px)"]);
   const [isSignUpVisible] = useMediaQuery(["(min-width: 550px)"]);
+
+  const router = useRouter();
 
   return (
     <>
-      {!user && (
-        <Flex gap="10px">
-          <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
-          <LoginButton>
-            <Button
-              color={"white"}
-              bg="#353535"
-              borderRadius="20px"
-              maxH="36px"
-              p="5px 15px"
-              fontSize="16px"
-              fontWeight="400"
-              _hover={{
-                bg: "#353535",
-              }}
-              _focus={{
-                outline: "none",
-              }}
-              {...props}
-            >
-              Log in
-            </Button>
-          </LoginButton>
-          {(!isSmallView || isSignUpVisible) && (
-            <Button
-              fontSize="16px"
-              fontWeight="400"
-              p="5px 15px"
-              maxH="36px"
-              variant="plainOrange"
-              onClick={() => setIsSignUpOpen(true)}
-              backgroundColor={"#F56646"}
-              {...props}
-            >
-              Sign up
-            </Button>
-          )}
-        </Flex>
-      )}
+      <Flex gap={{ base: "5px", sm: "10px" }} alignItems={"center"}>
+        {!router.asPath.includes("portal") && (
+          <>
+            <button className={styles.portalButton} onClick={() => router.push("/portal")}>
+              Portal
+            </button>
+            {!isBaseView && <div className={styles.divider} />}
+          </>
+        )}
+        {!user && (
+          <>
+            <LoginButton>
+              <button className={styles.loginButton}>Log in</button>
+            </LoginButton>
+            {!isBaseView && (
+              <>
+                <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+                <button className={styles.signUpButton} onClick={() => setIsSignUpOpen(true)}>
+                  Sign up
+                </button>
+              </>
+            )}
+          </>
+        )}
+      </Flex>
       {isLoggingOut && <Spinner />}
       {user && !isLoggingOut && (
         <Menu>
