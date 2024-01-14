@@ -145,7 +145,6 @@ const chainIdToImagePath: Record<ChainId, string> = {
 };
 
 export const getChainImage = (identifier: string | number): string | undefined => {
-  console.log(identifier, chainNameToImagePath[identifier as ChainName]);
   if (identifier in chainNameToImagePath) {
     return chainNameToImagePath[identifier as ChainName];
   } else if (identifier in chainIdToImagePath) {

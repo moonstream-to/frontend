@@ -93,10 +93,6 @@
 }
 
 @media (min-width: 1024px) {
-    .image {
-        width: 434px;
-        height: 313px;
-    }
     .container {
         justify-content: space-between;
         flex-direction: row;
@@ -129,5 +125,9 @@
         padding: 80px 101px;
     }
 
+}
+
+.button:hover {
+        background: linear-gradient(264deg, #F56646 -6.89%, #FFF 335.28%);
 }
 

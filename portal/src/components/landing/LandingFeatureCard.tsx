@@ -25,7 +25,7 @@ const LandingFeatureCard = ({
       <Flex className={styles.content}>
         <Text
           className={isMainCard ? styles.gradientText : styles.title}
-          fontSize="20px"
+          fontSize="24px"
           fontWeight="700"
           mb="10px"
         >

@@ -1,5 +1,6 @@
-import { Flex, Link, useDisclosure } from "@chakra-ui/react";
+import { Flex, useDisclosure } from "@chakra-ui/react";
 import styles from "./TryIt.module.css";
+import commonStyles from "../common.module.css";
 import SignUp from "../SignUp";
 
 const TryIt = () => {
@@ -18,7 +19,7 @@ const TryIt = () => {
       </div>
       <div className={styles.buttons}>
         <button
-          className={styles.button1}
+          className={commonStyles.secondaryButton}
           onClick={() =>
             window.open("https://calendly.com/d/5dr-xh2-xq6/moonstream-demo ", "_blank")
           }
@@ -27,7 +28,7 @@ const TryIt = () => {
         </button>
 
         <SignUp isOpen={isOpen} onClose={onClose} />
-        <button className={styles.button2} onClick={onOpen}>
+        <button className={commonStyles.ctaButton} onClick={onOpen}>
           Get Started
         </button>
       </div>

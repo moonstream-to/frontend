@@ -47,7 +47,7 @@ const Landing = () => {
         >
           <Suspense fallback={""}></Suspense>
           <Hero />
-          <Text fontSize={"14px"} fontFamily={"Inter"} mb={"10px"}>
+          <Text fontSize={{ base: "14px", sm: "16px" }} fontFamily={"Inter"} mb={"10px"}>
             Trusted by
           </Text>
           <TrustedBy2 />
@@ -59,13 +59,6 @@ const Landing = () => {
           <SupportedChains />
           <BlackBlocks />
           <LandingFAQ />
-          <Text
-            fontSize={{ base: "30px", sm: "40px" }}
-            fontWeight={"700"}
-            mb={{ base: "40px", sm: "60px" }}
-          >
-            Featured by
-          </Text>
           <LandingFeaturedBy2 />
           <Flex
             py={"20px"}

@@ -98,11 +98,7 @@ const SocialButtons = () => {
       </Text>
       <Flex gap="20px" justifyContent="start" alignItems={"center"}>
         <SocialButton label={"Discord"} href={"https://discord.gg/K56VNUQGvA"}>
-          <ChakraImage
-            maxW="26px"
-            src={`${AWS_STATIC_ASSETS_PATH}/icons/discord-logo.png`}
-            _hover={{ scale: "0.1" }}
-          />
+          <ChakraImage maxW="26px" src={`${AWS_STATIC_ASSETS_PATH}/icons/discord-logo.png`} />
         </SocialButton>
         <SocialButton label={"Twitter"} href={"https://twitter.com/moonstreamto"}>
           <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/landing/logos/x-twitter.svg`} />
