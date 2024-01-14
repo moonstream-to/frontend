@@ -1,6 +1,8 @@
-import { Flex, Image, Link } from "@chakra-ui/react";
+import { Flex, Image, Link, Text } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
-import styles from "./TrustedBy.module.css";
+import styles from "./LandingFeaturedBy.module.css";
+import Marquee from "react-fast-marquee";
+import React from "react";
 
 const featuredBy = [
   {
@@ -57,26 +59,24 @@ const featuredBy = [
 
 const LandingFeaturedBy2 = ({ ...props }) => {
   return (
-    <Flex
-      gap={{ base: "20px", sm: "50px" }}
-      overflowX="auto"
-      maxW="100%"
-      position="relative"
-      py={"10px"}
-      className={styles.carousel}
-      bg={"#101114"}
-      alignItems={"center"}
-      px={"150px"}
-      mb={{ base: "40px", sm: "80px" }}
-    >
-      {featuredBy
-        .concat(featuredBy)
-        .concat(featuredBy)
-        .map((f, idx) => (
+    <Flex className={styles.container}>
+      <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight={"700"}>
+        Featured by
+      </Text>
+      <Marquee pauseOnHover={true} className={styles.carousel} style={{ overflow: "auto" }}>
+        {featuredBy.concat(featuredBy).map((f, idx) => (
           <Link href={f.href} key={idx} target="_blank" flexShrink={0}>
-            <Image src={f.img} alt={f.name} h={`${f.h}px`} w={`${f.w}px`} />
+            <Image
+              src={f.img}
+              alt={f.name}
+              h={{ base: `${f.h}px`, sm: `${f.h * 1.8}px`, md: `${f.h * 2.0}px` }}
+              w={{ base: `${f.w}px`, sm: `${f.w * 1.8}px`, md: `${f.w * 2.0}px` }}
+              mx={{ base: "10px", sm: "25px" }}
+              className={styles.image}
+            />
           </Link>
         ))}
+      </Marquee>
     </Flex>
   );
 };

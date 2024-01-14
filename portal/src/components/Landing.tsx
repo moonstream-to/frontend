@@ -59,13 +59,6 @@ const Landing = () => {
           <SupportedChains />
           <BlackBlocks />
           <LandingFAQ />
-          <Text
-            fontSize={{ base: "30px", sm: "40px" }}
-            fontWeight={"700"}
-            mb={{ base: "40px", sm: "60px" }}
-          >
-            Featured by
-          </Text>
           <LandingFeaturedBy2 />
           <Flex
             py={"20px"}
