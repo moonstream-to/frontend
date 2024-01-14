@@ -1,14 +1,12 @@
 .carousel {
     scrollbar-width: none;
     background-color: #101114;
-    max-width: 1240px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .rfm-marquee-container {
-    overflow-x: auto !important;
-    /*background-color: #0BC5EA;*/
+    overflow-x: auto;
 }
 
 .carousel::-webkit-scrollbar {
@@ -18,7 +16,6 @@
 .container {
  width: 100%;
     background-color: #101114;
-
 }
 
 
@@ -28,6 +25,7 @@
         padding: 0 7%;
     }
     .carousel {
+        max-width: 1240px;
         -webkit-mask: linear-gradient(90deg, #0000, #000 20% 80%, #0000);
     }
 }

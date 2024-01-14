@@ -78,7 +78,7 @@ const TrustedBy2 = ({ ...props }) => {
       <Marquee pauseOnHover={true} className={styles.carousel} style={{ overflow: "auto" }}>
         {trustedBy.concat(trustedBy).map((f, idx) => (
           <Link href={f.href} key={idx} target="_blank" flexShrink={0}>
-            <Flex mx={"20px"}>
+            <Flex mx={{ base: "10px", sm: "25px" }}>
               <Image src={f.img} alt={f.name} h={{ base: f.h.base, sm: f.h.sm }} />
             </Flex>
           </Link>
