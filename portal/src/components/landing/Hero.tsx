@@ -2,9 +2,9 @@ import styles from "./Hero.module.css";
 import { Flex, Image, Link, Text, useMediaQuery } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 
-const image320 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-320.png`;
-const image768 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-768.png`;
-const image1440 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-1440.png`;
+const image320 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-2-320.png`;
+const image768 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-2-768.png`;
+const image1440 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-2-1440.png`;
 
 const Hero = () => {
   const [is768view, is1440View] = useMediaQuery(["(min-width: 768px)", "(min-width: 1440px)"]);
