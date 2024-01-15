@@ -1,9 +1,7 @@
-import styles from "./BlackBlocks.module.css";
 import { Flex } from "@chakra-ui/react";
 import BlackBlock from "./BlackBlock";
+import styles from "./BlackBlocks.module.css";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
-
-// const blocks = [];
 
 const BlackBlocks = () => {
   return (

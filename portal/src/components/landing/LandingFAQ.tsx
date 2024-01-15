@@ -1,6 +1,4 @@
-import RouterLink from "next/link";
-
-import { Flex, chakra, Link, Center, Text, Icon, Accordion } from "@chakra-ui/react";
+import { Flex, Link, Text, Accordion } from "@chakra-ui/react";
 import { DISCORD_LINK } from "../../constants";
 import FAQCard from "../FAQCard";
 

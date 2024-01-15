@@ -1,6 +1,4 @@
-import RouterLink from "next/link";
-
-import { Flex, Link, Text, Button, Image, useMediaQuery, Box } from "@chakra-ui/react";
+import { Flex, Text, Image, useMediaQuery, Box } from "@chakra-ui/react";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 import LandingFeatureCard from "./LandingFeatureCard";
 import styles from "./LandingFeatures.module.css";

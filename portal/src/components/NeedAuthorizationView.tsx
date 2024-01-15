@@ -1,5 +1,6 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 import LoginButton from "./LoginButton";
+import commonStyles from "./common.module.css";
 
 const NeedAuthorizationView = () => {
   return (
@@ -12,11 +13,11 @@ const NeedAuthorizationView = () => {
           Access infrastructure tools and systems to build a healthy web3 game economy.{" "}
         </Text>
       </Flex>
-      <Flex gap="20px">
+      <Flex gap="20px" justifyContent={"center"}>
         <LoginButton>
-          <Button variant="orangeGradient">Log in</Button>
+          <button className={commonStyles.ctaButton}>Log in</button>
         </LoginButton>
-        <Button variant="whiteOutline">Learn more about our features</Button>
+        <button className={commonStyles.secondaryButton}>Learn more about our features</button>
       </Flex>
     </Flex>
   );
