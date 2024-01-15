@@ -19,7 +19,7 @@ const TryIt = () => {
       </div>
       <div className={styles.buttons}>
         <button
-          className={commonStyles.secondaryButton}
+          className={styles.secondaryButton}
           onClick={() =>
             window.open("https://calendly.com/d/5dr-xh2-xq6/moonstream-demo ", "_blank")
           }
@@ -28,7 +28,7 @@ const TryIt = () => {
         </button>
 
         <SignUp isOpen={isOpen} onClose={onClose} />
-        <button className={commonStyles.ctaButton} onClick={onOpen}>
+        <button className={styles.ctaButton} onClick={onOpen}>
           Get Started
         </button>
       </div>
