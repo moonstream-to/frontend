@@ -3,6 +3,7 @@
     background-color: #101114;
     margin-left: auto;
     margin-right: auto;
+
 }
 
 .rfm-marquee-container {
@@ -14,15 +15,17 @@
 }
 
 .container {
- width: 100%;
+    width: 100%;
     background-color: #101114;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 
 @media (min-width: 1440px) {
     .container {
         background-color: #101114;
-        padding: 0 7%;
+        padding: 10px 7%;
     }
     .carousel {
         max-width: 1240px;
