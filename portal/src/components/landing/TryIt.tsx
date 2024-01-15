@@ -1,6 +1,5 @@
 import { Flex, useDisclosure } from "@chakra-ui/react";
 import styles from "./TryIt.module.css";
-import commonStyles from "../common.module.css";
 import SignUp from "../SignUp";
 
 const TryIt = () => {

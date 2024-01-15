@@ -1,8 +1,9 @@
+import React from "react";
 import { Flex, Image, Link, Text } from "@chakra-ui/react";
+import Marquee from "react-fast-marquee";
+
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 import styles from "./LandingFeaturedBy.module.css";
-import Marquee from "react-fast-marquee";
-import React from "react";
 
 const featuredBy = [
   {

@@ -1,5 +1,5 @@
-import styles from "./Hero.module.css";
 import { Flex, Image, Link, Text, useMediaQuery } from "@chakra-ui/react";
+import styles from "./Hero.module.css";
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 
 const image320 = `${AWS_STATIC_ASSETS_PATH}/landing/leaderboard-magic-2-320.png`;

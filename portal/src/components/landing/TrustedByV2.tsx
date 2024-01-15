@@ -1,7 +1,8 @@
 import { Flex, Image, Link } from "@chakra-ui/react";
+import Marquee from "react-fast-marquee";
+
 import { AWS_STATIC_ASSETS_PATH } from "../../constants";
 import styles from "./TrustedBy.module.css";
-import Marquee from "react-fast-marquee";
 
 const assetsPath = `${AWS_STATIC_ASSETS_PATH}/landing/logos`;
 const assets = {
