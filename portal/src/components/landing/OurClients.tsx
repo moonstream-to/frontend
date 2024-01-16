@@ -21,7 +21,7 @@ const OurClients = () => {
           <div>
             <Text fontSize={{ base: "18px", sm: "24px" }} fontWeight={"700"}>
               &quot;We chose Moonstream for security and trust. Moonstream is a huge part of our
-              live ops process and has made it a lot more efficient and easy.&quot;
+              LiveOps process and has made it a lot more efficient and easy.&quot;
             </Text>
             <Link
               color={"#F88F78"}

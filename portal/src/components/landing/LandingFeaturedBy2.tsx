@@ -11,7 +11,7 @@ const featuredBy = [
     img: `${AWS_STATIC_ASSETS_PATH}/logos/tech-crunch-logo.png`,
     w: 103,
     h: 14.65,
-    href: "https://www.crypto-reporter.com/press-releases/moonstream-to-wins-techcrunch-pitch-off-earning-a-spot-at-disrupt-2023-39287",
+    href: "https://youtu.be/t16AqaWwBro?si=U8OCnFLgwQvE8UQ1",
   },
   {
     name: "Cointelegraph",
