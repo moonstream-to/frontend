@@ -1,3 +1,5 @@
+export const siteTitle = "Moonstream apps portal";
+
 export const SITEMAP_CATEGORIES = {
   SOLUTIONS: "Solutions",
   DEVELOPERS: "Developers",
