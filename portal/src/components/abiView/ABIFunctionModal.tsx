@@ -66,11 +66,9 @@ const ABIFunctionModal = ({
             return obj;
           } catch (e) {
             console.log(e);
-            // return value
           }
           return value;
         });
-        console.log(valuesToSend);
         const res =
           stateMutability === "view"
             ? await fn(...values).call()

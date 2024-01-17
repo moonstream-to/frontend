@@ -133,9 +133,6 @@ const ABIViwLeftPanel = ({
         justifyContent="space-between"
         px="20px"
       >
-        {/*<Text fontWeight="400" fontSize="16px" color="#BBBBBB">*/}
-        {/*  ABI Explorer*/}
-        {/*</Text>*/}
         <Spacer />
         {getABIQuery.isFetching && <Spinner h="15px" w="15px" />}
         <Menu>
@@ -162,23 +159,6 @@ const ABIViwLeftPanel = ({
           </MenuList>
         </Menu>
       </Flex>
-
-      {/*<Flex*/}
-      {/*  w="100"*/}
-      {/*  minH="40px"*/}
-      {/*  bg="#262626"*/}
-      {/*  // boxShadow="0px 2px 2px black"*/}
-      {/*  alignItems="center"*/}
-      {/*  justifyContent="space-between"*/}
-      {/*>*/}
-      {/*  {getABIQuery.isError && (*/}
-      {/*    <Text pl="20px" color="error.500">*/}
-      {/*      {(getABIQuery.error as any).message}*/}
-      {/*    </Text>*/}
-      {/*  )}*/}
-      {/*  <Spacer />*/}
-      {/*  /!* <Icon as={AiOutlineSave} mr="33px" /> //TODO *!/*/}
-      {/*</Flex>*/}
       <Flex width="100%" h="3px" bg="transparent" />
 
       <JSONEdit
