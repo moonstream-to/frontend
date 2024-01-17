@@ -1,0 +1,7 @@
+.upRightImage {
+    transform: rotate(45deg);
+}
+
+.downRightImage {
+    transform: rotate(135deg);
+}

@@ -89,7 +89,6 @@ const ABIViwLeftPanel = ({
   };
 
   const getABI = () => {
-    // setLoadedFromTx("");
     if (web3.utils.isAddress(src)) {
       return getFromAddress(src);
     } else {
@@ -115,19 +114,26 @@ const ABIViwLeftPanel = ({
   }, [src, getABIQuery.refetch]);
 
   return (
-    <Flex bg="#262626" w="100%" minH="100%" direction="column" overflowY="auto" p="0px" flex="1">
+    <Flex
+      bg="#1b1d22"
+      w="100%"
+      minH="100%"
+      direction="column"
+      overflowY="auto"
+      p="0px"
+      flex="1"
+      id={"leftPanel"}
+    >
       <Flex
         width="100%"
         h="40px"
         minH="40px"
-        bg="#262626"
+        bg="#1b1d22"
         alignItems="center"
         justifyContent="space-between"
         px="20px"
       >
-        <Text fontWeight="400" fontSize="16px" color="#BBBBBB">
-          ABI Explorer
-        </Text>
+        <Spacer />
         {getABIQuery.isFetching && <Spinner h="15px" w="15px" />}
         <Menu>
           <MenuButton
@@ -150,43 +156,8 @@ const ABIViwLeftPanel = ({
                 </MenuItem>
               ))}
             </MenuGroup>
-            {/* <MenuGroup color="#CCCCCC" title={`Recent txs on ${recentTransactionsChain}`}>
-              {recentTransactions.map((tx, idx) => (
-                <MenuItem color="#AAAAAA" key={idx} title={tx} onClick={() => setSrc(tx)}>
-                  <Text>{tx.slice(0, 6) + "..." + tx.slice(-4)}</Text>
-                </MenuItem>
-              ))}
-            </MenuGroup> */}
           </MenuList>
         </Menu>
-      </Flex>
-
-      <Flex
-        w="100"
-        minH="40px"
-        bg="#282a36"
-        boxShadow="0px 2px 2px black"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        {getABIQuery.isError && (
-          <Text pl="20px" color="error.500">
-            {(getABIQuery.error as any).message}
-          </Text>
-        )}
-        {/* {abiFromTransactionsQuery.isLoading && (
-          <Text ml="40px" placeSelf="center" color="#BBBBBB">
-            searching...
-          </Text>
-        )}
-        {loadedFromTx && (
-          <Text ml="40px" placeSelf="center" color="#BBBBBB">
-            {loadedFromTx}
-          </Text>
-        )} */}
-
-        <Spacer />
-        {/* <Icon as={AiOutlineSave} mr="33px" /> //TODO */}
       </Flex>
       <Flex width="100%" h="3px" bg="transparent" />
 
@@ -196,8 +167,9 @@ const ABIViwLeftPanel = ({
           setAbi(value);
         }}
         style={{
-          backgroundColor: "#262626",
+          backgroundColor: "#1b1d22",
           fontSize: "14px",
+          borderRight: "1px solid #777",
         }}
         height="100%"
       />

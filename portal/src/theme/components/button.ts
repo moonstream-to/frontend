@@ -193,13 +193,15 @@ const variantWhiteOutline = () => {
     border: "2px solid white",
     borderRadius: "30px",
     bg: "transparent",
-    p: "10px 30px",
-    fontSize: "20px",
+    p: "8px 30px",
+    fontSize: { base: "16px", sm: "20px" },
+    height: "auto",
+    lineHeight: "normal",
     textDecoration: "none",
     _hover: {
       backgroundColor: "transparent",
       borderWidth: "3px",
-      p: "9px 29px",
+      p: "7px 29px",
     },
     _focus: {
       backgroundColor: "transparent",

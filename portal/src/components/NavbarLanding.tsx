@@ -14,7 +14,6 @@ import {
   MenuList,
   MenuItem,
   useMediaQuery,
-  Divider,
 } from "@chakra-ui/react";
 
 import { AWS_STATIC_ASSETS_PATH, PAGETYPE, SITEMAP } from "../constants";
@@ -122,10 +121,9 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
         justifyContent="space-between"
       >
         <RouterLink href="/" passHref>
-          {/* {home ? ()} */}
           <Link
             as={Image}
-            w="160px"
+            w={{ base: "137px", sm: "160px" }}
             h="auto"
             justifyContent="left"
             src={PRIMARY_MOON_LOGO_URL}
@@ -133,38 +131,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
           />
         </RouterLink>
         {!isSmallView && <NavbarMenu />}
-        <Flex justifyContent="end" w="160px" gap={{ base: "5px", sm: "15px" }} alignItems="center">
-          {!router.asPath.includes("portal") && (
-            <>
-              <RouterLink href="/portal">
-                <Button
-                  variant="whiteOutline"
-                  mb={isVerySmallView ? "2px" : "0"}
-                  fontWeight="700"
-                  p={isVerySmallView ? "2px 5px" : "5px 10px"}
-                  h="100%"
-                  borderRadius="30px"
-                  borderWidth="1px"
-                  fontSize={isVerySmallView ? "12px" : "16px"}
-                  _hover={{
-                    backgroundColor: "transparent",
-                  }}
-                  borderStyle={isVerySmallView ? "none" : "solid"}
-                >
-                  Portal
-                </Button>
-              </RouterLink>
-              {!isVerySmallView && (
-                <Divider backgroundColor={"#8F8F8F"} orientation={"vertical"} h={"3px"} w={"3px"} />
-              )}
-            </>
-          )}
-          <Account
-            fontSize={isVerySmallView ? "12px" : "16px"}
-            background={isVerySmallView ? "transparent" : "#353535"}
-            mr={isVerySmallView ? "-15px" : "0"}
-          />
-        </Flex>
+        <Account />
       </Flex>
       {isSmallView && <NavbarMenu />}
     </Flex>

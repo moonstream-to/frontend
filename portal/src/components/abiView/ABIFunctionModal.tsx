@@ -58,7 +58,14 @@ const ABIFunctionModal = ({
         const fn = contract.methods[name];
         const valuesToSend = values.map((value: string, idx: number) => {
           if (inputs[idx].type === "bool" && (value === "false" || value === "0")) {
-            return "";
+            return false;
+          }
+          try {
+            const obj = JSON.parse(value);
+            console.log(obj, typeof obj);
+            return obj;
+          } catch (e) {
+            console.log(e);
           }
           return value;
         });

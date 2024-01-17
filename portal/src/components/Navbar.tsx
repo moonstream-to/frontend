@@ -1,36 +1,18 @@
 import RouterLink from "next/link";
 
 import React, { useContext, useState } from "react";
-import {
-  Button,
-  Image,
-  Link,
-  Flex,
-  Badge,
-  Skeleton,
-  useMediaQuery,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Divider,
-} from "@chakra-ui/react";
+import { Button, Image, Link, Flex, Badge, Skeleton, useMediaQuery } from "@chakra-ui/react";
 
 import Web3Context from "../contexts/Web3Context/context";
 import ChainSelector from "./ChainSelector";
-import { BsPerson } from "react-icons/bs";
-import useUser from "../contexts/UserContext";
-import useLogout from "../hooks/useLogout";
 import SignUp from "./SignUp";
 import Account from "./Account";
 
 const Navbar = ({ home, ...props }: { home?: boolean; [x: string]: any }) => {
   const [isMobileView] = useMediaQuery("(max-width: 767px)");
-  const { user } = useUser();
   const AWS_ASSETS_PATH = `https://s3.amazonaws.com/static.simiotics.com/moonstream/assets`;
   const PRIMARY_MOON_LOGO_URL = `${AWS_ASSETS_PATH}/moonstream-full-logo-2022.png`;
   const web3Provider = useContext(Web3Context);
-  const { logout, isLoading: isLoggingOut } = useLogout();
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   return (

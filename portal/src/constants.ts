@@ -1,3 +1,5 @@
+export const siteTitle = "Moonstream apps portal";
+
 export const SITEMAP_CATEGORIES = {
   SOLUTIONS: "Solutions",
   DEVELOPERS: "Developers",
@@ -25,7 +27,7 @@ export const SITEMAP = [
       },
       {
         title: "Case studies",
-        path: "https://docs.google.com/document/d/1mjfF8SgRrAZvtCVVxB2qNSUcbbmrH6dTEYSMfHKdEgc",
+        path: "https://blog.moonstream.to/tag/case-study",
         type: PAGETYPE.EXTERNAL,
       },
       {
@@ -145,7 +147,6 @@ const chainIdToImagePath: Record<ChainId, string> = {
 };
 
 export const getChainImage = (identifier: string | number): string | undefined => {
-  console.log(identifier, chainNameToImagePath[identifier as ChainName]);
   if (identifier in chainNameToImagePath) {
     return chainNameToImagePath[identifier as ChainName];
   } else if (identifier in chainIdToImagePath) {

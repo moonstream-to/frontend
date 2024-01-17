@@ -25,7 +25,8 @@ const SocialButton = ({ children, label, href }: SocialButtonProps) => {
       justifyContent={"center"}
       transition={"background 0.3s ease"}
       _hover={{
-        transform: "scale(1.1)",
+        filter:
+          "brightness(0) saturate(100%) invert(61%) sepia(37%) saturate(4099%) hue-rotate(324deg) brightness(133%) contrast(94%)",
       }}
     >
       <VisuallyHidden>{label}</VisuallyHidden>

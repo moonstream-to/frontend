@@ -1,0 +1,133 @@
+
+
+.container {
+    display: flex;
+    padding: 40px 7%;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 40px;
+    place-self: center;
+    text-align: start;
+}
+
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.image {
+    width: 275px;
+    height: 177px;
+}
+.title {
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk, sans-serif;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%; /* 100% */
+}
+.text {
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.button {
+    display: flex;
+    padding: 10px 30px;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    border-radius: 30px;
+    background: linear-gradient(92deg, #F56646 8.41%, #FFF 255.37%);
+    color: #FFF;
+    text-align: center;
+    font-family: Space Grotesk, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 20px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .container {
+        display: flex;
+        padding: 80px 7%;
+        align-items: center;
+        align-self: stretch;
+        max-width: 1440px;
+        gap: 60px;
+    }
+    .content {
+        max-width: 418px;
+        height: 100%;
+        gap: 40px;
+    }
+
+    .image {
+        width: 434px;
+        height: 295px;
+    }
+    .title {
+        font-size: 50px;
+    }
+    .text {
+        font-size: 18px;
+    }
+    .button {
+        font-size: 20px;
+        width: auto;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        justify-content: space-between;
+        flex-direction: row;
+        gap: 0;
+    }
+    .text {
+        text-align: start;
+    }
+    .title {
+        text-align: start;
+    }
+    .button {
+        margin-left: 0;
+    }
+
+}
+
+@media (min-width: 1440px) {
+    .content {
+        max-width: 1440px;
+    }
+    .image {
+        width: 560px;
+        height: 378px;
+    }
+    .title {
+        font-size: 60px;
+    }
+    .container {
+        padding: 80px 101px;
+    }
+
+}
+
+.button:hover {
+        background: linear-gradient(264deg, #F56646 -6.89%, #FFF 335.28%);
+}
+

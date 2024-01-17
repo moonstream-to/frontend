@@ -12,10 +12,15 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    font-family: 'Inter', sans-serif;
 }
 
 .content {
     max-width: 430px;
+}
+
+.container {
+    flex: 1;
 }
 
 @media (max-width: 767px) {

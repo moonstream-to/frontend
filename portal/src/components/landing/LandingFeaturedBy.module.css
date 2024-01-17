@@ -1,0 +1,30 @@
+.carousel {
+    scrollbar-width: none;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-mask: linear-gradient(90deg, #0000, #000 20% 80%, #0000);
+    max-width: 86%;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.container {
+    flex-direction: column;
+    padding: 40px 0          ;
+    gap: 40px;
+    align-items: center;
+    width: 100%;
+    max-width: 1440px;
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 80px 0;
+        gap: 60px;
+    }
+
+
+
+}

@@ -9,6 +9,7 @@ import {
   Image as ChakraImage,
   Flex,
   useMediaQuery,
+  Image,
 } from "@chakra-ui/react";
 
 import SocialButton from "./SocialButton";
@@ -24,28 +25,63 @@ const BGA_LOGO_URL = `${AWS_STATIC_ASSETS_PATH}/logos/bga-logo-1.png`;
 
 const LegalInfo = ({ ...props }) => {
   return (
-    <Flex gap="20px" {...props}>
+    <Flex gap="20px" direction={"column"} {...props}>
       <Flex
-        borderRadius="10px"
-        border="2px solid white"
-        p="10px"
-        gap="5px"
-        justifyContent="center"
-        alignItems="center"
-        w="fit-content"
+        gap={{ base: "20px", sm: "40px", md: "20px" }}
+        direction={{ base: "column", sm: "row", md: "column" }}
+        alignItems={{ base: "center", md: "start" }}
       >
-        <Text>Member&nbsp;of</Text>
-        <ChakraImage src={BGA_LOGO_URL} h="15px" alt="BGA" />
-      </Flex>
-      <Flex justifyContent="start">
-        <RouterLink href="/policy">
-          <Text _hover={{ color: "accent.500" }}>Privacy policy</Text>
-        </RouterLink>
-        <RouterLink href="/terms">
-          <Text ml="20px" _hover={{ color: "accent.500" }}>
-            Terms of Service
-          </Text>
-        </RouterLink>
+        <Flex gap={"10px"}>
+          <Link
+            isExternal
+            href="https://github.com/moonstream-to/"
+            _hover={{ textDecoration: "none" }}
+            justifyItems="center"
+          >
+            <Flex
+              border="1px solid white"
+              justifySelf="center"
+              borderRadius="10px"
+              w="fit-content"
+              mx="auto"
+              alignItems="center"
+              p="9px"
+              gap="5px"
+            >
+              <Image
+                src={`${AWS_STATIC_ASSETS_PATH}/icons/open-source-icon.png`}
+                h="20px"
+                w="20px"
+                alt=""
+              />
+              <Text fontSize="14px">Open&nbsp;Source</Text>
+            </Flex>
+          </Link>
+          <Flex
+            borderRadius="10px"
+            border="1px solid white"
+            p="10px"
+            gap="5px"
+            justifyContent="center"
+            alignItems="center"
+            w="fit-content"
+          >
+            <Text fontSize={"14px"} lineHeight={"normal"}>
+              Member&nbsp;of
+            </Text>
+            <ChakraImage src={BGA_LOGO_URL} h="16px" w="39px" alt="BGA" />
+          </Flex>
+        </Flex>
+        <Flex justifyContent="start">
+          <RouterLink href="/policy">
+            <Text _hover={{ color: "accent.500" }}>Privacy&nbsp;policy</Text>
+          </RouterLink>
+          <RouterLink href="/terms">
+            <Text ml="20px" _hover={{ color: "accent.500" }}>
+              Terms&nbsp;of&nbsp;Service
+            </Text>
+          </RouterLink>
+        </Flex>
       </Flex>
       <Text fontSize={{ base: "14px" }}>
         ©&nbsp;{new Date().getFullYear()}&nbsp;Moonstream.to&nbsp;All&nbsp;rights&nbsp;reserved
@@ -60,16 +96,12 @@ const SocialButtons = () => {
       <Text fontWeight="semibold" mb="20px">
         Follow Us
       </Text>
-      <Flex gap="20px" justifyContent="start">
+      <Flex gap="20px" justifyContent="start" alignItems={"center"}>
         <SocialButton label={"Discord"} href={"https://discord.gg/K56VNUQGvA"}>
-          <ChakraImage
-            maxW="26px"
-            src={`${AWS_STATIC_ASSETS_PATH}/icons/discord-logo.png`}
-            _hover={{ scale: "0.1" }}
-          />
+          <ChakraImage maxW="26px" src={`${AWS_STATIC_ASSETS_PATH}/icons/discord-logo.png`} />
         </SocialButton>
         <SocialButton label={"Twitter"} href={"https://twitter.com/moonstreamto"}>
-          <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/icons/twitter-logo.png`} />
+          <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/landing/logos/x-twitter.svg`} />
         </SocialButton>
         <SocialButton label={"Github"} href={"https://github.com/moonstream-to/api"}>
           <ChakraImage maxW="24px" src={`${AWS_STATIC_ASSETS_PATH}/icons/github-logo.png`} />
@@ -133,7 +165,7 @@ const Footer = ({ home }: { home?: boolean }) => {
           textAlign="center"
           bg="#101114"
           p="10px 15px"
-          borderRadius="10px"
+          borderRadius="15px"
           fontSize={{ base: "16px", sm: "18px" }}
         >
           If you like Moonstream,{" "}
@@ -158,7 +190,7 @@ const Footer = ({ home }: { home?: boolean }) => {
             ) : (
               <ChakraImage w="160px" src={PRIMARY_MOON_LOGO_URL} alt="Go to app root" />
             )}
-            {isDesktopView && <LegalInfo direction="column" />}
+            {isDesktopView && <LegalInfo />}
           </Flex>
           {isDesktopView && !isMobileView && (
             <>
@@ -186,7 +218,6 @@ const Footer = ({ home }: { home?: boolean }) => {
               justifyContent="center"
               alignItems="center"
               pt="40px"
-              maxW="500px"
               mx="auto"
             />
           )}
