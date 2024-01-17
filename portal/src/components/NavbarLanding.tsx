@@ -14,7 +14,6 @@ import {
   MenuList,
   MenuItem,
   useMediaQuery,
-  Divider,
 } from "@chakra-ui/react";
 
 import { AWS_STATIC_ASSETS_PATH, PAGETYPE, SITEMAP } from "../constants";
@@ -99,10 +98,9 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
   };
 
   const router = useRouter();
-  const [isSmallView, isVerySmallView, isDesktop] = useMediaQuery([
+  const [isSmallView, isVerySmallView] = useMediaQuery([
     "(max-width: 1024px)",
     "(max-width: 400px)",
-    "(min-width: 1440px)",
   ]);
 
   return (
@@ -123,7 +121,6 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
         justifyContent="space-between"
       >
         <RouterLink href="/" passHref>
-          {/* {home ? ()} */}
           <Link
             as={Image}
             w={{ base: "137px", sm: "160px" }}
@@ -134,38 +131,7 @@ const NavbarLanding = ({ home, ...props }: { home?: boolean; [x: string]: any })
           />
         </RouterLink>
         {!isSmallView && <NavbarMenu />}
-        {/*<Flex justifyContent="end" w="160px" gap={{ base: "5px", sm: "15px" }} alignItems="center">*/}
-        {/*  {!router.asPath.includes("portal") && (*/}
-        {/*    <>*/}
-        {/*      <RouterLink href="/portal">*/}
-        {/*        <Button*/}
-        {/*          variant="whiteOutline"*/}
-        {/*          fontWeight="400"*/}
-        {/*          lineHeight={"1"}*/}
-        {/*          p={"4px 10px"}*/}
-        {/*          h="100%"*/}
-        {/*          borderRadius="30px"*/}
-        {/*          borderWidth="1px"*/}
-        {/*          fontSize={isVerySmallView ? "12px" : "16px"}*/}
-        {/*          _hover={{*/}
-        {/*            backgroundColor: "transparent",*/}
-        {/*          }}*/}
-        {/*          // borderStyle={isVerySmallView ? "none" : "solid"}*/}
-        {/*        >*/}
-        {/*          Portal*/}
-        {/*        </Button>*/}
-        {/*      </RouterLink>*/}
-        {/*      {!isSmallView && (*/}
-        {/*        <Divider backgroundColor={"#8F8F8F"} orientation={"vertical"} h={"3px"} w={"3px"} />*/}
-        {/*      )}*/}
-        {/*    </>*/}
-        {/*  )}*/}
-        <Account
-        // fontSize={isVerySmallView ? "12px" : "16px"}
-        // background={isVerySmallView ? "transparent" : "#353535"}
-        // mr={isVerySmallView ? "-15px" : "0"}
-        />
-        {/*</Flex>*/}
+        <Account />
       </Flex>
       {isSmallView && <NavbarMenu />}
     </Flex>
