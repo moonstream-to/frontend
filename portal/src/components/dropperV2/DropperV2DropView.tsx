@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useMutation, useQuery, UseQueryResult } from "react-query";
-import { Box, Button, Spinner } from "@chakra-ui/react";
+import { Box, Button, Spinner, Text } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
@@ -18,6 +18,9 @@ import DropperV2EditDrop from "./DropperV2EditDrop";
 import DropperV2ClaimsView from "./DropperV2ClaimsView";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import useMoonToast from "../../hooks/useMoonToast";
+import axios from "axios";
+import styles from "./DropperV2.module.css";
+import Link from "next/link";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
@@ -98,6 +101,35 @@ const DropperV2DropView = ({
       enabled: Number(dropId) > 0 && !!address,
     },
   );
+
+  const signingServer = useQuery(["signing_server", address, dropId, chainId], async () => {
+    if (!dropState.data) {
+      return;
+    }
+    const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
+    const authorization = token ? { Authorization: `Bearer ${token}` } : {};
+    const servers = await axios
+      .get("https://fullcount.waggle.moonstream.org/signers/", {
+        headers: {
+          "Content-Type": "application/json",
+          ...authorization,
+        },
+      })
+      .then((res) => {
+        return res.data.signers;
+      });
+    let terminusBalance;
+    if (servers && servers.length > 0) {
+      const terminusContract = new web3.eth.Contract(
+        terminusAbi,
+        dropState.data.dropAuthorization.terminusAddress,
+      ) as unknown as MockTerminus;
+      terminusBalance = await terminusContract.methods
+        .balanceOf(servers[0], dropState.data.dropAuthorization.poolId)
+        .call();
+      return { servers, terminusBalance };
+    }
+  });
 
   const toast = useMoonToast();
   const approveForPool = useMutation(
@@ -200,7 +232,17 @@ const DropperV2DropView = ({
               </Flex>
             </>
           )}
-          <DropperV2ClaimsView address={address} isContractRegistered={isContractRegistered} />
+
+          {dropState.data && (
+            <DropperV2ClaimsView
+              address={address}
+              dropAuthorization={dropState.data?.dropAuthorization}
+              isContractRegistered={isContractRegistered}
+            />
+          )}
+          <Link href={`/portal/dropperV2/claim/?dropId=${dropId}&dropperAddress=${address}`}>
+            claim
+          </Link>
 
           {dropState.isLoading && (
             <Flex alignItems="center" justifyContent="center" h="100%">
