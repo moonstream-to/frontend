@@ -22,7 +22,7 @@ const ClaimCard = ({
   const { account, web3 } = useContext(Web3Context);
   const dropperContract = new web3.eth.Contract(dropperAbi);
   dropperContract.options.address = dropperAddress ?? "";
-  function humanReadableInterval(dateString: string) {
+  const humanReadableInterval = (dateString: string) => {
     const inputDate = new Date(dateString).getTime();
     const currentDate = new Date().getTime();
 
@@ -52,7 +52,13 @@ const ClaimCard = ({
     }
 
     return result;
-  }
+  };
+
+  const isPast = (dateString: string) => {
+    const inputDate = new Date(dateString).getTime();
+    const currentDate = new Date().getTime();
+    return currentDate > inputDate;
+  };
 
   const claimDrop = useMutation(({ request }: { request: Request }) => {
     console.log(dropperContract.options, request);
@@ -93,18 +99,28 @@ const ClaimCard = ({
         fontSize={"11px"}
       />
       <PoolDetailsRow value={request.parameters.dropId} type={"dropID"} fontSize={"11px"} />
+      <PoolDetailsRow value={"" + request.parameters.amount} type={"amount"} fontSize={"11px"} />
 
       <Text fontSize={"11px"}>{`Created ${humanReadableInterval(request.created_at)}`}</Text>
-      <Text fontSize={"11px"}>{`Expires ${humanReadableInterval(request.expires_at)}`}</Text>
+      <Text fontSize={"11px"} color={isPast(request.expires_at) ? "red" : "white"}>{`${
+        isPast(request.expires_at) ? "Expired" : "Expires"
+      } ${humanReadableInterval(request.expires_at)}`}</Text>
       <PoolDetailsRow
         value={request.parameters.blockDeadline}
         type={"blockDeadline"}
         fontSize={"11px"}
       />
       {currentBlock && (
-        <Text placeSelf={"end"} fontSize={"11px"}>{`${
-          Number(request.parameters.blockDeadline) - currentBlock
-        } blocks left`}</Text>
+        <PoolDetailsRow
+          color={Number(request.parameters.blockDeadline) - currentBlock > 0 ? "white" : "red"}
+          value={
+            Number(request.parameters.blockDeadline) - currentBlock > 0
+              ? "" + (Number(request.parameters.blockDeadline) - currentBlock)
+              : "0"
+          }
+          type={"blocks left"}
+          fontSize={"11px"}
+        />
       )}
 
       <PoolDetailsRow value={request.parameters.signer} type={"signer"} fontSize={"11px"} />
