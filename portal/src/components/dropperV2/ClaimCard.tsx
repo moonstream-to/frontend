@@ -1,9 +1,10 @@
 import { Request } from "./ClaimView";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import PoolDetailsRow from "../PoolDetailsRow";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Web3Context from "../../contexts/Web3Context/context";
 import { useContext } from "react";
+import http from "../../utils/httpMoonstream";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 
@@ -67,6 +68,22 @@ const ClaimCard = ({
       .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null });
   });
 
+  const queryClient = useQueryClient();
+  const deleteRequests = useMutation(
+    ({ ids }: { ids: string[] }) => {
+      return http({
+        method: "DELETE",
+        url: "https://engineapi.moonstream.to/metatx/requests",
+        data: ids,
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("requests");
+      },
+    },
+  );
+
   return (
     <Flex direction={"column"} p={"10px"} backgroundColor={"#353535"}>
       <PoolDetailsRow
@@ -103,6 +120,9 @@ const ClaimCard = ({
       ) : (
         <Text fontSize={"11px"}>claimed</Text>
       )}
+      <button onClick={() => deleteRequests.mutate({ ids: [request.id] })}>
+        {deleteRequests.isLoading ? <Spinner /> : "Delete"}
+      </button>
     </Flex>
   );
 };
