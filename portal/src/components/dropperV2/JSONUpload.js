@@ -33,7 +33,7 @@ const rejectStyle = {
   borderColor: "#ff1744",
 };
 
-function JSONUpload({ isUploading, onDrop, ...props }) {
+function JSONUpload({ isUploading, onDrop, isSigned, ...props }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: {
       "text/json": [".json"],
@@ -72,7 +72,9 @@ function JSONUpload({ isUploading, onDrop, ...props }) {
               <Flex direction="column">
                 <Text>Upload a JSON file</Text>
                 <Text>
-                  {"[ { dropId, caller, requestID, blockDeadline, amount, signer, signature } ]"}
+                  {`[ { dropId, caller, requestID, blockDeadline, amount${
+                    isSigned ? ", signer, signature" : ""
+                  } }]`}
                 </Text>
               </Flex>
             </Flex>

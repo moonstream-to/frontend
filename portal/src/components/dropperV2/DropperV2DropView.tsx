@@ -240,9 +240,6 @@ const DropperV2DropView = ({
               isContractRegistered={isContractRegistered}
             />
           )}
-          <Link href={`/portal/dropperV2/claim/?dropId=${dropId}&dropperAddress=${address}`}>
-            claim
-          </Link>
 
           {dropState.isLoading && (
             <Flex alignItems="center" justifyContent="center" h="100%">

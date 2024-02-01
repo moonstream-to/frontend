@@ -172,14 +172,9 @@ const DropperV2ClaimsView = ({
         </Grid>
       )}
       <DropperV2ClaimantsUpload dropAuthorization={dropAuthorization} contractAddress={address} />
-      <Link
-        mt="-10px"
-        textDecoration="underline"
-        placeSelf="start"
-        href="https://github.com/moonstream-to/waggle"
-        isExternal
-      >
-        Tool you can create this file with
+
+      <Link href={`/portal/dropperV2/claim/?dropId=${15}&dropperAddress=${address}`}>
+        check claims
       </Link>
     </Flex>
   );

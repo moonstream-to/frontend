@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Spinner, Text } from "@chakra-ui/react";
 
 import useMoonToast from "../../hooks/useMoonToast";
 import JSONUpload from "./JSONUpload";
@@ -11,6 +11,7 @@ import axios from "axios";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import Web3Context from "../../contexts/Web3Context/context";
 import styles from "./DropperV2.module.css";
+import SigningAccountView from "../dropper/SigningAccountView";
 
 // const dropId = "15";
 // const chain_id = 80001;
@@ -27,6 +28,7 @@ const DropperV2ClaimantsUpload = ({
 
   const [isUploading, setIsUploading] = useState(false);
   const { web3, chainId } = useContext(Web3Context);
+  const [selectedSignerAccount, setSelectedSignerAccount] = useState("");
 
   const signingServer = useQuery(["signing_server", dropAuthorization], async () => {
     const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
@@ -80,7 +82,9 @@ const DropperV2ClaimantsUpload = ({
       })
       .then((res) => {
         console.log(res.data);
-        return res.data.signers;
+        return res.data.signers.map((s: string) => {
+          return { address: s, subdomain: subdomains[0] };
+        });
       });
     let terminusBalance;
     if (signers && signers.length > 0) {
@@ -89,7 +93,7 @@ const DropperV2ClaimantsUpload = ({
         dropAuthorization.terminusAddress,
       ) as unknown as MockTerminus;
       terminusBalance = await terminusContract.methods
-        .balanceOf(signers[0], dropAuthorization.poolId)
+        .balanceOf(signers[0].address, dropAuthorization.poolId)
         .call();
       return { signers, terminusBalance };
     }
@@ -146,7 +150,7 @@ const DropperV2ClaimantsUpload = ({
           try {
             const content = JSON.parse(String(readerEvent?.target?.result));
             let response;
-            if (signingServer.data?.signers[0]) {
+            if (selectedSignerAccount !== "") {
               //SigningServer request
               const requests = content.map((item: any) => {
                 const { requestID, dropId, claimant, blockDeadline, amount } = item;
@@ -158,11 +162,12 @@ const DropperV2ClaimantsUpload = ({
                   amount,
                 };
               });
-              console.log(requests);
               response = await createSignerRequests({
                 requests,
-                signingAccount: signingServer.data.signers[0],
+                signingAccount: selectedSignerAccount,
               });
+              toast(`${response.data.requests.length} requests signed`, "success");
+              console.log(response);
             } else {
               //MetaTx request
               const specifications = content.map((item: any) => {
@@ -199,19 +204,77 @@ const DropperV2ClaimantsUpload = ({
 
   return (
     <Flex position="relative" direction={"column"}>
-      <JSONUpload minW="100%" isUploading={isUploading} onDrop={onDrop} />
-      {signingServer.data && signingServer.data.signers.length > 0 && (
-        <Flex borderRadius="10px" mt="5px" bg="#232323" justifyContent={"space-between"}>
-          <Flex direction={"column"} justifyContent={"space-between"}>
-            <Text>Signer</Text>
-            <Text>{signingServer.data.signers[0]}</Text>
+      <Flex
+        borderRadius="10px"
+        mb={"20px"}
+        p="15px"
+        border={"1px solid #4D4D4D"}
+        bg="#232323"
+        justifyContent={"space-between"}
+        gap={"20px"}
+        direction={"column"}
+      >
+        {" "}
+        <Text fontSize={"14px"} fontWeight={"700"}>
+          Select an account from a waggle server that you have access to.
+        </Text>
+        {signingServer.isLoading && <Spinner />}
+        {signingServer.data && signingServer.data.signers.length > 0 && (
+          <Flex direction={"column"} gap={"10px"}>
+            <Flex
+              alignItems={"center"}
+              gap={"10px"}
+              onClick={() => setSelectedSignerAccount("")}
+              cursor={"pointer"}
+            >
+              <Flex
+                w={"12px"}
+                h={"12px"}
+                borderRadius={"50%"}
+                border={"1px solid #4d4d4d"}
+                bg={"transparent"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <Box
+                  w={"5px"}
+                  h={"5px"}
+                  borderRadius={"50%"}
+                  bg={selectedSignerAccount === "" ? "white" : "transparent"}
+                />
+              </Flex>
+              <Text fontSize={"14px"}>no, requests are signed already</Text>
+            </Flex>
+            <SigningAccountView
+              selectedSignerAccount={selectedSignerAccount}
+              setSelectedSignerAccount={setSelectedSignerAccount}
+              signingAccount={{
+                ...signingServer.data.signers[0],
+                tokensNumber: signingServer.data.terminusBalance,
+              }}
+              dropAuthorization={dropAuthorization}
+            />
           </Flex>
-          <Flex direction={"column"} alignItems={"end"}>
-            <Text>Autorization tokens</Text>
-            <Text>{signingServer.data.terminusBalance}</Text>
-          </Flex>
-          <div className={styles.actionText}>actions</div>
-        </Flex>
+        )}
+      </Flex>
+      <JSONUpload
+        minW="100%"
+        isUploading={isUploading}
+        onDrop={onDrop}
+        isSigned={selectedSignerAccount === ""}
+      />
+      {selectedSignerAccount === "" && (
+        <Link
+          mt="5px"
+          mx={"auto"}
+          textDecoration="underline"
+          placeSelf="start"
+          href="https://github.com/moonstream-to/waggle"
+          isExternal
+          color={"#DDD"}
+        >
+          Tool you can create this file with
+        </Link>
       )}
     </Flex>
   );
