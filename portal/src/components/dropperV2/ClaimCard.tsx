@@ -7,6 +7,7 @@ import { useContext } from "react";
 import http from "../../utils/httpMoonstream";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dropperAbi = require("../../web3/abi/DropperV2.json");
+import styles from "../dropper/SigningAccountView.module.css";
 
 const ClaimCard = ({
   request,
@@ -101,11 +102,14 @@ const ClaimCard = ({
       <PoolDetailsRow value={request.parameters.dropId} type={"dropID"} fontSize={"11px"} />
       <PoolDetailsRow value={"" + request.parameters.amount} type={"amount"} fontSize={"11px"} />
 
-      <Text fontSize={"11px"}>{`Created ${humanReadableInterval(request.created_at)}`}</Text>
+      <Text mt="10px" fontSize={"11px"}>{`Created ${humanReadableInterval(
+        request.created_at,
+      )}`}</Text>
       <Text fontSize={"11px"} color={isPast(request.expires_at) ? "red" : "white"}>{`${
         isPast(request.expires_at) ? "Expired" : "Expires"
       } ${humanReadableInterval(request.expires_at)}`}</Text>
       <PoolDetailsRow
+        mt="10px"
         value={request.parameters.blockDeadline}
         type={"blockDeadline"}
         fontSize={"11px"}
@@ -123,22 +127,30 @@ const ClaimCard = ({
         />
       )}
 
-      <PoolDetailsRow value={request.parameters.signer} type={"signer"} fontSize={"11px"} />
+      <PoolDetailsRow
+        mt="10px"
+        value={request.parameters.signer}
+        type={"signer"}
+        fontSize={"11px"}
+      />
       <PoolDetailsRow
         value={`0x${request.parameters.signature}`}
         canBeCopied
         type={"signature"}
         fontSize={"11px"}
       />
-
-      {!isClaimed ? (
-        <button onClick={() => claimDrop.mutate({ request })}>Claim</button>
-      ) : (
-        <Text fontSize={"11px"}>claimed</Text>
-      )}
-      <button onClick={() => deleteRequests.mutate({ ids: [request.id] })}>
-        {deleteRequests.isLoading ? <Spinner /> : "Delete"}
-      </button>
+      <Flex justifyContent={"center"} gap={"20px"} mt={"15px"}>
+        {!isClaimed ? (
+          <button onClick={() => claimDrop.mutate({ request })}>Claim</button>
+        ) : (
+          <Text fontSize={"16px"} color={"#4d4d4d"}>
+            Claimed
+          </Text>
+        )}
+        <button onClick={() => deleteRequests.mutate({ ids: [request.id] })}>
+          {deleteRequests.isLoading ? <Spinner /> : "Delete"}
+        </button>
+      </Flex>
     </Flex>
   );
 };
