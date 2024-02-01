@@ -173,9 +173,9 @@ const DropperV2ClaimsView = ({
       )}
       <DropperV2ClaimantsUpload dropAuthorization={dropAuthorization} contractAddress={address} />
 
-      <Link href={`/portal/dropperV2/claim/?dropId=${15}&dropperAddress=${address}`}>
+      <RouterLink href={`/portal/dropperV2/claim/?dropId=${15}&dropperAddress=${address}`}>
         check claims
-      </Link>
+      </RouterLink>
     </Flex>
   );
 };
