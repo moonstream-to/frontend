@@ -215,12 +215,22 @@ const DropperV2ClaimantsUpload = ({
         direction={"column"}
       >
         {" "}
-        <Text fontSize={"14px"} fontWeight={"700"}>
-          Select an account from a waggle server that you have access to.
-        </Text>
-        {signingServer.isLoading && <Spinner />}
+        {signingServer.isLoading && (
+          <Text fontSize={"14px"} fontWeight={"700"}>
+            checking for signing accounts
+          </Text>
+        )}
+        {signingServer.data && signingServer.data.signers.length === 0 && (
+          <Text fontSize={"14px"} fontWeight={"700"}>
+            no signing account
+          </Text>
+        )}
+        {signingServer.isLoading && <Spinner h={"12px"} w={"12px"} />}
         {signingServer.data && signingServer.data.signers.length > 0 && (
           <Flex direction={"column"} gap={"10px"}>
+            <Text fontSize={"14px"} fontWeight={"700"}>
+              Select an account from a waggle server that you have access to
+            </Text>
             <Flex
               alignItems={"center"}
               gap={"10px"}
