@@ -1,4 +1,4 @@
-import { Box, Flex, Modal, ModalContent, Spinner, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import Web3Address from "../entity/Web3Address";
 import { InfoIcon } from "@chakra-ui/icons";
 import { useContext, useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import styles from "./SigningAccountView.module.css";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import { Simulate } from "react-dom/test-utils";
-import drop = Simulate.drop;
+import AuthorizationInfo from "../dropperV2/AutorizationInfo";
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
 
 const SigningAccountView = ({
@@ -67,28 +67,6 @@ const SigningAccountView = ({
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const AuthorizationInfo = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-    return (
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent bg={"#1d1d1d"}>
-          {terminusInfo.isLoading ? (
-            <Spinner />
-          ) : (
-            <Flex direction="column" p={"30px"}>
-              <Web3Address
-                label="Contract controller"
-                address={terminusInfo.data?.contractController ?? ""}
-              />
-              <Web3Address
-                label="Pool controller"
-                address={terminusInfo.data?.poolController ?? ""}
-              />
-            </Flex>
-          )}
-        </ModalContent>
-      </Modal>
-    );
-  };
 
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -158,8 +136,7 @@ const SigningAccountView = ({
         </>
       )}
 
-      <InfoIcon onClick={onOpen} cursor="pointer" />
-      <AuthorizationInfo isOpen={isOpen} onClose={onClose} />
+      {terminusInfo.data && <AuthorizationInfo controllers={terminusInfo.data} />}
     </Flex>
   );
 };
