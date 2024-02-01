@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import http from "../../utils/httpMoonstream";
 import axios from "axios";
 import { useQuery } from "react-query";
 import Web3Context from "../../contexts/Web3Context/context";
@@ -10,10 +9,9 @@ import importedMulticallABI from "../../web3/abi/Multicall2.json";
 const multicallABI = importedMulticallABI as unknown as AbiItem[];
 import importedDropperAbi from "../../web3/abi/DropperV2.json";
 const dropperAbi = importedDropperAbi as unknown as AbiItem[];
-// import { Dropper } from "../../web3/contracts/types/DropperV2";
 
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import ClaimCard from "./ClaimCard";
 
 export type Request = {
@@ -40,11 +38,18 @@ type responseWithDetails = {
 const ClaimView = () => {
   const router = useRouter();
   const { account, chainId, web3 } = useContext(Web3Context);
+  const [callerAccount, setCallerAccount] = useState("");
   const [dropId, setDropId] = useState("");
   const [dropperAddress, setDropperAddress] = useState("");
   const currentBlock = useQuery(["currentBlock"], () => {
     return web3.eth.getBlockNumber();
   });
+
+  useEffect(() => {
+    // if (callerAccount === "") {
+    setCallerAccount(account);
+    // }
+  }, [account]);
 
   useEffect(() => {
     if (router.query.dropId) {
@@ -59,9 +64,11 @@ const ClaimView = () => {
     }
   }, [router.query.dropId, router.query.dropperAddress]);
 
-  const fetchRequests = async ({ queryKey }: { queryKey: any }): Promise<Requests> => {
-    //TODO query factory
+  const fetchRequests = async ({ queryKey }: { queryKey: any }): Promise<Requests | undefined> => {
     const [, contractAddress, caller] = queryKey;
+    if (!web3.utils.isAddress(callerAccount)) {
+      return;
+    }
 
     return axios({
       method: "GET",
@@ -80,7 +87,7 @@ const ClaimView = () => {
       });
   };
 
-  const requests = useQuery(["requests", dropperAddress, account], fetchRequests);
+  const requests = useQuery(["requests", dropperAddress, callerAccount], fetchRequests);
 
   function isValidBigNumber(value: string) {
     try {
@@ -125,19 +132,30 @@ const ClaimView = () => {
   });
 
   return (
-    <Flex direction={"column"} w={"fit-content"} p={"30px"} gap={"10px"}>
-      {requests.data &&
-        requests.data.map((r, idx) => (
-          <ClaimCard
-            key={idx}
-            dropperAddress={dropperAddress}
-            request={r}
-            isClaimed={
-              claimStatuses.data?.some((s) => s.requestId === r.request_id && s.isClaimed) ?? true
-            }
-            currentBlock={currentBlock.data}
-          />
-        ))}
+    <Flex direction={"column"} p={"30px"} gap={"20px"}>
+      <Flex gap={"20px"}>
+        <input
+          style={{ width: "45ch", color: "black", paddingLeft: "5px" }}
+          type="text"
+          onChange={(e) => setCallerAccount(e.target.value)}
+          value={callerAccount}
+        />
+        <button onClick={() => setCallerAccount(account)}>from wallet</button>
+      </Flex>
+      <Flex wrap={"wrap"} w={"fit-content"} gap={"10px"}>
+        {requests.data &&
+          requests.data.map((r, idx) => (
+            <ClaimCard
+              key={idx}
+              dropperAddress={dropperAddress}
+              request={r}
+              isClaimed={
+                claimStatuses.data?.some((s) => s.requestId === r.request_id && s.isClaimed) ?? true
+              }
+              currentBlock={currentBlock.data}
+            />
+          ))}
+      </Flex>
     </Flex>
   );
 };
