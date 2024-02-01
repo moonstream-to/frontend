@@ -99,6 +99,7 @@ const SigningAccountView = ({
         blockchain={String(chainId)}
         entityTag={"SigningAccount"}
         address={signingAccount.address}
+        fontSize={"14px"}
       />
       {updatedBalance > -1 && (
         <Text fontSize={"14px"}>{`${updatedBalance} token${
@@ -106,7 +107,7 @@ const SigningAccountView = ({
         } for this pool`}</Text>
       )}
       {terminusInfo.data && terminusInfo.data.poolController === account && (
-        <>
+        <Flex gap={"5px"}>
           <button
             className={styles.button}
             onClick={() =>
@@ -133,7 +134,7 @@ const SigningAccountView = ({
           >
             {burnTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Burn"}
           </button>
-        </>
+        </Flex>
       )}
 
       {terminusInfo.data && <AuthorizationInfo controllers={terminusInfo.data} />}
