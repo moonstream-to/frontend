@@ -1,14 +1,16 @@
-import { Box, Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
-import Web3Address from "../entity/Web3Address";
-import { InfoIcon } from "@chakra-ui/icons";
 import { useContext, useEffect, useState } from "react";
-import Web3Context from "../../contexts/Web3Context/context";
-import styles from "./SigningAccountView.module.css";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
-import { Simulate } from "react-dom/test-utils";
+import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+
+import Web3Context from "../../contexts/Web3Context/context";
 import AuthorizationInfo from "../dropperV2/AutorizationInfo";
-const terminusAbi = require("../../web3/abi/MockTerminus.json");
+import Web3Address from "../entity/Web3Address";
+import styles from "./SigningAccountView.module.css";
+
+import { AbiItem } from "web3-utils";
+import importedTerminusAbi from "../../web3/abi/MockTerminus.json";
+const terminusAbi = importedTerminusAbi as unknown as AbiItem[];
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 
 const SigningAccountView = ({
   selectedSignerAccount,
@@ -65,8 +67,6 @@ const SigningAccountView = ({
       },
     },
   );
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"}>
