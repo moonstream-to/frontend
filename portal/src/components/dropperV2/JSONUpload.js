@@ -72,9 +72,9 @@ function JSONUpload({ isUploading, onDrop, isSigned, ...props }) {
               <Flex direction="column">
                 <Text>Upload a JSON file</Text>
                 <Text>
-                  {`[ { dropId, caller, requestID, blockDeadline, amount${
-                    isSigned ? ", signer, signature" : ""
-                  } }]`}
+                  {`[ { dropId, ${
+                    isSigned ? "caller" : "claimant"
+                  }, requestID, blockDeadline, amount${isSigned ? ", signer, signature" : ""} }]`}
                 </Text>
               </Flex>
             </Flex>
