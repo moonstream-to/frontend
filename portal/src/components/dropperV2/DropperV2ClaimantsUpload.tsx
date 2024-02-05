@@ -1,21 +1,22 @@
 /* eslint-disable react/no-children-prop */
 import React, { useContext, useState } from "react";
-
-import { Box, Flex, Link, Spinner, Text } from "@chakra-ui/react";
-
-import useMoonToast from "../../hooks/useMoonToast";
-import JSONUpload from "./JSONUpload";
-import http from "../../utils/httpMoonstream";
 import { useQuery } from "react-query";
+import { Box, Flex, Link, Spinner, Text } from "@chakra-ui/react";
 import axios from "axios";
-import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
-import Web3Context from "../../contexts/Web3Context/context";
-import styles from "./DropperV2.module.css";
-import SigningAccountView from "../dropper/SigningAccountView";
 
-// const dropId = "15";
-// const chain_id = 80001;
-const terminusAbi = require("../../web3/abi/MockTerminus.json");
+import http from "../../utils/httpMoonstream";
+import Web3Context from "../../contexts/Web3Context/context";
+import JSONUpload from "./JSONUpload";
+import SigningAccountView from "../dropper/SigningAccountView";
+import useMoonToast from "../../hooks/useMoonToast";
+
+import { AbiItem, hexToNumber } from "web3-utils";
+import importedTerminusAbi from "../../web3/abi/MockTerminus.json";
+const terminusAbi = importedTerminusAbi as unknown as AbiItem[];
+import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
+import importedMulticallABI from "../../web3/abi/Multicall2.json";
+const multicallABI = importedMulticallABI as unknown as AbiItem[];
+import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 
 const DropperV2ClaimantsUpload = ({
   contractAddress,
@@ -28,7 +29,13 @@ const DropperV2ClaimantsUpload = ({
 
   const [isUploading, setIsUploading] = useState(false);
   const { web3, chainId } = useContext(Web3Context);
-  const [selectedSignerAccount, setSelectedSignerAccount] = useState("");
+  const [selectedSignerAccount, setSelectedSignerAccount] = useState<
+    | {
+        subdomain: string;
+        address: string;
+      }
+    | undefined
+  >(undefined);
 
   const signingServer = useQuery(["signing_server", dropAuthorization], async () => {
     const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
@@ -45,12 +52,12 @@ const DropperV2ClaimantsUpload = ({
         },
       )
       .then((res) => {
-        // console.log(res.data);
         return res.data.resources
           .filter((r: any) => r.resource_data.type === "waggle-access")
           .map((r: any) => r.resource_data.customer_name);
       });
-    console.log(subdomains);
+
+    // const mockSubdomains = subdomains.concat([...subdomains]).concat("lorefy");
 
     const requests = subdomains.map((subdomain: string) => {
       return axios
@@ -61,53 +68,67 @@ const DropperV2ClaimantsUpload = ({
           },
         })
         .then((res) => {
-          return { subdomain: subdomain, signers: res.data.signers };
+          return res.data.signers.map((s: string) => {
+            return { subdomain: subdomain, address: s };
+          });
         });
     });
 
-    Promise.all(requests)
+    const signers = await Promise.allSettled(requests)
       .then((results) => {
-        console.log("accounts", results);
+        console.log("Promise.allSettled then", results);
+        return results
+          .filter(
+            (r): r is PromiseFulfilledResult<{ subdomain: string; address: string }[]> =>
+              r.status === "fulfilled",
+          )
+          .flatMap((result) => result.value);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Promise.allSettled catch", error);
       });
-
-    const signers = await axios
-      .get(`https://${subdomains[0]}.waggle.moonstream.org/signers/`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...authorization,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        return res.data.signers.map((s: string) => {
-          return { address: s, subdomain: subdomains[0] };
-        });
-      });
-    let terminusBalance;
-    if (signers && signers.length > 0) {
-      const terminusContract = new web3.eth.Contract(
-        terminusAbi,
-        dropAuthorization.terminusAddress,
-      ) as unknown as MockTerminus;
-      terminusBalance = await terminusContract.methods
-        .balanceOf(signers[0].address, dropAuthorization.poolId)
-        .call();
-      return { signers, terminusBalance };
+    console.log(signers);
+    if (!signers) {
+      return [];
     }
+    const MULTICALL2_CONTRACT_ADDRESS =
+      MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
+    const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
+    const terminusContract = new web3.eth.Contract(
+      terminusAbi,
+      dropAuthorization.terminusAddress,
+    ) as any as MockTerminus;
+    const multicallRequests = signers.map((signer) => {
+      return {
+        target: dropAuthorization.terminusAddress,
+        callData: terminusContract.methods
+          .balanceOf(signer.address, dropAuthorization.poolId)
+          .encodeABI(),
+      };
+    });
+    console.log(multicallRequests);
+    const multicallResults = await multicallContract.methods
+      .tryAggregate(false, multicallRequests)
+      .call();
+    return signers.map((signer, idx) => {
+      return {
+        ...signer,
+        balance: multicallResults[idx][0] ? hexToNumber(multicallResults[idx][1]) : 0,
+      };
+    });
   });
 
   const createSignerRequests = ({
     requests,
+    serverName,
     signingAccount,
   }: {
     requests: any[];
+    serverName: string;
     signingAccount: string;
   }) => {
     const ttl = prompt("TTL (days):");
-    const serverName = "fullcount";
+    // const serverName = "fullcount";
     // const serverSigningAccount = "0x790CCaB1c3d308ceA7689C9A720f220c6C44eAD7";
 
     const url = `https://${serverName}.waggle.moonstream.org/signers/${signingAccount}/dropper/sign`;
@@ -150,7 +171,7 @@ const DropperV2ClaimantsUpload = ({
           try {
             const content = JSON.parse(String(readerEvent?.target?.result));
             let response;
-            if (selectedSignerAccount !== "") {
+            if (selectedSignerAccount) {
               //SigningServer request
               const requests = content.map((item: any) => {
                 const { requestID, dropId, claimant, blockDeadline, amount } = item;
@@ -164,7 +185,8 @@ const DropperV2ClaimantsUpload = ({
               });
               response = await createSignerRequests({
                 requests,
-                signingAccount: selectedSignerAccount,
+                serverName: selectedSignerAccount.subdomain,
+                signingAccount: selectedSignerAccount.address,
               });
               toast(`${response.data.requests.length} requests signed`, "success");
               console.log(response);
@@ -220,13 +242,13 @@ const DropperV2ClaimantsUpload = ({
             checking for signing accounts
           </Text>
         )}
-        {signingServer.data && signingServer.data.signers.length === 0 && (
+        {signingServer.data && signingServer.data.length === 0 && (
           <Text fontSize={"14px"} fontWeight={"700"}>
             no signing account
           </Text>
         )}
         {signingServer.isLoading && <Spinner h={"12px"} w={"12px"} />}
-        {signingServer.data && signingServer.data.signers.length > 0 && (
+        {signingServer.data && signingServer.data.length > 0 && (
           <Flex direction={"column"} gap={"10px"}>
             <Text fontSize={"14px"} fontWeight={"700"}>
               Select an account from a waggle server that you have access to
@@ -234,36 +256,39 @@ const DropperV2ClaimantsUpload = ({
             <Flex
               alignItems={"center"}
               gap={"10px"}
-              onClick={() => setSelectedSignerAccount("")}
+              onClick={() => setSelectedSignerAccount(undefined)}
               cursor={"pointer"}
             >
               <Flex
-                w={"12px"}
-                h={"12px"}
+                w={"16px"}
+                h={"16px"}
                 borderRadius={"50%"}
-                border={"1px solid #4d4d4d"}
+                border={"2px solid white"}
                 bg={"transparent"}
                 alignItems={"center"}
                 justifyContent={"center"}
               >
                 <Box
-                  w={"5px"}
-                  h={"5px"}
+                  w={"8px"}
+                  h={"8px"}
                   borderRadius={"50%"}
-                  bg={selectedSignerAccount === "" ? "white" : "transparent"}
+                  bg={selectedSignerAccount === undefined ? "#F56646" : "transparent"}
                 />
               </Flex>
               <Text fontSize={"14px"}>no, requests are signed already</Text>
             </Flex>
-            <SigningAccountView
-              selectedSignerAccount={selectedSignerAccount}
-              setSelectedSignerAccount={setSelectedSignerAccount}
-              signingAccount={{
-                ...signingServer.data.signers[0],
-                tokensNumber: signingServer.data.terminusBalance,
-              }}
-              dropAuthorization={dropAuthorization}
-            />
+            {signingServer.data.map((s, idx) => (
+              <SigningAccountView
+                key={idx}
+                selectedSignerAccount={selectedSignerAccount}
+                setSelectedSignerAccount={setSelectedSignerAccount}
+                signingAccount={{
+                  ...s,
+                  tokensNumber: s.balance,
+                }}
+                dropAuthorization={dropAuthorization}
+              />
+            ))}
           </Flex>
         )}
       </Flex>
@@ -271,9 +296,9 @@ const DropperV2ClaimantsUpload = ({
         minW="100%"
         isUploading={isUploading}
         onDrop={onDrop}
-        isSigned={selectedSignerAccount === ""}
+        isSigned={!selectedSignerAccount}
       />
-      {selectedSignerAccount === "" && (
+      {!selectedSignerAccount && (
         <Link
           mt="5px"
           mx={"auto"}

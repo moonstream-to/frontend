@@ -18,8 +18,8 @@ const SigningAccountView = ({
   signingAccount,
   dropAuthorization,
 }: {
-  selectedSignerAccount: string;
-  setSelectedSignerAccount: (arg0: string) => void;
+  selectedSignerAccount: { subdomain: string; address: string } | undefined;
+  setSelectedSignerAccount: (arg0: { subdomain: string; address: string }) => void;
   signingAccount: {
     subdomain: string;
     address: string;
@@ -73,23 +73,25 @@ const SigningAccountView = ({
       <Flex
         alignItems={"center"}
         gap={"10px"}
-        onClick={() => setSelectedSignerAccount(signingAccount.address)}
+        onClick={() => setSelectedSignerAccount(signingAccount)}
         cursor={"pointer"}
       >
         <Flex
-          w={"12px"}
-          h={"12px"}
+          w={"16px"}
+          h={"16px"}
           borderRadius={"50%"}
-          border={"1px solid #4d4d4d"}
+          border={"2px solid white"}
           bg={"transparent"}
           alignItems={"center"}
           justifyContent={"center"}
         >
           <Box
-            w={"5px"}
-            h={"5px"}
+            w={"8px"}
+            h={"8px"}
             borderRadius={"50%"}
-            bg={selectedSignerAccount === signingAccount.address ? "white" : "transparent"}
+            bg={
+              selectedSignerAccount?.address === signingAccount.address ? "#F56646" : "transparent"
+            }
           />
         </Flex>
         <Text fontSize={"14px"}>{signingAccount.subdomain}</Text>
