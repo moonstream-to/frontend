@@ -28,7 +28,7 @@ const Web3Address = ({
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} {...props}>
       {label && <Text>{label}</Text>}
-      <Flex gap={"10px"} position={"relative"} alignItems={"center"}>
+      <Flex gap={"5px"} position={"relative"} alignItems={"center"}>
         {entity.data?.totalLength ? (
           <Text cursor={"pointer"} onClick={onCopy} title={address}>
             {entity.data?.entities[0].title}
