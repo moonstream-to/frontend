@@ -2,7 +2,7 @@
 import React, { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { Box, Flex, Link, Spinner, Text, useDisclosure } from "@chakra-ui/react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import http from "../../utils/httpMoonstream";
 import Web3Context from "../../contexts/Web3Context/context";
@@ -18,6 +18,11 @@ import importedMulticallABI from "../../web3/abi/Multicall2.json";
 const multicallABI = importedMulticallABI as unknown as AbiItem[];
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import UploadErrorView from "./UploadErrorView";
+import {
+  ClaimRequest,
+  MetaTxClaimRequest,
+  WaggleClaimRequest,
+} from "../../utils/CheckDropperRequests";
 
 const DropperV2ClaimantsUpload = ({
   contractAddress,
@@ -122,13 +127,13 @@ const DropperV2ClaimantsUpload = ({
     requests,
     serverName,
     signingAccount,
+    ttl,
   }: {
     requests: any[];
     serverName: string;
     signingAccount: string;
+    ttl: number;
   }) => {
-    const ttl = prompt("TTL (days):", "30");
-
     const url = `https://${serverName}.waggle.moonstream.org/signers/${signingAccount}/dropper/sign`;
     return http({
       method: "POST",
@@ -143,8 +148,7 @@ const DropperV2ClaimantsUpload = ({
     });
   };
 
-  const createRequests = ({ specifications }: { specifications: any[] }) => {
-    const ttl = prompt("TTL (days):");
+  const createRequests = ({ specifications, ttl }: { specifications: any[]; ttl: number }) => {
     return http({
       method: "POST",
       url: "https://engineapi.moonstream.to/metatx/requests",
@@ -154,88 +158,6 @@ const DropperV2ClaimantsUpload = ({
         specifications,
       },
     });
-  };
-
-  interface ClaimRequest {
-    requestID: string;
-    dropId: string;
-    claimant: string;
-    blockDeadline: string;
-    amount: string;
-    signer?: string;
-    signature?: string;
-  }
-
-  const checkDuplicatedRequestIDs = (content: ClaimRequest[]) => {
-    const requestIDMap: Record<string, number[]> = {};
-    content.forEach((obj, index) => {
-      if (!requestIDMap[obj.requestID]) {
-        requestIDMap[obj.requestID] = [];
-      }
-      requestIDMap[obj.requestID].push(index + 1);
-    });
-
-    let message = "";
-
-    for (const requestID in requestIDMap) {
-      if (requestIDMap[requestID].length > 1) {
-        message += `requestID ${requestID} is in the rows ${requestIDMap[requestID].join(", ")}; `;
-      }
-    }
-    return message;
-  };
-
-  const checkRequestIDs = (content: ClaimRequest[]) => {
-    const wrongRequestIDs = content
-      .filter((r) => !web3.utils.isBN(r.requestID))
-      .map((r) => r.requestID);
-    return wrongRequestIDs.length > 0 ? `Invalid requestIDS: ${wrongRequestIDs.join(", ")}` : "";
-  };
-  const checkBlockDeadlines = (content: ClaimRequest[]) => {
-    const wrongRequestIDs = content
-      .filter((r) => !web3.utils.isBN(r.blockDeadline))
-      .map((r) => r.requestID);
-    return wrongRequestIDs.length > 0
-      ? `Invalid blockdeadlines: ${wrongRequestIDs.join(", ")}`
-      : "";
-  };
-
-  const checkSigners = (content: ClaimRequest[]) => {
-    const missedSigners = content.filter((r) => !r.signer).map((r) => r.requestID);
-    return missedSigners.length > 0 ? `No signer for requests: ${missedSigners.join(", ")}` : "";
-  };
-
-  const checkSignatures = (content: ClaimRequest[]) => {
-    const missedSignatures = content.filter((r) => !r.signer).map((r) => r.requestID);
-    return missedSignatures.length > 0
-      ? `No signature for requests: ${missedSignatures.join(", ")}`
-      : "";
-  };
-
-  const checkContent = ({ content, isSigned }: { content: ClaimRequest[]; isSigned: boolean }) => {
-    const duplicatedIDs = checkDuplicatedRequestIDs(content);
-    const invalidSigners = isSigned ? checkSigners(content) : "";
-    const invalidSignatures = isSigned ? checkSignatures(content) : "";
-    const invalidIDs = checkRequestIDs(content);
-    const invalidBlockdeadlines = checkBlockDeadlines(content);
-
-    const criticalErrors =
-      duplicatedIDs +
-      "\n" +
-      invalidSigners +
-      "\n" +
-      invalidSignatures +
-      "\n" +
-      invalidIDs +
-      "\n" +
-      invalidBlockdeadlines;
-    if (criticalErrors.split("\n").length !== 0) {
-      toast(criticalErrors, "error", 5000);
-    }
-
-    if (criticalErrors) {
-      return false;
-    }
   };
 
   const displayErrorMessage = (message: string) => {
@@ -249,94 +171,132 @@ const DropperV2ClaimantsUpload = ({
     }
     const fileReader = new FileReader();
     setIsUploading(true);
-    try {
-      fileReader.readAsText(file[0]);
-      fileReader.onloadend = async (readerEvent: ProgressEvent<FileReader>) => {
-        if (readerEvent?.target?.result) {
-          try {
-            const content = JSON.parse(String(readerEvent?.target?.result));
-            let response;
-            if (selectedSignerAccount) {
-              //SigningServer request
-              // if (!checkContent({ content, isSigned: false })) {
-              //   return;
-              // }
-              const requests = content.map((item: any) => {
-                const { requestID, dropId, claimant, blockDeadline, amount } = item;
-                return {
-                  dropId,
-                  requestID,
-                  claimant,
-                  blockDeadline,
-                  amount,
-                };
-              });
-              try {
-                response = await createSignerRequests({
-                  requests,
-                  serverName: selectedSignerAccount.subdomain,
-                  signingAccount: selectedSignerAccount.address,
-                });
-                if (!response.data.metatx_registered) {
-                  console.log(response.data);
-                  displayErrorMessage(
-                    `Signed ${response.data.requests.length} requests, but registering in metatx failed`,
-                  );
-                } else {
-                  toast(`${response.data.requests.length} requests signed`, "success");
-                }
-              } catch (e: any) {
-                console.log(e);
-                displayErrorMessage(
-                  `${e.response.data ?? ""}\n${e.message ?? "Error creating request"}`,
-                );
-              }
-            } else {
-              //MetaTx request
-              // if (!checkContent({ content, isSigned: true })) {
-              //   return;
-              // }
-              const specifications = content.map((item: any) => {
-                const { dropId, requestID, caller, blockDeadline, amount, signature, signer } =
-                  item;
-                return {
-                  method: "claim",
-                  caller,
-                  request_id: requestID,
-                  parameters: { dropId, blockDeadline, amount, signature, signer },
-                };
-              });
-              try {
-                response = await createRequests({ specifications });
-                if (response.status === 200) {
-                  toast(`Successfully added ${response.data} requests`, "success");
-                }
-              } catch (e: any) {
-                console.log(e);
-                if (Array.isArray(e.response.data.detail)) {
-                  const errors = Array.from(
-                    new Set(
-                      e.response.data.detail.map(
-                        (error: any) => `${error.loc[error.loc.length - 1]} - ${error.msg}`,
-                      ),
-                    ),
-                  ).join("\n");
-                  displayErrorMessage(`${errors ?? "Error creating request"}`);
-                } else {
-                  displayErrorMessage(`${e.response.data.detail ?? "Error creating request"}`);
-                }
-              }
-            }
-          } catch (e: any) {
-            console.log(e);
-            displayErrorMessage(`Upload failed - ${e.message ?? "Error creating request"}`);
-          }
+
+    fileReader.readAsText(file[0]);
+    fileReader.onloadend = async (readerEvent: ProgressEvent<FileReader>) => {
+      if (readerEvent?.target?.result) {
+        try {
+          const content = JSON.parse(String(readerEvent?.target?.result));
+          await processContent(content);
+        } catch (e: any) {
+          console.log(e);
+          displayErrorMessage(`Upload failed - ${e.message ?? "Error creating request"}`);
+        } finally {
+          setIsUploading(false);
         }
+      } else {
         setIsUploading(false);
-      };
-    } catch (e) {
-      console.log(e);
+      }
+    };
+
+    fileReader.onerror = () => {
+      console.log("Error reading the file");
       setIsUploading(false);
+    };
+  };
+
+  const processContent = async (content: ClaimRequest[]) => {
+    if (selectedSignerAccount) {
+      await processSigningServerRequest(content as WaggleClaimRequest[]);
+    } else {
+      await processMetaTxRequest(content as MetaTxClaimRequest[]);
+    }
+  };
+
+  const getTTL = () => {
+    const ttl = Number(prompt("TTL (days):", "30"));
+    console.log(ttl, isNaN(ttl), Number(ttl));
+    if (isNaN(ttl)) {
+      displayErrorMessage("TTL should be a number");
+      return;
+    }
+    if (ttl === 0) {
+      displayErrorMessage("TTL should be positive number");
+      return;
+    }
+    return ttl;
+  };
+
+  const processSigningServerRequest = async (content: WaggleClaimRequest[]) => {
+    if (!selectedSignerAccount) {
+      return;
+    }
+    const requests = content.map((item) => {
+      const { requestID, dropId, claimant, blockDeadline, amount } = item;
+      return {
+        dropId,
+        requestID,
+        claimant,
+        blockDeadline,
+        amount,
+      };
+    });
+    const ttl = getTTL();
+    if (!ttl) {
+      return;
+    }
+    try {
+      const response = await createSignerRequests({
+        requests,
+        serverName: selectedSignerAccount.subdomain,
+        signingAccount: selectedSignerAccount.address,
+        ttl,
+      });
+      if (!response.data.metatx_registered) {
+        console.log(response.data);
+        displayErrorMessage(
+          `Signed ${response.data.requests.length} requests, but registering in metatx failed`,
+        );
+      } else {
+        toast(`${response.data.requests.length} requests signed`, "success");
+      }
+    } catch (e: unknown) {
+      console.log(e);
+      if (e instanceof AxiosError) {
+        displayErrorMessage(`${e.response?.data ?? ""}\n${e.message ?? "Error creating request"}`);
+      } else if (e instanceof Error) {
+        displayErrorMessage(e.message);
+      } else {
+        displayErrorMessage("An unexpected error occurred");
+      }
+    }
+  };
+
+  const processMetaTxRequest = async (content: MetaTxClaimRequest[]) => {
+    //MetaTx request
+    // if (!checkContent({ content, isSigned: true })) {
+    //   return;
+    // }
+    const specifications = content.map((item: any) => {
+      const { dropId, requestID, caller, blockDeadline, amount, signature, signer } = item;
+      return {
+        method: "claim",
+        caller,
+        request_id: requestID,
+        parameters: { dropId, blockDeadline, amount, signature, signer },
+      };
+    });
+    const ttl = getTTL();
+    if (!ttl) {
+      return;
+    }
+    try {
+      const response = await createRequests({ specifications, ttl });
+      toast(`Successfully added ${response.data} requests`, "success");
+    } catch (e: any) {
+      console.log(e);
+      if (Array.isArray(e.response.data.detail)) {
+        const errors = Array.from(
+          new Set(
+            e.response.data.detail.map(
+              (error: any) => `${error.loc[error.loc.length - 1]} - ${error.msg}`,
+            ),
+          ),
+        ).join("\n");
+        displayErrorMessage(`${errors ?? "Error creating request"}`);
+      } else {
+        displayErrorMessage(`${e.response.data.detail ?? "Error creating request"}`);
+      }
     }
   };
 
