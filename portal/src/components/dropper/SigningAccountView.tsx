@@ -94,52 +94,65 @@ const SigningAccountView = ({
             }
           />
         </Flex>
-        <Text fontSize={"14px"}>{signingAccount.subdomain}</Text>
+        <Web3Address
+          isTruncated
+          blockchain={String(chainId)}
+          entityTag={"SigningAccount"}
+          address={signingAccount.address}
+          fontSize={"12px"}
+          gap={"5px"}
+        />
       </Flex>
-      <Web3Address
-        isTruncated
-        blockchain={String(chainId)}
-        entityTag={"SigningAccount"}
-        address={signingAccount.address}
-        fontSize={"14px"}
-      />
-      {updatedBalance > -1 && (
-        <Text fontSize={"14px"}>{`${updatedBalance} token${
-          updatedBalance !== 1 ? "s" : ""
-        } for this pool`}</Text>
-      )}
-      {terminusInfo.data && terminusInfo.data.poolController === account && (
-        <Flex gap={"5px"}>
-          <button
-            className={styles.button}
-            onClick={() =>
-              mintTokens.mutate({
-                to: signingAccount.address,
-                poolID: Number(dropAuthorization.poolId),
-                amount: Number(1),
-              })
-            }
-            disabled={mintTokens.isLoading}
-          >
-            {mintTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Mint"}
-          </button>
-          <button
-            className={styles.button}
-            onClick={() =>
-              burnTokens.mutate({
-                from: signingAccount.address,
-                poolID: Number(dropAuthorization.poolId),
-                amount: Number(1),
-              })
-            }
-            disabled={burnTokens.isLoading}
-          >
-            {burnTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Burn"}
-          </button>
-        </Flex>
-      )}
+      <Text fontSize={"12px"}>{signingAccount.subdomain}</Text>
+      <div className={styles.statusOk}>Live</div>
 
-      {terminusInfo.data && <AuthorizationInfo controllers={terminusInfo.data} />}
+      {/*{updatedBalance > -1 && (*/}
+      {/*  <Text fontSize={"14px"}>{`${updatedBalance} token${*/}
+      {/*    updatedBalance !== 1 ? "s" : ""*/}
+      {/*  } for this pool`}</Text>*/}
+      {/*)}*/}
+      <Flex gap={"10px"} alignItems={"center"}>
+        {terminusInfo.data && terminusInfo.data.poolController === account && (
+          <Flex gap={"5px"}>
+            {updatedBalance === 0 ? (
+              <button
+                className={styles.buttonMint}
+                onClick={() =>
+                  mintTokens.mutate({
+                    to: signingAccount.address,
+                    poolID: Number(dropAuthorization.poolId),
+                    amount: Number(1),
+                  })
+                }
+                disabled={mintTokens.isLoading}
+              >
+                {mintTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Mint"}
+              </button>
+            ) : (
+              <button
+                className={styles.buttonBurn}
+                onClick={() =>
+                  burnTokens.mutate({
+                    from: signingAccount.address,
+                    poolID: Number(dropAuthorization.poolId),
+                    amount: Number(1),
+                  })
+                }
+                disabled={burnTokens.isLoading}
+              >
+                {burnTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Burn"}
+              </button>
+            )}
+          </Flex>
+        )}
+
+        {terminusInfo.data && (
+          <AuthorizationInfo
+            dropAuthorization={dropAuthorization}
+            controllers={terminusInfo.data}
+          />
+        )}
+      </Flex>
     </Flex>
   );
 };

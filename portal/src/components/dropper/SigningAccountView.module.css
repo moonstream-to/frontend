@@ -1,9 +1,27 @@
-.button {
-    border: 1px solid #4d4d4d;
-    padding: 3px 15px;
-    border-radius: 10px;
-    margin-top: auto;
-    margin-bottom: auto;
-    width: 70px;
+.buttonMint {
+    display: flex;
+    padding: 4px 12px;
+    align-items: center;
+    gap: 10px;
 
+    border-radius: 5px;
+    background: #F56646;
+}
+
+.buttonBurn {
+    display: flex;
+    padding: 4px 12px;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    background: #E85858;
+}
+
+.statusOk {
+    color: #46C370;
+    font-family: "JetBrains Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
 }
