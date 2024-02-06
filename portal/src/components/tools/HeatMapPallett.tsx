@@ -1,36 +1,15 @@
 import React, { useState } from "react";
 import { Box, Flex, Grid, Input, Text } from "@chakra-ui/react";
 
-function interpolateColor(color1: string, color2: string, factor = 0.5): string {
-  try {
-    const hexToRgb = (hex: string): number[] => hex.match(/.{2}/g)!.map((hex) => parseInt(hex, 16));
-
-    const lerp = (start: number, end: number, t: number): number =>
-      Math.round(start + t * (end - start));
-
-    const [r1, g1, b1] = hexToRgb(color1.slice(1));
-    const [r2, g2, b2] = hexToRgb(color2.slice(1));
-
-    const r = lerp(r1, r2, factor).toString(16).padStart(2, "0");
-    const g = lerp(g1, g2, factor).toString(16).padStart(2, "0");
-    const b = lerp(b1, b2, factor).toString(16).padStart(2, "0");
-
-    return `#${r}${g}${b}`;
-  } catch {
-    return "red";
-  }
-}
-
 const defaultColors = [
-  "#261c3d",
-  "#4a3572",
-  "#3d448b",
-  "#235aa6",
-  "#2a7cbe",
-  "#0ca5cf",
-  "#0ed1df",
-  "#26d6a7",
-  "#34ea74",
+  "#2f38c0",
+  "#5f64cf",
+  "#8c91dc",
+  "#d2d3f0",
+  "#ffffff",
+  "#f4d2cf",
+  "#e38b87",
+  "#d65c5a",
 ];
 
 const mockLocations = [
@@ -51,18 +30,26 @@ const HeatMap = ({
   const [showMode, setShowMode] = useState(0);
   const [colors, setColors] = useState(defaultColors);
 
-  function getColorByFactor(array: number[], factor: number): string {
-    const sortedArray = [...array].sort((a, b) => a - b);
-    const bracketIndices = [2, 5, 8, 11, 14, 17, 21, 24];
-    const brackets = bracketIndices.map((index) => sortedArray[index]);
+  function interpolateColor(color1: string, color2: string, factor = 0.5): string {
+    const result: string[] = color1
+      .slice(1)
+      .match(/.{2}/g)!
+      .map((hexNum, index) => {
+        const color1Num: number = parseInt(hexNum, 16);
+        const color2Num: number = parseInt(color2.slice(1).match(/.{2}/g)![index], 16);
+        const diff: number = color2Num - color1Num;
+        const newNum: number = color1Num + Math.round(diff * factor);
+        return newNum.toString(16).padStart(2, "0");
+      });
+    return `#${result.join("")}`;
+  }
 
-    let bracketTopIndex = brackets.findIndex((b) => b >= factor);
-    bracketTopIndex = bracketTopIndex === -1 ? 7 : bracketTopIndex;
-    const top = brackets[bracketTopIndex];
-    const bottom = bracketTopIndex === 0 ? sortedArray[0] : brackets[bracketTopIndex - 1];
-    const placeInBracket = top === bottom ? 1 : (factor - bottom) / (top - bottom);
-    const endColorIndex = bracketTopIndex + 1;
-    return interpolateColor(colors[endColorIndex - 1], colors[endColorIndex], placeInBracket);
+  function valueToColor(value: number, values: number[]): string {
+    const normValue = value / Math.max(...values);
+    const segment: number = 1 / (colors.length - 1);
+    const index: number = Math.min(Math.floor(normValue / segment), colors.length - 2);
+    const factor: number = (normValue % segment) / segment;
+    return interpolateColor(colors[index], colors[index + 1], factor);
   }
 
   const leftBorder = [6, 11, 16];
@@ -87,7 +74,7 @@ const HeatMap = ({
         alignItems="center"
         justifyContent="center"
         cursor={"pointer"}
-        bg={getColorByFactor(rates, rates[index] ?? "#111111")}
+        bg={valueToColor(rates[index], rates ?? "#111111")}
         borderRadius={"3px"}
         onClick={() => setShowMode(showMode === 2 ? 0 : showMode + 1)}
       >
