@@ -54,7 +54,7 @@ const DropperV2DropView = ({
 
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
-  const { addRecentAddress } = useRecentAddresses("dropper");
+  // const { addRecentAddress } = useRecentAddresses("dropper");
 
   useEffect(() => {
     setIsEdit(false);
@@ -64,11 +64,11 @@ const DropperV2DropView = ({
     setIsEdit(false);
   }, [dropId]);
 
-  useEffect(() => {
-    if (metadata?.image) {
-      addRecentAddress(address, { image: metadata.image });
-    }
-  }, [metadata?.image]);
+  // useEffect(() => {
+  //   if (metadata?.image) {
+  //     addRecentAddress(address, { image: metadata.image });
+  //   }
+  // }, [metadata?.image]); //causes bad state
 
   const dropState: UseQueryResult<DropState> = useQuery(
     ["dropState", address, dropId, chainId],
