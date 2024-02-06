@@ -19,6 +19,7 @@ const multicallABI = importedMulticallABI as unknown as AbiItem[];
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import UploadErrorView from "./UploadErrorView";
 import {
+  checkDropperRequests,
   ClaimRequest,
   MetaTxClaimRequest,
   WaggleClaimRequest,
@@ -205,7 +206,6 @@ const DropperV2ClaimantsUpload = ({
 
   const getTTL = () => {
     const ttl = Number(prompt("TTL (days):", "30"));
-    console.log(ttl, isNaN(ttl), Number(ttl));
     if (isNaN(ttl)) {
       displayErrorMessage("TTL should be a number");
       return;
@@ -231,6 +231,11 @@ const DropperV2ClaimantsUpload = ({
         amount,
       };
     });
+    const errorMsg = checkDropperRequests({ content: requests, isSigned: false });
+    if (errorMsg) {
+      displayErrorMessage(errorMsg);
+      return;
+    }
     const ttl = getTTL();
     if (!ttl) {
       return;
@@ -327,8 +332,22 @@ const DropperV2ClaimantsUpload = ({
         {signingServer.data && signingServer.data.length > 0 && (
           <Flex direction={"column"} gap={"10px"}>
             <Text fontSize={"14px"} fontWeight={"700"}>
-              Select an account from a waggle server that you have access to
+              Select claim signing method
             </Text>
+
+            {signingServer.data.map((s, idx) => (
+              <SigningAccountView
+                key={idx}
+                selectedSignerAccount={selectedSignerAccount}
+                setSelectedSignerAccount={setSelectedSignerAccount}
+                signingAccount={{
+                  ...s,
+                  tokensNumber: s.balance,
+                }}
+                dropAuthorization={dropAuthorization}
+              />
+            ))}
+            <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
             <Flex
               alignItems={"center"}
               gap={"10px"}
@@ -351,20 +370,11 @@ const DropperV2ClaimantsUpload = ({
                   bg={selectedSignerAccount === undefined ? "#F56646" : "transparent"}
                 />
               </Flex>
-              <Text fontSize={"14px"}>no, requests are signed already</Text>
+              <Text fontSize={"14px"}>
+                Manual signing –{" "}
+                <span style={{ color: "#BFBFBF" }}>Requests should already be signed</span>
+              </Text>
             </Flex>
-            {signingServer.data.map((s, idx) => (
-              <SigningAccountView
-                key={idx}
-                selectedSignerAccount={selectedSignerAccount}
-                setSelectedSignerAccount={setSelectedSignerAccount}
-                signingAccount={{
-                  ...s,
-                  tokensNumber: s.balance,
-                }}
-                dropAuthorization={dropAuthorization}
-              />
-            ))}
           </Flex>
         )}
       </Flex>
