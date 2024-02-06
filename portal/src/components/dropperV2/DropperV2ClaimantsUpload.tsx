@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import React, { useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { Box, Flex, Link, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 
 import http from "../../utils/httpMoonstream";
@@ -17,6 +17,7 @@ import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import importedMulticallABI from "../../web3/abi/Multicall2.json";
 const multicallABI = importedMulticallABI as unknown as AbiItem[];
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
+import UploadErrorView from "./UploadErrorView";
 
 const DropperV2ClaimantsUpload = ({
   contractAddress,
@@ -29,6 +30,8 @@ const DropperV2ClaimantsUpload = ({
 
   const [isUploading, setIsUploading] = useState(false);
   const { web3, chainId } = useContext(Web3Context);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedSignerAccount, setSelectedSignerAccount] = useState<
     | {
         subdomain: string;
@@ -235,6 +238,11 @@ const DropperV2ClaimantsUpload = ({
     }
   };
 
+  const displayErrorMessage = (message: string) => {
+    setErrorMessage(message);
+    onOpen();
+  };
+
   const onDrop = (file: any) => {
     if (!file.length) {
       return;
@@ -270,20 +278,17 @@ const DropperV2ClaimantsUpload = ({
                   signingAccount: selectedSignerAccount.address,
                 });
                 if (!response.data.metatx_registered) {
-                  toast(
-                    `FAIL - Signed ${response.data.requests.length} requests, but registering in metatx failed`,
-                    "error",
+                  console.log(response.data);
+                  displayErrorMessage(
+                    `Signed ${response.data.requests.length} requests, but registering in metatx failed`,
                   );
                 } else {
                   toast(`${response.data.requests.length} requests signed`, "success");
                 }
               } catch (e: any) {
                 console.log(e);
-                toast(
-                  `Upload failed - ${e.response.data ?? ""} - ${
-                    e.message ?? "Error creating request"
-                  }`,
-                  "error",
+                displayErrorMessage(
+                  `${e.response.data ?? ""}\n${e.message ?? "Error creating request"}`,
                 );
               }
             } else {
@@ -309,22 +314,22 @@ const DropperV2ClaimantsUpload = ({
               } catch (e: any) {
                 console.log(e);
                 if (Array.isArray(e.response.data.detail)) {
-                  const errors = e.response.data.detail
-                    .map((error: any) => `${error.loc[3]} - ${error.msg}`)
-                    .join("\n");
-                  toast(`Upload failed - \n${errors ?? "Error creating request"}`, "error", 7000);
+                  const errors = Array.from(
+                    new Set(
+                      e.response.data.detail.map(
+                        (error: any) => `${error.loc[error.loc.length - 1]} - ${error.msg}`,
+                      ),
+                    ),
+                  ).join("\n");
+                  displayErrorMessage(`${errors ?? "Error creating request"}`);
                 } else {
-                  toast(
-                    `Upload failed - \n${e.response.data.detail ?? "Error creating request"}`,
-                    "error",
-                    7000,
-                  );
+                  displayErrorMessage(`${e.response.data.detail ?? "Error creating request"}`);
                 }
               }
             }
           } catch (e: any) {
             console.log(e);
-            toast(`Upload failed - ${e.message ?? "Error creating request"}`, "error");
+            displayErrorMessage(`Upload failed - ${e.message ?? "Error creating request"}`);
           }
           setIsUploading(false);
         }
@@ -409,6 +414,7 @@ const DropperV2ClaimantsUpload = ({
         onDrop={onDrop}
         isSigned={!selectedSignerAccount}
       />
+      <UploadErrorView message={errorMessage} isOpen={isOpen} onClose={onClose} />
       {!selectedSignerAccount && (
         <Link
           mt="5px"
