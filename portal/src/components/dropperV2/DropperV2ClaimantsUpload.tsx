@@ -331,13 +331,13 @@ const DropperV2ClaimantsUpload = ({
             console.log(e);
             displayErrorMessage(`Upload failed - ${e.message ?? "Error creating request"}`);
           }
-          setIsUploading(false);
         }
+        setIsUploading(false);
       };
     } catch (e) {
       console.log(e);
+      setIsUploading(false);
     }
-    setIsUploading(false);
   };
 
   return (
