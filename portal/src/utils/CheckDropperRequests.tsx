@@ -48,7 +48,16 @@ const checkBlockDeadlines = (content: ClaimRequest[]) => {
   const wrongRequestIDs = content
     .filter((r) => !web3.utils.isBN(r.blockDeadline))
     .map((r) => r.requestID);
-  return wrongRequestIDs.length > 0 ? `Invalid blockdeadlines: ${wrongRequestIDs.join(", ")}` : "";
+  return wrongRequestIDs.length > 0
+    ? `Invalid blockdeadlines in: ${wrongRequestIDs.join(", ")}`
+    : "";
+};
+
+const checkDropIDs = (content: ClaimRequest[]) => {
+  const wrongDropIDs = content
+    .filter((r) => isNaN(Number(r.dropId)) || Number(r.dropId) <= 0)
+    .map((r) => r.requestID);
+  return wrongDropIDs.length > 0 ? `Invalid dropIDs in: ${wrongDropIDs.join(", ")}` : "";
 };
 
 const checkSigners = (content: MetaTxClaimRequest[]) => {
@@ -63,6 +72,21 @@ const checkSignatures = (content: MetaTxClaimRequest[]) => {
     : "";
 };
 
+const checkClaimants = (content: WaggleClaimRequest[]) => {
+  const wrongClaimants = content
+    .filter((r) => web3.utils.isAddress(r.claimant))
+    .map((r) => r.requestID);
+  return wrongClaimants.length > 0
+    ? `Invalid claimant addresses in: ${wrongClaimants.join(", ")}`
+    : "";
+};
+
+const checkCallers = (content: MetaTxClaimRequest[]) => {
+  const wrongCallers = content
+    .filter((r) => web3.utils.isAddress(r.caller))
+    .map((r) => r.requestID);
+  return wrongCallers.length > 0 ? `Invalid caller addresses in: ${wrongCallers.join(", ")}` : "";
+};
 export const checkDropperRequests = ({
   content,
   isSigned,
@@ -75,6 +99,10 @@ export const checkDropperRequests = ({
   const invalidSignatures = isSigned ? checkSignatures(content as MetaTxClaimRequest[]) : "";
   const invalidIDs = checkRequestIDs(content);
   const invalidBlockdeadlines = checkBlockDeadlines(content);
+  const invalidDropIDs = checkDropIDs(content);
+  const invalidCallers = isSigned
+    ? checkCallers(content as MetaTxClaimRequest[])
+    : checkClaimants(content as WaggleClaimRequest[]);
 
   const criticalErrors =
     duplicatedIDs +
@@ -85,7 +113,11 @@ export const checkDropperRequests = ({
     "\n" +
     invalidIDs +
     "\n" +
-    invalidBlockdeadlines;
+    invalidBlockdeadlines +
+    "\n" +
+    invalidDropIDs +
+    "\n" +
+    invalidCallers;
   if (criticalErrors) {
     return criticalErrors;
   }
