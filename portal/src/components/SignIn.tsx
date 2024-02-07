@@ -34,10 +34,17 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, data } = useLogin();
-  const router = useRouter();
+  const [showInvalid, setShowInvalid] = useState(false);
+
+  const isUsernameValid = !!username;
+  const isPasswordValid = !!password;
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!isUsernameValid || !isPasswordValid) {
+      setShowInvalid(true);
+      return;
+    }
     login({ username, password });
   };
 
@@ -81,7 +88,11 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                   placeholder="username"
                   name="username"
                   value={username}
-                  onChange={(event) => setUsername(event.target.value)}
+                  borderColor={!showInvalid || isUsernameValid ? "white" : "error.500"}
+                  onChange={(event) => {
+                    setShowInvalid(false);
+                    setUsername(event.target.value);
+                  }}
                   tabIndex={1}
                 />
               </FormControl>
@@ -112,7 +123,11 @@ const SignIn: React.FC<LoginModalProps> = ({ isOpen, onClose, onSignUp, onForgot
                   placeholder="password"
                   value={password}
                   name="password"
-                  onChange={(event) => setPassword(event.target.value)}
+                  borderColor={!showInvalid || isPasswordValid ? "white" : "error.500"}
+                  onChange={(event) => {
+                    setShowInvalid(false);
+                    setPassword(event.target.value);
+                  }}
                   tabIndex={2}
                 />
               </FormControl>
