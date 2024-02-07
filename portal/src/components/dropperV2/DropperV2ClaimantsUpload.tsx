@@ -24,6 +24,8 @@ import {
   MetaTxClaimRequest,
   WaggleClaimRequest,
 } from "../../utils/CheckDropperRequests";
+import RadioButtonSelected from "../icons/RadioButtonSelected";
+import RadioButtonNotSelected from "../icons/RadioButtonNotSelected";
 
 const DropperV2ClaimantsUpload = ({
   contractAddress,
@@ -87,8 +89,8 @@ const DropperV2ClaimantsUpload = ({
       .then((results) => {
         return results
           .filter(
-            (r): r is PromiseFulfilledResult<{ subdomain: string; address: string }[]> =>
-              r.status === "fulfilled",
+            (res): res is PromiseFulfilledResult<{ subdomain: string; address: string }[]> =>
+              res.status === "fulfilled",
           )
           .flatMap((result) => result.value);
       })
@@ -98,6 +100,7 @@ const DropperV2ClaimantsUpload = ({
     if (!signers) {
       return [];
     }
+    setSelectedSignerAccount(signers[0]);
     const MULTICALL2_CONTRACT_ADDRESS =
       MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
     const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
@@ -353,23 +356,13 @@ const DropperV2ClaimantsUpload = ({
               gap={"10px"}
               onClick={() => setSelectedSignerAccount(undefined)}
               cursor={"pointer"}
+              w={"fit-content"}
             >
-              <Flex
-                w={"16px"}
-                h={"16px"}
-                borderRadius={"50%"}
-                border={"2px solid white"}
-                bg={"transparent"}
-                alignItems={"center"}
-                justifyContent={"center"}
-              >
-                <Box
-                  w={"8px"}
-                  h={"8px"}
-                  borderRadius={"50%"}
-                  bg={selectedSignerAccount === undefined ? "#F56646" : "transparent"}
-                />
-              </Flex>
+              {selectedSignerAccount === undefined ? (
+                <RadioButtonSelected />
+              ) : (
+                <RadioButtonNotSelected />
+              )}
               <Text fontSize={"14px"}>
                 Manual signing –{" "}
                 <span style={{ color: "#BFBFBF" }}>Requests should already be signed</span>
