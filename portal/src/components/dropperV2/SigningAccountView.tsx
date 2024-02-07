@@ -79,6 +79,7 @@ const SigningAccountView = ({
         gap={"10px"}
         onClick={() => setSelectedSignerAccount(signingAccount)}
         cursor={"pointer"}
+        w={"156px"}
       >
         {selectedSignerAccount?.address === signingAccount.address ? (
           <RadioButtonSelected />
@@ -95,10 +96,12 @@ const SigningAccountView = ({
           gap={"5px"}
         />
       </Flex>
-      <Text fontSize={"12px"}>{signingAccount.subdomain}</Text>
+      <Text fontSize={"12px"} w={"118px"}>
+        {signingAccount.subdomain}
+      </Text>
       <div className={styles.statusLive}>Live</div>
 
-      <Flex alignItems={"center"} gap={"10px"}>
+      <Flex alignItems={"center"} gap={"10px"} w={"241px"}>
         <Flex alignItems={"center"} w={"217px"} justifyContent={"space-between"}>
           {updatedBalance > 0 && (
             <Flex gap={"4px"} alignItems={"center"}>

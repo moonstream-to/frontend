@@ -236,11 +236,11 @@ const DropperV2ClaimantsUpload = ({
         amount,
       };
     });
-    const errorMsg = checkDropperRequests({ content: requests, isSigned: false });
-    if (errorMsg) {
-      displayErrorMessage(errorMsg);
-      return;
-    }
+    // const errorMsg = checkDropperRequests({ content: requests, isSigned: false });
+    // if (errorMsg) {
+    //   displayErrorMessage(errorMsg);
+    //   return;
+    // }
     const ttl = getTTL();
     if (!ttl) {
       return;
@@ -339,6 +339,19 @@ const DropperV2ClaimantsUpload = ({
             <Text fontSize={"14px"} fontWeight={"700"}>
               Select claim signing method
             </Text>
+            <Flex
+              fontSize={"12px"}
+              color={"#848484"}
+              lineHeight={"100%"}
+              justifyContent={"space-between"}
+              mt={"20px"}
+            >
+              <Text w={"156px"}>Account address</Text>
+              <Text w={"118px"}>Server</Text>
+              <Text w={"80px"}>Server status</Text>
+              <Text w={"241px"}>Pool signing authority</Text>
+            </Flex>
+            <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
 
             {signingServer.data.map((s, idx) => (
               <SigningAccountView
