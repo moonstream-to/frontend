@@ -10,6 +10,7 @@ const Web3Address = ({
   canDelete = false,
   entityTag,
   blockchain,
+  copyByAddressClick = true,
   ...props
 }: {
   label?: string;
@@ -18,6 +19,7 @@ const Web3Address = ({
   blockchain?: string;
   isTruncated?: boolean;
   canDelete?: boolean;
+  copyByAddressClick?: boolean;
   [x: string]: any;
 }) => {
   const { onCopy, hasCopied } = useClipboard(address);
@@ -30,13 +32,17 @@ const Web3Address = ({
       {label && <Text>{label}</Text>}
       <Flex gap={"5px"} position={"relative"} alignItems={"center"}>
         {entity.data?.totalLength ? (
-          <Text cursor={"pointer"} onClick={onCopy} title={address}>
+          <Text
+            cursor={"pointer"}
+            onClick={copyByAddressClick ? onCopy : undefined}
+            title={address}
+          >
             {entity.data?.entities[0].title}
           </Text>
         ) : (
           <Text
             cursor={"pointer"}
-            onClick={onCopy}
+            onClick={copyByAddressClick ? onCopy : undefined}
             fontFamily={"JetBrains Mono, monospace"}
             title={address}
           >
