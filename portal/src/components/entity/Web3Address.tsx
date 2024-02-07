@@ -1,4 +1,4 @@
-import { Button, Flex, Spinner, Text, useClipboard } from "@chakra-ui/react";
+import { Button, Flex, Spinner, Text, useClipboard, Link } from "@chakra-ui/react";
 import { useDeleteEntity, useJournal } from "../../hooks/useJournal";
 import AddEntityButton from "./AddEntityButton";
 import { AiOutlineCopy, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
@@ -11,6 +11,7 @@ const Web3Address = ({
   entityTag,
   blockchain,
   copyByAddressClick = true,
+  href,
   ...props
 }: {
   label?: string;
@@ -20,6 +21,7 @@ const Web3Address = ({
   isTruncated?: boolean;
   canDelete?: boolean;
   copyByAddressClick?: boolean;
+  href?: string;
   [x: string]: any;
 }) => {
   const { onCopy, hasCopied } = useClipboard(address);
@@ -27,28 +29,38 @@ const Web3Address = ({
   const entity = useJournal({ tags: [`address:${address}`] });
   const deleteAddress = useDeleteEntity();
 
+  const RenderText = () => (
+    <Text
+      cursor={"pointer"}
+      onClick={copyByAddressClick && !href ? onCopy : undefined}
+      fontFamily={entity.data?.totalLength ? undefined : "JetBrains Mono, monospace"}
+      title={href ? `${window.location.origin}${href}` : address}
+    >
+      {entity.data?.totalLength
+        ? entity.data?.entities[0].title
+        : isTruncated
+        ? `${address.slice(0, 6)}...${address.slice(-4)}`
+        : address}
+    </Text>
+  );
+
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"} {...props}>
       {label && <Text>{label}</Text>}
       <Flex gap={"5px"} position={"relative"} alignItems={"center"}>
-        {entity.data?.totalLength ? (
-          <Text
-            cursor={"pointer"}
-            onClick={copyByAddressClick ? onCopy : undefined}
-            title={address}
+        {href ? (
+          <Link
+            href={href}
+            color="orange.1000"
+            _hover={{ color: "orange.400", textDecoration: "none" }}
+            target="_blank"
           >
-            {entity.data?.entities[0].title}
-          </Text>
+            <RenderText />
+          </Link>
         ) : (
-          <Text
-            cursor={"pointer"}
-            onClick={copyByAddressClick ? onCopy : undefined}
-            fontFamily={"JetBrains Mono, monospace"}
-            title={address}
-          >
-            {isTruncated ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}
-          </Text>
+          <RenderText />
         )}
+
         <AiOutlineCopy onClick={onCopy} cursor="pointer" title={"Copy address"} />
         {hasCopied && (
           <Text
