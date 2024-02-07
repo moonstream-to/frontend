@@ -11,6 +11,10 @@ import { AbiItem } from "web3-utils";
 import importedTerminusAbi from "../../web3/abi/MockTerminus.json";
 const terminusAbi = importedTerminusAbi as unknown as AbiItem[];
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
+import CheckOnShieldIcon from "../icons/CheckOnShieldIcon";
+import ErrorOnShieldIcon from "../icons/ErrorOnShieldIcon";
+import RadioButtonSelected from "../icons/RadioButtonSelected";
+import RadioButtonNotSelected from "../icons/RadioButtonNotSelected";
 
 const SigningAccountView = ({
   selectedSignerAccount,
@@ -76,26 +80,14 @@ const SigningAccountView = ({
         onClick={() => setSelectedSignerAccount(signingAccount)}
         cursor={"pointer"}
       >
-        <Flex
-          w={"16px"}
-          h={"16px"}
-          borderRadius={"50%"}
-          border={"2px solid white"}
-          bg={"transparent"}
-          alignItems={"center"}
-          justifyContent={"center"}
-        >
-          <Box
-            w={"8px"}
-            h={"8px"}
-            borderRadius={"50%"}
-            bg={
-              selectedSignerAccount?.address === signingAccount.address ? "#F56646" : "transparent"
-            }
-          />
-        </Flex>
+        {selectedSignerAccount?.address === signingAccount.address ? (
+          <RadioButtonSelected />
+        ) : (
+          <RadioButtonNotSelected />
+        )}
         <Web3Address
           isTruncated
+          copyByAddressClick={false}
           blockchain={String(chainId)}
           entityTag={"SigningAccount"}
           address={signingAccount.address}
@@ -104,48 +96,68 @@ const SigningAccountView = ({
         />
       </Flex>
       <Text fontSize={"12px"}>{signingAccount.subdomain}</Text>
-      <div className={styles.statusOk}>Live</div>
+      <div className={styles.statusLive}>Live</div>
 
-      {/*{updatedBalance > -1 && (*/}
-      {/*  <Text fontSize={"14px"}>{`${updatedBalance} token${*/}
-      {/*    updatedBalance !== 1 ? "s" : ""*/}
-      {/*  } for this pool`}</Text>*/}
-      {/*)}*/}
-      <Flex gap={"10px"} alignItems={"center"}>
-        {terminusInfo.data && terminusInfo.data.poolController === account && (
-          <Flex gap={"5px"}>
-            {updatedBalance === 0 ? (
-              <button
-                className={styles.buttonMint}
-                onClick={() =>
-                  mintTokens.mutate({
-                    to: signingAccount.address,
-                    poolID: Number(dropAuthorization.poolId),
-                    amount: Number(1),
-                  })
-                }
-                disabled={mintTokens.isLoading}
-              >
-                {mintTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Mint"}
-              </button>
-            ) : (
-              <button
-                className={styles.buttonBurn}
-                onClick={() =>
-                  burnTokens.mutate({
-                    from: signingAccount.address,
-                    poolID: Number(dropAuthorization.poolId),
-                    amount: Number(1),
-                  })
-                }
-                disabled={burnTokens.isLoading}
-              >
-                {burnTokens.isLoading ? <Spinner h={"12px"} w={"12px"} /> : "Burn"}
-              </button>
+      <Flex alignItems={"center"} gap={"10px"}>
+        <Flex alignItems={"center"} w={"217px"} justifyContent={"space-between"}>
+          {updatedBalance > 0 && (
+            <Flex gap={"4px"} alignItems={"center"}>
+              <CheckOnShieldIcon />
+              <div className={styles.authOK}>Yes</div>
+            </Flex>
+          )}
+          {updatedBalance === 0 &&
+            terminusInfo.data &&
+            terminusInfo.data.poolController === account && (
+              <Flex gap={"4px"} alignItems={"center"}>
+                <ErrorOnShieldIcon />
+                <div className={styles.authError}>No authorization badge</div>
+              </Flex>
             )}
-          </Flex>
-        )}
-
+          {updatedBalance === 0 &&
+            terminusInfo.data &&
+            terminusInfo.data.poolController !== account && (
+              <Flex gap={"4px"} alignItems={"center"}>
+                <ErrorOnShieldIcon />
+                <div className={styles.authError}>
+                  No authorization badge, contact pool controller →
+                </div>
+              </Flex>
+            )}
+          {terminusInfo.data && terminusInfo.data.poolController === account && (
+            <Flex gap={"5px"}>
+              {updatedBalance === 0 ? (
+                <button
+                  className={styles.buttonMint}
+                  onClick={() =>
+                    mintTokens.mutate({
+                      to: signingAccount.address,
+                      poolID: Number(dropAuthorization.poolId),
+                      amount: Number(5),
+                    })
+                  }
+                  disabled={mintTokens.isLoading}
+                >
+                  {mintTokens.isLoading ? <Spinner mx="auto" h={"12px"} w={"12px"} /> : "Mint"}
+                </button>
+              ) : (
+                <button
+                  className={styles.buttonBurn}
+                  onClick={() =>
+                    burnTokens.mutate({
+                      from: signingAccount.address,
+                      poolID: Number(dropAuthorization.poolId),
+                      amount: Number(updatedBalance),
+                    })
+                  }
+                  disabled={burnTokens.isLoading}
+                >
+                  {burnTokens.isLoading ? <Spinner mx="auto" h={"12px"} w={"12px"} /> : "Burn"}
+                </button>
+              )}
+            </Flex>
+          )}
+        </Flex>
         {terminusInfo.data && (
           <AuthorizationInfo
             dropAuthorization={dropAuthorization}
