@@ -41,8 +41,13 @@ const AuthorizationInfo = ({
             isTruncated
             label="Terminus badge address"
             address={dropAuthorization.terminusAddress ?? ""}
+            href={`/terminus/?contractAddress=${dropAuthorization.terminusAddress}`}
           />
-          <Web3Address label="Terminus badge pool" address={dropAuthorization.poolId ?? ""} />
+          <Web3Address
+            label="Terminus badge pool"
+            address={dropAuthorization.poolId ?? ""}
+            href={`/terminus/?contractAddress=${dropAuthorization.terminusAddress}&poolId=${dropAuthorization.poolId}`}
+          />
         </Flex>
       </PopoverContent>
     </Popover>
