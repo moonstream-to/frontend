@@ -46,12 +46,6 @@ const tools = [
     image: assets.terminus,
     href: "portal/terminus",
   },
-  {
-    name: "Garden of Forking Paths",
-    description: "Start your adventure at Garden of Forking Paths",
-    image: assets.games,
-    href: "portal/games/garden",
-  },
 ];
 
 export default function Home() {
