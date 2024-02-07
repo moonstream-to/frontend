@@ -1,4 +1,3 @@
-// In /components/icons/MyIcon.tsx
 import React from "react";
 
 const ErrorOctagonIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
