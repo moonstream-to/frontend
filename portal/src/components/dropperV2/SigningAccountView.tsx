@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 
 import Web3Context from "../../contexts/Web3Context/context";
-import AuthorizationInfo from "../dropperV2/AutorizationInfo";
+import AuthorizationInfo from "./AuthorizationInfo";
 import Web3Address from "../entity/Web3Address";
 import styles from "./SigningAccountView.module.css";
 
@@ -133,7 +133,7 @@ const SigningAccountView = ({
                     mintTokens.mutate({
                       to: signingAccount.address,
                       poolID: Number(dropAuthorization.poolId),
-                      amount: Number(5),
+                      amount: Number(1),
                     })
                   }
                   disabled={mintTokens.isLoading}
@@ -160,8 +160,12 @@ const SigningAccountView = ({
         </Flex>
         {terminusInfo.data && (
           <AuthorizationInfo
+            hasAuthority={terminusInfo.data.poolController === account}
+            isToken={updatedBalance > 0}
+            address={signingAccount.address}
             dropAuthorization={dropAuthorization}
             controllers={terminusInfo.data}
+            mintingMutation={mintTokens}
           />
         )}
       </Flex>

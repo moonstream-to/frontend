@@ -7,7 +7,7 @@ import axios, { AxiosError } from "axios";
 import http from "../../utils/httpMoonstream";
 import Web3Context from "../../contexts/Web3Context/context";
 import JSONUpload from "./JSONUpload";
-import SigningAccountView from "../dropper/SigningAccountView";
+import SigningAccountView from "./SigningAccountView";
 import useMoonToast from "../../hooks/useMoonToast";
 
 import { AbiItem, hexToNumber } from "web3-utils";

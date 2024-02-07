@@ -7,7 +7,7 @@ import { useContext } from "react";
 import http from "../../utils/httpMoonstream";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dropperAbi = require("../../web3/abi/DropperV2.json");
-import styles from "../dropper/SigningAccountView.module.css";
+import styles from "./SigningAccountView.module.css";
 
 const ClaimCard = ({
   request,
