@@ -100,7 +100,9 @@ const DropperV2ClaimantsUpload = ({
     if (!signers) {
       return [];
     }
-    setSelectedSignerAccount(signers[0]);
+    if (!selectedSignerAccount) {
+      setSelectedSignerAccount(signers[0]);
+    }
     const MULTICALL2_CONTRACT_ADDRESS =
       MULTICALL2_CONTRACT_ADDRESSES[String(chainId) as keyof typeof MULTICALL2_CONTRACT_ADDRESSES];
     const multicallContract = new web3.eth.Contract(multicallABI, MULTICALL2_CONTRACT_ADDRESS);
