@@ -45,12 +45,10 @@ export const checkRequestIDs = (content: ClaimRequest[]) => {
   return wrongRequestIDs.length > 0 ? `Invalid requestIDS: ${wrongRequestIDs.join(", ")}` : "";
 };
 const checkBlockDeadlines = (content: ClaimRequest[]) => {
-  const wrongRequestIDs = content
-    .filter((r) => !web3.utils.isBN(r.blockDeadline))
+  const blockDeadlines = content
+    .filter((r) => !isNaN(Number(r.blockDeadline)))
     .map((r) => r.requestID);
-  return wrongRequestIDs.length > 0
-    ? `Invalid blockdeadlines in: ${wrongRequestIDs.join(", ")}`
-    : "";
+  return blockDeadlines.length > 0 ? `Invalid blockdeadlines in: ${blockDeadlines.join(", ")}` : "";
 };
 
 const checkDropIDs = (content: ClaimRequest[]) => {
@@ -98,7 +96,7 @@ export const checkDropperRequests = ({
   const invalidSigners = isSigned ? checkSigners(content as MetaTxClaimRequest[]) : "";
   const invalidSignatures = isSigned ? checkSignatures(content as MetaTxClaimRequest[]) : "";
   const invalidIDs = checkRequestIDs(content);
-  const invalidBlockdeadlines = checkBlockDeadlines(content);
+  const invalidBlockDeadlines = checkBlockDeadlines(content);
   const invalidDropIDs = checkDropIDs(content);
   const invalidCallers = isSigned
     ? checkCallers(content as MetaTxClaimRequest[])
@@ -113,7 +111,7 @@ export const checkDropperRequests = ({
     "\n" +
     invalidIDs +
     "\n" +
-    invalidBlockdeadlines +
+    invalidBlockDeadlines +
     "\n" +
     invalidDropIDs +
     "\n" +
