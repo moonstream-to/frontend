@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop */
 import React, { useContext, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, UseQueryResult } from "react-query";
 import { Box, Flex, Link, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
 
@@ -26,6 +26,7 @@ import {
 } from "../../utils/CheckDropperRequests";
 import RadioButtonSelected from "../icons/RadioButtonSelected";
 import RadioButtonNotSelected from "../icons/RadioButtonNotSelected";
+import UnavailableWaggleServer from "./UnavailableWaggleServer";
 
 const DropperV2ClaimantsUpload = ({
   contractAddress,
@@ -68,8 +69,8 @@ const DropperV2ClaimantsUpload = ({
           .map((r: any) => r.resource_data.customer_name);
       });
 
-    // const mockSubdomains = subdomains.concat([...subdomains]).concat("lorefy");
-
+    // const mockSubdomains = subdomains.concat("lorefy");
+    // const mockSubdomains = ["lorefy"];
     const requests = subdomains.map((subdomain: string) => {
       return axios
         .get(`https://${subdomain}.waggle.moonstream.org/signers/`, {
@@ -97,8 +98,13 @@ const DropperV2ClaimantsUpload = ({
       .catch((error) => {
         console.error("Promise.allSettled catch", error);
       });
+    const unavailableServers = subdomains.filter(
+      (subdomain: string) =>
+        !signers ||
+        !signers.some((signer: { subdomain: string }) => signer.subdomain === subdomain),
+    );
     if (!signers) {
-      return [];
+      return { signingAccounts: [], unavailableServers };
     }
     if (!selectedSignerAccount) {
       setSelectedSignerAccount(signers[0]);
@@ -121,12 +127,14 @@ const DropperV2ClaimantsUpload = ({
     const multicallResults = await multicallContract.methods
       .tryAggregate(false, multicallRequests)
       .call();
-    return signers.map((signer, idx) => {
+
+    const signingAccounts = signers.map((signer, idx) => {
       return {
         ...signer,
         balance: multicallResults[idx][0] ? hexToNumber(multicallResults[idx][1]) : 0,
       };
     });
+    return { signingAccounts, unavailableServers };
   });
 
   const createSignerRequests = ({
@@ -328,63 +336,73 @@ const DropperV2ClaimantsUpload = ({
             checking for signing accounts
           </Text>
         )}
-        {signingServer.data && signingServer.data.length === 0 && (
-          <Text fontSize={"14px"} fontWeight={"700"}>
-            no signing account
-          </Text>
-        )}
-        {signingServer.isLoading && <Spinner h={"12px"} w={"12px"} />}
-        {signingServer.data && signingServer.data.length > 0 && (
-          <Flex direction={"column"} gap={"10px"}>
+        {signingServer.data &&
+          signingServer.data.signingAccounts.length +
+            signingServer.data.unavailableServers.length ===
+            0 && (
             <Text fontSize={"14px"} fontWeight={"700"}>
-              Select claim signing method
+              no signing account
             </Text>
-            <Flex
-              fontSize={"12px"}
-              color={"#848484"}
-              lineHeight={"100%"}
-              justifyContent={"space-between"}
-              mt={"20px"}
-            >
-              <Text w={"156px"}>Account address</Text>
-              <Text w={"118px"}>Server</Text>
-              <Text w={"80px"}>Server status</Text>
-              <Text w={"241px"}>Pool signing authority</Text>
-            </Flex>
-            <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
-
-            {signingServer.data.map((s, idx) => (
-              <SigningAccountView
-                key={idx}
-                selectedSignerAccount={selectedSignerAccount}
-                setSelectedSignerAccount={setSelectedSignerAccount}
-                signingAccount={{
-                  ...s,
-                  tokensNumber: s.balance,
-                }}
-                dropAuthorization={dropAuthorization}
-              />
-            ))}
-            <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
-            <Flex
-              alignItems={"center"}
-              gap={"10px"}
-              onClick={() => setSelectedSignerAccount(undefined)}
-              cursor={"pointer"}
-              w={"fit-content"}
-            >
-              {selectedSignerAccount === undefined ? (
-                <RadioButtonSelected />
-              ) : (
-                <RadioButtonNotSelected />
-              )}
-              <Text fontSize={"14px"}>
-                Manual signing –{" "}
-                <span style={{ color: "#BFBFBF" }}>Requests should already be signed</span>
+          )}
+        {signingServer.isLoading && <Spinner h={"12px"} w={"12px"} />}
+        {signingServer.data &&
+          signingServer.data.signingAccounts.length + signingServer.data.unavailableServers.length >
+            0 && (
+            <Flex direction={"column"} gap={"10px"}>
+              <Text fontSize={"14px"} fontWeight={"700"}>
+                Select claim signing method
               </Text>
+              <Flex
+                fontSize={"12px"}
+                color={"#848484"}
+                lineHeight={"100%"}
+                justifyContent={"space-between"}
+                mt={"20px"}
+              >
+                <Text w={"156px"}>Account address</Text>
+                <Text w={"118px"}>Server</Text>
+                <Text w={"80px"}>Server status</Text>
+                <Text w={"241px"}>Pool signing authority</Text>
+              </Flex>
+              <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
+
+              {signingServer.data.signingAccounts.map(
+                (s, idx) =>
+                  s.balance !== undefined &&
+                  s.address !== undefined && (
+                    <SigningAccountView
+                      key={idx}
+                      selectedSignerAccount={selectedSignerAccount}
+                      setSelectedSignerAccount={setSelectedSignerAccount}
+                      signingAccount={s}
+                      dropAuthorization={dropAuthorization}
+                    />
+                  ),
+              )}
+              {signingServer.data.unavailableServers.map((s: string, idx: number) => (
+                <UnavailableWaggleServer subdomain={s} key={idx} />
+              ))}
+
+              <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
+              <Flex
+                alignItems={"center"}
+                gap={"10px"}
+                onClick={() => setSelectedSignerAccount(undefined)}
+                cursor={"pointer"}
+                w={"fit-content"}
+              >
+                {selectedSignerAccount === undefined ? (
+                  <RadioButtonSelected />
+                ) : (
+                  <RadioButtonNotSelected />
+                )}
+                <Text fontSize={"14px"}>
+                  Manual signing –{" "}
+                  <span style={{ color: "#BFBFBF" }}>Requests should already be signed</span>
+                </Text>
+              </Flex>
             </Flex>
-          </Flex>
-        )}
+          )}
       </Flex>
       <JSONUpload
         minW="100%"

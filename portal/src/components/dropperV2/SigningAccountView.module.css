@@ -42,6 +42,15 @@
     width: 80px;
 }
 
+.statusUnavailable {
+    color: #EE8686;
+    font-family: "JetBrains Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 .authError {
     color: #EE8686;
     font-family: "Space Grotesk";

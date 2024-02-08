@@ -9,7 +9,7 @@ const RadioButtonNotSelected: React.FC<React.SVGProps<SVGSVGElement>> = (props) 
     fill="none"
     {...props}
   >
-    <circle cx="8" cy="8.5" r="5.5" stroke="white" />
+    <circle cx="8" cy="8.5" r="5.5" stroke={props.color ?? "white"} />
   </svg>
 );
 

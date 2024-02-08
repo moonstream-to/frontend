@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 
 import Web3Context from "../../contexts/Web3Context/context";
 import AuthorizationInfo from "./AuthorizationInfo";
@@ -27,7 +27,7 @@ const SigningAccountView = ({
   signingAccount: {
     subdomain: string;
     address: string;
-    tokensNumber: number;
+    balance: number;
   };
   dropAuthorization: { poolId: string; terminusAddress: string };
 }) => {
@@ -37,8 +37,8 @@ const SigningAccountView = ({
   const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
   terminusFacet.options.address = dropAuthorization.terminusAddress;
   useEffect(() => {
-    setUpdatedBalance(Number(signingAccount.tokensNumber));
-  }, [signingAccount.tokensNumber]);
+    setUpdatedBalance(Number(signingAccount.balance));
+  }, [signingAccount.balance]);
 
   const terminusInfo = useQuery(["terminusPoolState", dropAuthorization], async () => {
     const contractController = await terminusFacet.methods.terminusController().call();
