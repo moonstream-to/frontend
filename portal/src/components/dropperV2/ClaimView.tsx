@@ -46,9 +46,7 @@ const ClaimView = () => {
   });
 
   useEffect(() => {
-    // if (callerAccount === "") {
     setCallerAccount(account);
-    // }
   }, [account]);
 
   useEffect(() => {

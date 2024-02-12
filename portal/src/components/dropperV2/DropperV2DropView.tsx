@@ -50,7 +50,6 @@ const DropperV2DropView = ({
 
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
-  // const { addRecentAddress } = useRecentAddresses("dropper");
 
   useEffect(() => {
     setIsEdit(false);

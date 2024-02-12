@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 import Layout from "../../src/components/layout";
 import SigningServersInfo from "../../src/components/signingServers/SigningServersInfo";
-// import NodeBalancerInfo from "../../src/components/nodebalancer/NodeBalancerInfo";
 
 const Nodebalancer = () => {
   useEffect(() => {
