@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useMutation, useQuery, UseQueryResult } from "react-query";
-import { Box, Button, Spinner } from "@chakra-ui/react";
+import { Box, Button, Spinner, Text } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
@@ -12,7 +12,6 @@ import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
 import { PORTAL_PATH } from "../../constants";
 import DropHeader from "../dropper/DropHeader";
-import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
 import DropperV2EditDrop from "./DropperV2EditDrop";
 import DropperV2ClaimsView from "./DropperV2ClaimsView";
@@ -51,7 +50,6 @@ const DropperV2DropView = ({
 
   const headerMeta = ["name", "description", "image", "attributes"];
   const web3ctx = useContext(Web3Context);
-  const { addRecentAddress } = useRecentAddresses("dropper");
 
   useEffect(() => {
     setIsEdit(false);
@@ -60,12 +58,6 @@ const DropperV2DropView = ({
   useEffect(() => {
     setIsEdit(false);
   }, [dropId]);
-
-  useEffect(() => {
-    if (metadata?.image) {
-      addRecentAddress(address, { image: metadata.image });
-    }
-  }, [metadata?.image]);
 
   const dropState: UseQueryResult<DropState> = useQuery(
     ["dropState", address, dropId, chainId],
@@ -200,7 +192,14 @@ const DropperV2DropView = ({
               </Flex>
             </>
           )}
-          <DropperV2ClaimsView address={address} isContractRegistered={isContractRegistered} />
+
+          {dropState.data && (
+            <DropperV2ClaimsView
+              address={address}
+              dropAuthorization={dropState.data?.dropAuthorization}
+              isContractRegistered={isContractRegistered}
+            />
+          )}
 
           {dropState.isLoading && (
             <Flex alignItems="center" justifyContent="center" h="100%">

@@ -11,18 +11,22 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import Web3Context from "../../contexts/Web3Context/context";
 import useMoonToast from "../../hooks/useMoonToast";
 import http from "../../utils/httpMoonstream";
 import DropperV2ClaimantsUpload from "./DropperV2ClaimantsUpload";
+import axios from "axios";
+import RouterLink from "next/link";
 
 const DropperV2ClaimsView = ({
   address,
   isContractRegistered,
+  dropAuthorization,
 }: {
   address: string;
   isContractRegistered: boolean;
+  dropAuthorization: { poolId: string; terminusAddress: string };
 }) => {
   const [searchAddress, setSearchAddress] = useState("");
   const [requestsFound, setRequestsFound] = useState([]);
@@ -69,6 +73,8 @@ const DropperV2ClaimsView = ({
               amount: r.parameters.amount,
               expiresAt,
               blockDeadline: r.parameters.blockDeadline,
+              signer: r.parameters.signer,
+              signature: "0x" + r.parameters.signature,
             };
           }),
         );
@@ -165,16 +171,11 @@ const DropperV2ClaimsView = ({
           ))}
         </Grid>
       )}
-      <DropperV2ClaimantsUpload contractAddress={address} />
-      <Link
-        mt="-10px"
-        textDecoration="underline"
-        placeSelf="start"
-        href="https://github.com/moonstream-to/waggle"
-        isExternal
-      >
-        Tool you can create this file with
-      </Link>
+      <DropperV2ClaimantsUpload dropAuthorization={dropAuthorization} contractAddress={address} />
+
+      {/*<RouterLink href={`/portal/dropperV2/claim/?dropId=${15}&dropperAddress=${address}`}>*/}
+      {/*  check claims*/}
+      {/*</RouterLink>*/}
     </Flex>
   );
 };

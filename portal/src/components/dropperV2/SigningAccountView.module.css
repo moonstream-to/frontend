@@ -1,0 +1,71 @@
+.buttonMint {
+    display: flex;
+    padding: 4px 12px;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #FFF;
+    font-family: "Space Grotesk";
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%; /* 12px */
+    border-radius: 5px;
+    background: #F56646;
+    min-width: 50px;
+    min-height: 20px;
+}
+
+.buttonBurn {
+    display: flex;
+    padding: 4px 12px;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    background: #E85858;
+    min-width: 51px;
+    min-height: 20px;
+    line-height: 100%;
+    color: #FFF;
+    font-family: "Space Grotesk";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.statusLive {
+    color: #46C370;
+    font-family: "JetBrains Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    width: 80px;
+}
+
+.statusUnavailable {
+    color: #EE8686;
+    font-family: "JetBrains Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.authError {
+    color: #EE8686;
+    font-family: "Space Grotesk";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+
+.authOK {
+    color: #FFF;
+    font-family: "Space Grotesk";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
