@@ -12,15 +12,11 @@ import Web3Context from "../../contexts/Web3Context/context";
 import queryCacheProps from "../../hooks/hookCommon";
 import { PORTAL_PATH } from "../../constants";
 import DropHeader from "../dropper/DropHeader";
-import useRecentAddresses from "../../hooks/useRecentAddresses";
 import DropV2Data from "./DropV2Data";
 import DropperV2EditDrop from "./DropperV2EditDrop";
 import DropperV2ClaimsView from "./DropperV2ClaimsView";
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import useMoonToast from "../../hooks/useMoonToast";
-import axios from "axios";
-import styles from "./DropperV2.module.css";
-import Link from "next/link";
 
 const dropperAbi = require("../../web3/abi/DropperV2.json");
 const terminusAbi = require("../../web3/abi/MockTerminus.json");
@@ -64,12 +60,6 @@ const DropperV2DropView = ({
     setIsEdit(false);
   }, [dropId]);
 
-  // useEffect(() => {
-  //   if (metadata?.image) {
-  //     addRecentAddress(address, { image: metadata.image });
-  //   }
-  // }, [metadata?.image]); //causes bad state
-
   const dropState: UseQueryResult<DropState> = useQuery(
     ["dropState", address, dropId, chainId],
     async () => {
@@ -101,35 +91,6 @@ const DropperV2DropView = ({
       enabled: Number(dropId) > 0 && !!address,
     },
   );
-
-  const signingServer = useQuery(["signing_server", address, dropId, chainId], async () => {
-    if (!dropState.data) {
-      return;
-    }
-    const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
-    const authorization = token ? { Authorization: `Bearer ${token}` } : {};
-    const servers = await axios
-      .get("https://fullcount.waggle.moonstream.org/signers/", {
-        headers: {
-          "Content-Type": "application/json",
-          ...authorization,
-        },
-      })
-      .then((res) => {
-        return res.data.signers;
-      });
-    let terminusBalance;
-    if (servers && servers.length > 0) {
-      const terminusContract = new web3.eth.Contract(
-        terminusAbi,
-        dropState.data.dropAuthorization.terminusAddress,
-      ) as unknown as MockTerminus;
-      terminusBalance = await terminusContract.methods
-        .balanceOf(servers[0], dropState.data.dropAuthorization.poolId)
-        .call();
-      return { servers, terminusBalance };
-    }
-  });
 
   const toast = useMoonToast();
   const approveForPool = useMutation(
