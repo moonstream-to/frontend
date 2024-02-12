@@ -92,7 +92,7 @@ const AuthorizationInfo = ({
                 </>
               ) : (
                 <div className={styles.footerText}>
-                  Contact contract or pool controller to get the terminus badge and authorize the
+                  Contact contract or pool controller to get a terminus badge and authorize the
                   Signing account
                 </div>
               )}
