@@ -52,10 +52,6 @@ const DropperV2ClaimantsUpload = ({
 
   const [manualSigningSelected, setManualSigningSelected] = useState(false);
 
-  useEffect(() => {
-    console.log(selectedSignerAccount);
-  }, [selectedSignerAccount]);
-
   const signingServer = useQuery(["signing_server", dropAuthorization], async () => {
     const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
     const authorization = token ? { Authorization: `Bearer ${token}` } : {};
