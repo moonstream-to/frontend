@@ -16,7 +16,7 @@ const terminusAbi = importedTerminusAbi as unknown as AbiItem[];
 import { MockTerminus } from "../../web3/contracts/types/MockTerminus";
 import importedMulticallABI from "../../web3/abi/Multicall2.json";
 const multicallABI = importedMulticallABI as unknown as AbiItem[];
-import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
+import { DISCORD_LINK, MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import UploadErrorView from "./UploadErrorView";
 import styles from "./DropperV2ClaimantsUpload.module.css";
 import {
@@ -49,6 +49,8 @@ const DropperV2ClaimantsUpload = ({
       }
     | undefined
   >(undefined);
+
+  const [manualSigningSelected, setManualSigningSelected] = useState(false);
 
   useEffect(() => {
     console.log(selectedSignerAccount);
@@ -113,7 +115,7 @@ const DropperV2ClaimantsUpload = ({
     if (!signers) {
       return { signingAccounts: [], unavailableServers };
     }
-    if (!selectedSignerAccount) {
+    if (!selectedSignerAccount && !manualSigningSelected) {
       setSelectedSignerAccount(signers[0]);
     }
     const MULTICALL2_CONTRACT_ADDRESS =
@@ -274,7 +276,7 @@ const DropperV2ClaimantsUpload = ({
       if (!response.data.metatx_registered) {
         console.log(response.data);
         displayErrorMessage(
-          `Signed ${response.data.requests.length} requests, but registering in metatx failed`,
+          `${response.data.requests.length} requests signed, but registering in metatx failed`,
         );
       } else {
         toast(`${response.data.requests.length} requests signed`, "success");
@@ -378,7 +380,12 @@ const DropperV2ClaimantsUpload = ({
                     Contact us to set up a Waggle server and enable drop claims sign off
                     functionality
                   </Text>
-                  <button className={styles.contactUsButton}>Contact us</button>
+                  <button
+                    className={styles.contactUsButton}
+                    onClick={() => window.open(DISCORD_LINK, "_blank")}
+                  >
+                    Contact us
+                  </button>
                 </Flex>
               )}
             </Flex>
@@ -423,7 +430,10 @@ const DropperV2ClaimantsUpload = ({
             <Flex
               alignItems={"center"}
               gap={"10px"}
-              onClick={() => setSelectedSignerAccount(undefined)}
+              onClick={() => {
+                setSelectedSignerAccount(undefined);
+                setManualSigningSelected(true);
+              }}
               cursor={"pointer"}
               w={"fit-content"}
             >
@@ -448,17 +458,20 @@ const DropperV2ClaimantsUpload = ({
       />
       <UploadErrorView message={errorMessage} isOpen={isOpen} onClose={onClose} />
       {!selectedSignerAccount && (
-        <Link
-          mt="5px"
-          mx={"auto"}
-          textDecoration="underline"
-          placeSelf="start"
-          href="https://github.com/moonstream-to/waggle"
-          isExternal
-          color={"#DDD"}
-        >
-          Tool you can create this file with
-        </Link>
+        <Flex gap={"5px"} alignItems={"end"} mx={"auto"}>
+          <Text>Use</Text>
+          <Link
+            mt="5px"
+            textDecoration="none"
+            placeSelf="start"
+            href="https://github.com/moonstream-to/waggle"
+            isExternal
+            color={"#f88f78"}
+          >
+            Waggle CLI toole
+          </Link>
+          <Text>to prepare the file</Text>
+        </Flex>
       )}
     </Flex>
   );
