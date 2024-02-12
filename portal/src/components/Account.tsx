@@ -72,6 +72,9 @@ const Account = ({ ...props }: { [x: string]: any }) => {
             <MenuItem p="0px" mb="10px">
               <RouterLink href="/nodebalancer">NodeBalancer info</RouterLink>
             </MenuItem>
+            <MenuItem p="0px" mb="10px">
+              <RouterLink href="/signing">Signing servers info</RouterLink>
+            </MenuItem>
             <Divider mb="10px" />
             <MenuItem p="0px" onClick={() => logout()}>
               Log out

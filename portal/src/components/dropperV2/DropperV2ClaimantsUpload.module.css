@@ -1,0 +1,15 @@
+.contactUsButton {
+    display: flex;
+    padding: 4px 6px;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    border-radius: 5px;
+    background: #F56646;
+    color: #FFF;
+    font-family: "Space Grotesk";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%; /* 12px */
+}

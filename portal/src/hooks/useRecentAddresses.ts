@@ -16,7 +16,6 @@ const useRecentAddresses = (type: string): UseRecentAddressesReturnType => {
 
   useEffect(() => {
     const updateAddresses = () => {
-      console.log("qq");
       const storedAddresses = localStorage.getItem(`${type}-recentAddresses`);
       try {
         setRecentAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);

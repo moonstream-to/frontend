@@ -1,0 +1,6 @@
+.actionText {
+    display: flex;
+    align-items: flex-end;
+    color: #F56646;
+    cursor: pointer;
+}

@@ -1,0 +1,61 @@
+.container {
+    display: flex;
+    width: 500px;
+    padding: 30px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+
+    border-radius: 20px;
+    border: 1px solid #FFF;
+    background: #1A1D22;
+}
+
+.title {
+    color: #EE8686;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%; /* 24px */
+    flex-grow: 2;
+    margin-right: 10px;
+}
+
+.titleContainer {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1 0 0;
+}
+
+.message {
+    color: #FFF;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 22.4px */
+    white-space: pre-line;
+
+}
+
+.button {
+    display: flex;
+    padding: 6px 40px;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+
+    border-radius: 10px;
+    background: #4D4D4D;
+    color: #FFF;
+    text-align: center;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
