@@ -218,7 +218,11 @@ const DropperV2ClaimantsUpload = ({
   };
 
   const getTTL = () => {
-    const ttl = Number(prompt("TTL (days):", "30"));
+    const input = prompt("TTL (days):", "30");
+    if (!input) {
+      return;
+    }
+    const ttl = Number(input);
     if (isNaN(ttl)) {
       displayErrorMessage("TTL should be a number");
       return;
@@ -244,11 +248,11 @@ const DropperV2ClaimantsUpload = ({
         amount,
       };
     });
-    // const errorMsg = checkDropperRequests({ content: requests, isSigned: false });
-    // if (errorMsg) {
-    //   displayErrorMessage(errorMsg);
-    //   return;
-    // }
+    const errorMsg = checkDropperRequests({ content: requests, isSigned: false });
+    if (errorMsg) {
+      displayErrorMessage(errorMsg);
+      return;
+    }
     const ttl = getTTL();
     if (!ttl) {
       return;
@@ -282,9 +286,6 @@ const DropperV2ClaimantsUpload = ({
 
   const processMetaTxRequest = async (content: MetaTxClaimRequest[]) => {
     //MetaTx request
-    // if (!checkContent({ content, isSigned: true })) {
-    //   return;
-    // }
     const specifications = content.map((item: any) => {
       const { dropId, requestID, caller, blockDeadline, amount, signature, signer } = item;
       return {
@@ -294,6 +295,11 @@ const DropperV2ClaimantsUpload = ({
         parameters: { dropId, blockDeadline, amount, signature, signer },
       };
     });
+    // const errorMsg = checkDropperRequests({ content, isSigned: true });
+    // if (errorMsg) {
+    //   displayErrorMessage(errorMsg);
+    //   return;
+    // }
     const ttl = getTTL();
     if (!ttl) {
       return;
