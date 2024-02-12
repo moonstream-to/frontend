@@ -1,5 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery, UseQueryResult } from "react-query";
 import { Box, Flex, Link, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
@@ -18,6 +18,7 @@ import importedMulticallABI from "../../web3/abi/Multicall2.json";
 const multicallABI = importedMulticallABI as unknown as AbiItem[];
 import { MULTICALL2_CONTRACT_ADDRESSES } from "../../constants";
 import UploadErrorView from "./UploadErrorView";
+import styles from "./DropperV2ClaimantsUpload.module.css";
 import {
   checkDropperRequests,
   ClaimRequest,
@@ -49,10 +50,16 @@ const DropperV2ClaimantsUpload = ({
     | undefined
   >(undefined);
 
+  useEffect(() => {
+    console.log(selectedSignerAccount);
+  }, [selectedSignerAccount]);
+
   const signingServer = useQuery(["signing_server", dropAuthorization], async () => {
     const token = localStorage.getItem("MOONSTREAM_ACCESS_TOKEN");
     const authorization = token ? { Authorization: `Bearer ${token}` } : {};
     const moonstreamApplicationId = process.env.NEXT_PUBLIC_MOONSTREAM_APPLICATION_ID;
+    // return { signingAccounts: [], unavailableServers: [] };
+
     const subdomains = await axios
       .get(
         `https://auth.bugout.dev/resources?application_id=${moonstreamApplicationId}&type=waggle-access`,
@@ -342,73 +349,96 @@ const DropperV2ClaimantsUpload = ({
             checking for signing accounts
           </Text>
         )}
-        {signingServer.data &&
-          signingServer.data.signingAccounts.length +
-            signingServer.data.unavailableServers.length ===
-            0 && (
-            <Text fontSize={"14px"} fontWeight={"700"}>
-              no signing account
-            </Text>
-          )}
         {signingServer.isLoading && <Spinner h={"12px"} w={"12px"} />}
-        {signingServer.data &&
-          signingServer.data.signingAccounts.length + signingServer.data.unavailableServers.length >
-            0 && (
+        {signingServer.data && (
+          <Flex direction={"column"} gap={"20px"}>
+            <Text fontSize={"14px"} fontWeight={"700"}>
+              Select claim signing method
+            </Text>
             <Flex direction={"column"} gap={"10px"}>
-              <Text fontSize={"14px"} fontWeight={"700"}>
-                Select claim signing method
+              <Text fontSize={"12px"} fontWeight={"700"}>
+                Signing via Waggle server
               </Text>
-              <Flex
-                fontSize={"12px"}
-                color={"#848484"}
-                lineHeight={"100%"}
-                justifyContent={"space-between"}
-                mt={"20px"}
-              >
-                <Text w={"156px"}>Account address</Text>
-                <Text w={"118px"}>Server</Text>
-                <Text w={"80px"}>Server status</Text>
-                <Text w={"241px"}>Pool signing authority</Text>
-              </Flex>
-              <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
-
-              {signingServer.data.signingAccounts.map(
-                (s, idx) =>
-                  s.balance !== undefined &&
-                  s.address !== undefined && (
-                    <SigningAccountView
-                      key={idx}
-                      selectedSignerAccount={selectedSignerAccount}
-                      setSelectedSignerAccount={setSelectedSignerAccount}
-                      signingAccount={s}
-                      dropAuthorization={dropAuthorization}
-                    />
-                  ),
-              )}
-              {signingServer.data.unavailableServers.map((s: string, idx: number) => (
-                <UnavailableWaggleServer subdomain={s} key={idx} />
-              ))}
-
-              <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
-              <Flex
-                alignItems={"center"}
-                gap={"10px"}
-                onClick={() => setSelectedSignerAccount(undefined)}
-                cursor={"pointer"}
-                w={"fit-content"}
-              >
-                {selectedSignerAccount === undefined ? (
-                  <RadioButtonSelected />
-                ) : (
-                  <RadioButtonNotSelected />
-                )}
-                <Text fontSize={"14px"}>
-                  Manual signing –{" "}
-                  <span style={{ color: "#BFBFBF" }}>Requests should already be signed</span>
+              {signingServer.data.signingAccounts.length +
+                signingServer.data.unavailableServers.length >
+              0 ? (
+                <Text color={"#BFBFBF"} fontSize={"12px"} maxW={"360px"}>
+                  Uploaded drop claims will be signed off by the Waggle server. Select an account
+                  you have access to below
                 </Text>
-              </Flex>
+              ) : (
+                <Flex
+                  padding={"10px"}
+                  borderRadius={"5px"}
+                  bg={"#101114"}
+                  gap={"10px"}
+                  direction={"column"}
+                >
+                  <Text fontSize={"12px"} fontWeight={"400"} color={"#BFBFBF"}>
+                    Contact us to set up a Waggle server and enable drop claims sign off
+                    functionality
+                  </Text>
+                  <button className={styles.contactUsButton}>Contact us</button>
+                </Flex>
+              )}
             </Flex>
-          )}
+            {signingServer.data.signingAccounts.length +
+              signingServer.data.unavailableServers.length >
+              0 && (
+              <>
+                <Flex
+                  fontSize={"12px"}
+                  color={"#848484"}
+                  lineHeight={"100%"}
+                  justifyContent={"space-between"}
+                  mt={"20px"}
+                >
+                  <Text w={"156px"}>Account address</Text>
+                  <Text w={"118px"}>Server</Text>
+                  <Text w={"80px"}>Server status</Text>
+                  <Text w={"241px"}>Pool signing authority</Text>
+                </Flex>
+                <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
+
+                {signingServer.data.signingAccounts.map(
+                  (s, idx) =>
+                    s.balance !== undefined &&
+                    s.address !== undefined && (
+                      <SigningAccountView
+                        key={idx}
+                        selectedSignerAccount={selectedSignerAccount}
+                        setSelectedSignerAccount={setSelectedSignerAccount}
+                        signingAccount={s}
+                        dropAuthorization={dropAuthorization}
+                      />
+                    ),
+                )}
+                {signingServer.data.unavailableServers.map((s: string, idx: number) => (
+                  <UnavailableWaggleServer subdomain={s} key={idx} />
+                ))}
+              </>
+            )}
+
+            <Box w={"100%"} h={"0.5px"} bg={"#848484"} />
+            <Flex
+              alignItems={"center"}
+              gap={"10px"}
+              onClick={() => setSelectedSignerAccount(undefined)}
+              cursor={"pointer"}
+              w={"fit-content"}
+            >
+              {selectedSignerAccount === undefined ? (
+                <RadioButtonSelected />
+              ) : (
+                <RadioButtonNotSelected />
+              )}
+              <Text fontSize={"14px"}>
+                Manual signing –{" "}
+                <span style={{ color: "#BFBFBF" }}>Requests should already be signed</span>
+              </Text>
+            </Flex>
+          </Flex>
+        )}
       </Flex>
       <JSONUpload
         minW="100%"
