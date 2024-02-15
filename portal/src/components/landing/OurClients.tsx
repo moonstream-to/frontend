@@ -27,7 +27,7 @@ const OurClients = () => {
               color={"#F88F78"}
               fontSize={"16px"}
               isExternal
-              href={"https://blog.moonstream.to/2023/07/20/crypto-unicorns-and-moonstream/"}
+              href={"https://blog.moonstream.to/crypto-unicorns-and-moonstream/"}
             >
               Read more
             </Link>
@@ -57,7 +57,7 @@ const OurClients = () => {
               fontSize={"16px"}
               isExternal
               href={
-                "https://blog.moonstream.to/2023/07/12/crypto-guilds-and-moonstream-the-potential-of-gamified-gamer-guilds"
+                "https://blog.moonstream.to/crypto-guilds-and-moonstream-the-potential-of-gamified-gamer-guilds"
               }
             >
               Read more

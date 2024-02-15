@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Button, Flex, IconButton, Input, Spinner, Text, Textarea } from "@chakra-ui/react";
 import Web3Context from "../../contexts/Web3Context/context";
-import useMoonToast from "../../hooks/useMoonToast";
 import http from "../../utils/httpMoonstream";
 
 const DropperV2RegisterContract = ({
@@ -14,7 +13,6 @@ const DropperV2RegisterContract = ({
 }: {
   address: string;
   onClose: () => void;
-  refetch: any;
 }) => {
   const { targetChain } = useContext(Web3Context);
 
@@ -36,7 +34,7 @@ const DropperV2RegisterContract = ({
       contract_type: "dropper-v0.2.0",
       title,
       image_uri: imageURI,
-      desription: description,
+      description: description,
     };
     return http({
       method: "POST",
@@ -44,9 +42,10 @@ const DropperV2RegisterContract = ({
       data,
     });
   };
-
+  const queryClient = useQueryClient();
   const addContract = useMutation(registerContract, {
     onSuccess: () => {
+      queryClient.invalidateQueries("metatxContracts");
       onClose();
     },
     onError: (error: any) => {

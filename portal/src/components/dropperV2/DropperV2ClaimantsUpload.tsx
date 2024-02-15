@@ -74,8 +74,6 @@ const DropperV2ClaimantsUpload = ({
           .map((r: any) => r.resource_data.customer_name);
       });
 
-    // const mockSubdomains = subdomains.concat("lorefy");
-    // const mockSubdomains = ["lorefy"];
     const requests = subdomains.map((subdomain: string) => {
       return axios
         .get(`https://${subdomain}.waggle.moonstream.org/signers/`, {
@@ -464,7 +462,7 @@ const DropperV2ClaimantsUpload = ({
             isExternal
             color={"#f88f78"}
           >
-            Waggle CLI toole
+            Waggle CLI tool
           </Link>
           <Text>to prepare the file</Text>
         </Flex>
