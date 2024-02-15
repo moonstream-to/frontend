@@ -17,8 +17,6 @@ import {
   Spinner,
   HStack,
   GridItem,
-  UnorderedList,
-  ListItem,
   useMediaQuery,
 } from "@chakra-ui/react";
 
@@ -158,7 +156,6 @@ const LeaderboardView = () => {
     ["fetch_leaderboard_info", leaderboardId, currentAccount],
     () => {
       return fetchLeaderboardInfo(leaderboardId).then((res) => {
-        const description = res.data;
         return res.data;
       });
     },
