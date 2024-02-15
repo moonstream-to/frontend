@@ -462,7 +462,7 @@ const DropperV2ClaimantsUpload = ({
             isExternal
             color={"#f88f78"}
           >
-            Waggle CLI toole
+            Waggle CLI tool
           </Link>
           <Text>to prepare the file</Text>
         </Flex>
