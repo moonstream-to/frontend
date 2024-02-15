@@ -156,16 +156,15 @@ const DropperV2ContractView = ({
         {contractsQuery.data?.contractData && (
           <Text variant="title2">{contractsQuery.data.contractData.title}</Text>
         )}
-        <Flex gap="10px">
+        <Flex gap="10px" justifyContent={"space-between"}>
           <Flex direction="column" gap="20px">
-            <Flex gap="20px" flex="1">
+            <Flex gap="20px" flex="1" maxW={"340px"}>
               {contractsQuery.data?.contractData?.image_uri && (
                 <Image
                   w="140px"
                   h="140px"
                   src={contractsQuery.data.contractData.image_uri}
                   alt="qq"
-                  // fallbackSrc="https://via.placeholder.com/140"
                 />
               )}
               {contractsQuery.data?.contractData && (
@@ -181,11 +180,7 @@ const DropperV2ContractView = ({
                   <ModalOverlay />
                   <ModalContent>
                     <ModalBody w="fit-content">
-                      <DropperV2RegisterContract
-                        onClose={onClose}
-                        address={address}
-                        refetch={contractsQuery.refetch}
-                      />
+                      <DropperV2RegisterContract onClose={onClose} address={address} />
                     </ModalBody>
                   </ModalContent>
                 </Modal>
@@ -211,6 +206,7 @@ const DropperV2ContractView = ({
               p={5}
               borderRadius="10px"
               bg="#232323"
+              maxW={"740px"}
             >
               <PoolDetailsRow
                 type={"Dropper version"}
