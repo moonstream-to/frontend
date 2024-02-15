@@ -91,7 +91,6 @@ const LeaderboardView = () => {
     ["fetch_leaders", leaderboardId, limit, offset],
     () => {
       return fetchLeaders(leaderboardId, limit, offset).then((res) => {
-        console.log(res.data);
         return res.data;
       });
     },
