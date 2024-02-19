@@ -4,7 +4,13 @@ import LeaderboardFields from "./LeaderboardFields";
 import { useMutation, useQueryClient } from "react-query";
 import http from "../../utils/httpMoonstream";
 
-const NewLeaderboard = ({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) => {
+const NewLeaderboard = ({
+  onClose,
+  onSuccess,
+}: {
+  onClose: () => void;
+  onSuccess: (arg0: string) => void;
+}) => {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
 
@@ -27,7 +33,7 @@ const NewLeaderboard = ({ onClose, onSuccess }: { onClose: () => void; onSuccess
         queryClient.setQueryData(["leaderboards"], (oldData: any) => {
           return [{ ...res.data }, ...oldData];
         });
-        onSuccess();
+        onSuccess(res.data.id);
       },
     },
   );

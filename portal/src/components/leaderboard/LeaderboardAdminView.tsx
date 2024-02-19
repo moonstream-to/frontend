@@ -15,7 +15,7 @@ import LeaderboardUpload from "./LeaderboardUpload";
 import { Score } from "./types";
 
 const LeaderboardAdminView = () => {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedId, setSelectedId] = React.useState("");
   const [status, setStatus] = React.useState("normal");
   const [filter, setFilter] = useState("");
   const filterListFn = (leaderboard: { title: string; description: string }) => {
@@ -34,6 +34,11 @@ const LeaderboardAdminView = () => {
   };
 
   const leaderboardsQuery = useQuery(["leaderboards"], getLeaderboards, {
+    onSuccess: (data: any) => {
+      if (!selectedId && data[0]?.id) {
+        setSelectedId(data[0].id);
+      }
+    },
     onError: (e) => {
       console.log(e);
     },
@@ -49,20 +54,19 @@ const LeaderboardAdminView = () => {
   };
 
   const selectedLeaderboard = useQuery(
-    ["selectedLeaderboard", leaderboardsQuery.data, selectedIndex],
+    ["selectedLeaderboard", leaderboardsQuery.data, selectedId],
     () => {
-      const leaderboard = leaderboardsQuery.data[selectedIndex];
-      return leaderboard;
+      return leaderboardsQuery.data.find((l: { id: string }) => l.id === selectedId);
     },
     {
-      enabled: !!leaderboardsQuery.data,
+      enabled: !!leaderboardsQuery.data && !!selectedId,
     },
   );
 
   const lastUpdate = useQuery(
-    ["lastUpdate", leaderboardsQuery.data, selectedIndex],
+    ["lastUpdate", leaderboardsQuery.data, selectedId],
     async () => {
-      const leaderboard = leaderboardsQuery.data[selectedIndex];
+      const leaderboard = leaderboardsQuery.data.find((l: any) => l.id === selectedId);
       const info = await getLeaderboardInfo(leaderboard.id);
       return info.last_updated_at;
     },
@@ -158,13 +162,13 @@ const LeaderboardAdminView = () => {
                     return (
                       <Flex
                         key={leaderboard.id}
-                        p={index === selectedIndex ? "9px" : "10px"}
-                        border={index === selectedIndex ? "1px solid #FFF" : "none"}
+                        p={leaderboard.id === selectedId ? "9px" : "10px"}
+                        border={leaderboard.id === selectedId ? "1px solid #FFF" : "none"}
                         rounded="lg"
-                        bgColor={index == selectedIndex ? "#353535" : "auto"}
+                        bgColor={leaderboard.id == selectedId ? "#353535" : "auto"}
                         cursor={"pointer"}
                         onClick={() => {
-                          setSelectedIndex(index);
+                          setSelectedId(leaderboard.id);
                         }}
                       >
                         <Text>{leaderboard.title}</Text>
@@ -232,9 +236,9 @@ const LeaderboardAdminView = () => {
           )}
           {status == "create" && (
             <NewLeaderboard
-              onSuccess={() => {
+              onSuccess={(id) => {
                 setStatus("normal");
-                setSelectedIndex(0);
+                setSelectedId(id);
               }}
               onClose={() => {
                 setStatus("normal");
