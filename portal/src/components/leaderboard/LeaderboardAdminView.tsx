@@ -71,7 +71,7 @@ const LeaderboardAdminView = () => {
       return info.last_updated_at;
     },
     {
-      enabled: !!leaderboardsQuery.data,
+      enabled: !!leaderboardsQuery.data && !!selectedId,
     },
   );
 
