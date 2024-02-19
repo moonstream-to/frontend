@@ -17,8 +17,6 @@ import {
   Spinner,
   HStack,
   GridItem,
-  UnorderedList,
-  ListItem,
   useMediaQuery,
 } from "@chakra-ui/react";
 
@@ -31,6 +29,22 @@ import LeaderboardPaginator from "./LeaderboardPaginator";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+type FlattenedObject = { [key: string]: any };
+
+function flattenObject(obj: any, parentKey = "", result: FlattenedObject = {}): FlattenedObject {
+  for (const [key, value] of Object.entries(obj)) {
+    const formattedKey = parentKey ? `${parentKey}.${key}` : key;
+
+    if (typeof value === "object" && value !== null) {
+      flattenObject(value, formattedKey, result);
+    } else {
+      result[formattedKey] = value;
+    }
+  }
+
+  return result;
+}
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -53,7 +67,6 @@ const LeaderboardView = () => {
     );
   }, [router.query.leaderboard_id]);
 
-  // Boomland: 56d5ecc4-b214-4af5-b320-d56cd5fbc3da
   const fetchLeaders = async (id: string, pageLimit: number, pageOffset: number) => {
     return http(
       {
@@ -142,7 +155,6 @@ const LeaderboardView = () => {
     ["fetch_leaderboard_info", leaderboardId, currentAccount],
     () => {
       return fetchLeaderboardInfo(leaderboardId).then((res) => {
-        const description = res.data;
         return res.data;
       });
     },
@@ -262,7 +274,10 @@ const LeaderboardView = () => {
                       maxW={["50px", "50px", "120px", "200px"]}
                       minW={["50px", "50px", "120px", "200px"]}
                     >
-                      <LeaderboardScoreItem score={item.score} pointsData={item.points_data} />
+                      <LeaderboardScoreItem
+                        score={item.score}
+                        pointsData={flattenObject(item.points_data)}
+                      />
                     </GridItem>
                   </Flex>
                 );
@@ -326,7 +341,10 @@ const LeaderboardView = () => {
                       maxW={["50px", "50px", "120px", "200px"]}
                       minW={["50px", "50px", "120px", "200px"]}
                     >
-                      <LeaderboardScoreItem score={item.score} pointsData={item.points_data} />
+                      <LeaderboardScoreItem
+                        score={item.score}
+                        pointsData={flattenObject(item.points_data)}
+                      />
                     </GridItem>
                   </Flex>
                 );
