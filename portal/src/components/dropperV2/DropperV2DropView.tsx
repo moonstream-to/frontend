@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, UseQueryResult } from "react-query";
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "react-query";
 import { Box, Button, Spinner, Text } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
@@ -105,6 +105,7 @@ const DropperV2DropView = ({
   );
 
   const toast = useMoonToast();
+  const queryClient = useQueryClient();
   const approveForPool = useMutation(
     ({ operator, poolId }: { operator: string; poolId: number }) => {
       const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
@@ -118,6 +119,9 @@ const DropperV2DropView = ({
     },
     {
       onSuccess: () => {
+        queryClient.setQueryData(["dropState", address, dropId, chainId], (oldData: any) => {
+          return { ...oldData, isMintAuthorized: true };
+        });
         dropState.refetch();
         toast("Successfully approved contract", "success");
       },
