@@ -6,6 +6,7 @@ import { CheckCircleIcon } from "@chakra-ui/icons";
 import Web3Address from "../entity/Web3Address";
 import { useContext } from "react";
 import Web3Context from "../../contexts/Web3Context/context";
+import MintingApprovalInfo from "./MintingApprovalInfo";
 
 type DropStateType = {
   data: {
@@ -15,6 +16,7 @@ type DropStateType = {
     active: boolean;
     isMintAuthorized: boolean;
     address: string;
+    terminusPoolController: string;
   };
 };
 
@@ -39,7 +41,7 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
     ["1155", "ERC1155"],
     ["1", "Mint Terminus"],
   ]);
-  const { chainId } = useContext(Web3Context);
+  const { chainId, account } = useContext(Web3Context);
   return (
     <>
       {dropState.data?.drop && (
@@ -70,23 +72,33 @@ const DropV2Data: React.FC<DropV2DataProps> = ({
                   <Flex alignItems="center">
                     <Text pr="5px">No</Text>
                     <Icon as={RxCrossCircled} w="15px" mr="20px" />
-                    <Button
-                      fontWeight="400"
-                      fontSize="18px"
-                      color="#2d2d2d"
-                      variant={"saveButton"}
-                      px={"40px"}
-                      minW={"152px"}
-                      onClick={() =>
-                        approveForPool.mutate({
-                          operator: dropState.data.address,
+                    {dropState.data && dropState.data.terminusPoolController === account ? (
+                      <Button
+                        fontWeight="400"
+                        fontSize="18px"
+                        color="#2d2d2d"
+                        variant={"saveButton"}
+                        px={"40px"}
+                        minW={"152px"}
+                        onClick={() =>
+                          approveForPool.mutate({
+                            operator: dropState.data.address,
+                            poolId: dropState.data.drop.tokenId,
+                          })
+                        }
+                        isDisabled={approveForPool.isLoading}
+                      >
+                        {approveForPool.isLoading ? <Spinner /> : "Approve"}
+                      </Button>
+                    ) : (
+                      <MintingApprovalInfo
+                        terminusPoolController={dropState.data.terminusPoolController}
+                        mintingTerminus={{
                           poolId: dropState.data.drop.tokenId,
-                        })
-                      }
-                      isDisabled={approveForPool.isLoading}
-                    >
-                      {approveForPool.isLoading ? <Spinner /> : "Approve"}
-                    </Button>
+                          terminusAddress: dropState.data.drop.tokenAddress,
+                        }}
+                      />
+                    )}
                   </Flex>
                 ) : (
                   <Flex alignItems="center">

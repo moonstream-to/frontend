@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { useContext, useEffect, useState } from "react";
 
-import { useMutation, useQuery, UseQueryResult } from "react-query";
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "react-query";
 import { Box, Button, Spinner, Text } from "@chakra-ui/react";
 import { Flex } from "@chakra-ui/layout";
 import { Image } from "@chakra-ui/image";
@@ -28,6 +28,7 @@ export interface DropState {
   isMintAuthorized: boolean;
   active: boolean;
   address: string;
+  terminusPoolController: string;
 }
 
 const DropperV2DropView = ({
@@ -71,6 +72,7 @@ const DropperV2DropView = ({
       const active = await dropperContract.methods.dropStatus(dropId).call();
 
       let isMintAuthorized = false;
+      let terminusPoolController = "";
       if (drop.tokenId && drop.tokenAddress && drop.tokenType === "1") {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
         terminusContract.options.address = drop.tokenAddress;
@@ -78,11 +80,22 @@ const DropperV2DropView = ({
           isMintAuthorized = await terminusContract.methods
             .isApprovedForPool(drop.tokenId, address)
             .call();
+          terminusPoolController = await terminusContract.methods
+            .terminusPoolController(dropAuthorization.poolId)
+            .call();
         } catch (e) {
           console.log(e);
         }
       }
-      return { drop, uri, dropAuthorization, active, isMintAuthorized, address };
+      return {
+        drop,
+        uri,
+        dropAuthorization,
+        active,
+        isMintAuthorized,
+        address,
+        terminusPoolController,
+      };
     },
     {
       ...queryCacheProps,
@@ -92,6 +105,7 @@ const DropperV2DropView = ({
   );
 
   const toast = useMoonToast();
+  const queryClient = useQueryClient();
   const approveForPool = useMutation(
     ({ operator, poolId }: { operator: string; poolId: number }) => {
       const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
@@ -105,6 +119,9 @@ const DropperV2DropView = ({
     },
     {
       onSuccess: () => {
+        queryClient.setQueryData(["dropState", address, dropId, chainId], (oldData: any) => {
+          return { ...oldData, isMintAuthorized: true };
+        });
         dropState.refetch();
         toast("Successfully approved contract", "success");
       },

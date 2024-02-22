@@ -35,6 +35,7 @@ const TerminusPoolView = () => {
   const [mintTo, setMintTo] = useState("");
   const [mintingAmount, setMintingAmount] = useState("");
   const [operator, setOperator] = useState("");
+  const [addressForUnapprove, setAddressForUnapprove] = useState("");
 
   const terminusFacet = new web3.eth.Contract(terminusAbi) as any as MockTerminus;
   terminusFacet.options.address = contractAddress;
@@ -123,6 +124,25 @@ const TerminusPoolView = () => {
       terminusFacet.methods
         .approveForPool(poolId, operator)
         .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null }),
+    {
+      ...commonProps,
+      onSuccess: () => {
+        toast({
+          title: "Successfully updated contract",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    },
+  );
+
+  const unapproveForPool = useMutation(
+    ({ operator, poolId }: { operator: string; poolId: number }) => {
+      return terminusFacet.methods
+        .unapproveForPool(poolId, operator)
+        .send({ from: account, maxPriorityFeePerGas: null, maxFeePerGas: null });
+    },
     {
       ...commonProps,
       onSuccess: () => {
@@ -507,7 +527,45 @@ const TerminusPoolView = () => {
                 isDisabled={approveForPool.isLoading}
                 minW="fit-content"
               >
-                {approveForPool.isLoading ? <Spinner /> : "Approve this pool"}
+                {approveForPool.isLoading ? <Spinner /> : "Approve for this pool"}
+              </Button>
+            </Flex>
+          )}
+          {poolState.data && poolState.data.controller === account && (
+            <Flex gap="15px" mt="20px">
+              <Input
+                placeholder="operator"
+                value={addressForUnapprove}
+                onChange={(e) => setAddressForUnapprove(e.target.value.trim())}
+                isDisabled={unapproveForPool.isLoading}
+              />
+              {!dropperContracts.data?.entities.some((e) => e.address === addressForUnapprove) &&
+                web3.utils.isAddress(operator) && (
+                  <AddEntityButton
+                    address={addressForUnapprove}
+                    tags={["dropperContracts"]}
+                    blockchain={String(chainId)}
+                    w={"40px"}
+                    h={"40px"}
+                  >
+                    <AiOutlineSave />
+                  </AddEntityButton>
+                )}
+              <EntitySelect tags={["dropperContracts"]} onChange={setAddressForUnapprove}>
+                ...
+              </EntitySelect>
+              <Button
+                bg="gray.0"
+                fontWeight="400"
+                fontSize="18px"
+                color="#2d2d2d"
+                onClick={() =>
+                  unapproveForPool.mutate({ operator: addressForUnapprove, poolId: selectedPool })
+                }
+                isDisabled={unapproveForPool.isLoading}
+                minW="fit-content"
+              >
+                {unapproveForPool.isLoading ? <Spinner /> : "Unapprove for this pool"}
               </Button>
             </Flex>
           )}
