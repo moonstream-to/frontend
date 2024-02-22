@@ -28,6 +28,7 @@ export interface DropState {
   isMintAuthorized: boolean;
   active: boolean;
   address: string;
+  terminusPoolController: string;
 }
 
 const DropperV2DropView = ({
@@ -71,6 +72,7 @@ const DropperV2DropView = ({
       const active = await dropperContract.methods.dropStatus(dropId).call();
 
       let isMintAuthorized = false;
+      let terminusPoolController = "";
       if (drop.tokenId && drop.tokenAddress && drop.tokenType === "1") {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
         terminusContract.options.address = drop.tokenAddress;
@@ -78,11 +80,22 @@ const DropperV2DropView = ({
           isMintAuthorized = await terminusContract.methods
             .isApprovedForPool(drop.tokenId, address)
             .call();
+          terminusPoolController = await terminusContract.methods
+            .terminusPoolController(dropAuthorization.poolId)
+            .call();
         } catch (e) {
           console.log(e);
         }
       }
-      return { drop, uri, dropAuthorization, active, isMintAuthorized, address };
+      return {
+        drop,
+        uri,
+        dropAuthorization,
+        active,
+        isMintAuthorized,
+        address,
+        terminusPoolController,
+      };
     },
     {
       ...queryCacheProps,
