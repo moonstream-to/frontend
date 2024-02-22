@@ -34,7 +34,7 @@ const MyJsonComponent = ({
       theme="twilight"
       onChange={handleJsonChange}
       onLoad={function (editor) {
-        editor.renderer.setShowGutter(false);
+        editor.renderer.setShowGutter(true);
         editor.renderer.setPadding(20);
         editor.renderer.setScrollMargin(20, 20, 0, 0);
         editor.setReadOnly(readOnly);
