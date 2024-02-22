@@ -81,6 +81,11 @@ export interface MockTerminus extends BaseContract {
       operator: string,
     ): NonPayableTransactionObject<void>;
 
+    unapproveForPool(
+      poolID: number | string | BN,
+      operator: string,
+    ): NonPayableTransactionObject<void>;
+
     balanceOf(account: string, id: number | string | BN): NonPayableTransactionObject<string>;
 
     balanceOfBatch(
