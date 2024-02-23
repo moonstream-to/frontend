@@ -157,9 +157,9 @@ const DropperV2NewDrop: React.FC<DropperV2NewDropProps> = ({
     }
   }, [state.tokenType]);
 
-  // If drop type is "Mint Terminus" (type 1), then we populate the Terminus pool URI into the URI field as a default.
+  // If drop type is "Mint Terminus" (type 1) or 1155, then we populate the Terminus pool URI into the URI field as a default.
   useEffect(() => {
-    if (state.tokenType === 1) {
+    if (state.tokenType === 1 || state.tokenType === 1155) {
       if (web3.utils.isAddress(state.tokenAddress) && state.tokenId) {
         const terminusContract = new web3.eth.Contract(terminusAbi) as any;
         terminusContract.options.address = state.tokenAddress;
