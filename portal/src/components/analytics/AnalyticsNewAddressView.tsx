@@ -123,7 +123,9 @@ const AnalyticsNewAddressView = () => {
         .then((res) => {
           setType("smartcontract");
           const contractChain = Object.keys(res.data.contract_info)[0];
-          setChainName(contractChain);
+          if (!chainName) {
+            setChainName(contractChain);
+          }
           return res.data;
         })
         .catch((e: any) => {
@@ -133,7 +135,8 @@ const AnalyticsNewAddressView = () => {
         });
     },
     {
-      enabled: web3.utils.isAddress(address), //TODO disable refetching after user change something ?
+      enabled: web3.utils.isAddress(address),
+      refetchInterval: false,
       retry: false,
     },
   );
@@ -176,7 +179,6 @@ const AnalyticsNewAddressView = () => {
         <AnalyticsAddressTags
           tags={tags}
           chainName={type === "smartcontract" ? chainName : undefined}
-          // onAdd={handleAddTag}
           onDelete={(t) => setTags(tags.filter((tag) => tag !== t))}
         />
         <Flex direction="column" gap="10px">
@@ -290,18 +292,7 @@ const AnalyticsNewAddressView = () => {
             w="100%"
           />
         </Flex>
-        {/* <Flex direction="column" gap="10px">
-          <Text variant="label">Description</Text>
-          <Textarea
-            fontSize="18px"
-            borderRadius="10px"
-            _placeholder={{ fontSize: "16px" }}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter description"
-            w="100%"
-          />
-        </Flex> */}
+
         {type === "smartcontract" && chainName && web3.utils.isAddress(address) && (
           <Flex borderRadius="10px" border="1px solid white" p="20px">
             <AnalyticsABIView
