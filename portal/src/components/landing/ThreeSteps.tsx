@@ -6,39 +6,41 @@ const ThreeSteps = () => {
   const [is768view] = useMediaQuery(["(min-width: 768px) and (max-width: 1023px)"]);
   return (
     <Flex className={styles.container}>
-      <Text className={styles.title}>Manage your economy in 3 simple steps</Text>
+      <Text className={styles.title}>Manage your game’s economy in 3 simple steps</Text>
       <Flex className={styles.steps}>
         <Flex direction={"column"} gap={"0"} flex={"1"}>
-          <Text className={styles.subtitle}>Step 1</Text>
+          <Text className={styles.subtitle}>Get started</Text>
           <Text className={styles.text}>
-            Sign up to create a Moonstream account to access the{" "}
+            Create a Moonstream account to access the{" "}
             <Link isExternal href={"/portal"} textDecoration={"underline"}>
               Portal
             </Link>
-            . Or{" "}
+            , or{" "}
             <Link
               isExternal
               textDecoration={"underline"}
               href={"https://calendly.com/d/5dr-xh2-xq6/moonstream-demo "}
             >
-              request a demo
-            </Link>
-            .
+              contact us
+            </Link>{" "}
+            to request a demo.
           </Text>
         </Flex>
         <Flex direction={"column"} gap={"0"} flex={"1"}>
-          <Text className={styles.subtitle}>Step 2</Text>
+          <Text className={styles.subtitle}>Set up your LiveOps </Text>
           <Text className={styles.text}>
-            Set up <span style={{ fontWeight: "700" }}>analytics</span> to watch your economy,
-            create events with <span style={{ fontWeight: "700" }}>leaderboards</span> as sinks, and
-            reward your players with <span style={{ fontWeight: "700" }}>drops</span>.
+            Create engaging in-game events with{" "}
+            <span style={{ fontWeight: "700" }}>leaderboards</span> and{" "}
+            <span style={{ fontWeight: "700" }}>on-chain game mechanics</span> as sinks, distribute
+            rewards with <span style={{ fontWeight: "700" }}>drops</span>, and track your successes
+            with live <span style={{ fontWeight: "700" }}>analytics</span>.
           </Text>
         </Flex>
         <Flex direction={"column"} gap={"0"} flex={"1"}>
-          <Text className={styles.subtitle}>Step 3</Text>
+          <Text className={styles.subtitle}>Share LiveOps experiences with your players</Text>
           <Text className={styles.text}>
-            Have beautiful leaderboards integrated in your game or use Moonstream&apos;s leaderboard
-            UI.
+            Share your LiveOps experience with your players with the Moonstream Portal or on your UI
+            through the API.
           </Text>
         </Flex>
       </Flex>
