@@ -14,11 +14,11 @@ const Hero = () => {
       <Flex className={styles.container} w={"100%"} maxW={"1440px"}>
         <Flex className={styles.content} w={"100%"}>
           <Text className={styles.title}>
-            Leaderboards for
-            <br /> your web3 game
+            LiveOps for <br /> your web3 game
           </Text>
           <Text className={styles.text}>
-            Automate rewarding players for their on-chain and off-chain activity.
+            Tune your game, run leaderboards for on-chain and off-chain activity, analyze player
+            behavior, catch and fix exploits, distribute rewards, and more.
           </Text>
           <Link
             isExternal

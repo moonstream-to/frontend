@@ -20,7 +20,7 @@ export const MoonstreamFeatures = [
   {
     name: "Leaderboards",
     description:
-      "Rank players by engagement. Create sinks by assigning scores to token specific in-game actions.",
+      "Rank players by engagement. Create sinks by assigning scores to token specific in-game, on-chain, off-chain, and social media actions.",
     image: `${AWS_STATIC_ASSETS_PATH}/Leaderboards.png`,
     href: "/features/#leaderboards",
   },
@@ -44,10 +44,10 @@ const LandingFeatures = () => {
     >
       <Flex direction="column" gap={{ base: "20px", sm: "40px" }} alignItems="center">
         <Text fontSize={{ base: "30px", sm: "40px" }} fontWeight="700" textAlign="center">
-          All you need to reward your players
+          Your life made easier with automated tools
         </Text>
         <Text w={["100%", "100%", "70%"]} textAlign="center" fontFamily={'"Inter", sans-serif'}>
-          Gain control over token inflation and reward your players for improving your game.
+          Simple LiveOps tools that plug into your infrastructure.
         </Text>
       </Flex>
       <Flex

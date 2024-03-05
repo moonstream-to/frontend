@@ -5,9 +5,22 @@
     align-items: center;
     gap: 20px;
     border-radius: 30px;
-    border: 1px solid #FFF;
     width: 100%;
     align-self: stretch;
+    background-color: #1a1d22;
+}
+
+.gradientContainer {
+    background: linear-gradient(90deg, #F56646, #FFF);
+    border-radius: 30px;
+    padding: 3px;
+}
+.solidContainer {
+    align-self: stretch;
+    width: 100%;
+    background: white;
+    border-radius: 30px;
+    padding: 1px;
 }
 
 .content {

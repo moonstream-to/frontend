@@ -60,6 +60,12 @@
     }
     .cards {
         flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .card {
+        min-width: 300px;
+        max-width: 610px;
+        flex: 0 1 calc(50% - 10px);
     }
 }
 
@@ -77,5 +83,14 @@
     .container {
         align-self: center;
         padding: 80px 101px;
+    }
+
+    .cards {
+        flex-wrap: nowrap;
+
+    }
+
+    .card {
+        min-width: auto;
     }
 }
