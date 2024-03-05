@@ -47,7 +47,7 @@ const LandingFeatures = () => {
           Your life made easier with automated tools
         </Text>
         <Text w={["100%", "100%", "70%"]} textAlign="center" fontFamily={'"Inter", sans-serif'}>
-          Simple LiveOps tools that plug into your infrastructure alone or together.
+          Simple LiveOps tools that plug into your infrastructure.
         </Text>
       </Flex>
       <Flex
