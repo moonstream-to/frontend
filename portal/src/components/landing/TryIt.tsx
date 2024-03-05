@@ -7,13 +7,9 @@ const TryIt = () => {
   return (
     <Flex className={styles.container} mx={"7%"}>
       <div className={styles.header}>
-        <div className={styles.title}>
-          Sustainable game economy
-          <br /> design made easy
-        </div>
+        <div className={styles.title}>Build sustainable game economies</div>
         <div className={styles.subtitle}>
-          Use our tools to fix inflation, test your theories, direct player engagement, and
-          distribute player rewards.
+          Improve player retention and player engagement; support your blockchain integration.
         </div>
       </div>
       <div className={styles.buttons}>
