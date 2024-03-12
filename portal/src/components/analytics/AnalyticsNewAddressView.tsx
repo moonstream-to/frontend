@@ -121,7 +121,9 @@ const AnalyticsNewAddressView = () => {
         url: `${API}/subscriptions/is_contract?address=${address}`,
       })
         .then((res) => {
-          setType("smartcontract");
+          if (!type) {
+            setType("smartcontract");
+          }
           const contractChain = Object.keys(res.data.contract_info)[0];
           if (!chainName) {
             setChainName(contractChain);
@@ -130,7 +132,9 @@ const AnalyticsNewAddressView = () => {
         })
         .catch((e: any) => {
           console.log(e);
-          setType("regularAccount");
+          if (!type) {
+            setType("regularAccount");
+          }
           setChainName("");
         });
     },
