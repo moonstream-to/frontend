@@ -81,7 +81,7 @@ const DropperV2DropView = ({
             .isApprovedForPool(drop.tokenId, address)
             .call();
           terminusPoolController = await terminusContract.methods
-            .terminusPoolController(dropAuthorization.poolId)
+            .terminusPoolController(drop.tokenId)
             .call();
         } catch (e) {
           console.log(e);
