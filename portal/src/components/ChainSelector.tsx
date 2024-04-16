@@ -24,6 +24,7 @@ const assets = {
   ethereum: `${AWS_ASSETS_PATH}/eth-diamond-rainbow.png`,
   polygon: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
   mumbai: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
+  amoy: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
   wyrm: `${AWS_ASSETS_PATH}/great-wyrm-network-logo.png`,
 };
 
@@ -42,7 +43,7 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
         _hover={{ textDecoration: "none", fontWeight: "700" }}
         rightIcon={<ChevronDownIcon />}
         leftIcon={
-          ["ethereum", "mumbai", "polygon", "wyrm"].includes(
+          ["ethereum", "mumbai", "polygon", "wyrm", "amoy"].includes(
             web3Provider?.targetChain?.name ?? "",
           ) ? (
             <Image
@@ -84,6 +85,14 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
           }}
         >
           <ChainSelectorItem name="Mumbai" img={assets.mumbai} />
+        </MenuItem>
+        <MenuItem
+          isDisabled={web3Provider.targetChain?.name === "amoy"}
+          onClick={() => {
+            web3Provider.changeChain("amoy");
+          }}
+        >
+          <ChainSelectorItem name="Amoy" img={assets.amoy} />
         </MenuItem>
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "wyrm"}

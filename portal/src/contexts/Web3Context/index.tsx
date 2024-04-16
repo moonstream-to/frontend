@@ -45,9 +45,11 @@ const _askWalletProviderToChangeChain = async (targetChain: any, setChainId: any
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: `${targetChain?.chainId}`,
+                chainId: `0x${targetChain?.chainId.toString(16)}`,
                 chainName: targetChain?.name,
                 rpcUrls: targetChain?.rpcs,
+                blockExplorerUrls: targetChain?.blockExplorerUrls,
+                nativeCurrency: targetChain?.nativeCurrency,
               },
             ],
           });
@@ -99,6 +101,13 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
       name: "api-testnet.polygonscan",
       url: "https://api-testnet.polygonscan.com/api?module=contract&action=getabi",
     },
+  },
+  amoy: {
+    chainId: 80002,
+    name: "amoy",
+    rpcs: ["https://rpc-amoy.polygon.technology/"],
+    nativeCurrency: { decimals: 18, name: "MATIC", symbol: "MATIC" },
+    blockExplorerUrls: ["https://www.oklink.com/amoy‍"],
   },
   polygon: {
     chainId: 137,
