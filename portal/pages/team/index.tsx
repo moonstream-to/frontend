@@ -16,6 +16,7 @@ import {
 import TeamCard from "../../src/components/TeamCard";
 import { AWS_STATIC_ASSETS_PATH } from "../../src/constants";
 import LayoutLanding from "../../src/components/layoutLanding";
+import styles from "./Team.module.css";
 
 const TEAM_PATH = `${AWS_STATIC_ASSETS_PATH}/team`;
 
@@ -32,6 +33,8 @@ const assets = {
   spider: `${TEAM_PATH}/carpenter-spider.png`,
   weta: `${TEAM_PATH}/weta.png`,
   dragonfly: `${TEAM_PATH}/dragonfly.png`,
+  moth: `${TEAM_PATH}/moth.png`,
+  rhino: `${TEAM_PATH}/rhino.png`,
 };
 
 const Team = () => {
@@ -44,7 +47,7 @@ const Team = () => {
         alignItems="center"
         w="100%"
         maxW="1238"
-        px={{ base: "3%", sm: "7%", md: "7%" }}
+        px={{ base: "3%", sm: "7%", md: "7%", l: "0" }}
         py="40px"
         mx="auto"
       >
@@ -113,13 +116,7 @@ const Team = () => {
           <Heading as="h2" size="md" w="100%" py={2} borderTopRadius="xl">
             Our engineering team
           </Heading>
-          <Flex
-            w="100%"
-            direction={"row"}
-            flexWrap="wrap"
-            justifyContent="space-between"
-            alignContent="left"
-          >
+          <div className={styles.cardsContainer}>
             <TeamCard
               avatarURL={assets["ant"]}
               name={"Neeraj Kashyap"}
@@ -168,19 +165,13 @@ const Team = () => {
             could see him baking crepes at the Parisian market. Passionate 
             about rugby and chess.`}
             />
-          </Flex>
+          </div>
         </Stack>
         <Stack mb={12} w="100%">
           <Heading as="h2" size="md" w="100%" py={2} borderTopRadius="xl">
             Our marketing and growth team
           </Heading>
-          <Flex
-            w="100%"
-            direction={"row"}
-            flexWrap="wrap"
-            justifyContent="space-between"
-            alignContent="left"
-          >
+          <div className={styles.cardsContainer}>
             <TeamCard
               avatarURL={assets["ladybug"]}
               name={"Sophia Aryan"}
@@ -205,7 +196,20 @@ const Team = () => {
             new to master. Enjoys being close to the sea. Loves yoga, 
             dogs and dancing. Can walk 30km when under stress.`}
             />
-          </Flex>
+            <TeamCard
+              avatarURL={assets["moth"]}
+              name={"Ceilidh Orr"}
+              atName={"@ceilidh(0727)"}
+              content={`Storyteller. Deposed scholar turned labyrinth keeper. Enjoys long, impenetrable novels and deep-dives into the arcana of sci-fi and fantasy worlds. Growing a love of in-game herbs and potions into a real-life garden.`}
+            />
+            <TeamCard
+              avatarURL={assets["rhino"]}
+              name={"Manuel Olumorin"}
+              atName={"@manuelo"}
+              content={`Sage. Loves listening to music, admiring imposing structures, both natural and man-made, and searching for the new. Can get lost in hypothetical conversations.
+`}
+            />
+          </div>
         </Stack>
       </Flex>
     </LayoutLanding>
