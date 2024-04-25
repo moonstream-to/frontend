@@ -1,8 +1,9 @@
 /* eslint-disable react/no-children-prop */
-import React, { useContext, useEffect, useState } from "react";
-import { useQuery, UseQueryResult } from "react-query";
+import React, { useContext, useState } from "react";
+import { useQuery } from "react-query";
 import { Box, Flex, Link, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
+import Papa from "papaparse";
 
 import http from "../../utils/httpMoonstream";
 import Web3Context from "../../contexts/Web3Context/context";
@@ -193,11 +194,28 @@ const DropperV2ClaimantsUpload = ({
     fileReader.onloadend = async (readerEvent: ProgressEvent<FileReader>) => {
       if (readerEvent?.target?.result) {
         try {
-          const content = JSON.parse(String(readerEvent?.target?.result));
-          await processContent(content);
+          const fileName = file[0].name;
+          const content = readerEvent.target.result as string;
+
+          if (fileName.endsWith(".json")) {
+            const jsonData = JSON.parse(content);
+            await processContent(jsonData);
+          } else if (fileName.endsWith(".csv")) {
+            Papa.parse(content, {
+              header: true,
+              complete: async (results) => {
+                await processContent(results.data as ClaimRequest[]);
+              },
+              error: (error: Error) => {
+                throw error;
+              },
+            });
+          } else {
+            throw new Error("Unsupported file type");
+          }
         } catch (e: any) {
           console.log(e);
-          displayErrorMessage(`Upload failed - ${e.message ?? "Error creating request"}`);
+          displayErrorMessage(`Upload failed - ${e.message ?? "Error processing the file"}`);
         } finally {
           setIsUploading(false);
         }

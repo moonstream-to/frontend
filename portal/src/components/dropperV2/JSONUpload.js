@@ -37,6 +37,7 @@ function JSONUpload({ isUploading, onDrop, isSigned, ...props }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: {
       "text/json": [".json"],
+      "text/csv": [".csv"],
     },
     onDrop,
   });
@@ -70,7 +71,7 @@ function JSONUpload({ isUploading, onDrop, isSigned, ...props }) {
             <Flex gap="20px">
               <Icon as={AiOutlineCloudUpload} w="30px" h="30px" />
               <Flex direction="column">
-                <Text>Upload a JSON file</Text>
+                <Text>Upload a JSON or CSV file</Text>
                 <Text>
                   {`[ { dropId, ${
                     isSigned ? "caller" : "claimant"
