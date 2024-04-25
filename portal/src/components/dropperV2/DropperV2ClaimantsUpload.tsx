@@ -197,10 +197,10 @@ const DropperV2ClaimantsUpload = ({
           const fileName = file[0].name;
           const content = readerEvent.target.result as string;
 
-          if (fileName.endsWith(".json")) {
+          if (fileName.toLowerCase().endsWith(".json")) {
             const jsonData = JSON.parse(content);
             await processContent(jsonData);
-          } else if (fileName.endsWith(".csv")) {
+          } else if (fileName.toLowerCase().endsWith(".csv")) {
             Papa.parse(content, {
               header: true,
               complete: async (results) => {
