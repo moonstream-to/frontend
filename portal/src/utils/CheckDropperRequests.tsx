@@ -158,7 +158,6 @@ export const checkDropperRequests = ({
         "signature",
       )
     : "";
-  console.log(isSigned, invalidSignatures);
   const invalidIDs = checkRequestIDs(content);
   const invalidBlockDeadlines = checkField(
     content,
