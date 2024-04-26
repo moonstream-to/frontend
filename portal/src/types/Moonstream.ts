@@ -8,13 +8,26 @@ export interface WalletStatesInterface {
   UNKNOWN_CHAIN: string;
 }
 
-export type supportedChains = "localhost" | "mumbai" | "polygon" | "ethereum" | "wyrm" | "gnosis";
+export type supportedChains =
+  | "localhost"
+  | "mumbai"
+  | "polygon"
+  | "ethereum"
+  | "wyrm"
+  | "gnosis"
+  | "amoy";
 
 export interface ChainInterface {
   chainId: number;
   name: supportedChains;
   rpcs: Array<string>;
   ABIScan?: { name: string; url: string };
+  nativeCurrency?: {
+    decimals: number;
+    name: string;
+    symbol: string;
+  };
+  blockExplorerUrls?: string[];
 }
 
 export declare function GetMethodsAbiType<T>(abi: AbiItem[], name: keyof T): AbiItem;

@@ -26,6 +26,10 @@ const SupportedChains = () => {
       href: "https://mumbai.polygonscan.com/",
     },
     {
+      image: "starknet.png",
+      href: "https://www.starknet.io/",
+    },
+    {
       image: "era.png",
       href: "https://era.zksync.io/",
     },
