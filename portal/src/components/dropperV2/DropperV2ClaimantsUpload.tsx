@@ -216,8 +216,7 @@ const DropperV2ClaimantsUpload = ({
         } catch (e: any) {
           console.log(e);
           displayErrorMessage(`Upload failed - ${e.message ?? "Error processing the file"}`);
-        } finally {
-          setIsUploading(false);
+          setIsUploading(false); //without errors isUploading set to false in processContent
         }
       } else {
         setIsUploading(false);
@@ -302,6 +301,8 @@ const DropperV2ClaimantsUpload = ({
       } else {
         displayErrorMessage("An unexpected error occurred");
       }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -342,6 +343,8 @@ const DropperV2ClaimantsUpload = ({
       } else {
         displayErrorMessage(`${e.response.data.detail ?? "Error creating request"}`);
       }
+    } finally {
+      setIsUploading(false);
     }
   };
 
