@@ -115,8 +115,10 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
 
   const namesMap = {
     xdai: "Gnosis",
-    zksync_era_testnet: "zkSync Era testnet",
+    zksync_era_testnet: "zkSync Era Testnet",
+    zksync_era_sepolia: "zkSync Era Sepolia",
     zksync_era: "zkSync Era",
+    proofofplay_apex: "Proof of Play Apex",
   };
 
   const chainsOrder = ["ethereum", "polygon", "zksync_era", "xdai", "mumbai", "zksync_era_testnet"];
@@ -125,7 +127,10 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) =
     if (namesMap[backName as keyof typeof namesMap]) {
       return namesMap[backName as keyof typeof namesMap];
     }
-    return backName.slice(0, 1).toUpperCase() + backName.slice(1);
+    return backName
+      .split("_")
+      .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const getBlockchains = async () => {
