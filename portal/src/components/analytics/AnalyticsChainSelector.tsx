@@ -39,7 +39,7 @@ const AnalyticsChainSelector = ({
             bg={selectedChain === chain.name ? "#FFF" : "#232323"}
             color={selectedChain === chain.name ? "#1A1D22" : "#FFF"}
           >
-            {(getChainImage(chain.name) || chain.name) && (
+            {(getChainImage(chain.name) || chain.image) && (
               <Image
                 alt=""
                 src={getChainImage(chain.name) ?? chain.image}
