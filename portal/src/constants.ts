@@ -133,6 +133,13 @@ const chainNameToImagePath: Record<string, string> = {
   xdai: `${AWS_ASSETS_PATH_CF}/icons/gnosis-white.png`,
   zksync_era: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
   zksync_era_testnet: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
+  zksync_era_sepolia: `${AWS_ASSETS_PATH_CF}/icons/zksync-white.png`,
+  amoy: `${AWS_ASSETS_PATH_CF}/icons/polygon-white.png`,
+  proofofplay_apex: `${AWS_ASSETS_PATH_CF}/icons/proofofplay-logo-new.png`,
+  blast: `${AWS_ASSETS_PATH_CF}/icons/blast-logo.png`,
+  avalanche: `${AWS_ASSETS_PATH_CF}/icons/avalanche-logo.png`,
+  avalanche_fuji: `${AWS_ASSETS_PATH_CF}/icons/avalanche-logo.png`,
+  blast_sepolia: `${AWS_ASSETS_PATH_CF}/icons/blast-logo.png`,
 };
 
 // map chain IDs to image paths
