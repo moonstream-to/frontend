@@ -271,10 +271,12 @@ const DropperV2ClaimantsUpload = ({
     const errorMsg = checkDropperRequests({ content: requests, isSigned: false });
     if (errorMsg) {
       displayErrorMessage(errorMsg);
+      setIsUploading(false);
       return;
     }
     const ttl = getTTL();
     if (!ttl) {
+      setIsUploading(false);
       return;
     }
     try {
@@ -324,6 +326,7 @@ const DropperV2ClaimantsUpload = ({
     // }
     const ttl = getTTL();
     if (!ttl) {
+      setIsUploading(false);
       return;
     }
     try {
