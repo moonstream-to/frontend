@@ -134,8 +134,8 @@ const AnalyticsNewAddressView = () => {
           console.log(e);
           if (!type) {
             setType("regularAccount");
+            setChainName("");
           }
-          setChainName("");
         });
     },
     {
