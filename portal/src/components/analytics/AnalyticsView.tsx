@@ -30,9 +30,9 @@ const AnalyticsView = () => {
         <Flex
           gap="30px"
           py="30px"
-          px={{ base: 0, xl: "5%", "2xl": "10%" }}
+          px={"7%"}
           minH={isTallScreen ? "calc(100vh - 320px)" : "760px"}
-          minW="90%"
+          w={"100%"}
           position="relative"
           alignSelf="stretch"
         >
