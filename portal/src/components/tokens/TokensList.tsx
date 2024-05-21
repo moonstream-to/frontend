@@ -22,10 +22,15 @@ import useMoonToast from "../../hooks/useMoonToast";
 import PoolDetailsRow from "../PoolDetailsRow";
 import SortingColumnHeader from "../SortingColumnHeader";
 
-interface Token {
-  note: string;
+export interface MoonstreamAPIToken {
+  active: boolean;
   created_at: string;
   id: string;
+  note: string;
+  restricted: boolean;
+  token_type: string;
+  updated_at: string;
+  user_id: string;
 }
 
 const TokensList = () => {
@@ -51,11 +56,11 @@ const TokensList = () => {
   const [filter, setFilter] = useState("");
 
   const [sortBy, setSortBy] = useState<{ title: string; direction: "ASC" | "DESC" }>({
-    title: "label",
-    direction: "ASC",
+    title: "date",
+    direction: "DESC",
   });
 
-  const sortingFn = (a: Token, b: Token) => {
+  const sortingFn = (a: MoonstreamAPIToken, b: MoonstreamAPIToken) => {
     const aName = a?.note?.toUpperCase();
     const bName = b?.note?.toUpperCase();
 
@@ -93,7 +98,7 @@ const TokensList = () => {
   const sortedTokens = useMemo(() => {
     return tokens.data?.token
       ?.sort(sortingFn)
-      .filter((t: Token) => (t.note ? t.note.includes(filter) : filter === ""));
+      .filter((t: MoonstreamAPIToken) => (t.note ? t.note.includes(filter) : filter === ""));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, tokens.data, filter]);
 
@@ -156,7 +161,7 @@ const TokensList = () => {
             <Skeleton key={idx} h="27px" w="100%" startColor="#2d2d2d" endColor="#222222" />
           ))}
         {tokens.data &&
-          sortedTokens.map((token: Token, idx: number) => (
+          sortedTokens.map((token: MoonstreamAPIToken, idx: number) => (
             <React.Fragment key={idx}>
               <GridItem w="100%" h="15px" px="15px">
                 {(update.isLoading || tokens.isFetching) &&
