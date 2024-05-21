@@ -42,6 +42,7 @@ const useMoonToast = () => {
               py={3}
               px={5}
               bg="#353535"
+              whiteSpace="pre-wrap"
             >
               {message}
             </Box>
