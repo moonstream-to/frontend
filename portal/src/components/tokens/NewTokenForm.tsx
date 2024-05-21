@@ -1,4 +1,5 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import { Spinner } from "@chakra-ui/react";
 
@@ -34,7 +35,7 @@ const NewTokenForm: React.FC<NewTokenFormProps> = ({ isOpen, onClose }) => {
         },
       );
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ detail?: string }>) => {
       console.log(error);
       const detail = error.response?.data?.detail;
       const message = detail ? `${error.message}\n${detail}` : error.message;
