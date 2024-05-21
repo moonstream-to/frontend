@@ -56,8 +56,8 @@ const TokensList = () => {
   const [filter, setFilter] = useState("");
 
   const [sortBy, setSortBy] = useState<{ title: string; direction: "ASC" | "DESC" }>({
-    title: "label",
-    direction: "ASC",
+    title: "date",
+    direction: "DESC",
   });
 
   const sortingFn = (a: MoonstreamAPIToken, b: MoonstreamAPIToken) => {
