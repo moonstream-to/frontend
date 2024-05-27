@@ -49,7 +49,7 @@ const useValidation = () => {
     const valueString = value as unknown as string;
     let errorMessage: string;
     switch (key) {
-      case "signer":
+      case "terminusAddress":
         errorMessage = web3.utils.isAddress(valueString) ? "" : "Invalid Ethereum address";
         break;
       case "uri":
