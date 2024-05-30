@@ -116,9 +116,9 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
     nativeCurrency: { decimals: 18, name: "XAI", symbol: "XAI" },
     blockExplorerUrls: ["https://explorer.xai-chain.net"],
   },
-  xaiTestnet: {
+  xai_sepolia: {
     chainId: 37714555429,
-    name: "xaiTestnet",
+    name: "xai_sepolia",
     displayName: "Xai Testnet v2",
     rpcs: ["https://testnet-v2.xai-chain.net/rpc"],
     nativeCurrency: { decimals: 18, name: "sXAI", symbol: "sXAI" },

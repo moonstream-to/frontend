@@ -17,7 +17,7 @@ export type supportedChains =
   | "gnosis"
   | "amoy"
   | "xai"
-  | "xaiTestnet";
+  | "xai_sepolia";
 
 export interface ChainInterface {
   chainId: number;
