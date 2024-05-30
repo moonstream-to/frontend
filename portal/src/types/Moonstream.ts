@@ -15,11 +15,14 @@ export type supportedChains =
   | "ethereum"
   | "wyrm"
   | "gnosis"
-  | "amoy";
+  | "amoy"
+  | "xai"
+  | "xaiTestnet";
 
 export interface ChainInterface {
   chainId: number;
   name: supportedChains;
+  displayName?: string;
   rpcs: Array<string>;
   ABIScan?: { name: string; url: string };
   nativeCurrency?: {
