@@ -46,7 +46,7 @@ const _askWalletProviderToChangeChain = async (targetChain: any, setChainId: any
             params: [
               {
                 chainId: `0x${targetChain?.chainId.toString(16)}`,
-                chainName: targetChain?.name,
+                chainName: targetChain?.displayName ?? targetChain?.name,
                 rpcUrls: targetChain?.rpcs,
                 blockExplorerUrls: targetChain?.blockExplorerUrls,
                 nativeCurrency: targetChain?.nativeCurrency,
@@ -108,6 +108,21 @@ export const chains: { [key in supportedChains]: ChainInterface } = {
     rpcs: ["https://rpc-amoy.polygon.technology/"],
     nativeCurrency: { decimals: 18, name: "MATIC", symbol: "MATIC" },
     blockExplorerUrls: ["https://www.oklink.com/amoy‍"],
+  },
+  xai: {
+    chainId: 660279,
+    name: "xai",
+    rpcs: ["https://xai-chain.net/rpc"],
+    nativeCurrency: { decimals: 18, name: "XAI", symbol: "XAI" },
+    blockExplorerUrls: ["https://explorer.xai-chain.net"],
+  },
+  xaiTestnet: {
+    chainId: 37714555429,
+    name: "xaiTestnet",
+    displayName: "Xai Testnet v2",
+    rpcs: ["https://testnet-v2.xai-chain.net/rpc"],
+    nativeCurrency: { decimals: 18, name: "sXAI", symbol: "sXAI" },
+    blockExplorerUrls: ["https://testnet-explorer-v2.xai-chain.net/"],
   },
   polygon: {
     chainId: 137,
