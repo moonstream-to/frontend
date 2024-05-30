@@ -26,7 +26,7 @@ const assets = {
   mumbai: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
   amoy: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
   xai: `${AWS_ASSETS_PATH}/xai-token-logo.png`,
-  xaiTestnet: `${AWS_ASSETS_PATH}/xai-token-logo.png`,
+  xai_sepolia: `${AWS_ASSETS_PATH}/xai-token-logo.png`,
   wyrm: `${AWS_ASSETS_PATH}/great-wyrm-network-logo.png`,
 };
 
@@ -45,7 +45,7 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
         _hover={{ textDecoration: "none", fontWeight: "700" }}
         rightIcon={<ChevronDownIcon />}
         leftIcon={
-          ["ethereum", "mumbai", "polygon", "wyrm", "amoy", "xai", "xaiTestnet"].includes(
+          ["ethereum", "mumbai", "polygon", "wyrm", "amoy", "xai", "xai_sepolia"].includes(
             web3Provider?.targetChain?.name ?? "",
           ) ? (
             <Image
@@ -61,7 +61,9 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
         variant="outline"
         fontSize="16px"
       >
-        {web3Provider.targetChain?.name ?? "Chain selector"}
+        {web3Provider.targetChain?.displayName ??
+          web3Provider.targetChain?.name ??
+          "Chain selector"}
       </MenuButton>
       <MenuList bg="#1A1D22" color={color} borderRadius="30px" border="1px solid white" pl="15px">
         <MenuItem
@@ -105,9 +107,9 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
           <ChainSelectorItem name="Xai" img={assets.xai} />
         </MenuItem>
         <MenuItem
-          isDisabled={web3Provider.targetChain?.name === "xaiTestnet"}
+          isDisabled={web3Provider.targetChain?.name === "xai_sepolia"}
           onClick={() => {
-            web3Provider.changeChain("xaiTestnet");
+            web3Provider.changeChain("xai_sepolia");
           }}
         >
           <ChainSelectorItem name="Xai Testnet v2" img={assets.xai} />
