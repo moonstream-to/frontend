@@ -135,7 +135,7 @@ const DropperV2ClaimantsUpload = ({
     const signingAccounts = signers.map((signer, idx) => {
       return {
         ...signer,
-        balance: multicallResults[idx][0] ? hexToNumber(multicallResults[idx][1]) : 0,
+        balance: Number(multicallResults[idx][0] ? hexToNumber(multicallResults[idx][1]) : 0),
       };
     });
     return { signingAccounts, unavailableServers };
