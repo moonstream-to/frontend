@@ -10,6 +10,8 @@ import { Web3Context } from "../src/contexts";
 import "../src/styles/globals.css";
 import { GofpProvider } from "../src/contexts/GoFPContext";
 import { UserProvider } from "../src/contexts/UserContext";
+import { wagmiConfig } from "../src/wallets/config";
+import { WagmiProvider } from "wagmi";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(new QueryClient());
@@ -50,11 +52,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <UserProvider>
           <QueryClientProvider client={queryClient}>
-            <Web3Context>
-              <GofpProvider>
-                <Component {...pageProps} />
-              </GofpProvider>
-            </Web3Context>
+            <WagmiProvider config={wagmiConfig}>
+              <Web3Context>
+                <GofpProvider>
+                  <Component {...pageProps} />
+                </GofpProvider>
+              </Web3Context>
+            </WagmiProvider>
           </QueryClientProvider>
         </UserProvider>
       </ChakraProvider>
