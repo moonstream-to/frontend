@@ -5,6 +5,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Web3Context from "../../contexts/Web3Context/context";
 import ChainSelector from "../ChainSelector";
 import { colorScheme, getType, Outputs } from "./ABIViewRightPanel";
+import { usePublicClient, useReadContract } from "wagmi";
+import * as allChains from "wagmi/chains";
+import { readContract } from "@wagmi/core";
+import { wagmiConfig } from "../../wallets/config";
+import { getContract } from "viem/actions/getContract";
+import { createPublicClient } from "viem/clients/createPublicClient";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });
 
@@ -42,6 +48,41 @@ const ABIFunction = ({
   const [error, setError] = useState<any | undefined>(undefined);
   const [highlightRequired, setHighlightRequired] = useState(false);
   const [activeInputIdx, setActiveInputIdx] = useState<number | undefined>(undefined);
+
+  function formatHex(value: string): `0x${string}` {
+    if (value.startsWith("0x")) {
+      return value as `0x${string}`;
+    } else {
+      return `0x${value}` as `0x${string}`;
+    }
+  }
+
+  const callFunction2 = async (address: string, abi: any, name: string, args: any) => {
+    const result = await readContract(wagmiConfig, {
+      abi,
+      address: formatHex(address),
+      functionName: name,
+      chainId: 42170,
+      args,
+    });
+    console.log(result);
+  };
+
+  const publicClient = usePublicClient({ chainId: allChains.arbitrumSepolia.id });
+  // const callFunction3 = async (address: string, abi: any, name: string, values: any) => {
+  //   if (!publicClient) {
+  //     return;
+  //   }
+  //   publicClient.read
+  //   const contract = getContract({ abi, address, client: publicClient });
+  //   const result = await readContract(wagmiConfig, {
+  //     abi,
+  //     address,
+  //     functionName: name,
+  //     chainId: arbitrumSepolia.id,
+  //   });
+  //   console.log(result);
+  // };
 
   const callFunction = async (address: string, abi: any, name: string, values: any) => {
     if (name && address && web3ctx.web3.utils.isAddress(address)) {
@@ -96,7 +137,7 @@ const ABIFunction = ({
   }, [inputs]);
 
   const handleClick = async () => {
-    callFunction(callOnAddress, abi, name ?? "", values);
+    callFunction2(callOnAddress, abi, name ?? "", values);
   };
 
   useEffect(() => {
@@ -146,6 +187,7 @@ const ABIFunction = ({
         </Flex>
         <CloseIcon color="#999999" h="15px" onClick={onClose} cursor="pointer" />
       </Flex>
+      {/*{allChains}*/}
       <Flex direction={"column"} gap={"10px"} width={"fit-content"} placeSelf={"start"}>
         <Flex gap="10px" alignItems="center" justifyContent="space-between" w="100%">
           <Text variant="label" color="#CCCCCC">
