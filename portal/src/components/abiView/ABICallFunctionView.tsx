@@ -3,6 +3,7 @@ import ABIRecentAddresses from "./ABIRecentAddresses";
 import ABIFunction from "./ABIFunction";
 import { useState } from "react";
 import useRecentAddresses from "../../hooks/useRecentAddresses";
+import ConnectionView from "./ConnectionView";
 
 const ABICallFunctionView = ({
   isOpen,
@@ -56,6 +57,7 @@ const ABICallFunctionView = ({
         storedAddress={storedAddress}
         addRecentAddress={addRecentAddress}
       />
+      <ConnectionView />
     </Flex>
   );
 };
