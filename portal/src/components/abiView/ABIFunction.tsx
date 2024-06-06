@@ -13,8 +13,6 @@ const TX_HASH = "0x8c09f790e614a59e8a792c8e294569262ba4c82276124781678697b180dfc
 const TX_HASH2 = "0x2bbfd507eb26a1f0c007345ce122d56000cbd98c45b7a62ca3f1aca629b9f899";
 const TX_HASH3 = "0x9e8222d1ea8f7a55384802ef7aca582e08e582beb53cb03f1daacd1059ae267d";
 
-
-
 const ABIFunction = ({
   isOpen,
   onClose,
@@ -51,8 +49,8 @@ const ABIFunction = ({
   const [activeInputIdx, setActiveInputIdx] = useState<number | undefined>(undefined);
 
   function convertToBigNumber(numberString: string, precision = 18) {
-    const [integerPart, decimalPart] = numberString.split('.');
-    const decimalPartPadded = (decimalPart || '').padEnd(precision, '0');
+    const [integerPart, decimalPart] = numberString.split(".");
+    const decimalPartPadded = (decimalPart || "").padEnd(precision, "0");
     const bigNumberString = integerPart + decimalPartPadded;
     return web3ctx.web3.utils.toBN(bigNumberString);
   }
@@ -80,7 +78,7 @@ const ABIFunction = ({
 
           try {
             const obj = JSON.parse(value);
-            if (typeof obj === 'object') {
+            if (typeof obj === "object") {
               return obj;
             } else {
               return value;
@@ -274,13 +272,21 @@ const ABIFunction = ({
           >
             {isLoading ? <Spinner /> : stateMutability === "view" ? ".call" : ".send"}
           </Button>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-
-          {/*<button onClick={() => withdrawNativeToken(0.5)}>bridge up</button>*/}
-          <button style={{padding: '5px 10px', border: '1px solid #cccccc'}} onClick={() => withdrawNativeToken(0.5)}>withdraw</button>
-          <button style={{padding: '5px 10px', border: '1px solid #cccccc'}} onClick={() => getReceipt(TX_HASH3)}>execute</button>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {/*<button onClick={() => withdrawNativeToken(0.5)}>bridge up</button>*/}
+            <button
+              style={{ padding: "5px 10px", border: "1px solid #cccccc" }}
+              onClick={() => withdrawNativeToken(0.5)}
+            >
+              withdraw
+            </button>
+            <button
+              style={{ padding: "5px 10px", border: "1px solid #cccccc" }}
+              onClick={() => getReceipt(TX_HASH3)}
+            >
+              execute
+            </button>
           </div>
-
         </Flex>
       </Flex>
       <Box as={Collapse} in={result !== undefined || !!error || isLoading} w="100%">
