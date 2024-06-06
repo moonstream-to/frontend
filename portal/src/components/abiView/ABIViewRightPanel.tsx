@@ -264,6 +264,7 @@ const ABIViewRightPanel = ({
               value={src}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
+              readOnly={true}
               border="none"
               _focus={{ border: "none" }}
               _active={{ border: "none" }}
