@@ -28,7 +28,7 @@ const L2TokenAddress = "0x5f88d811246222F6CB54266C42cc1310510b9feA";
 
 // User's address and private key (never hardcode private keys in production)
 const userAddress = "0x605825459E3e98565827Af31DF4cA854A7cCED28"; // Replace with the user's wallet address
-const privateKey = "39c7b3238caff15720b6b1e55df28a1097328f004e6f1626896564d085a14879"; // Replace with the user's private key
+const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? ""; // Replace with the user's private key
 
 // Bridge contract ABI (example)
 const bridgeContractABI = [

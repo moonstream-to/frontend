@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Web3Context from "../../contexts/Web3Context/context";
 import ChainSelector from "../ChainSelector";
 import { colorScheme, getType, Outputs } from "./ABIViewRightPanel";
-import { bridgeNativeTokens } from "./bridge";
 import { getReceipt, withdrawNativeToken } from "./bridgeNativeToken";
 
 const JSONEdit = dynamic(() => import("../JSONEdit2"), { ssr: false });

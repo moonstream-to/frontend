@@ -47,12 +47,12 @@ const destAddress = "0x605825459E3e98565827Af31DF4cA854A7cCED28";
 
 // Replace with your L3 wallet address and private key
 const userAddress = "0x605825459E3e98565827Af31DF4cA854A7cCED28";
-const privateKey = "39c7b3238caff15720b6b1e55df28a1097328f004e6f1626896564d085a14879";
+const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? "";
 
 const l2wallet = new Wallet(privateKey, l2Provider);
 
 // Function to withdraw native tokens
-export async function withdrawNativeToken(amountInNative) {
+export async function withdrawNativeToken(amountInNative: number) {
   const amountInWei = web3.utils.toWei(amountInNative.toString(), "ether"); // Adjust if your token has different decimal units
 
   // Create the transaction data
@@ -76,8 +76,9 @@ export async function withdrawNativeToken(amountInNative) {
 
   // Send the signed transaction
   const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-
   console.log("Transaction receipt:", receipt);
+  console.log("Transaction hash:", receipt.transactionHash);
+  return receipt.transactionHash;
 }
 
 export const getReceipt = async (txHash: string) => {

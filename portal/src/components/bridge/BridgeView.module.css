@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 20px;
+  width: 600px;
+  justify-content: space-between;
+  place-self: center;
+}
+
+.chainContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input {
+  max-width: 200px;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+}
+
+.button {
+  padding: 5px 10px;
+  width: fit-content;
+  border: 1px solid #ccc;
+  min-width: 42px;
+}
+
+.withdrawalContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 220px;
+  min-height: 36px;
+}
