@@ -1,9 +1,9 @@
 .container {
   display: flex;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 50px;
   padding: 20px;
-  width: 600px;
+  /*width: 600px;*/
   justify-content: space-between;
   place-self: center;
 }
@@ -31,7 +31,16 @@
 .withdrawalContainer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 20px;
-  width: 220px;
+  /*width: 500px;*/
   min-height: 36px;
+  border: 0.5px solid #ccc;
+  padding: 5px 10px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
