@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./BridgeView.module.css";
 import { useMutation, useQuery } from "react-query";
 const L2_CHAIN_NAME = "Arbitrum sepolia";
@@ -13,16 +13,26 @@ const HASH4 = "0x4bf995f8db0500325df77bf912104b6b3b0604a44117dd6bfa47277e0d0ee87
 const HASH5 = "0xb778a3ec55896616ed033f05227c30ebc73c873f6f80fc999f63c7c3d4eeb6b4";
 
 const txs = [
-  "0x8c09f790e614a59e8a792c8e294569262ba4c82276124781678697b180dfc799",
-  "0x2bbfd507eb26a1f0c007345ce122d56000cbd98c45b7a62ca3f1aca629b9f899",
-  "0x9e8222d1ea8f7a55384802ef7aca582e08e582beb53cb03f1daacd1059ae267d",
-  "0x4bf995f8db0500325df77bf912104b6b3b0604a44117dd6bfa47277e0d0ee875",
-  "0xb778a3ec55896616ed033f05227c30ebc73c873f6f80fc999f63c7c3d4eeb6b4",
-  "0x3fada554470e1600d27e70699990f7a77b3f8ee89b9e4b192419a58392d8fb8b",
-  "0x20f1eb781b930193e6fce1069b64712fb42a3855ce09d78abe649ddd66aa907b",
-  "0x02b6cf4313b5bbf2c1242bddbf03a0acefa1ea6200c53015b064db759eeba849",
-  "0x732b7400fecea15dfc40912399311533ac53b1092b8835ec104c4f4efb933211",
+  // "0x8c09f790e614a59e8a792c8e294569262ba4c82276124781678697b180dfc799",
+  // "0x2bbfd507eb26a1f0c007345ce122d56000cbd98c45b7a62ca3f1aca629b9f899",
+  // "0x9e8222d1ea8f7a55384802ef7aca582e08e582beb53cb03f1daacd1059ae267d",
+  // "0x4bf995f8db0500325df77bf912104b6b3b0604a44117dd6bfa47277e0d0ee875",
+  // "0xb778a3ec55896616ed033f05227c30ebc73c873f6f80fc999f63c7c3d4eeb6b4",
+  // "0x3fada554470e1600d27e70699990f7a77b3f8ee89b9e4b192419a58392d8fb8b",
+  // "0x20f1eb781b930193e6fce1069b64712fb42a3855ce09d78abe649ddd66aa907b",
+  // "0x02b6cf4313b5bbf2c1242bddbf03a0acefa1ea6200c53015b064db759eeba849",
+  // "0x732b7400fecea15dfc40912399311533ac53b1092b8835ec104c4f4efb933211",
+  // "0x178f750ac0feb9b50de496ba92f91c708396fc794f767b58e5c48490794f41ef",
+  // "0xd0a5c6ff85e7aa5fecd16cffd908f90cd66a83bcf63684a7fde3e1eccdbeed44",
+  // "0x6eabeffc7feac528057d5bb307965de3f05b279219430e02b40517b6d3c17438",
+  // "0x8f6dc2e0c892bb97465c5e72718519cb88879741f3b33b198053273708d5106b",
+  // "0xe7c19970aaded18b26f0d7f2dae3244cf7a09b4c0806c209dba812a3e051b932", //not executed
+  // "0xed4a7149543497167d779789d8e79ef6155cf4640556cd5fe26917cbbfff920c",
+  // "0x0785921358d1af5f6423d05d0249e93b906aa82fad791d5fe575e715f3d3ffd1",
+  "0x478107cfefc8e01c64098c922415f8a5af80c1f5db5d834ad45758ae754d4e74",
 ];
+
+const txs2 = ["0xe066ad48d0a48a53d47dd1762ebafb8240b1e3ddd4d29479ceb27c11b01b4495"];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Web3 = require("web3");
@@ -35,20 +45,33 @@ const ERC20_ABI = importedERC20ABI as unknown as AbiItem[];
 import importedERC20InboxABI from "../../web3/abi/ERC20Inbox.json";
 const ERC20_INBOX_ABI = importedERC20InboxABI as unknown as AbiItem[];
 import { providers } from "ethers";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Input, Spinner, Text } from "@chakra-ui/react";
 import Web3Context from "../../contexts/Web3Context/context";
-import { withdrawNativeToken } from "../abiView/bridgeNativeToken";
+import { withdrawNativeToken, withdrawNativeToken2 } from "../abiView/bridgeNativeToken";
 import Withdrawal from "./Withdrawal";
+import EntitySelect from "../entity/EntitySelect";
+import AddEntityButton from "../entity/AddEntityButton";
+import { AiOutlineSave } from "react-icons/ai";
+import { useJournal } from "../../hooks/useJournal";
+import useMoonToast from "../../hooks/useMoonToast";
 const ERC20_ADDRESS = "0x5f88d811246222F6CB54266C42cc1310510b9feA";
 const ERC20_INBOX_ADDRESS = "0xaACd8bE2d9ac11545a2F0817aEE35058c70b44e5";
 
 const BridgeView = () => {
   const [depositValue, setDepositValue] = useState("");
   const [withdrawValue, setWithdrawValue] = useState("");
+  const [withdrawDestination, setWithdrawDestination] = useState<string | undefined>(undefined);
   const [withdrawals, setWithdrawals] = useState(txs);
   const l2Web3 = new Web3(L2_RPC);
   const l3Web3 = new Web3(L3_RPC);
   const web3ctx = useContext(Web3Context);
+  const accounts = useJournal({ tags: ["accounts"] });
+
+  useEffect(() => {
+    if (withdrawDestination === undefined && web3ctx.account) {
+      setWithdrawDestination(web3ctx.account);
+    }
+  }, [web3ctx.account, withdrawDestination]);
 
   function convertToBigNumber(numberString: string, precision = 18) {
     const [integerPart, decimalPart] = numberString.split(".");
@@ -85,7 +108,7 @@ const BridgeView = () => {
       refetchInterval: 5000,
     },
   );
-
+  const toast = useMoonToast();
   const deposit = useMutation(
     async (amount: string) => {
       const ERC20InboxContract = new web3ctx.web3.eth.Contract(ERC20_INBOX_ABI);
@@ -100,12 +123,19 @@ const BridgeView = () => {
         l2Balance.refetch();
         l3Balance.refetch();
       },
+      onError: (e: Error) => {
+        toast(`Deposit error - ${e.message}`, "error");
+      },
     },
   );
 
   const withdraw = useMutation(
     async (amount: string) => {
-      return withdrawNativeToken(Number(amount));
+      if (!withdrawDestination) {
+        console.log("invalid destination");
+        return;
+      }
+      return withdrawNativeToken2(Number(amount), withdrawDestination);
     },
     {
       onSuccess: (data: any) => {
@@ -154,7 +184,51 @@ const BridgeView = () => {
           onChange={(e) => setWithdrawValue(e.target.value)}
           placeholder={"amount"}
         />
-        <button className={styles.button} onClick={handlewithdrawClick}>
+        <Flex direction="column" gap="10px">
+          <Text variant="label">address</Text>
+          <Flex gap={"10px"}>
+            <Input
+              variant="address"
+              fontSize="18px"
+              w="45ch"
+              borderRadius="10px"
+              value={withdrawDestination}
+              onChange={(e) => setWithdrawDestination(e.target.value)}
+              // borderColor={!showInvalid || isTokenAddressValid ? "white" : "error.500"}
+              placeholder="destination"
+            />
+            {!!accounts?.data &&
+              withdrawDestination &&
+              !accounts.data?.entities.some((e) => e.address === withdrawDestination) &&
+              web3ctx.web3.utils.isAddress(withdrawDestination) && (
+                <AddEntityButton
+                  address={withdrawDestination}
+                  tags={["accounts"]}
+                  blockchain={String(web3ctx.chainId)}
+                  w={"40px"}
+                  h={"40px"}
+                >
+                  <AiOutlineSave />
+                </AddEntityButton>
+              )}
+            {!!accounts?.data && (
+              <EntitySelect tags={["accounts"]} onChange={setWithdrawDestination}>
+                ...
+              </EntitySelect>
+            )}
+            <button
+              className={styles.button}
+              onClick={() => setWithdrawDestination(web3ctx.account)}
+            >
+              wallet
+            </button>
+          </Flex>
+        </Flex>
+        <button
+          className={styles.button}
+          onClick={handlewithdrawClick}
+          disabled={!withdrawDestination}
+        >
           {withdraw.isLoading ? <Spinner h={2} w={2} /> : "<<"}
         </button>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "20px" }}>
