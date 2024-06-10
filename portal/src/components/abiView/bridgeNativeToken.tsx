@@ -1,8 +1,5 @@
 import { L2ToL1MessageStatus, L2ToL1MessageWriter, L2TransactionReceipt } from "@arbitrum/sdk";
-import { providers, Wallet } from "ethers";
-import { defineReadOnly } from "@ethersproject/properties";
-import { Signer } from "@ethersproject/abstract-signer";
-import { Provider } from "@ethersproject/abstract-provider";
+import { ethers, providers, Signer, Wallet } from "ethers";
 
 const Web3 = require("web3");
 
@@ -39,6 +36,62 @@ const arbSysABI = [
   },
 ];
 
+const outboxABI = [
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "proof",
+        type: "bytes32[]",
+      },
+      {
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "l2Sender",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "l2Block",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "l1Block",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "l2Timestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "executeTransaction",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
+
 // Create an instance of the ArbSys contract
 const arbSysContract = new web3.eth.Contract(arbSysABI, arbSysAddress);
 
@@ -52,11 +105,11 @@ const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? "";
 const l2wallet = new Wallet(privateKey, l2Provider);
 
 // Function to withdraw native tokens
-export async function withdrawNativeToken(amountInNative: number) {
+export const withdrawNativeToken = async (amountInNative: number, destination: string) => {
   const amountInWei = web3.utils.toWei(amountInNative.toString(), "ether"); // Adjust if your token has different decimal units
 
   // Create the transaction data
-  const txData = arbSysContract.methods.withdrawEth(destAddress).encodeABI(); // Replace with your specific function if different
+  const txData = arbSysContract.methods.withdrawEth(destination).encodeABI(); // Replace with your specific function if different
 
   // Get the transaction count to use as nonce
   const nonce = await web3.eth.getTransactionCount(userAddress);
@@ -79,7 +132,30 @@ export async function withdrawNativeToken(amountInNative: number) {
   console.log("Transaction receipt:", receipt);
   console.log("Transaction hash:", receipt.transactionHash);
   return receipt.transactionHash;
-}
+};
+
+export const withdrawNativeToken2 = async (amountInNative: number, destination: string) => {
+  const amountInWei = web3.utils.toWei(amountInNative.toString(), 'ether');
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const arbSysContract = new ethers.Contract(arbSysAddress, arbSysABI, signer);
+  const tx = await arbSysContract.populateTransaction.withdrawEth(destination, {
+    value: amountInWei,
+  });
+  tx.gasLimit = ethers.BigNumber.from("300000");
+
+  try {
+    const txResponse = await signer.sendTransaction(tx);
+    console.log("Transaction response:", txResponse);
+    const receipt = await txResponse.wait();
+    console.log("Transaction receipt:", receipt);
+    console.log("Transaction hash:", receipt.transactionHash);
+    return receipt.transactionHash;
+  } catch (error) {
+    console.error("Transaction failed:", error);
+  }
+};
 
 export const getReceipt = async (txHash: string) => {
   const receipt = await web3.eth.getTransactionReceipt(txHash);
