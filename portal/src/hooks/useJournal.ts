@@ -34,6 +34,10 @@ const fetchJournals = async (): Promise<Journals> => {
 
 export const useJournals = () => {
   const { user } = useUser();
+  if (!user) {
+    console.log("cannot use journal without login");
+    return undefined;
+  }
   const queryKey = ["journals", user] as const;
   return useQuery({ queryKey, queryFn: fetchJournals, enabled: !!user, staleTime: 120000 });
 };
@@ -111,8 +115,11 @@ export const useJournal = ({
   offset = 0,
 }: JournalInput) => {
   const { user } = useUser();
+  if (!user) {
+    console.log("cannot use journal without login");
+  }
   const type = id ? "journalById" : "journalByName";
-  const queryKey = [type, id ?? name, tags, limit, offset, user.username] as [
+  const queryKey = [type, id ?? name, tags, limit, offset, user?.username] as [
     "journalById" | "journalByName",
     string,
     string[],
