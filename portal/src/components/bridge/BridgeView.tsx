@@ -3,14 +3,8 @@ import styles from "./BridgeView.module.css";
 import { useMutation, useQuery } from "react-query";
 const L2_CHAIN_NAME = "Arbitrum sepolia";
 const L3_CHAIN_NAME = "Game7 Tesnet Caldera";
-const ACCOUNT = "0x605825459E3e98565827Af31DF4cA854A7cCED28";
-const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? "";
-
-const TX_HASH = "0x8c09f790e614a59e8a792c8e294569262ba4c82276124781678697b180dfc799";
-const TX_HASH2 = "0x2bbfd507eb26a1f0c007345ce122d56000cbd98c45b7a62ca3f1aca629b9f899";
-const TX_HASH3 = "0x9e8222d1ea8f7a55384802ef7aca582e08e582beb53cb03f1daacd1059ae267d";
-const HASH4 = "0x4bf995f8db0500325df77bf912104b6b3b0604a44117dd6bfa47277e0d0ee875";
-const HASH5 = "0xb778a3ec55896616ed033f05227c30ebc73c873f6f80fc999f63c7c3d4eeb6b4";
+// const ACCOUNT = "0x605825459E3e98565827Af31DF4cA854A7cCED28";
+// const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? "";
 
 const txs = [
   // "0x8c09f790e614a59e8a792c8e294569262ba4c82276124781678697b180dfc799",
@@ -36,7 +30,6 @@ const txs2 = ["0xe066ad48d0a48a53d47dd1762ebafb8240b1e3ddd4d29479ceb27c11b01b449
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Web3 = require("web3");
-const L3_RPC = "https://game7-testnet-custom.rpc.caldera.xyz/http";
 const L2_RPC = "https://sepolia-rollup.arbitrum.io/rpc";
 
 import { AbiItem } from "web3-utils";
@@ -44,7 +37,6 @@ import importedERC20ABI from "../../web3/abi/MockErc20.json";
 const ERC20_ABI = importedERC20ABI as unknown as AbiItem[];
 import importedERC20InboxABI from "../../web3/abi/ERC20Inbox.json";
 const ERC20_INBOX_ABI = importedERC20InboxABI as unknown as AbiItem[];
-import { providers } from "ethers";
 import { Flex, Input, Spinner, Text } from "@chakra-ui/react";
 import Web3Context from "../../contexts/Web3Context/context";
 import { withdrawNativeToken, withdrawNativeToken2 } from "../abiView/bridgeNativeToken";
@@ -54,18 +46,26 @@ import AddEntityButton from "../entity/AddEntityButton";
 import { AiOutlineSave } from "react-icons/ai";
 import { useJournal } from "../../hooks/useJournal";
 import useMoonToast from "../../hooks/useMoonToast";
-const ERC20_ADDRESS = "0x5f88d811246222F6CB54266C42cc1310510b9feA";
-const ERC20_INBOX_ADDRESS = "0xaACd8bE2d9ac11545a2F0817aEE35058c70b44e5";
+import { TEST_TOKEN_ADDRESS } from "../../constants";
+import { L3_NETWORKS, L3NetworkConfiguration } from "../../web3/networks/l3Networks";
+
+// const ERC20_INBOX_ADDRESS = "0xaACd8bE2d9ac11545a2F0817aEE35058c70b44e5";
 
 const BridgeView = () => {
   const [depositValue, setDepositValue] = useState("");
   const [withdrawValue, setWithdrawValue] = useState("");
   const [withdrawDestination, setWithdrawDestination] = useState<string | undefined>(undefined);
-  const [withdrawals, setWithdrawals] = useState(txs);
+  const [l3Web3, setL3Web3] = useState<typeof Web3>(new Web3(L3_NETWORKS[0].chainInfo.rpcs[0]));
   const l2Web3 = new Web3(L2_RPC);
-  const l3Web3 = new Web3(L3_RPC);
   const web3ctx = useContext(Web3Context);
   const accounts = useJournal({ tags: ["accounts"] });
+  const [l3Network] = useState<L3NetworkConfiguration>(L3_NETWORKS[0]);
+  const formatBalance = (symbol: string | undefined, weiBalance: string | undefined) => {
+    if (!weiBalance) {
+      return "-";
+    }
+    return `${web3ctx.web3.utils.fromWei(weiBalance, "ether")} ${symbol ?? ""}`;
+  };
 
   useEffect(() => {
     if (withdrawDestination === undefined && web3ctx.account) {
@@ -77,32 +77,32 @@ const BridgeView = () => {
     const [integerPart, decimalPart] = numberString.split(".");
     const decimalPartPadded = (decimalPart || "").padEnd(precision, "0");
     const bigNumberString = integerPart + decimalPartPadded;
-    return l3Web3.utils.toBN(bigNumberString);
+    return web3ctx.web3.utils.toBN(bigNumberString);
   }
 
   const l2Balance = useQuery(
     ["l2Balance"],
     async () => {
       const ERC20Contract = new l2Web3.eth.Contract(ERC20_ABI);
-      ERC20Contract.options.address = ERC20_ADDRESS;
-      const symbol = await ERC20Contract.methods.symbol().call();
-      const weiBalance = await ERC20Contract.methods.balanceOf(ACCOUNT).call();
-      const ethBalance = l2Web3.utils.fromWei(weiBalance, "ether");
-
-      return `${ethBalance} ${symbol}`;
+      ERC20Contract.options.address = TEST_TOKEN_ADDRESS;
+      return ERC20Contract.methods.balanceOf(web3ctx.account).call();
     },
     {
       refetchInterval: 5000,
     },
   );
 
+  const l2Symbol = useQuery(["symbol", TEST_TOKEN_ADDRESS], () => {
+    const ERC20Contract = new l2Web3.eth.Contract(ERC20_ABI);
+    ERC20Contract.options.address = TEST_TOKEN_ADDRESS;
+    return ERC20Contract.methods.symbol().call();
+  });
+
   const l3Balance = useQuery(
-    ["l3Balance"],
-    async () => {
-      const symbol = "G7T";
-      const weiBalance = await l3Web3.eth.getBalance(ACCOUNT);
-      const ethBalance = l3Web3.utils.fromWei(weiBalance, "ether");
-      return `${ethBalance} ${symbol}`;
+    ["l3Balance", l3Network],
+    () => {
+      const l3web3 = new Web3(l3Network.chainInfo.rpcs[0]);
+      return l3web3.eth.getBalance(web3ctx.account);
     },
     {
       refetchInterval: 5000,
@@ -112,10 +112,12 @@ const BridgeView = () => {
   const deposit = useMutation(
     async (amount: string) => {
       const ERC20InboxContract = new web3ctx.web3.eth.Contract(ERC20_INBOX_ABI);
-      ERC20InboxContract.options.address = ERC20_INBOX_ADDRESS;
+      ERC20InboxContract.options.address = l3Network.coreContracts.inbox;
 
       const ethAmount = convertToBigNumber(amount);
-      const res = await ERC20InboxContract.methods.depositERC20(ethAmount).send({ from: ACCOUNT });
+      const res = await ERC20InboxContract.methods
+        .depositERC20(ethAmount)
+        .send({ from: web3ctx.account });
       console.log(res);
     },
     {
@@ -140,7 +142,6 @@ const BridgeView = () => {
     {
       onSuccess: (data: any) => {
         console.log(data);
-        setWithdrawals((prev) => [...prev, data]);
         l3Balance.refetch();
       },
     },
@@ -150,7 +151,7 @@ const BridgeView = () => {
     deposit.mutate(depositValue);
   };
 
-  const handlewithdrawClick = () => {
+  const handleWithdrawClick = () => {
     withdraw.mutate(withdrawValue);
   };
 
@@ -158,7 +159,7 @@ const BridgeView = () => {
     <div className={styles.container}>
       <div className={styles.chainContainer}>
         <div className={styles.chainName}>{L2_CHAIN_NAME}</div>
-        <div className={styles.balance}>{l2Balance.data ?? ""}</div>
+        <div className={styles.balance}>{formatBalance(l2Symbol.data, l2Balance.data) ?? ""}</div>
         <input
           className={styles.input}
           type={"text"}
@@ -175,8 +176,8 @@ const BridgeView = () => {
         </button>
       </div>
       <div className={styles.chainContainer}>
-        <div className={styles.chainName}>{L3_CHAIN_NAME}</div>
-        <div className={styles.balance}>{l3Balance.data ?? ""}</div>
+        <div className={styles.chainName}>{l3Network.chainInfo.chainName}</div>
+        <div className={styles.balance}>{formatBalance(l2Symbol.data, l3Balance.data) ?? ""}</div>
         <input
           type={"text"}
           value={withdrawValue}
@@ -226,7 +227,7 @@ const BridgeView = () => {
         </Flex>
         <button
           className={styles.button}
-          onClick={handlewithdrawClick}
+          onClick={handleWithdrawClick}
           disabled={!withdrawDestination}
         >
           {withdraw.isLoading ? <Spinner h={2} w={2} /> : "<<"}
