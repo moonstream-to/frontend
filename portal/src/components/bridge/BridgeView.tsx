@@ -59,7 +59,7 @@ const BridgeView = () => {
   const l2Web3 = new Web3(L2_RPC);
   const web3ctx = useContext(Web3Context);
   const accounts = useJournal({ tags: ["accounts"] });
-  const [l3Network] = useState<L3NetworkConfiguration>(L3_NETWORKS[0]);
+  const [l3Network, setL3Network] = useState<L3NetworkConfiguration>(L3_NETWORKS[0]);
   const formatBalance = (symbol: string | undefined, weiBalance: string | undefined) => {
     if (!weiBalance) {
       return "-";
@@ -176,7 +176,22 @@ const BridgeView = () => {
         </button>
       </div>
       <div className={styles.chainContainer}>
-        <div className={styles.chainName}>{l3Network.chainInfo.chainName}</div>
+        <select
+          className={styles.select}
+          value={l3Network.chainInfo.chainId}
+          onChange={(e) =>
+            setL3Network(
+              L3_NETWORKS.find((n) => n.chainInfo.chainId === parseInt(e.target.value)) ??
+                l3Network,
+            )
+          }
+        >
+          {L3_NETWORKS.map((n) => (
+            <option value={n.chainInfo.chainId} key={n.chainInfo.chainId}>
+              {n.chainInfo.chainName}
+            </option>
+          ))}
+        </select>
         <div className={styles.balance}>{formatBalance(l2Symbol.data, l3Balance.data) ?? ""}</div>
         <input
           type={"text"}
@@ -198,20 +213,6 @@ const BridgeView = () => {
               // borderColor={!showInvalid || isTokenAddressValid ? "white" : "error.500"}
               placeholder="destination"
             />
-            {!!accounts?.data &&
-              withdrawDestination &&
-              !accounts.data?.entities.some((e) => e.address === withdrawDestination) &&
-              web3ctx.web3.utils.isAddress(withdrawDestination) && (
-                <AddEntityButton
-                  address={withdrawDestination}
-                  tags={["accounts"]}
-                  blockchain={String(web3ctx.chainId)}
-                  w={"40px"}
-                  h={"40px"}
-                >
-                  <AiOutlineSave />
-                </AddEntityButton>
-              )}
             {!!accounts?.data && (
               <EntitySelect tags={["accounts"]} onChange={setWithdrawDestination}>
                 ...
