@@ -2,21 +2,15 @@ import React, { useState } from "react";
 import styles from "./BridgeView.module.css";
 import { useMutation, useQuery } from "react-query";
 import Web3 from "web3";
-import { ethers, providers, Wallet } from "ethers";
+import { ethers, providers } from "ethers";
 import { L2ToL1MessageStatus, L2ToL1MessageWriter, L2TransactionReceipt } from "@arbitrum/sdk";
 import { Spinner } from "@chakra-ui/react";
 import Web3Address from "../entity/Web3Address";
 import useMoonToast from "../../hooks/useMoonToast";
 
 const L3_RPC = "https://game7-testnet-custom.rpc.caldera.xyz/http";
-const L2_RPC = "https://sepolia-rollup.arbitrum.io/rpc";
 const web3 = new Web3(L3_RPC);
 const l3Provider = new providers.JsonRpcProvider(L3_RPC);
-const l2Provider = new providers.JsonRpcProvider(L2_RPC);
-
-// const userAddress = "0x605825459E3e98565827Af31DF4cA854A7cCED28";
-// const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? "";
-// const l2wallet = new Wallet(privateKey, l2Provider);
 
 function convertTimestampToLocalFormat(timestamp: string | number): string {
   const date = new Date(Number(timestamp) * 1000);
@@ -44,7 +38,7 @@ const eventABI = {
   anonymous: false,
   inputs: [
     { indexed: false, internalType: "address", name: "caller", type: "address" },
-    { indexed: true, internalType: "address", name: 'destination', type: "address" },
+    { indexed: true, internalType: "address", name: "destination", type: "address" },
     { indexed: true, internalType: "uint256", name: "hash", type: "uint256" },
     { indexed: true, internalType: "uint256", name: "position", type: "uint256" },
     { indexed: false, internalType: "uint256", name: "arbBlockNum", type: "uint256" },

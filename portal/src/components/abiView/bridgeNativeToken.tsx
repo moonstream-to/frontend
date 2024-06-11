@@ -135,7 +135,7 @@ export const withdrawNativeToken = async (amountInNative: number, destination: s
 };
 
 export const withdrawNativeToken2 = async (amountInNative: number, destination: string) => {
-  const amountInWei = web3.utils.toWei(amountInNative.toString(), 'ether');
+  const amountInWei = web3.utils.toWei(amountInNative.toString(), "ether");
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
