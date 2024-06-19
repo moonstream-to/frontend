@@ -2,9 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from "./BridgeView.module.css";
 import { useMutation, useQuery } from "react-query";
 const L2_CHAIN_NAME = "Arbitrum sepolia";
-const L3_CHAIN_NAME = "Game7 Tesnet Caldera";
-// const ACCOUNT = "0x605825459E3e98565827Af31DF4cA854A7cCED28";
-// const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY ?? "";
 
 const txs = [
   // "0x8c09f790e614a59e8a792c8e294569262ba4c82276124781678697b180dfc799",
@@ -19,14 +16,13 @@ const txs = [
   // "0x178f750ac0feb9b50de496ba92f91c708396fc794f767b58e5c48490794f41ef",
   // "0xd0a5c6ff85e7aa5fecd16cffd908f90cd66a83bcf63684a7fde3e1eccdbeed44",
   // "0x6eabeffc7feac528057d5bb307965de3f05b279219430e02b40517b6d3c17438",
-  // "0x8f6dc2e0c892bb97465c5e72718519cb88879741f3b33b198053273708d5106b",
-  // "0xe7c19970aaded18b26f0d7f2dae3244cf7a09b4c0806c209dba812a3e051b932", //not executed
-  // "0xed4a7149543497167d779789d8e79ef6155cf4640556cd5fe26917cbbfff920c",
-  // "0x0785921358d1af5f6423d05d0249e93b906aa82fad791d5fe575e715f3d3ffd1",
+  "0x8f6dc2e0c892bb97465c5e72718519cb88879741f3b33b198053273708d5106b",
+  "0xe7c19970aaded18b26f0d7f2dae3244cf7a09b4c0806c209dba812a3e051b932", //not executed
+  "0xed4a7149543497167d779789d8e79ef6155cf4640556cd5fe26917cbbfff920c",
+  "0x0785921358d1af5f6423d05d0249e93b906aa82fad791d5fe575e715f3d3ffd1",
   "0x478107cfefc8e01c64098c922415f8a5af80c1f5db5d834ad45758ae754d4e74",
+  "0x88d55459af84e1395a69e1eea281b887b390054950d8ebd23bc4f80fedaf3013",
 ];
-
-const txs2 = ["0xe066ad48d0a48a53d47dd1762ebafb8240b1e3ddd4d29479ceb27c11b01b4495"];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Web3 = require("web3");
@@ -39,27 +35,25 @@ import importedERC20InboxABI from "../../web3/abi/ERC20Inbox.json";
 const ERC20_INBOX_ABI = importedERC20InboxABI as unknown as AbiItem[];
 import { Flex, Input, Spinner, Text } from "@chakra-ui/react";
 import Web3Context from "../../contexts/Web3Context/context";
-import { withdrawNativeToken, withdrawNativeToken2 } from "../abiView/bridgeNativeToken";
+import { withdrawNativeToken2 } from "../abiView/bridgeNativeToken";
 import Withdrawal from "./Withdrawal";
 import EntitySelect from "../entity/EntitySelect";
-import AddEntityButton from "../entity/AddEntityButton";
-import { AiOutlineSave } from "react-icons/ai";
 import { useJournal } from "../../hooks/useJournal";
 import useMoonToast from "../../hooks/useMoonToast";
 import { TEST_TOKEN_ADDRESS } from "../../constants";
 import { L3_NETWORKS, L3NetworkConfiguration } from "../../web3/networks/l3Networks";
-
-// const ERC20_INBOX_ADDRESS = "0xaACd8bE2d9ac11545a2F0817aEE35058c70b44e5";
+import { estimateDepositGas } from "../abiView/depositERC20";
 
 const BridgeView = () => {
   const [depositValue, setDepositValue] = useState("");
   const [withdrawValue, setWithdrawValue] = useState("");
   const [withdrawDestination, setWithdrawDestination] = useState<string | undefined>(undefined);
-  const [l3Web3, setL3Web3] = useState<typeof Web3>(new Web3(L3_NETWORKS[0].chainInfo.rpcs[0]));
   const l2Web3 = new Web3(L2_RPC);
   const web3ctx = useContext(Web3Context);
   const accounts = useJournal({ tags: ["accounts"] });
   const [l3Network, setL3Network] = useState<L3NetworkConfiguration>(L3_NETWORKS[0]);
+  const toast = useMoonToast();
+
   const formatBalance = (symbol: string | undefined, weiBalance: string | undefined) => {
     if (!weiBalance) {
       return "-";
@@ -108,17 +102,45 @@ const BridgeView = () => {
       refetchInterval: 5000,
     },
   );
-  const toast = useMoonToast();
+
+  const estClick = async () => {
+    const ERC20InboxContract = new web3ctx.web3.eth.Contract(ERC20_INBOX_ABI);
+    ERC20InboxContract.options.address = l3Network.coreContracts.inbox;
+    if (!depositValue) {
+      return 0;
+    }
+    const ethAmount = 10000000;
+    const data = ERC20InboxContract.methods.depositERC20(ethAmount).encodeABI();
+    console.log(data);
+    await estimateDepositGas(ethAmount, web3ctx.account, l3Network, data);
+  };
+
   const deposit = useMutation(
     async (amount: string) => {
       const ERC20InboxContract = new web3ctx.web3.eth.Contract(ERC20_INBOX_ABI);
       ERC20InboxContract.options.address = l3Network.coreContracts.inbox;
-
       const ethAmount = convertToBigNumber(amount);
-      const res = await ERC20InboxContract.methods
+
+      const data = ERC20InboxContract.methods.depositERC20(ethAmount).encodeABI();
+      const tx = {
+        from: web3ctx.account,
+        to: l3Network.coreContracts.inbox,
+        data: data,
+      };
+      const estimatedGas = await ERC20InboxContract.methods
         .depositERC20(ethAmount)
-        .send({ from: web3ctx.account });
-      console.log(res);
+        .estimateGas({ from: web3ctx.account });
+      console.log("estimate1", estimatedGas);
+      await web3ctx.web3.eth
+        .estimateGas(tx)
+        .then((gasEstimate) => {
+          console.log("gasEstimate:", gasEstimate);
+        })
+        .catch((e) => console.log("gas estimation error:", e));
+
+      return ERC20InboxContract.methods
+        .depositERC20(ethAmount)
+        .send({ from: web3ctx.account, gas: estimatedGas });
     },
     {
       onSuccess: () => {
@@ -167,6 +189,10 @@ const BridgeView = () => {
           onChange={(e) => setDepositValue(e.target.value)}
           placeholder={"amount"}
         />
+        {/*{!!depositValue && depositGas.data && (*/}
+        {/*  <div className={styles.est}>{formatBalance("ETH", String(depositGas.data))}</div>*/}
+        {/*)}*/}
+        <button onClick={estClick}>est</button>
         <button
           className={styles.button}
           onClick={handleDepositClick}

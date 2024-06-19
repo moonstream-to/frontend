@@ -129,7 +129,7 @@ export const estimateDepositGas = async (
     // addDefaultLocalNetwork();
 
     // Instantiation of the NodeInterface object
-    const nodeInterface = NodeInterface__factory.connect(NODE_INTERFACE_ADDRESS, baseL2Provider);
+    const nodeInterface = NodeInterface__factory.connect(NODE_INTERFACE_ADDRESS, l2Provider);
 
     // Getting the estimations from NodeInterface.GasEstimateComponents()
     // ------------------------------------------------------------------
@@ -139,8 +139,8 @@ export const estimateDepositGas = async (
       false,
       txData,
       {
-        blockTag: "latest",
-      },
+        from: account,
+      }
     );
     console.log(gasEstimateComponents);
 
