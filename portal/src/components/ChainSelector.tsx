@@ -27,6 +27,9 @@ const assets = {
   amoy: `${AWS_ASSETS_PATH}/matic-token-inverted-icon.png`,
   xai: `${AWS_ASSETS_PATH}/xai-token-logo.png`,
   xai_sepolia: `${AWS_ASSETS_PATH}/xai-token-logo.png`,
+  arbitrum_nova: `${AWS_ASSETS_PATH}/arbitrum-nova-token-logo.png`,
+  arbitrum_sepolia: `${AWS_ASSETS_PATH}/arbitrum-sepolia-token-logo.png`,
+  arbitrum_one: `${AWS_ASSETS_PATH}/arbitrum-one-token-logo.png`,
   wyrm: `${AWS_ASSETS_PATH}/great-wyrm-network-logo.png`,
 };
 
@@ -45,7 +48,7 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
         _hover={{ textDecoration: "none", fontWeight: "700" }}
         rightIcon={<ChevronDownIcon />}
         leftIcon={
-          ["ethereum", "mumbai", "polygon", "wyrm", "amoy", "xai", "xai_sepolia"].includes(
+          ["ethereum", "mumbai", "polygon", "wyrm", "amoy", "xai", "xai_sepolia", "arbitrum_nova", "arbitrum_sepolia", "arbitrum_one"].includes(
             web3Provider?.targetChain?.name ?? "",
           ) ? (
             <Image
@@ -113,6 +116,30 @@ const ChainSelector = ({ color = "white" }: { color?: string }) => {
           }}
         >
           <ChainSelectorItem name="Xai Testnet v2" img={assets.xai} />
+        </MenuItem>
+        <MenuItem
+          isDisabled={web3Provider.targetChain?.name === "arbitrum_sepolia"}
+          onClick={() => {
+            web3Provider.changeChain("arbitrum_sepolia");
+          }}
+        >
+          <ChainSelectorItem name="Arbitrum Sepolia" img={assets.arbitrum_sepolia} />
+        </MenuItem>
+        <MenuItem
+          isDisabled={web3Provider.targetChain?.name === "arbitrum_nova"}
+          onClick={() => {
+            web3Provider.changeChain("arbitrum_nova");
+          }}
+        >
+          <ChainSelectorItem name="Arbitrum Nova" img={assets.arbitrum_nova} />
+        </MenuItem>
+        <MenuItem
+          isDisabled={web3Provider.targetChain?.name === "arbitrum_one"}
+          onClick={() => {
+            web3Provider.changeChain("arbitrum_one");
+          }}
+        >
+          <ChainSelectorItem name="Arbitrum One" img={assets.arbitrum_one} />
         </MenuItem>
         <MenuItem
           isDisabled={web3Provider.targetChain?.name === "wyrm"}
